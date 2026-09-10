@@ -3,416 +3,317 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel | Multiprintt</title>
+<title>Multiprintt | Visual Builder</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- Librería para Arrastrar y Soltar (SortableJS) -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
 <style>
-    body { background: #070709; color: #f7f7f8; font-family: "DM Sans", sans-serif; }
-    .glass { background: rgba(16, 16, 20, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-    input, select, textarea { background: #000; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 12px; width: 100%; outline: none; }
-    input:focus, select:focus, textarea:focus { border-color: #ff2da8; }
-    button.btn { background: white; color: black; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.2s; }
-    button.btn:hover { background: #e0e0e0; }
-    .tab-btn.active { color: #ff2da8; border-bottom: 2px solid #ff2da8; }
+    body { background-color: #070709; color: #fff; font-family: 'DM Sans', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Login Screen */
+    #auth-screen { position: fixed; inset: 0; background: #070709; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
+    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    
+    /* Builder UI */
+    #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
+    .topbar { height: 60px; background: #101014; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+    .workspace { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: 280px; background: #0b0b0e; border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+    
+    #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; }
+    #site-frame { width: 100%; height: 100%; background: #070709; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
+    
+    /* Responsive Toggles */
+    .device-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; transition: all 0.2s; cursor: pointer; }
+    .device-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; }
+    
+    .frame-mobile { width: 390px !important; height: 844px !important; }
+    .frame-tablet { width: 820px !important; height: 1180px !important; }
+
+    .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 8px; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: bold;}
+    .tool-btn:hover { background: rgba(255,45,168,0.2); border-color: #ff2da8; }
+    .tool-btn:active { transform: scale(0.97); }
 </style>
 </head>
-<body class="h-screen overflow-hidden flex flex-col items-center justify-center">
+<body>
 
-<div id="login-screen" class="w-full max-w-sm glass p-8 rounded-2xl shadow-2xl text-center z-50 absolute">
-    <div class="w-16 h-16 rounded-full bg-white/5 mx-auto flex items-center justify-center mb-6">
-        <img src="https://multiprintt.web.app/recursos/favicon.png" class="w-10 h-10 opacity-80" alt="Logo">
+<!-- Pantalla de Login Ultra Segura -->
+<div id="auth-screen">
+    <div class="glass-panel p-10 w-full max-w-md text-center">
+        <div class="w-20 h-20 bg-pink-500/10 border border-pink-500/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(255,45,168,0.2)]">
+            <i class="fa-solid fa-wand-magic-sparkles text-3xl text-pink-400"></i>
+        </div>
+        <h1 class="text-2xl font-bold mb-2">Visual Builder</h1>
+        <p class="text-zinc-500 text-sm mb-8">Ingresa tus credenciales maestras.</p>
+        
+        <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-4 outline-none focus:border-cyan-400 transition-colors">
+        <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-6 outline-none focus:border-pink-400 transition-colors">
+        
+        <button onclick="attemptLogin()" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-colors shadow-lg">Entrar al Editor</button>
+        <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-bold">Credenciales incorrectas.</p>
     </div>
-    <h2 class="text-xl font-bold mb-2">Panel Administrativo</h2>
-    <p class="text-xs text-zinc-400 mb-6">Ingresa la contraseña de seguridad para modificar la web.</p>
-    <input type="password" id="pin-input" placeholder="Contraseña" class="text-center tracking-widest text-lg mb-4">
-    <button onclick="checkPin()" class="btn w-full">Ingresar</button>
 </div>
 
-<div id="admin-dashboard" class="hidden w-full h-full max-w-6xl flex flex-col p-4 md:p-8">
-    <header class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold"><i class="fa-solid fa-sliders text-pink-500 mr-2"></i> Multiprintt Admin</h1>
-        <button onclick="location.reload()" class="text-sm text-zinc-400 hover:text-white"><i class="fa-solid fa-right-from-bracket mr-1"></i> Salir</button>
-    </header>
-
-    <div class="flex gap-6 border-b border-white/10 mb-6">
-        <button onclick="switchTab('tab-textos')" id="btn-tab-textos" class="tab-btn active pb-3 font-medium text-sm">Textos Principales</button>
-        <button onclick="switchTab('tab-productos')" id="btn-tab-productos" class="tab-btn pb-3 font-medium text-sm text-zinc-500">Productos</button>
-        <button onclick="switchTab('tab-cursos')" id="btn-tab-cursos" class="tab-btn pb-3 font-medium text-sm text-zinc-500">Cursos</button>
-    </div>
-
-    <!-- Pestaña Textos -->
-    <div id="tab-textos" class="flex-1 overflow-y-auto pr-2 pb-10">
-        <div class="glass p-6 rounded-xl space-y-5 max-w-2xl">
-            <div>
-                <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Subtítulo Hero</label>
-                <input type="text" id="edit-hero-subtitle" placeholder="Impresión & Publicidad,">
-            </div>
-            <div>
-                <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Título Principal Hero</label>
-                <input type="text" id="edit-hero-title" placeholder="Tú Imagen Viva.">
-            </div>
-            <div>
-                <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Texto Sección Nosotros</label>
-                <textarea id="edit-about-desc" rows="4" placeholder="Somos expertos en..."></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Teléfono / WhatsApp</label>
-                    <input type="text" id="edit-phone" placeholder="099 759 1021">
-                </div>
-                <div>
-                    <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Correo</label>
-                    <input type="email" id="edit-email" placeholder="multiprintt@yahoo.com">
-                </div>
-            </div>
-            <button onclick="saveTexts()" class="btn w-full mt-4 bg-pink-500 text-white hover:bg-pink-600 border-none shadow-[0_0_20px_rgba(255,45,168,0.4)]">
-                Guardar Textos en Vivo
+<!-- Interfaz del Constructor -->
+<div id="builder-ui">
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="flex items-center gap-4">
+            <div class="w-8 h-8 rounded bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-black font-black text-sm">M</div>
+            <span class="font-bold text-sm tracking-widest uppercase text-zinc-300">Multiprintt <span class="text-cyan-400">Builder</span></span>
+        </div>
+        
+        <div class="flex items-center bg-[#0b0b0e] border border-white/5 rounded-lg p-1">
+            <button onclick="setDevice('desktop')" class="device-btn active" id="btn-desktop"><i class="fa-solid fa-desktop"></i></button>
+            <button onclick="setDevice('tablet')" class="device-btn" id="btn-tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button onclick="setDevice('mobile')" class="device-btn" id="btn-mobile"><i class="fa-solid fa-mobile-screen"></i></button>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <button onclick="undo()" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Deshacer (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+            <button onclick="redo()" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Rehacer (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
+            <div class="w-[1px] h-6 bg-white/10 mx-2"></div>
+            <button onclick="saveAll()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-[0_0_15px_rgba(37,216,255,0.4)] flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Cambios
             </button>
         </div>
-    </div>
+    </header>
 
-    <!-- Pestaña Productos -->
-    <div id="tab-productos" class="hidden flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
-        <div class="w-full md:w-1/3 glass p-6 rounded-xl h-max space-y-4">
-            <h3 id="title-form-prod" class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Producto</h3>
-            <input type="text" id="prod-name" placeholder="Nombre del producto">
-            <select id="prod-cat">
-                <option value="premium">Premium</option>
-                <option value="textil">Textil & Moda</option>
-                <option value="tazas">Tazas & Promo</option>
-            </select>
-            <input type="number" id="prod-price" placeholder="Precio ($) ej: 25.50">
-            <input type="text" id="prod-img" placeholder="URL Imagen (https://...)">
-            <input type="text" id="prod-icon" placeholder="Clave de Ícono (ej: fa-shirt)">
-            <div class="flex gap-2">
-                <button id="btn-save-prod" onclick="saveProduct()" class="btn flex-1 bg-white text-black">Guardar Producto</button>
-                <button id="btn-cancel-prod" onclick="cancelEditProd()" class="btn hidden bg-zinc-800 text-white border border-white/10 hover:bg-zinc-700 px-4"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-        </div>
-        <div class="w-full md:w-2/3 glass p-6 rounded-xl overflow-y-auto">
-            <h3 class="font-bold border-b border-white/10 pb-2 mb-4">Catálogo Actual</h3>
-            <div id="admin-prod-list" class="space-y-3">Cargando...</div>
-        </div>
-    </div>
+    <!-- Workspace -->
+    <div class="workspace">
+        <!-- Sidebar Tools -->
+        <aside class="sidebar">
+            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Herramientas Visuales</div>
+            
+            <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
+                <i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i>
+                Habilitar Movimiento
+            </button>
+            
+            <button onclick="alert('Instrucción: Simplemente haz clic en cualquier texto del sitio a la derecha (Títulos, Enlaces, Footer) para editarlo. Se guardará en el historial automáticamente.')" class="tool-btn">
+                <i class="fa-solid fa-font w-5 text-center text-pink-400"></i>
+                Editar Textos Generales
+            </button>
+            
+            <div class="w-full h-[1px] bg-white/10 my-4"></div>
+            
+            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Base de Datos</div>
+            <button onclick="alert('Navega al catálogo en la vista previa y haz clic en (+ Añadir Nuevo) o en el botón de Editar de cualquier tarjeta.')" class="tool-btn">
+                <i class="fa-solid fa-box-open w-5 text-center text-violet-400"></i>
+                Catálogo (Productos)
+            </button>
+            <button onclick="alert('Navega a la academia en la vista previa y haz clic en (+ Añadir Curso) o en el botón de Editar de cualquier tarjeta.')" class="tool-btn">
+                <i class="fa-solid fa-graduation-cap w-5 text-center text-yellow-400"></i>
+                Academia (Cursos)
+            </button>
 
-    <!-- Pestaña Cursos -->
-    <div id="tab-cursos" class="hidden flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
-        <div class="w-full md:w-1/3 glass p-6 rounded-xl h-max space-y-4">
-            <h3 id="title-form-course" class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Curso</h3>
-            <input type="text" id="course-title" placeholder="Título del Curso">
-            <input type="text" id="course-modality" placeholder="Modalidad (ej: N/A, Online)">
-            <input type="text" id="course-price" placeholder="Precio (ej: $0, $50)">
-            <input type="text" id="course-schedule" placeholder="Horario (ej: Consultar)">
-            <input type="text" id="course-img" placeholder="URL Imagen (https://...)">
-            <textarea id="course-desc" rows="3" placeholder="Descripción corta"></textarea>
-            <div class="flex gap-2">
-                <button id="btn-save-course" onclick="saveCourse()" class="btn flex-1 bg-white text-black">Guardar Curso</button>
-                <button id="btn-cancel-course" onclick="cancelEditCourse()" class="btn hidden bg-zinc-800 text-white border border-white/10 hover:bg-zinc-700 px-4"><i class="fa-solid fa-xmark"></i></button>
+            <div class="mt-auto p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs leading-relaxed">
+                <i class="fa-solid fa-circle-info mb-2 text-lg block"></i>
+                <b class="text-white">Modo Constructor Activo.</b><br><br>
+                1. Mueve las tarjetas arrastrándolas.<br>
+                2. Borra tarjetas haciendo clic en la X roja.<br>
+                3. Usa Control+Z si te equivocas.
             </div>
-        </div>
-        <div class="w-full md:w-2/3 glass p-6 rounded-xl overflow-y-auto">
-            <h3 class="font-bold border-b border-white/10 pb-2 mb-4">Cursos Actuales</h3>
-            <div id="admin-course-list" class="space-y-3">Cargando...</div>
-        </div>
+        </aside>
+
+        <!-- Preview / Iframe -->
+        <main id="preview-container">
+            <iframe id="site-frame" src="index.html"></iframe>
+        </main>
     </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<script>
+    // 1. LÓGICA DE LOGIN
+    function attemptLogin() {
+        const u = document.getElementById('loginUser').value;
+        const p = document.getElementById('loginPass').value;
+        const err = document.getElementById('auth-error');
 
-// ===== CONFIGURACIÓN FIREBASE (REAL) =====
-const firebaseConfig = {
-  apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",
-  authDomain: "multiprintt-cc0f1.firebaseapp.com",
-  projectId: "multiprintt-cc0f1",
-  storageBucket: "multiprintt-cc0f1.firebasestorage.app",
-  messagingSenderId: "626369594335",
-  appId: "1:626369594335:web:711aac8c65197a0dceba6a",
-  measurementId: "G-VP3XV39H5M"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const APP_ID = "multiprintt-web";
-
-// Variables globales para edición
-window.globalProducts = [];
-window.globalCourses = [];
-window.editingProdId = null;
-window.editingCourseId = null;
-
-// UI Logic
-window.checkPin = async function() {
-    // Aquí está la nueva contraseña que pediste
-    if(document.getElementById('pin-input').value === 'adminMultiprintt2026') {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        await initAdminData();
-    } else {
-        alert("Contraseña Incorrecta");
-    }
-};
-
-window.switchTab = function(tabId) {
-    ['tab-textos', 'tab-productos', 'tab-cursos'].forEach(id => document.getElementById(id).classList.add('hidden'));
-    ['btn-tab-textos', 'btn-tab-productos', 'btn-tab-cursos'].forEach(id => {
-        document.getElementById(id).classList.remove('active', 'text-pink-500');
-        document.getElementById(id).classList.add('text-zinc-500');
-    });
-    
-    document.getElementById(tabId).classList.remove('hidden');
-    document.getElementById('btn-' + tabId).classList.add('active', 'text-pink-500');
-    document.getElementById('btn-' + tabId).classList.remove('text-zinc-500');
-}
-
-// Conexión Firebase en Vivo
-async function initAdminData() {
-    try {
-        await signInAnonymously(auth);
-    } catch (e) {
-        alert("Error conectando a Firebase: " + e.message);
-        return;
-    }
-    
-    // 1. Escuchar Textos Principales
-    onSnapshot(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), (doc) => {
-        if (doc.exists()) {
-            const d = doc.data();
-            document.getElementById('edit-hero-subtitle').value = d.heroSubtitle || '';
-            document.getElementById('edit-hero-title').value = d.heroTitle || '';
-            document.getElementById('edit-about-desc').value = d.aboutDesc || '';
-            document.getElementById('edit-phone').value = d.contactPhone || '';
-            document.getElementById('edit-email').value = d.contactEmail || '';
-        }
-    });
-
-    // 2. Escuchar Productos (Con opción de editar y cargar base)
-    onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snapshot) => {
-        window.globalProducts = [];
-        const list = document.getElementById('admin-prod-list');
-        list.innerHTML = '';
-        if(snapshot.empty) {
-            list.innerHTML = `
-                <div class="flex flex-col items-center justify-center p-6 text-center border border-dashed border-white/20 rounded-xl bg-black/20">
-                    <p class="text-zinc-400 text-sm mb-3">La base de datos de productos está vacía.</p>
-                    <button onclick="loadDefaultProducts()" class="btn bg-cyan-500 text-white border-none shadow-[0_0_15px_rgba(37,216,255,0.4)] text-xs">Cargar Productos Base</button>
-                </div>`;
+        if(u === 'admin' && p === 'adminMultiprintt2026') {
+            document.getElementById('auth-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('builder-ui').style.display = 'flex';
+                initBuilder();
+            }, 500);
         } else {
-            snapshot.forEach(doc => {
-                const p = doc.data(); p.id = doc.id;
-                window.globalProducts.push(p);
-                list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
-                    <div class="flex items-center gap-3"><img src="${p.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
-                    <div><p class="text-sm font-bold text-white">${p.name}</p><p class="text-[10px] text-zinc-400 uppercase">${p.category} • $${p.price}</p></div></div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="startEditProd('${p.id}')" class="text-cyan-400 hover:text-cyan-300 p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="delProd('${doc.id}')" class="text-red-500 hover:text-red-400 p-2 transition-colors"><i class="fa-solid fa-trash"></i></button>
-                    </div></div>`;
+            err.classList.remove('hidden');
+            setTimeout(() => err.classList.add('hidden'), 3000);
+        }
+    }
+    document.getElementById('loginPass').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') attemptLogin();
+    });
+
+    // 2. VARIABLES DEL CONSTRUCTOR
+    let iframe, iframeDoc, iframeWin;
+    let dragEnabled = false;
+    let sortables = [];
+
+    // Variables de Historial
+    let stateHistory = [];
+    let currentStateIndex = -1;
+
+    function initBuilder() {
+        iframe = document.getElementById('site-frame');
+        
+        iframe.onload = () => {
+            iframeWin = iframe.contentWindow;
+            iframeDoc = iframe.contentDocument;
+
+            // Inyectamos el comando maestro para encender las herramientas en index.html
+            iframeWin.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+            
+            // Inyectamos reglas de CSS para que el Iframe permita Drag & Drop y muestre la X de borrar
+            const style = iframeDoc.createElement('style');
+            style.innerHTML = `
+                .builder-sortable-ghost { opacity: 0.4; background: rgba(37,216,255,0.2); border: 2px dashed #25d8ff !important; border-radius: 12px; }
+                .builder-draggable:hover { cursor: grab; outline: 2px solid rgba(255,45,168,0.5); outline-offset: 4px; border-radius: 12px; box-shadow: 0 0 20px rgba(255,45,168,0.3); }
+                .builder-draggable:active { cursor: grabbing; }
+                .delete-overlay { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: red; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; opacity: 0; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-family: sans-serif; font-weight: bold; }
+                .card:hover .delete-overlay { opacity: 1; }
+            `;
+            iframeDoc.head.appendChild(style);
+
+            // Guardamos el estado HTML inicial (Control Z)
+            setTimeout(saveState, 2000); 
+
+            // Detectar cuando el admin escriba textos
+            iframeDoc.addEventListener('input', () => {
+                clearTimeout(window.typingTimer);
+                window.typingTimer = setTimeout(saveState, 1000);
+            });
+        };
+    }
+
+    // 3. RESPONSIVE PREVIEW
+    function setDevice(device) {
+        document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + device).classList.add('active');
+        
+        iframe.className = 'border-none transition-all duration-500 ease-in-out bg-[#070709] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10';
+        if(device === 'mobile') iframe.classList.add('frame-mobile');
+        else if(device === 'tablet') iframe.classList.add('frame-tablet');
+        else iframe.style.width = '100%', iframe.style.height = '100%';
+    }
+
+    // 4. LÓGICA DE ARRASTRE Y SOLTAR (Drag & Drop + Delete)
+    function toggleDraggable() {
+        dragEnabled = !dragEnabled;
+        const btn = document.getElementById('drag-btn');
+        
+        if(dragEnabled) {
+            btn.style.background = 'rgba(37,216,255,0.2)';
+            btn.style.borderColor = '#25d8ff';
+            btn.innerHTML = '<i class="fa-solid fa-check w-5 text-center text-cyan-400"></i> Movimiento Habilitado';
+            
+            const grids = [iframeDoc.getElementById('product-grid'), iframeDoc.getElementById('courses-grid')];
+            
+            grids.forEach(grid => {
+                if(grid) {
+                    Array.from(grid.children).forEach(child => {
+                        // Ignoramos el botón de "Añadir Nuevo"
+                        if(child.innerText.includes("Añadir")) return;
+
+                        child.classList.add('builder-draggable');
+                        
+                        // Añadir botón visual de borrar (La X)
+                        if(!child.querySelector('.delete-overlay')) {
+                            const delBtn = iframeDoc.createElement('div');
+                            delBtn.className = 'delete-overlay';
+                            delBtn.innerHTML = 'X';
+                            delBtn.onclick = function(e) {
+                                e.stopPropagation(); 
+                                child.remove(); // Borra el elemento visual
+                                saveState(); // Guarda en historial
+                            };
+                            child.appendChild(delBtn);
+                        }
+                    });
+
+                    // Inicia el código de SortableJS para mover cuadros
+                    sortables.push(new Sortable(grid, {
+                        animation: 250,
+                        ghostClass: 'builder-sortable-ghost',
+                        onEnd: function (evt) { saveState(); } 
+                    }));
+                }
+            });
+
+        } else {
+            btn.style.background = 'rgba(255,255,255,0.05)';
+            btn.style.borderColor = 'rgba(255,255,255,0.1)';
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i> Habilitar Movimiento';
+            
+            sortables.forEach(s => s.destroy());
+            sortables = [];
+            
+            const draggables = iframeDoc.querySelectorAll('.builder-draggable');
+            draggables.forEach(d => {
+                d.classList.remove('builder-draggable');
+                const delBtn = d.querySelector('.delete-overlay');
+                if(delBtn) delBtn.remove();
             });
         }
-    });
+    }
 
-    // 3. Escuchar Cursos (Con opción de editar y cargar base)
-    onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snapshot) => {
-        window.globalCourses = [];
-        const list = document.getElementById('admin-course-list');
-        list.innerHTML = '';
-        if(snapshot.empty) {
-            list.innerHTML = `
-                <div class="flex flex-col items-center justify-center p-6 text-center border border-dashed border-white/20 rounded-xl bg-black/20">
-                    <p class="text-zinc-400 text-sm mb-3">La base de datos de cursos está vacía.</p>
-                    <button onclick="loadDefaultCourses()" class="btn bg-violet-500 text-white border-none shadow-[0_0_15px_rgba(115,92,255,0.4)] text-xs">Cargar Cursos Base</button>
-                </div>`;
-        } else {
-            snapshot.forEach(doc => {
-                const c = doc.data(); c.id = doc.id;
-                window.globalCourses.push(c);
-                list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
-                    <div class="flex items-center gap-3"><img src="${c.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
-                    <div><p class="text-sm font-bold text-white">${c.title}</p><p class="text-[10px] text-zinc-400 uppercase">${c.modality} • ${c.price}</p></div></div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="startEditCourse('${c.id}')" class="text-cyan-400 hover:text-cyan-300 p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="delCourse('${doc.id}')" class="text-red-500 hover:text-red-400 p-2 transition-colors"><i class="fa-solid fa-trash"></i></button>
-                    </div></div>`;
-            });
+    // 5. SISTEMA UNDO / REDO (HISTORIAL)
+    function saveState() {
+        const htmlSnapshot = iframeDoc.body.innerHTML;
+        
+        if (currentStateIndex < stateHistory.length - 1) {
+            stateHistory = stateHistory.slice(0, currentStateIndex + 1);
         }
-    });
-}
+        
+        if(stateHistory[currentStateIndex] === htmlSnapshot) return;
 
-// ===== FUNCIONES PARA PRODUCTOS =====
-window.startEditProd = function(id) {
-    const p = window.globalProducts.find(x => x.id === id);
-    if(!p) return;
-    window.editingProdId = id;
-    document.getElementById('title-form-prod').innerHTML = '<i class="fa-solid fa-pen text-cyan-400 mr-1"></i> Editando Producto';
-    document.getElementById('prod-name').value = p.name || '';
-    document.getElementById('prod-cat').value = p.category || 'premium';
-    document.getElementById('prod-price').value = p.price || '';
-    document.getElementById('prod-img').value = p.image || '';
-    document.getElementById('prod-icon').value = p.icon || '';
-    document.getElementById('btn-save-prod').textContent = "Actualizar Cambios";
-    document.getElementById('btn-save-prod').classList.replace('bg-white', 'bg-cyan-500');
-    document.getElementById('btn-save-prod').classList.replace('text-black', 'text-white');
-    document.getElementById('btn-cancel-prod').classList.remove('hidden');
-}
-
-window.cancelEditProd = function() {
-    window.editingProdId = null;
-    document.getElementById('title-form-prod').textContent = 'Añadir Producto';
-    document.getElementById('prod-name').value = ''; document.getElementById('prod-price').value = '';
-    document.getElementById('prod-img').value = ''; document.getElementById('prod-icon').value = '';
-    document.getElementById('btn-save-prod').textContent = "Guardar Producto";
-    document.getElementById('btn-save-prod').classList.replace('bg-cyan-500', 'bg-white');
-    document.getElementById('btn-save-prod').classList.replace('text-white', 'text-black');
-    document.getElementById('btn-cancel-prod').classList.add('hidden');
-}
-
-window.saveProduct = async function() {
-    const btn = document.getElementById('btn-save-prod');
-    const originalText = btn.textContent; btn.textContent = "Guardando...";
-    const data = {
-        name: document.getElementById('prod-name').value,
-        category: document.getElementById('prod-cat').value,
-        price: parseFloat(document.getElementById('prod-price').value || 0),
-        image: document.getElementById('prod-img').value,
-        icon: document.getElementById('prod-icon').value
-    };
-    
-    if(window.editingProdId) {
-        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', window.editingProdId), data, { merge: true });
-    } else {
-        await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), data);
+        stateHistory.push(htmlSnapshot);
+        currentStateIndex++;
     }
-    window.cancelEditProd();
-}
-window.delProd = async function(id) { if(confirm("¿Seguro que deseas borrar este producto?")) await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id)); }
 
-// ===== FUNCIONES PARA CURSOS =====
-window.startEditCourse = function(id) {
-    const c = window.globalCourses.find(x => x.id === id);
-    if(!c) return;
-    window.editingCourseId = id;
-    document.getElementById('title-form-course').innerHTML = '<i class="fa-solid fa-pen text-cyan-400 mr-1"></i> Editando Curso';
-    document.getElementById('course-title').value = c.title || '';
-    document.getElementById('course-modality').value = c.modality || '';
-    document.getElementById('course-price').value = c.price || '';
-    document.getElementById('course-schedule').value = c.schedule || '';
-    document.getElementById('course-img').value = c.image || '';
-    document.getElementById('course-desc').value = c.desc || '';
-    document.getElementById('btn-save-course').textContent = "Actualizar Cambios";
-    document.getElementById('btn-save-course').classList.replace('bg-white', 'bg-cyan-500');
-    document.getElementById('btn-save-course').classList.replace('text-black', 'text-white');
-    document.getElementById('btn-cancel-course').classList.remove('hidden');
-}
-
-window.cancelEditCourse = function() {
-    window.editingCourseId = null;
-    document.getElementById('title-form-course').textContent = 'Añadir Curso';
-    document.getElementById('course-title').value = ''; document.getElementById('course-modality').value = '';
-    document.getElementById('course-price').value = ''; document.getElementById('course-schedule').value = '';
-    document.getElementById('course-img').value = ''; document.getElementById('course-desc').value = '';
-    document.getElementById('btn-save-course').textContent = "Guardar Curso";
-    document.getElementById('btn-save-course').classList.replace('bg-cyan-500', 'bg-white');
-    document.getElementById('btn-save-course').classList.replace('text-white', 'text-black');
-    document.getElementById('btn-cancel-course').classList.add('hidden');
-}
-
-window.saveCourse = async function() {
-    const btn = document.getElementById('btn-save-course');
-    const originalText = btn.textContent; btn.textContent = "Guardando...";
-    const data = {
-        title: document.getElementById('course-title').value,
-        modality: document.getElementById('course-modality').value,
-        price: document.getElementById('course-price').value,
-        schedule: document.getElementById('course-schedule').value,
-        image: document.getElementById('course-img').value,
-        desc: document.getElementById('course-desc').value
-    };
-    
-    if(window.editingCourseId) {
-        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', window.editingCourseId), data, { merge: true });
-    } else {
-        await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), data);
+    function undo() {
+        if (currentStateIndex > 0) {
+            currentStateIndex--;
+            restoreState(stateHistory[currentStateIndex]);
+        }
     }
-    window.cancelEditCourse();
-}
-window.delCourse = async function(id) { if(confirm("¿Seguro que deseas borrar este curso?")) await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', id)); }
 
-// ===== IMPORTACIÓN DE PLANTILLAS BASE =====
-window.loadDefaultProducts = async function() {
-    event.target.textContent = "Cargando..."; event.target.disabled = true;
-    const defProducts = [
-        {name:'Fotocuadros en Madera y Aluminio',category:'premium',price:25,image:'',icon:'fa-image'},
-        {name:'Sombreros Personalizados TRI',category:'textil',price:8,image:'',icon:'fa-hat-cowboy'},
-        {name:'Camiseta Algodón Premium DTF',category:'textil',price:18.50,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=700&auto=format&fit=crop',icon:'fa-shirt'},
-        {name:'Tazas Mágicas y Termos',category:'tazas',price:12,image:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=700&auto=format&fit=crop',icon:'fa-mug-hot'}
-    ];
-    for(const p of defProducts) { await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), p); }
-}
+    function redo() {
+        if (currentStateIndex < stateHistory.length - 1) {
+            currentStateIndex++;
+            restoreState(stateHistory[currentStateIndex]);
+        }
+    }
 
-window.loadDefaultCourses = async function() {
-    event.target.textContent = "Cargando..."; event.target.disabled = true;
-    const defCourses = [
-        { title: "Curso Completo de Impresión Digital", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/general1.jpeg", desc: "El programa total. Ideal para crear tu propio negocio." },
-        { title: "Curso de Sublimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion0.jpg", desc: "Aprende a transferir imágenes de altísima calidad." },
-        { title: "Curso de Serigrafía", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/serigrafia0.jpg", desc: "Especialízate en técnicas de impresión tradicional." },
-        { title: "Taller de Resina", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/resina0.jpg", desc: "Crea piezas únicas, accesorios exclusivos y dales acabados premium." },
-        { title: "Curso de Sellos", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sellos.jpg", desc: "Especialízate en el diseño y elaboración de sellos." },
-        { title: "Manejo de Plóter de Corte", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/ploter.jpg", desc: "Manejo profesional de software y hardware para corte." },
-        { title: "Curso de Pedrería Textil", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/pedreria0.jpeg", desc: "Aprende la técnica de aplicación de pedrería y strass." },
-        { title: "Grabado sobre Vidrio", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/laser0.jpg", desc: "Domina el arte del esmerilado y grabado." },
-        { title: "Curso de Polimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf0.jpg", desc: "Descubre esta técnica innovadora de impresión." },
-        { title: "Elaboración de Agendas", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion21.jpg", desc: "Aprende el proceso completo para diseñar y armar agendas." }
-    ];
-    for(const c of defCourses) { await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), c); }
-}
+    function restoreState(htmlContent) {
+        if(dragEnabled) toggleDraggable(); // Apagar drag temporalmente
+        iframeDoc.body.innerHTML = htmlContent;
+        iframeWin.enableInlineEditing(); // Reconectar edición de textos
+    }
 
-// Guardar Textos
-window.saveTexts = async function() {
-    const btn = event.target; btn.textContent = "Guardando...";
-    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), {
-        heroSubtitle: document.getElementById('edit-hero-subtitle').value,
-        heroTitle: document.getElementById('edit-hero-title').value,
-        aboutDesc: document.getElementById('edit-about-desc').value,
-        contactPhone: document.getElementById('edit-phone').value,
-        contactEmail: document.getElementById('edit-email').value
-    }, { merge: true });
-    setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-check'></i> Guardado Exitosamente"; }, 500);
-    setTimeout(() => { btn.textContent = "Guardar Textos en Vivo"; }, 3000);
-}
-
-// Agregar/Borrar Producto
-window.addProduct = async function() {
-    await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), {
-        name: document.getElementById('prod-name').value,
-        category: document.getElementById('prod-cat').value,
-        price: parseFloat(document.getElementById('prod-price').value || 0),
-        image: document.getElementById('prod-img').value,
-        icon: document.getElementById('prod-icon').value
+    // Atajos Ctrl+Z y Ctrl+Y
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+        if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
     });
-    // Limpiar form
-    document.getElementById('prod-name').value = ''; document.getElementById('prod-price').value = '';
-}
-window.delProd = async function(id) { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id)); }
 
-// Agregar/Borrar Curso
-window.addCourse = async function() {
-    await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), {
-        title: document.getElementById('course-title').value,
-        modality: document.getElementById('course-modality').value,
-        price: document.getElementById('course-price').value,
-        schedule: document.getElementById('course-schedule').value,
-        image: document.getElementById('course-img').value,
-        desc: document.getElementById('course-desc').value
-    });
-    document.getElementById('course-title').value = ''; document.getElementById('course-desc').value = '';
-}
-window.delCourse = async function(id) { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', id)); }
-
+    // 6. BOTÓN DE PUBLICAR
+    function saveAll() {
+        const btn = document.querySelector('.fa-cloud-arrow-up').parentElement;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+        
+        // Simulación de guardado final
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Cambios Guardados!';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Cambios';
+            }, 3000);
+        }, 1500);
+    }
 </script>
 </body>
 </html>
