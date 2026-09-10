@@ -3,16 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Multiprintt | Impresión & Publicidad, Tú Imagen Viva</title>
-<meta name="description" content="Multiprintt: Impresión & Publicidad, Tú Imagen Viva. Personalización, DTF, sublimación y academia.">
-<meta name="theme-color" content="#070709">
+
+<!-- ========================================== -->
+<!-- 🚀 OPTIMIZACIÓN SEO AVANZADA (Para Google) -->
+<!-- ========================================== -->
+<title>Multiprintt | Impresión & Publicidad en Guayaquil</title>
+<meta name="description" content="Multiprintt: Impresión & Publicidad. Expertos en personalización, impresión gráfica, DTF, sublimación, resina y academia para emprendedores en Ecuador.">
+<meta name="keywords" content="Multiprintt, impresión, publicidad, sublimación, DTF, serigrafía, resina, academia de impresión, Guayaquil, Ecuador, personalización de tazas, camisetas">
+<meta name="author" content="Multiprintt">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+<!-- Etiqueta Canonical para evitar contenido duplicado (vital en Firebase .web.app) -->
+<link rel="canonical" href="https://multiprintt.web.app/" />
 
 <!-- Google Search Console Verification -->
 <meta name="google-site-verification" content="fOxy3YXgVzVKik8PFB5AyU62JcSRD2E7Zk1dvwmavkA" />
 
+<!-- 1. Schema.org: Le dice a Google explícitamente el NOMBRE DEL SITIO WEB -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Multiprintt",
+  "alternateName": "Multiprintt Impresión y Publicidad",
+  "url": "https://multiprintt.web.app/"
+}
+</script>
+
+<!-- 2. Schema.org: Define a Multiprintt como un Negocio Local real en Guayaquil -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Multiprintt",
+  "image": "https://multiprintt.web.app/recursos/logo_mejorado.png",
+  "@id": "https://multiprintt.web.app/",
+  "url": "https://multiprintt.web.app/",
+  "telephone": "+593997591021",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Luis Vernaza y José Mascote",
+    "addressLocality": "Guayaquil",
+    "addressRegion": "Guayas",
+    "addressCountry": "EC"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -2.185722,
+    "longitude": -79.892194
+  },
+  "sameAs": [
+    "https://instagram.com/multiprintt",
+    "https://facebook.com/multiprintt",
+    "https://tiktok.com/@alfredoaguilar734"
+  ]
+}
+</script>
+<!-- ========================================== -->
+
+<meta name="theme-color" content="#070709">
+
 <!-- Open Graph / Compartir Redes Sociales -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
+<meta property="og:site_name" content="Multiprintt">
 <meta property="og:title" content="Multiprintt | Impresión & Publicidad">
 <meta property="og:description" content="Tú Imagen Viva. Expertos en personalización, impresión gráfica, DTF, sublimación y academia.">
 <meta property="og:image" content="https://multiprintt.web.app/recursos/favicon.png">
@@ -318,7 +372,6 @@ body.admin-mode [data-edit]:focus { outline: 2px solid var(--pink); background: 
     </div>
   </section>
 
-  <!-- SOLUCIÓN AL FOOTER: Usar min-h-full en lugar de h-full y remover overflow-hidden -->
   <section id="view-contact" class="view-slide flex flex-col slide-scroll">
     <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-2 pb-6 relative z-10">
         
@@ -369,7 +422,6 @@ body.admin-mode [data-edit]:focus { outline: 2px solid var(--pink); background: 
 
         <footer class="mt-8 pt-4 text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-2 relative z-20 pb-4">
             <span>© <span id="year"></span> Multiprintt. Tú Imagen Viva.</span>
-            <!-- AQUÍ ESTÁ EL CANDADO DEL EDITOR VISUAL -->
             <button onclick="openLoginModal()" class="text-zinc-800 hover:text-pink-600 transition-colors p-2"><i class="fa-solid fa-lock"></i></button>
         </footer>
     </div>
