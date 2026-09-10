@@ -66,7 +66,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* Builder Visual */
+/* Builder Visual Estilos */
 .admin-tool { display: none !important; }
 body.builder-mode .admin-tool { display: flex !important; }
 
@@ -137,7 +137,7 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
             </div>
         </div>
     </div>
-  </div>
+  </section>
 </header>
 
 <main class="relative w-full h-[100dvh] overflow-hidden">
@@ -202,11 +202,10 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
                 <div class="video-testimonial-card relative rounded-[16px] overflow-hidden bg-[#0e0e12] border border-white/10 shadow-2xl group h-[280px] shrink-0">
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" muted playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-500"></video>
-                    
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                     
-                    <!-- FIX: Botón con z-index alto para móvil -->
-                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[15] w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)] ignore-drag">
+                    <!-- 🟢 BOTÓN REPARADO PARA MÓVILES (Uso de <button> con pointer-events-auto) -->
+                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-20 pointer-events-auto cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)] ignore-drag">
                         <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
                     </button>
                     
@@ -563,15 +562,15 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('builder-mode');
         
-        // INTERCEPTOR DE CLICKS IZQUIERDOS
+        // INTERCEPTOR DE CLICKS
         document.addEventListener('click', function(e) {
             if (!window.isAdminMode) return;
             
-            // 🟢 OCULTAR EL MENÚ CONTEXTUAL SIEMPRE QUE HAGAN CLICK
+            // Cerrar menú contextual en admin si hace click izquierdo aquí
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
             const navBtn = e.target.closest('button[onclick^="navigate("]');
-            if(navBtn) return; // Permitir navegación
+            if(navBtn) return;
             
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
             if (target && !target.closest('.ignore-drag')) {
@@ -585,7 +584,7 @@ window.addEventListener('message', async (event) => {
             }
         }, true); 
 
-        // INTERCEPTOR DE CLICKS DERECHOS
+        // INTERCEPTOR DE CLICK DERECHO
         document.addEventListener('contextmenu', function(e) {
             if (!window.isAdminMode) return;
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
@@ -610,9 +609,8 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
         const iconClass = event.data.iconClass;
         const hoverCls = getHoverColor(iconClass);
-        
-        // Añadir PC
         const pcNav = document.getElementById('social-nav-pc');
+        
         if(pcNav) {
             const a = document.createElement('a');
             a.setAttribute('data-editable', 'true');
@@ -620,31 +618,8 @@ window.addEventListener('message', async (event) => {
             a.className = `text-zinc-500 ${hoverCls} transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center`;
             a.innerHTML = `<i class="${iconClass} text-[18px] pointer-events-none"></i>`;
             const pcTool = pcNav.querySelector('.admin-tool');
-            if(pcTool) pcTool.insertAdjacentElement('beforebegin', a); else pcNav.appendChild(a);
-        }
-
-        // Añadir Mobile
-        const mobileNav = document.getElementById('social-nav-mobile');
-        if(mobileNav) {
-            const a = document.createElement('a');
-            a.setAttribute('data-editable', 'true');
-            a.href = "#";
-            a.className = `text-zinc-400 ${hoverCls} transition-colors`;
-            a.innerHTML = `<i class="${iconClass} text-lg pointer-events-none"></i>`;
-            const mobTool = mobileNav.querySelector('.admin-tool');
-            if(mobTool) mobTool.insertAdjacentElement('beforebegin', a); else mobileNav.appendChild(a);
-        }
-
-        // Añadir Footer
-        const footerNav = document.getElementById('social-footer-links');
-        if(footerNav) {
-            const a = document.createElement('a');
-            a.setAttribute('data-editable', 'true');
-            a.href = "#";
-            a.className = `text-zinc-400 ${hoverCls} transition-colors text-xl sm:text-2xl`;
-            a.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
-            const footTool = footerNav.querySelector('.admin-tool');
-            if(footTool) footTool.insertAdjacentElement('beforebegin', a); else footerNav.appendChild(a);
+            if(pcTool) pcTool.insertAdjacentElement('afterend', a);
+            else pcNav.appendChild(a);
         }
     }
 
@@ -674,7 +649,6 @@ window.addEventListener('message', async (event) => {
         }
     }
 
-    // 🟢 NUEVO: BORRAR PADRE (ej. cuadro de video)
     if (event.data.type === 'DELETE_PARENT_NODE') {
         if(selectedEl) {
             let parent = selectedEl.parentElement;
@@ -690,7 +664,6 @@ window.addEventListener('message', async (event) => {
         }
     }
 
-    // 🟢 NUEVO: SELECCIONAR PADRE
     if (event.data.type === 'SELECT_PARENT_NODE') {
         if(selectedEl) {
             let parent = selectedEl.parentElement;
@@ -736,9 +709,9 @@ window.addEventListener('message', async (event) => {
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             
-            // 🟢 LIMPIEZA DE BASURA DE SORTABLE PARA QUE NO SE GUARDEN POSICIONES BUGEADAS
+            // Clean up SortableJS artifacts to prevent saving bugged inline styles
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = '');
+            clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = ''); 
             clone.querySelectorAll('[style*="will-change"]').forEach(e => e.style.willChange = '');
 
             layoutData[zone.id] = clone.innerHTML;
