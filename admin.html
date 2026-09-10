@@ -1,1 +1,256 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | Multiprintt</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+    body { background: #070709; color: #f7f7f8; font-family: "DM Sans", sans-serif; }
+    .glass { background: rgba(16, 16, 20, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    input, select, textarea { background: #000; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 8px; padding: 12px; width: 100%; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #ff2da8; }
+    button.btn { background: white; color: black; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.2s; }
+    button.btn:hover { background: #e0e0e0; }
+    .tab-btn.active { color: #ff2da8; border-bottom: 2px solid #ff2da8; }
+</style>
+</head>
+<body class="h-screen overflow-hidden flex flex-col items-center justify-center">
+
+<div id="login-screen" class="w-full max-w-sm glass p-8 rounded-2xl shadow-2xl text-center z-50 absolute">
+    <div class="w-16 h-16 rounded-full bg-white/5 mx-auto flex items-center justify-center mb-6">
+        <img src="https://multiprintt.web.app/recursos/favicon.png" class="w-10 h-10 opacity-80">
+    </div>
+    <h2 class="text-xl font-bold mb-2">Panel Administrativo</h2>
+    <p class="text-xs text-zinc-400 mb-6">Ingresa el PIN de seguridad (1234) para modificar la web.</p>
+    <input type="password" id="pin-input" placeholder="••••" class="text-center tracking-widest text-xl mb-4">
+    <button onclick="checkPin()" class="btn w-full">Ingresar</button>
+</div>
+
+<div id="admin-dashboard" class="hidden w-full h-full max-w-6xl flex flex-col p-4 md:p-8">
+    <header class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold"><i class="fa-solid fa-sliders text-pink-500 mr-2"></i> Multiprintt Admin</h1>
+        <button onclick="location.reload()" class="text-sm text-zinc-400 hover:text-white"><i class="fa-solid fa-right-from-bracket mr-1"></i> Salir</button>
+    </header>
+
+    <div class="flex gap-6 border-b border-white/10 mb-6">
+        <button onclick="switchTab('tab-textos')" id="btn-tab-textos" class="tab-btn active pb-3 font-medium text-sm">Textos Principales</button>
+        <button onclick="switchTab('tab-productos')" id="btn-tab-productos" class="tab-btn pb-3 font-medium text-sm text-zinc-500">Productos</button>
+        <button onclick="switchTab('tab-cursos')" id="btn-tab-cursos" class="tab-btn pb-3 font-medium text-sm text-zinc-500">Cursos</button>
+    </div>
+
+    <!-- Pestaña Textos -->
+    <div id="tab-textos" class="flex-1 overflow-y-auto pr-2 pb-10">
+        <div class="glass p-6 rounded-xl space-y-5 max-w-2xl">
+            <div>
+                <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Subtítulo Hero</label>
+                <input type="text" id="edit-hero-subtitle" placeholder="Impresión & Publicidad,">
+            </div>
+            <div>
+                <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Título Principal Hero</label>
+                <input type="text" id="edit-hero-title" placeholder="Tú Imagen Viva.">
+            </div>
+            <div>
+                <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Texto Sección Nosotros</label>
+                <textarea id="edit-about-desc" rows="4" placeholder="Somos expertos en..."></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Teléfono / WhatsApp</label>
+                    <input type="text" id="edit-phone" placeholder="099 759 1021">
+                </div>
+                <div>
+                    <label class="text-xs text-zinc-400 font-bold uppercase mb-1 block">Correo</label>
+                    <input type="email" id="edit-email" placeholder="multiprintt@yahoo.com">
+                </div>
+            </div>
+            <button onclick="saveTexts()" class="btn w-full mt-4 bg-pink-500 text-white hover:bg-pink-600 border-none shadow-[0_0_20px_rgba(255,45,168,0.4)]">
+                Guardar Textos en Vivo
+            </button>
+        </div>
+    </div>
+
+    <!-- Pestaña Productos -->
+    <div id="tab-productos" class="hidden flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
+        <div class="w-full md:w-1/3 glass p-6 rounded-xl h-max space-y-4">
+            <h3 class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Producto</h3>
+            <input type="text" id="prod-name" placeholder="Nombre del producto">
+            <select id="prod-cat">
+                <option value="premium">Premium</option>
+                <option value="textil">Textil & Moda</option>
+                <option value="tazas">Tazas & Promo</option>
+            </select>
+            <input type="number" id="prod-price" placeholder="Precio ($) ej: 25.50">
+            <input type="text" id="prod-img" placeholder="URL Imagen (https://...)">
+            <input type="text" id="prod-icon" placeholder="Clave de Ícono (ej: fa-shirt)">
+            <button onclick="addProduct()" class="btn w-full">Añadir a la base de datos</button>
+        </div>
+        <div class="w-full md:w-2/3 glass p-6 rounded-xl overflow-y-auto">
+            <h3 class="font-bold border-b border-white/10 pb-2 mb-4">Catálogo Actual</h3>
+            <div id="admin-prod-list" class="space-y-3">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- Pestaña Cursos -->
+    <div id="tab-cursos" class="hidden flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
+        <div class="w-full md:w-1/3 glass p-6 rounded-xl h-max space-y-4">
+            <h3 class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Curso</h3>
+            <input type="text" id="course-title" placeholder="Título del Curso">
+            <input type="text" id="course-modality" placeholder="Modalidad (ej: N/A, Online)">
+            <input type="text" id="course-price" placeholder="Precio (ej: $0, $50)">
+            <input type="text" id="course-schedule" placeholder="Horario (ej: Consultar)">
+            <input type="text" id="course-img" placeholder="URL Imagen (https://...)">
+            <textarea id="course-desc" rows="3" placeholder="Descripción corta"></textarea>
+            <button onclick="addCourse()" class="btn w-full">Añadir Curso</button>
+        </div>
+        <div class="w-full md:w-2/3 glass p-6 rounded-xl overflow-y-auto">
+            <h3 class="font-bold border-b border-white/10 pb-2 mb-4">Cursos Actuales</h3>
+            <div id="admin-course-list" class="space-y-3">Cargando...</div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+// IMPORTANTE: REEMPLAZA CON LA MISMA CONFIGURACIÓN DEL INDEX.HTML
+const firebaseConfig = {
+    apiKey: "TU_API_KEY_AQUI",
+    authDomain: "multiprintt.firebaseapp.com",
+    projectId: "multiprintt",
+    storageBucket: "multiprintt.appspot.com",
+    messagingSenderId: "TUS_DATOS",
+    appId: "TUS_DATOS"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const APP_ID = "multiprintt-web";
+
+// UI Logic
+window.checkPin = async function() {
+    if(document.getElementById('pin-input').value === 'adminmultiprintt') {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        await initAdminData();
+    } else {
+        alert("PIN Incorrecto");
+    }
+};
+
+window.switchTab = function(tabId) {
+    ['tab-textos', 'tab-productos', 'tab-cursos'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    ['btn-tab-textos', 'btn-tab-productos', 'btn-tab-cursos'].forEach(id => {
+        document.getElementById(id).classList.remove('active', 'text-pink-500');
+        document.getElementById(id).classList.add('text-zinc-500');
+    });
+    
+    document.getElementById(tabId).classList.remove('hidden');
+    document.getElementById('btn-' + tabId).classList.add('active', 'text-pink-500');
+    document.getElementById('btn-' + tabId).classList.remove('text-zinc-500');
+}
+
+// Conexión Firebase en Vivo
+async function initAdminData() {
+    if (firebaseConfig.apiKey === "TU_API_KEY_AQUI") {
+        alert("⚠️ Firebase no está configurado. Debes colocar tu API Key real en el código de admin.html para que el panel funcione.");
+        return;
+    }
+
+    try {
+        await signInAnonymously(auth);
+    } catch (e) {
+        alert("Error conectando a Firebase: " + e.message);
+        return;
+    }
+    
+    // 1. Escuchar Textos Principales
+    onSnapshot(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), (doc) => {
+        if (doc.exists()) {
+            const d = doc.data();
+            document.getElementById('edit-hero-subtitle').value = d.heroSubtitle || '';
+            document.getElementById('edit-hero-title').value = d.heroTitle || '';
+            document.getElementById('edit-about-desc').value = d.aboutDesc || '';
+            document.getElementById('edit-phone').value = d.contactPhone || '';
+            document.getElementById('edit-email').value = d.contactEmail || '';
+        }
+    });
+
+    // 2. Escuchar Productos
+    onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snapshot) => {
+        const list = document.getElementById('admin-prod-list');
+        list.innerHTML = '';
+        snapshot.forEach(doc => {
+            const p = doc.data();
+            list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
+                <div class="flex items-center gap-3"><img src="${p.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
+                <div><p class="text-sm font-bold text-white">${p.name}</p><p class="text-[10px] text-zinc-400 uppercase">${p.category} • $${p.price}</p></div></div>
+                <button onclick="delProd('${doc.id}')" class="text-red-500 hover:text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div>`;
+        });
+    });
+
+    // 3. Escuchar Cursos
+    onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snapshot) => {
+        const list = document.getElementById('admin-course-list');
+        list.innerHTML = '';
+        snapshot.forEach(doc => {
+            const c = doc.data();
+            list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
+                <div class="flex items-center gap-3"><img src="${c.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
+                <div><p class="text-sm font-bold text-white">${c.title}</p><p class="text-[10px] text-zinc-400 uppercase">${c.modality} • ${c.price}</p></div></div>
+                <button onclick="delCourse('${doc.id}')" class="text-red-500 hover:text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div>`;
+        });
+    });
+}
+
+// Guardar Textos
+window.saveTexts = async function() {
+    const btn = event.target; btn.textContent = "Guardando...";
+    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), {
+        heroSubtitle: document.getElementById('edit-hero-subtitle').value,
+        heroTitle: document.getElementById('edit-hero-title').value,
+        aboutDesc: document.getElementById('edit-about-desc').value,
+        contactPhone: document.getElementById('edit-phone').value,
+        contactEmail: document.getElementById('edit-email').value
+    }, { merge: true });
+    setTimeout(() => { btn.innerHTML = "<i class='fa-solid fa-check'></i> Guardado Exitosamente"; }, 500);
+    setTimeout(() => { btn.textContent = "Guardar Textos en Vivo"; }, 3000);
+}
+
+// Agregar/Borrar Producto
+window.addProduct = async function() {
+    await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), {
+        name: document.getElementById('prod-name').value,
+        category: document.getElementById('prod-cat').value,
+        price: parseFloat(document.getElementById('prod-price').value || 0),
+        image: document.getElementById('prod-img').value,
+        icon: document.getElementById('prod-icon').value
+    });
+    // Limpiar form
+    document.getElementById('prod-name').value = ''; document.getElementById('prod-price').value = '';
+}
+window.delProd = async function(id) { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id)); }
+
+// Agregar/Borrar Curso
+window.addCourse = async function() {
+    await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), {
+        title: document.getElementById('course-title').value,
+        modality: document.getElementById('course-modality').value,
+        price: document.getElementById('course-price').value,
+        schedule: document.getElementById('course-schedule').value,
+        image: document.getElementById('course-img').value,
+        desc: document.getElementById('course-desc').value
+    });
+    document.getElementById('course-title').value = ''; document.getElementById('course-desc').value = '';
+}
+window.delCourse = async function(id) { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', id)); }
+
+</script>
+</body>
+</html>
