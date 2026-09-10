@@ -170,6 +170,9 @@
 
                 <div class="divider mt-2"></div>
                 
+                <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2">
+                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor Padre
+                </button>
                 <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
                     <i class="fa-solid fa-trash"></i> Eliminar Elemento
                 </button>
@@ -186,8 +189,15 @@
         <i class="fa-solid fa-pen w-3 text-center text-zinc-400"></i> Editar Atributos
     </button>
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
+    <button onclick="ctxAction('selectParent')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
+        <i class="fa-solid fa-turn-up w-3 text-center text-zinc-400"></i> Seleccionar Contenedor
+    </button>
+    <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
     <button onclick="ctxAction('delete')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
-        <i class="fa-solid fa-trash w-3 text-center"></i> Eliminar
+        <i class="fa-solid fa-trash w-3 text-center"></i> Eliminar Elemento
+    </button>
+    <button onclick="ctxAction('deleteParent')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
+        <i class="fa-solid fa-object-ungroup w-3 text-center"></i> Eliminar Contenedor
     </button>
 </div>
 
@@ -317,11 +327,11 @@
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
-    // 🟢 RUTA CORREGIDA: Apunta a /index.html en la raíz para evitar el error 404
+    // 🟢 RUTA CORREGIDA: Apunta al sitio web proporcionado
     function reloadIframe() {
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
-        iframe.src = `/index.html?v=${timestamp}`;
+        iframe.src = `https://multiprintt.web.app/index.html?v=${timestamp}`;
     }
 
     function setDevice(device) {
@@ -374,6 +384,8 @@
         ctxMenu.classList.add('hidden');
 
         if (action === 'delete') { triggerDeleteFromInspector(); } 
+        else if (action === 'deleteParent') { triggerDeleteParent(); }
+        else if (action === 'selectParent') { triggerSelectParent(); }
         else if (action === 'edit') { document.getElementById('prop-text').focus(); }
     }
 
@@ -383,8 +395,23 @@
         document.getElementById('no-selection').style.display = 'block';
     }
 
+    function triggerDeleteParent() {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_PARENT_NODE' }, '*');
+        document.getElementById('inspector-tools').style.display = 'none';
+        document.getElementById('no-selection').style.display = 'block';
+    }
+
+    function triggerSelectParent() {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*');
+    }
+
     document.addEventListener('click', (e) => {
         if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); }
+    });
+
+    // 🟢 SOLUCIÓN: Cierra el menú contextual si el usuario hace clic dentro del iframe (la ventana padre pierde el foco)
+    window.addEventListener('blur', () => {
+        document.getElementById('context-menu').classList.add('hidden');
     });
 
     const propText = document.getElementById('prop-text');
