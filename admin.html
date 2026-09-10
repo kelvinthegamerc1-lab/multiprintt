@@ -75,7 +75,7 @@
     <!-- Pestaña Productos -->
     <div id="tab-productos" class="hidden flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
         <div class="w-full md:w-1/3 glass p-6 rounded-xl h-max space-y-4">
-            <h3 class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Producto</h3>
+            <h3 id="title-form-prod" class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Producto</h3>
             <input type="text" id="prod-name" placeholder="Nombre del producto">
             <select id="prod-cat">
                 <option value="premium">Premium</option>
@@ -85,7 +85,10 @@
             <input type="number" id="prod-price" placeholder="Precio ($) ej: 25.50">
             <input type="text" id="prod-img" placeholder="URL Imagen (https://...)">
             <input type="text" id="prod-icon" placeholder="Clave de Ícono (ej: fa-shirt)">
-            <button onclick="addProduct()" class="btn w-full">Añadir a la base de datos</button>
+            <div class="flex gap-2">
+                <button id="btn-save-prod" onclick="saveProduct()" class="btn flex-1 bg-white text-black">Guardar Producto</button>
+                <button id="btn-cancel-prod" onclick="cancelEditProd()" class="btn hidden bg-zinc-800 text-white border border-white/10 hover:bg-zinc-700 px-4"><i class="fa-solid fa-xmark"></i></button>
+            </div>
         </div>
         <div class="w-full md:w-2/3 glass p-6 rounded-xl overflow-y-auto">
             <h3 class="font-bold border-b border-white/10 pb-2 mb-4">Catálogo Actual</h3>
@@ -96,14 +99,17 @@
     <!-- Pestaña Cursos -->
     <div id="tab-cursos" class="hidden flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
         <div class="w-full md:w-1/3 glass p-6 rounded-xl h-max space-y-4">
-            <h3 class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Curso</h3>
+            <h3 id="title-form-course" class="font-bold border-b border-white/10 pb-2 mb-2">Añadir Curso</h3>
             <input type="text" id="course-title" placeholder="Título del Curso">
             <input type="text" id="course-modality" placeholder="Modalidad (ej: N/A, Online)">
             <input type="text" id="course-price" placeholder="Precio (ej: $0, $50)">
             <input type="text" id="course-schedule" placeholder="Horario (ej: Consultar)">
             <input type="text" id="course-img" placeholder="URL Imagen (https://...)">
             <textarea id="course-desc" rows="3" placeholder="Descripción corta"></textarea>
-            <button onclick="addCourse()" class="btn w-full">Añadir Curso</button>
+            <div class="flex gap-2">
+                <button id="btn-save-course" onclick="saveCourse()" class="btn flex-1 bg-white text-black">Guardar Curso</button>
+                <button id="btn-cancel-course" onclick="cancelEditCourse()" class="btn hidden bg-zinc-800 text-white border border-white/10 hover:bg-zinc-700 px-4"><i class="fa-solid fa-xmark"></i></button>
+            </div>
         </div>
         <div class="w-full md:w-2/3 glass p-6 rounded-xl overflow-y-auto">
             <h3 class="font-bold border-b border-white/10 pb-2 mb-4">Cursos Actuales</h3>
@@ -132,6 +138,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const APP_ID = "multiprintt-web";
+
+// Variables globales para edición
+window.globalProducts = [];
+window.globalCourses = [];
+window.editingProdId = null;
+window.editingCourseId = null;
 
 // UI Logic
 window.checkPin = async function() {
@@ -178,33 +190,185 @@ async function initAdminData() {
         }
     });
 
-    // 2. Escuchar Productos
+    // 2. Escuchar Productos (Con opción de editar y cargar base)
     onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snapshot) => {
+        window.globalProducts = [];
         const list = document.getElementById('admin-prod-list');
         list.innerHTML = '';
-        if(snapshot.empty) list.innerHTML = '<p class="text-zinc-500 text-sm">No hay productos en la base de datos.</p>';
-        snapshot.forEach(doc => {
-            const p = doc.data();
-            list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
-                <div class="flex items-center gap-3"><img src="${p.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
-                <div><p class="text-sm font-bold text-white">${p.name}</p><p class="text-[10px] text-zinc-400 uppercase">${p.category} • $${p.price}</p></div></div>
-                <button onclick="delProd('${doc.id}')" class="text-red-500 hover:text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div>`;
-        });
+        if(snapshot.empty) {
+            list.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-6 text-center border border-dashed border-white/20 rounded-xl bg-black/20">
+                    <p class="text-zinc-400 text-sm mb-3">La base de datos de productos está vacía.</p>
+                    <button onclick="loadDefaultProducts()" class="btn bg-cyan-500 text-white border-none shadow-[0_0_15px_rgba(37,216,255,0.4)] text-xs">Cargar Productos Base</button>
+                </div>`;
+        } else {
+            snapshot.forEach(doc => {
+                const p = doc.data(); p.id = doc.id;
+                window.globalProducts.push(p);
+                list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
+                    <div class="flex items-center gap-3"><img src="${p.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
+                    <div><p class="text-sm font-bold text-white">${p.name}</p><p class="text-[10px] text-zinc-400 uppercase">${p.category} • $${p.price}</p></div></div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="startEditProd('${p.id}')" class="text-cyan-400 hover:text-cyan-300 p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="delProd('${doc.id}')" class="text-red-500 hover:text-red-400 p-2 transition-colors"><i class="fa-solid fa-trash"></i></button>
+                    </div></div>`;
+            });
+        }
     });
 
-    // 3. Escuchar Cursos
+    // 3. Escuchar Cursos (Con opción de editar y cargar base)
     onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snapshot) => {
+        window.globalCourses = [];
         const list = document.getElementById('admin-course-list');
         list.innerHTML = '';
-        if(snapshot.empty) list.innerHTML = '<p class="text-zinc-500 text-sm">No hay cursos en la base de datos.</p>';
-        snapshot.forEach(doc => {
-            const c = doc.data();
-            list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
-                <div class="flex items-center gap-3"><img src="${c.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
-                <div><p class="text-sm font-bold text-white">${c.title}</p><p class="text-[10px] text-zinc-400 uppercase">${c.modality} • ${c.price}</p></div></div>
-                <button onclick="delCourse('${doc.id}')" class="text-red-500 hover:text-red-400 p-2"><i class="fa-solid fa-trash"></i></button></div>`;
-        });
+        if(snapshot.empty) {
+            list.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-6 text-center border border-dashed border-white/20 rounded-xl bg-black/20">
+                    <p class="text-zinc-400 text-sm mb-3">La base de datos de cursos está vacía.</p>
+                    <button onclick="loadDefaultCourses()" class="btn bg-violet-500 text-white border-none shadow-[0_0_15px_rgba(115,92,255,0.4)] text-xs">Cargar Cursos Base</button>
+                </div>`;
+        } else {
+            snapshot.forEach(doc => {
+                const c = doc.data(); c.id = doc.id;
+                window.globalCourses.push(c);
+                list.innerHTML += `<div class="flex items-center justify-between p-3 bg-black/40 border border-white/5 rounded-lg">
+                    <div class="flex items-center gap-3"><img src="${c.image||'https://placehold.co/40'}" class="w-10 h-10 rounded object-cover">
+                    <div><p class="text-sm font-bold text-white">${c.title}</p><p class="text-[10px] text-zinc-400 uppercase">${c.modality} • ${c.price}</p></div></div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="startEditCourse('${c.id}')" class="text-cyan-400 hover:text-cyan-300 p-2 transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="delCourse('${doc.id}')" class="text-red-500 hover:text-red-400 p-2 transition-colors"><i class="fa-solid fa-trash"></i></button>
+                    </div></div>`;
+            });
+        }
     });
+}
+
+// ===== FUNCIONES PARA PRODUCTOS =====
+window.startEditProd = function(id) {
+    const p = window.globalProducts.find(x => x.id === id);
+    if(!p) return;
+    window.editingProdId = id;
+    document.getElementById('title-form-prod').innerHTML = '<i class="fa-solid fa-pen text-cyan-400 mr-1"></i> Editando Producto';
+    document.getElementById('prod-name').value = p.name || '';
+    document.getElementById('prod-cat').value = p.category || 'premium';
+    document.getElementById('prod-price').value = p.price || '';
+    document.getElementById('prod-img').value = p.image || '';
+    document.getElementById('prod-icon').value = p.icon || '';
+    document.getElementById('btn-save-prod').textContent = "Actualizar Cambios";
+    document.getElementById('btn-save-prod').classList.replace('bg-white', 'bg-cyan-500');
+    document.getElementById('btn-save-prod').classList.replace('text-black', 'text-white');
+    document.getElementById('btn-cancel-prod').classList.remove('hidden');
+}
+
+window.cancelEditProd = function() {
+    window.editingProdId = null;
+    document.getElementById('title-form-prod').textContent = 'Añadir Producto';
+    document.getElementById('prod-name').value = ''; document.getElementById('prod-price').value = '';
+    document.getElementById('prod-img').value = ''; document.getElementById('prod-icon').value = '';
+    document.getElementById('btn-save-prod').textContent = "Guardar Producto";
+    document.getElementById('btn-save-prod').classList.replace('bg-cyan-500', 'bg-white');
+    document.getElementById('btn-save-prod').classList.replace('text-white', 'text-black');
+    document.getElementById('btn-cancel-prod').classList.add('hidden');
+}
+
+window.saveProduct = async function() {
+    const btn = document.getElementById('btn-save-prod');
+    const originalText = btn.textContent; btn.textContent = "Guardando...";
+    const data = {
+        name: document.getElementById('prod-name').value,
+        category: document.getElementById('prod-cat').value,
+        price: parseFloat(document.getElementById('prod-price').value || 0),
+        image: document.getElementById('prod-img').value,
+        icon: document.getElementById('prod-icon').value
+    };
+    
+    if(window.editingProdId) {
+        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', window.editingProdId), data, { merge: true });
+    } else {
+        await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), data);
+    }
+    window.cancelEditProd();
+}
+window.delProd = async function(id) { if(confirm("¿Seguro que deseas borrar este producto?")) await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id)); }
+
+// ===== FUNCIONES PARA CURSOS =====
+window.startEditCourse = function(id) {
+    const c = window.globalCourses.find(x => x.id === id);
+    if(!c) return;
+    window.editingCourseId = id;
+    document.getElementById('title-form-course').innerHTML = '<i class="fa-solid fa-pen text-cyan-400 mr-1"></i> Editando Curso';
+    document.getElementById('course-title').value = c.title || '';
+    document.getElementById('course-modality').value = c.modality || '';
+    document.getElementById('course-price').value = c.price || '';
+    document.getElementById('course-schedule').value = c.schedule || '';
+    document.getElementById('course-img').value = c.image || '';
+    document.getElementById('course-desc').value = c.desc || '';
+    document.getElementById('btn-save-course').textContent = "Actualizar Cambios";
+    document.getElementById('btn-save-course').classList.replace('bg-white', 'bg-cyan-500');
+    document.getElementById('btn-save-course').classList.replace('text-black', 'text-white');
+    document.getElementById('btn-cancel-course').classList.remove('hidden');
+}
+
+window.cancelEditCourse = function() {
+    window.editingCourseId = null;
+    document.getElementById('title-form-course').textContent = 'Añadir Curso';
+    document.getElementById('course-title').value = ''; document.getElementById('course-modality').value = '';
+    document.getElementById('course-price').value = ''; document.getElementById('course-schedule').value = '';
+    document.getElementById('course-img').value = ''; document.getElementById('course-desc').value = '';
+    document.getElementById('btn-save-course').textContent = "Guardar Curso";
+    document.getElementById('btn-save-course').classList.replace('bg-cyan-500', 'bg-white');
+    document.getElementById('btn-save-course').classList.replace('text-white', 'text-black');
+    document.getElementById('btn-cancel-course').classList.add('hidden');
+}
+
+window.saveCourse = async function() {
+    const btn = document.getElementById('btn-save-course');
+    const originalText = btn.textContent; btn.textContent = "Guardando...";
+    const data = {
+        title: document.getElementById('course-title').value,
+        modality: document.getElementById('course-modality').value,
+        price: document.getElementById('course-price').value,
+        schedule: document.getElementById('course-schedule').value,
+        image: document.getElementById('course-img').value,
+        desc: document.getElementById('course-desc').value
+    };
+    
+    if(window.editingCourseId) {
+        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', window.editingCourseId), data, { merge: true });
+    } else {
+        await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), data);
+    }
+    window.cancelEditCourse();
+}
+window.delCourse = async function(id) { if(confirm("¿Seguro que deseas borrar este curso?")) await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', id)); }
+
+// ===== IMPORTACIÓN DE PLANTILLAS BASE =====
+window.loadDefaultProducts = async function() {
+    event.target.textContent = "Cargando..."; event.target.disabled = true;
+    const defProducts = [
+        {name:'Fotocuadros en Madera y Aluminio',category:'premium',price:25,image:'',icon:'fa-image'},
+        {name:'Sombreros Personalizados TRI',category:'textil',price:8,image:'',icon:'fa-hat-cowboy'},
+        {name:'Camiseta Algodón Premium DTF',category:'textil',price:18.50,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=700&auto=format&fit=crop',icon:'fa-shirt'},
+        {name:'Tazas Mágicas y Termos',category:'tazas',price:12,image:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=700&auto=format&fit=crop',icon:'fa-mug-hot'}
+    ];
+    for(const p of defProducts) { await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), p); }
+}
+
+window.loadDefaultCourses = async function() {
+    event.target.textContent = "Cargando..."; event.target.disabled = true;
+    const defCourses = [
+        { title: "Curso Completo de Impresión Digital", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/general1.jpeg", desc: "El programa total. Ideal para crear tu propio negocio." },
+        { title: "Curso de Sublimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion0.jpg", desc: "Aprende a transferir imágenes de altísima calidad." },
+        { title: "Curso de Serigrafía", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/serigrafia0.jpg", desc: "Especialízate en técnicas de impresión tradicional." },
+        { title: "Taller de Resina", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/resina0.jpg", desc: "Crea piezas únicas, accesorios exclusivos y dales acabados premium." },
+        { title: "Curso de Sellos", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sellos.jpg", desc: "Especialízate en el diseño y elaboración de sellos." },
+        { title: "Manejo de Plóter de Corte", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/ploter.jpg", desc: "Manejo profesional de software y hardware para corte." },
+        { title: "Curso de Pedrería Textil", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/pedreria0.jpeg", desc: "Aprende la técnica de aplicación de pedrería y strass." },
+        { title: "Grabado sobre Vidrio", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/laser0.jpg", desc: "Domina el arte del esmerilado y grabado." },
+        { title: "Curso de Polimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf0.jpg", desc: "Descubre esta técnica innovadora de impresión." },
+        { title: "Elaboración de Agendas", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion21.jpg", desc: "Aprende el proceso completo para diseñar y armar agendas." }
+    ];
+    for(const c of defCourses) { await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), c); }
 }
 
 // Guardar Textos
