@@ -136,7 +136,6 @@
             </div>
         </aside>
 
-        <!-- CONTENEDOR PARA VISTA REAL DE PC O MOVILES -->
         <main id="preview-container">
             <div id="preview-wrapper" class="device-desktop">
                 <iframe id="site-frame" src=""></iframe>
@@ -170,8 +169,9 @@
 
                 <div class="divider mt-2"></div>
                 
+                <!-- 🟢 Botones de Padre Añadidos al Inspector -->
                 <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2">
-                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor Padre
+                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor
                 </button>
                 <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
                     <i class="fa-solid fa-trash"></i> Eliminar Elemento
@@ -188,11 +188,16 @@
     <button onclick="ctxAction('edit')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
         <i class="fa-solid fa-pen w-3 text-center text-zinc-400"></i> Editar Atributos
     </button>
+    
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
+    
+    <!-- 🟢 Opciones de Jerarquía y Contenedores -->
     <button onclick="ctxAction('selectParent')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
         <i class="fa-solid fa-turn-up w-3 text-center text-zinc-400"></i> Seleccionar Contenedor
     </button>
+    
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
+    
     <button onclick="ctxAction('delete')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
         <i class="fa-solid fa-trash w-3 text-center"></i> Eliminar Elemento
     </button>
@@ -327,7 +332,6 @@
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
-    // 🟢 RUTA CORREGIDA: Apunta al sitio web proporcionado
     function reloadIframe() {
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
@@ -405,11 +409,12 @@
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*');
     }
 
+    // 🟢 Evento para cerrar el menú si se clickea en el panel de control
     document.addEventListener('click', (e) => {
         if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); }
     });
 
-    // 🟢 SOLUCIÓN: Cierra el menú contextual si el usuario hace clic dentro del iframe (la ventana padre pierde el foco)
+    // 🟢 Evento para cerrar el menú contextual si se da clic normal dentro de la web (iframe)
     window.addEventListener('blur', () => {
         document.getElementById('context-menu').classList.add('hidden');
     });
