@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<!-- 🛑 BLOQUEO DE CACHÉ MÓVIL (Fuerza versión nueva) -->
+<!-- 🛑 BLOQUEO DE CACHÉ ESTRICTO -->
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -12,7 +12,6 @@
 <title>Multiprintt | Impresión & Publicidad en Guayaquil</title>
 <meta name="description" content="Multiprintt: Impresión & Publicidad. Expertos en personalización, impresión gráfica, DTF, sublimación, resina y academia para emprendedores en Ecuador.">
 <meta name="theme-color" content="#070709">
-
 <link rel="icon" type="image/png" href="https://multiprintt.web.app/recursos/favicon.png">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +19,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<!-- Motor de Arrastre Global -->
+<!-- Librería para Arrastrar -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
@@ -29,10 +28,7 @@
 html{scroll-behavior:smooth}
 body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(--bg); color:#f7f7f8; font-family:"DM Sans",sans-serif; -webkit-tap-highlight-color: transparent; }
 
-/* Protección Multimedia Pública */
-body:not(.admin-mode) img, body:not(.admin-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
-
-/* Mapa en Modo Oscuro */
+body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
 h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
@@ -65,22 +61,22 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .btn:hover{transform:translateY(-2px)}
 .nav-link{color:#aaaab3;transition:.2s; background: transparent; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 99px;}
 .nav-link.active{color:#000; background: #fff; font-weight: bold;}
-
 .bot-nav-item { transition: all 0.3s ease; }
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* ESTILOS DEL MODO ADMIN (Visual Builder) */
-body.admin-mode [data-edit="true"]:hover { outline: 2px dashed var(--cyan); cursor: text; border-radius: 4px; background: rgba(37, 216, 255, 0.05); }
-body.admin-mode [data-edit="true"]:focus { outline: 2px solid var(--pink); background: rgba(255, 45, 168, 0.05); }
-body.admin-mode a:hover, body.admin-mode video:hover, body.admin-mode img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
-.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
-body.admin-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
+/* ========================================== */
+/* ESTILOS DEL MODO VISUAL BUILDER PRO        */
+/* ========================================== */
+body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
+body.builder-mode .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1); border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3); }
 
-body.dragging-active .sortable-container > * { cursor: grab !important; }
-body.dragging-active .sortable-container > *:active { cursor: grabbing !important; }
-body.dragging-active .admin-overlay { display: none !important; }
-.sortable-ghost { opacity: 0.4; border: 2px dashed var(--cyan); background: rgba(37,216,255,0.1) !important; border-radius: 12px; }
+body.dragging-active .sortable-zone > * { cursor: grab !important; }
+body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
+.sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
+
+.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
+body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 </style>
@@ -90,49 +86,43 @@ body.dragging-active .admin-overlay { display: none !important; }
 <div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
     <div class="relative flex items-center justify-center">
         <div class="absolute w-16 h-16 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-[25px] opacity-30 animate-pulse"></div>
-        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));">
-            <i class="fa-solid fa-circle-notch animate-spin text-4xl block"></i>
-        </div>
+        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));"><i class="fa-solid fa-circle-notch animate-spin text-4xl block"></i></div>
     </div>
 </div>
 
 <div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
 
-<header id="main-header" class="fixed top-0 left-0 right-0 z-50 glass h-[70px] md:h-[76px] transition-all">
+<header id="main-header" class="fixed top-0 left-0 right-0 z-50 glass h-[70px] md:h-[76px] transition-all editable-section" id="section-header">
   <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
     
     <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
       <div class="w-9 h-9 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
         <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain">
       </div>
-      <div id="brand-zone" class="editable-zone">
-        <h1 data-edit="true" class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
-        <div data-edit="true" class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
+      <div>
+        <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0">MULTIPRINTT</h1>
+        <div data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors">Tú Imagen Viva</div>
       </div>
     </button>
 
-    <nav id="nav-pc-zone" class="hidden md:flex items-center gap-2 text-sm font-medium bg-white/[0.03] p-1.5 rounded-full border border-white/10 editable-zone sortable-container">
-      <button onclick="navigate('catalog')" id="nav-catalog" data-edit="true" class="nav-link active">Catálogo</button>
-      <button onclick="navigate('courses')" id="nav-courses" data-edit="true" class="nav-link">Academia</button>
-      <button onclick="navigate('about')" id="nav-about" data-edit="true" class="nav-link">Nosotros</button>
-      <button onclick="navigate('contact')" id="nav-contact" data-edit="true" class="nav-link">Contacto</button>
+    <nav class="hidden md:flex items-center gap-2 text-sm font-medium bg-white/[0.03] p-1.5 rounded-full border border-white/10 sortable-zone">
+      <button onclick="navigate('catalog')" data-editable="true" class="nav-link active">Catálogo</button>
+      <button onclick="navigate('courses')" data-editable="true" class="nav-link">Academia</button>
+      <button onclick="navigate('about')" data-editable="true" class="nav-link">Nosotros</button>
+      <button onclick="navigate('contact')" data-editable="true" class="nav-link">Contacto</button>
     </nav>
 
     <div class="flex items-center relative">
-        <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 editable-zone sortable-container">
-            <a href="https://wa.me/593997591021" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-            <a href="https://instagram.com/multiprintt" target="_blank" class="hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
-            <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
+        <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
+            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
+            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
         </div>
         
         <div class="hidden md:flex relative w-10 h-10 z-[110]">
-            <div id="social-nav-pc" class="absolute top-0 right-0 flex flex-col items-center group w-10 h-10 hover:h-[200px] bg-[#25D366] hover:bg-[#101014]/95 hover:backdrop-blur-xl rounded-full transition-all duration-300 overflow-hidden border border-transparent hover:border-white/15 shadow-[0_0_15px_rgba(37,211,102,0.3)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] editable-zone sortable-container">
-                <a href="https://wa.me/593997591021" target="_blank" class="w-10 h-10 shrink-0 flex items-center justify-center text-black group-hover:text-[#25D366] transition-colors">
-                    <i class="fa-brands fa-whatsapp text-[22px]"></i>
-                </a>
-                <a href="https://instagram.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-pink-400 transition-colors opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-brands fa-instagram text-[18px]"></i></a>
-                <a href="https://facebook.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-brands fa-facebook-f text-[18px]"></i></a>
-                <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-brands fa-tiktok text-[18px]"></i></a>
+            <div id="social-nav-pc" class="absolute top-0 right-0 flex flex-col items-center group w-10 h-10 hover:h-[200px] bg-[#25D366] hover:bg-[#101014]/95 hover:backdrop-blur-xl rounded-full transition-all duration-300 overflow-hidden border border-transparent hover:border-white/15 shadow-[0_0_15px_rgba(37,211,102,0.3)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] sortable-zone">
+                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="w-10 h-10 shrink-0 flex items-center justify-center text-black group-hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-[22px] pointer-events-none"></i></a>
+                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-pink-400 transition-colors opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
+                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-blue-500 transition-colors opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
             </div>
         </div>
     </div>
@@ -145,9 +135,7 @@ body.dragging-active .admin-overlay { display: none !important; }
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 relative flex flex-col min-h-[calc(100vh-160px)]">
         <div class="absolute top-2 right-4 sm:right-6 lg:right-8 z-[60]">
             <div class="relative">
-                <button onclick="toggleUnifiedFilter()" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#101014]/80 backdrop-blur-xl border border-white/15 text-white shadow-xl hover:bg-white/20 hover:scale-105 transition-all">
-                    <i class="fa-solid fa-sliders text-pink-400"></i> 
-                </button>
+                <button onclick="toggleUnifiedFilter()" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#101014]/80 backdrop-blur-xl border border-white/15 text-white shadow-xl hover:bg-white/20 hover:scale-105 transition-all"><i class="fa-solid fa-sliders text-pink-400"></i></button>
                 <div id="unified-filter-menu" class="hidden absolute top-full mt-2 right-0 w-48 bg-[#101014]/95 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl flex-col p-1 z-[110]">
                     <button onclick="applyFilter('all')" class="text-left px-4 py-3 text-[11px] font-bold text-white hover:bg-white/5 rounded-lg border-b border-white/5 flex items-center justify-between">Todos <i class="fa-solid fa-check text-pink-400 filter-check" data-cat="all"></i></button>
                     <button onclick="applyFilter('premium')" class="text-left px-4 py-3 text-[11px] font-semibold text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg border-b border-white/5 flex items-center justify-between">Premium <i class="fa-solid fa-check text-pink-400 filter-check hidden" data-cat="premium"></i></button>
@@ -156,95 +144,78 @@ body.dragging-active .admin-overlay { display: none !important; }
                 </div>
             </div>
         </div>
-        <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8 pb-24 md:pb-8 sortable-container">
-        </div>
+        <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8 pb-24 md:pb-8 sortable-zone"></div>
     </div>
   </section>
 
-  <section id="view-about" class="view-slide slide-scroll">
+  <section id="view-about" class="view-slide slide-scroll editable-section" id="section-about">
     <div class="hero-glow w-[350px] h-[350px] bg-violet-600/20 right-0 md:right-20 top-20"></div>
     <div class="hero-glow w-[300px] h-[300px] bg-pink-500/15 left-[-50px] bottom-10"></div>
     
     <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
         <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20">
-            <div id="hero-texts" class="editable-zone">
-                <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
-                    <span data-edit="true" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
-                    <span data-edit="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
-                </h2>
-                <p data-edit="true" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
-            </div>
+            <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
+                <span data-editable="true" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
+                <span data-editable="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
+            </h2>
+            <p data-editable="true" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
             
-            <div id="hero-perks" class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] editable-zone sortable-container">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400"></i> <span data-edit="true">Envíos Nacionales</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-award text-violet-400"></i> <span data-edit="true">Calidad Premium</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-cyan-400"></i> <span data-edit="true">Atención Única</span></span>
+            <div class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sortable-zone">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400 pointer-events-none"></i> <span data-editable="true">Envíos Nacionales</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-award text-violet-400 pointer-events-none"></i> <span data-editable="true">Calidad Premium</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-cyan-400 pointer-events-none"></i> <span data-editable="true">Atención Única</span></span>
             </div>
 
-            <div id="hero-buttons" class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto editable-zone">
-                <button data-edit="true" onclick="navigate('catalog')" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl">Ver catálogo</button>
-                <button data-edit="true" onclick="navigate('courses')" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10">Nuestra academia</button>
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
+                <button data-editable="true" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl">Ver catálogo</button>
+                <button data-editable="true" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10">Nuestra academia</button>
             </div>
         </div>
     </div>
   </section>
 
-  <section id="view-courses" class="view-slide slide-scroll">
+  <section id="view-courses" class="view-slide slide-scroll editable-section" id="section-courses">
     <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-8 relative z-10">
         
-        <div id="acad-texts" class="reveal text-center md:text-left mb-6 md:mb-10 shrink-0 relative z-20 editable-zone">
-            <div data-edit="true" class="text-[10px] tracking-[.25em] uppercase text-violet-400 font-bold mb-3">Multiprintt Academy</div>
+        <div class="reveal text-center md:text-left mb-6 md:mb-10 shrink-0 relative z-20">
+            <div data-editable="true" class="text-[10px] tracking-[.25em] uppercase text-violet-400 font-bold mb-3">Multiprintt Academy</div>
             <h2 class="display flex flex-col gap-0 text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20">
-                <span data-edit="true" class="block">No solo vendemos.</span>
-                <span data-edit="true" class="relative z-10 block gradient-text">Te enseñamos a crear.</span>
+                <span data-editable="true" class="block">No solo vendemos.</span>
+                <span data-editable="true" class="relative z-10 block gradient-text">Te enseñamos a crear.</span>
             </h2>
-            <p data-edit="true" class="text-[13px] md:text-sm text-zinc-500 leading-relaxed max-w-2xl mt-2 md:mt-4 mx-auto md:mx-0">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
+            <p data-editable="true" class="text-[13px] md:text-sm text-zinc-500 leading-relaxed max-w-2xl mt-2 md:mt-4 mx-auto md:mx-0">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
         </div>
 
-        <!-- PERKS DE LA ACADEMIA RESTAURADOS -->
-        <div id="acad-perks" class="reveal mt-5 flex flex-wrap justify-center md:justify-start gap-3 text-[9px] md:text-[10px] font-bold text-white uppercase tracking-[0.15em] editable-zone sortable-container mb-8">
-            <span class="flex items-center gap-1.5 bg-gradient-to-r from-pink-500/10 to-transparent border border-pink-500/20 px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-hands-holding-circle text-pink-400"></i> <span data-edit="true">Práctica Garantizada</span></span>
-            <span class="flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/20 px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-infinity text-cyan-400"></i> <span data-edit="true">Acompañamiento de por vida</span></span>
+        <div class="reveal mt-5 flex flex-wrap justify-center md:justify-start gap-3 text-[9px] md:text-[10px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-8">
+            <span class="flex items-center gap-1.5 bg-gradient-to-r from-pink-500/10 to-transparent border border-pink-500/20 px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-hands-holding-circle text-pink-400 pointer-events-none"></i> <span data-editable="true">Práctica Garantizada</span></span>
+            <span class="flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/20 px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-infinity text-cyan-400 pointer-events-none"></i> <span data-editable="true">Acompañamiento de por vida</span></span>
         </div>
         
-        <div id="courses-grid" class="w-full pb-8 mb-8 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-7xl mx-auto sortable-container">
-        </div>
+        <div id="courses-grid" class="w-full pb-8 mb-8 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-7xl mx-auto sortable-zone"></div>
 
-        <div id="testimonials-header" class="reveal mt-4 mb-6 text-center md:text-left editable-zone">
-            <h3 data-edit="true" class="display text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
+        <div class="reveal mt-4 mb-6 text-center md:text-left">
+            <h3 data-editable="true" class="display text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
         </div>
         
-        <div id="testimonials-flex" class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0 sortable-container editable-zone">
+        <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0 sortable-zone">
             
-            <button id="testimonio-video-btn" onclick="openVideoModal()" class="w-full lg:w-1/3 flex flex-col items-center justify-center p-8 rounded-[16px] bg-[#0e0e12] border border-white/10 hover:border-cyan-400/50 shadow-2xl group relative overflow-hidden h-[280px]">
-                <video id="main-video-src" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" preload="metadata" muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500"></video>
-                <div class="w-16 h-16 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-10 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)]"><i class="fa-solid fa-play ml-1"></i></div>
-                <h4 data-edit="true" class="text-white text-lg font-bold mt-5 z-10">Carlos P.</h4>
-                <span data-edit="true" class="text-cyan-300 text-[10px] font-bold z-10 uppercase tracking-[.2em] mt-2 bg-black/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/10 shadow-lg">Ver Video Testimonio</span>
+            <button class="w-full lg:w-1/3 flex flex-col items-center justify-center p-8 rounded-[16px] bg-[#0e0e12] border border-white/10 shadow-2xl group relative overflow-hidden h-[280px]">
+                <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40"></video>
+                <div class="w-16 h-16 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-10"><i class="fa-solid fa-play ml-1"></i></div>
+                <h4 data-editable="true" class="text-white text-lg font-bold mt-5 z-10">Carlos P.</h4>
+                <span data-editable="true" class="text-cyan-300 text-[10px] font-bold z-10 uppercase tracking-[.2em] mt-2 bg-black/60 px-4 py-1.5 rounded-full border border-white/10 shadow-lg">Ver Video</span>
             </button>
             
-            <!-- TESTIMONIOS COMPLETOS Y LISTOS PARA CLONAR -->
-            <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-container">
-                <div class="p-6 md:p-8 rounded-[16px] bg-[#101014] border border-white/5 flex flex-col h-full hover:border-white/10 transition-colors shadow-lg card">
-                    <i class="fa-solid fa-quote-left text-pink-500/30 text-3xl mb-4"></i>
-                    <p data-edit="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo del profesor es increíble."</p>
+            <!-- CONTENEDOR DE TESTIMONIOS -->
+            <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone">
+                <div class="p-6 md:p-8 rounded-[16px] bg-[#101014] border border-white/5 flex flex-col h-full shadow-lg card">
+                    <i class="fa-solid fa-quote-left text-pink-500/30 text-3xl mb-4 pointer-events-none"></i>
+                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
                     <div class="flex items-center gap-4 pt-4 border-t border-white/5">
-                        <div class="w-10 h-10 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-500 flex items-center justify-center font-bold text-sm shadow-inner"><span data-edit="true">M</span></div>
+                        <div class="w-10 h-10 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-500 flex items-center justify-center font-bold text-sm"><span data-editable="true">M</span></div>
                         <div>
-                            <h4 data-edit="true" class="text-white text-xs font-bold uppercase tracking-wide">María F.</h4>
-                            <span data-edit="true" class="text-zinc-500 text-[10px] font-medium">Curso de Sublimación</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-6 md:p-8 rounded-[16px] bg-[#101014] border border-white/5 flex flex-col h-full hover:border-white/10 transition-colors shadow-lg card">
-                    <i class="fa-solid fa-quote-left text-violet-500/30 text-3xl mb-4"></i>
-                    <p data-edit="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Me encantó el taller. Hice piezas hermosas desde el primer día y el acompañamiento posterior me ha ayudado muchísimo."</p>
-                    <div class="flex items-center gap-4 pt-4 border-t border-white/5">
-                        <div class="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 flex items-center justify-center font-bold text-sm shadow-inner"><span data-edit="true">A</span></div>
-                        <div>
-                            <h4 data-edit="true" class="text-white text-xs font-bold uppercase tracking-wide">Ana P.</h4>
-                            <span data-edit="true" class="text-zinc-500 text-[10px] font-medium">Taller de Resina</span>
+                            <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide">María F.</h4>
+                            <span data-editable="true" class="text-zinc-500 text-[10px] font-medium">Curso de Sublimación</span>
                         </div>
                     </div>
                 </div>
@@ -253,53 +224,53 @@ body.dragging-active .admin-overlay { display: none !important; }
     </div>
   </section>
 
-  <section id="view-contact" class="view-slide flex flex-col slide-scroll">
+  <section id="view-contact" class="view-slide flex flex-col slide-scroll editable-section" id="section-contact">
     <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-1 sm:pt-2 pb-2 sm:pb-6 relative z-10">
         
         <div class="flex-1 flex flex-col justify-evenly">
-            <div id="contact-header" class="reveal text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2 editable-zone">
-                <div data-edit="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
+            <div class="reveal text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2">
+                <div data-editable="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
                 <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20 leading-[1.1]">
-                    <span data-edit="true" class="block">Tu próxima idea</span>
-                    <span data-edit="true" class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
+                    <span data-editable="true" class="block">Tu próxima idea</span>
+                    <span data-editable="true" class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
                 </h2>
             </div>
 
-            <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-container editable-zone">
+            <div class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
                 
-                <div id="contact-map-col" class="w-full lg:w-1/2 h-[140px] min-[400px]:h-[170px] sm:h-[260px] lg:h-[280px] xl:h-[320px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
+                <div class="w-full lg:w-1/2 h-[140px] min-[400px]:h-[170px] sm:h-[260px] lg:h-[280px] xl:h-[320px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
                             <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                            <p id="contact-address" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
+                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-container">
+                <div class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
                     <div class="group">
-                        <div data-edit="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
-                        <a href="https://wa.me/593997591021" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors"><span data-edit="true">+593 99 759 1021</span></a>
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
+                        <a data-editable="true" href="https://wa.me/593997591021" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors">+593 99 759 1021</a>
                     </div>
                     <div class="group">
-                        <div data-edit="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
-                        <a href="mailto:multiprintt@yahoo.com" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors"><span data-edit="true">multiprintt@yahoo.com</span></a>
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
+                        <a data-editable="true" href="mailto:multiprintt@yahoo.com" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors">multiprintt@yahoo.com</a>
                     </div>
                     <div class="group">
-                        <div data-edit="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
-                        <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-container">
-                            <a href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-pink-400 transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-blue-500 transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-400 hover:text-white transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
+                        <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone">
+                            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-pink-400 text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></a>
+                            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-blue-500 text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></a>
+                            <a data-editable="true" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-400 hover:text-white text-xl sm:text-2xl"><i class="fa-brands fa-tiktok pointer-events-none"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer id="footer-texts" class="mt-2 sm:mt-8 pt-2 sm:pt-4 text-center text-[8px] sm:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-1 sm:gap-2 relative z-20 pb-2 sm:pb-4 editable-zone">
-            <span data-edit="true">© 2026 Multiprintt. Tú Imagen Viva.</span>
+        <footer class="mt-2 sm:mt-8 pt-2 sm:pt-4 text-center text-[8px] sm:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-1 sm:gap-2 relative z-20 pb-2 sm:pb-4">
+            <span data-editable="true">© 2026 Multiprintt. Tú Imagen Viva.</span>
         </footer>
     </div>
   </section>
@@ -307,61 +278,23 @@ body.dragging-active .admin-overlay { display: none !important; }
 
 <nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
     <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
-    <button onclick="navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white">
-        <i class="fa-solid fa-store text-[18px]"></i>
-        <span class="text-[9px] font-semibold tracking-wide">Tienda</span>
-    </button>
-    <button onclick="navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500">
-        <i class="fa-solid fa-graduation-cap text-[18px]"></i>
-        <span class="text-[9px] font-semibold tracking-wide">Academia</span>
-    </button>
-    <button onclick="navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500">
-        <i class="fa-solid fa-circle-info text-[18px]"></i>
-        <span class="text-[9px] font-semibold tracking-wide">Nosotros</span>
-    </button>
-    <button onclick="navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500">
-        <i class="fa-regular fa-envelope text-[18px]"></i>
-        <span class="text-[9px] font-semibold tracking-wide">Contacto</span>
-    </button>
+    <button onclick="navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
+    <button onclick="navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
+    <button onclick="navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
+    <button onclick="navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
 <!-- Modales de Edición Puros -->
 <div id="editModal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
     <div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative" id="editModalContent">
         <h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2">Editar Elemento</h3>
-        <input type="hidden" id="em-id">
-        <input type="hidden" id="em-type">
+        <input type="hidden" id="em-id"> <input type="hidden" id="em-type">
         <div id="em-fields" class="space-y-3 mb-6"></div>
         <div class="flex gap-3">
-            <button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-white font-bold py-2.5 rounded-lg hover:bg-cyan-600 shadow-[0_0_15px_rgba(37,216,255,0.3)]">Guardar Cambios</button>
+            <button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-white font-bold py-2.5 rounded-lg hover:bg-cyan-600">Guardar Cambios</button>
             <button onclick="closeEditModal()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900">Cancelar</button>
         </div>
     </div>
-</div>
-
-<div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300">
-  <div class="relative w-full max-w-4xl bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-300" id="courseModalContent">
-    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg"><i class="fa-solid fa-xmark"></i></button>
-    <div class="w-full md:w-1/2 h-48 sm:h-56 md:h-auto bg-[#101014] relative">
-      <img id="cm-image" src="" alt="Curso Multiprintt" class="w-full h-full object-cover relative z-0">
-    </div>
-    <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative z-20">
-      <span id="cm-modality" class="inline-block px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[9px] uppercase tracking-[.15em] text-violet-400 font-bold mb-4 w-max"></span>
-      <h3 id="cm-title" class="display text-xl md:text-3xl font-extrabold tracking-tight mb-2 text-white"></h3>
-      <p id="cm-desc" class="text-xs md:text-sm text-zinc-400 leading-relaxed mb-5 flex-1"></p>
-      <div class="space-y-4 mb-6">
-        <div class="flex items-center text-zinc-300">
-            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-cyan-400"><i class="fa-regular fa-calendar"></i></div>
-            <div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Horarios</span><span id="cm-schedule" class="font-medium text-white text-xs md:text-sm"></span></div>
-        </div>
-        <div class="flex items-center text-zinc-300">
-            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-pink-400"><i class="fa-solid fa-tag"></i></div>
-            <div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Inversión</span><span id="cm-price" class="font-bold text-white text-xs md:text-sm"></span></div>
-        </div>
-      </div>
-      <a id="cm-btn" href="#" target="_blank" class="flex items-center justify-center w-full px-5 py-3.5 rounded-xl bg-white text-black text-xs md:text-sm font-extrabold hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-1">Separar cupo por WhatsApp</a>
-    </div>
-  </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -382,8 +315,7 @@ let productOrderArray = []; let courseOrderArray = [];
 
 window.navigate = function(targetId) {
     ['catalog', 'about', 'courses', 'contact'].forEach(id => {
-        const section = document.getElementById(`view-${id}`);
-        const btn = document.getElementById(`nav-${id}`); const botBtn = document.getElementById(`bot-${id}`);
+        const section = document.getElementById(`view-${id}`); const btn = document.getElementById(`nav-${id}`); const botBtn = document.getElementById(`bot-${id}`);
         if (id === targetId) {
             if (section) { section.classList.add('active-slide'); setTimeout(() => section.scrollTop = 0, 10); }
             if(btn) { btn.classList.add('active'); btn.classList.remove('text-[#aaaab3]'); }
@@ -397,43 +329,31 @@ window.navigate = function(targetId) {
         }
     });
 };
-window.toggleUnifiedFilter = function() {
-    const menu = document.getElementById('unified-filter-menu');
-    menu.classList.toggle('hidden'); menu.classList.toggle('flex');
-}
-window.applyFilter = function(cat) {
-    window.currentFilter = cat;
-    document.querySelectorAll('.filter-check').forEach(chk => { if(chk.dataset.cat === cat) chk.classList.remove('hidden'); else chk.classList.add('hidden'); });
-    window.toggleUnifiedFilter(); window.renderProducts();
-}
+window.toggleUnifiedFilter = function() { document.getElementById('unified-filter-menu').classList.toggle('hidden'); document.getElementById('unified-filter-menu').classList.toggle('flex'); }
+window.applyFilter = function(cat) { window.currentFilter = cat; document.querySelectorAll('.filter-check').forEach(chk => { if(chk.dataset.cat === cat) chk.classList.remove('hidden'); else chk.classList.add('hidden'); }); window.toggleUnifiedFilter(); window.renderProducts(); }
 
 window.renderProducts = function(){
     const grid = document.getElementById('product-grid'); grid.innerHTML = '';
     window.appProducts.sort((a, b) => { let ia = productOrderArray.indexOf(a.id); let ib = productOrderArray.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     const list = window.currentFilter==='all' || !window.currentFilter ? window.appProducts : window.appProducts.filter(p=>p.category===window.currentFilter);
-    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full sortable-container";
+    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full sortable-zone";
     if(list.length === 1) grid.classList.add("grid-cols-1", "max-w-xs"); else if(list.length === 2) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "max-w-2xl"); else if(list.length === 3) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "md:grid-cols-3", "max-w-4xl"); else grid.classList.add("grid-cols-2", "sm:grid-cols-3", "lg:grid-cols-4");
     
+    if(list.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos.</div>`; }
     list.forEach((p,i)=>{
         const art = p.image ? `<img src="${p.image}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500" draggable="false">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60"></i></div>`;
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 hover:bg-cyan-400 mb-2"><i class="fa-solid fa-pen"></i> Editar</button><button onclick="deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 hover:bg-red-400"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
-        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm">${p.category}</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><span class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto">Pedir</span></div></div></article>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2"><i class="fa-solid fa-pen"></i> Editar</button><button onclick="deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10">${p.category}</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><span class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold">Pedir</span></div></div></article>`;
     });
-    if(window.isAdminMode) {
-        grid.innerHTML += `<article onclick="openEditor('product', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[200px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400"><i class="fa-solid fa-plus text-xl"></i></div><span class="text-xs text-zinc-400 font-bold mt-2">Añadir Nuevo</span></article>`;
-    }
 }
 
 window.renderCourses = function(){
     const grid = document.getElementById('courses-grid'); grid.innerHTML = '';
     window.appCourses.sort((a, b) => { let ia = courseOrderArray.indexOf(a.id); let ib = courseOrderArray.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     window.appCourses.forEach((c)=>{
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 hover:bg-cyan-400 mb-2"><i class="fa-solid fa-pen"></i> Editar</button><button onclick="deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 hover:bg-red-400"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
-        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto">Ver más</button></div></div></article>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2"><i class="fa-solid fa-pen"></i> Editar</button><button onclick="deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto">Ver más</button></div></div></article>`;
     });
-    if(window.isAdminMode) {
-        grid.innerHTML += `<article onclick="openEditor('course', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[250px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400"><i class="fa-solid fa-plus text-xl"></i></div><span class="text-xs text-zinc-400 font-bold mt-2">Añadir Curso</span></article>`;
-    }
 }
 
 async function loadFirebaseData() {
@@ -448,7 +368,7 @@ async function loadFirebaseData() {
         if (layoutSnap.exists()) {
             const data = layoutSnap.data();
             if(data.zones) {
-                document.querySelectorAll('.editable-zone').forEach(zone => {
+                document.querySelectorAll('.editable-section').forEach(zone => {
                     if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id];
                 });
             }
@@ -456,12 +376,10 @@ async function loadFirebaseData() {
             if(data.courseOrder) courseOrderArray = data.courseOrder;
         }
 
-        if (!prodSnap.empty) window.appProducts = prodSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-        else window.appProducts = [];
-        if (!coursesSnap.empty) window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-        else window.appCourses = [];
+        window.appProducts = prodSnap.empty ? [] : prodSnap.docs.map(d => ({id: d.id, ...d.data()})); 
+        window.appCourses = coursesSnap.empty ? [] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
 
-    } catch (error) { console.warn("Base de datos inalcanzable. Cargando respaldo."); window.appProducts=[]; window.appCourses=[]; } 
+    } catch (error) { console.warn("Modo Offline."); window.appProducts=[]; window.appCourses=[]; } 
     finally {
         window.renderProducts(); window.renderCourses();
         setTimeout(() => {
@@ -474,45 +392,72 @@ async function loadFirebaseData() {
 // ========================================================
 // ⚙️ SISTEMA POSTMESSAGE PARA EL ADMIN (CONSTRUCTOR MÁGICO)
 // ========================================================
+let selectedEl = null;
+
 window.addEventListener('message', async (event) => {
-    // 1. DESPERTAR MODO CONSTRUCTOR Y BLOQUEAR CLICS NORMALES
+    // 1. DESPERTAR MODO CONSTRUCTOR Y BLOQUEAR NAVEGACIÓN
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; 
-        document.body.classList.add('admin-mode');
+        document.body.classList.add('builder-mode');
         
-        // Bloquear todos los links para que al hacer clic no te saquen del editor
+        // Bloquear TODOS los clics para editar sin salir de la página
         document.addEventListener('click', function(e) {
-            let link = e.target.closest('a');
-            if (link && window.isAdminMode) { e.preventDefault(); }
-        });
+            if (!window.isAdminMode) return;
+            let target = e.target.closest('[data-editable="true"], a, video, img');
+            if (target) {
+                e.preventDefault(); e.stopPropagation();
+                
+                if(selectedEl) selectedEl.classList.remove('builder-selected-el');
+                selectedEl = target;
+                selectedEl.classList.add('builder-selected-el');
+                
+                // Le avisa al Panel Derecho del Admin qué tocó
+                window.parent.postMessage({
+                    type: 'ELEMENT_SELECTED',
+                    tagName: target.tagName,
+                    text: target.innerText || '',
+                    href: target.href || target.src || ''
+                }, '*');
+            }
+        }, true); // Use Capture
 
-        window.enableInteractiveEditing();
         window.renderProducts(); window.renderCourses();
+        window.injectAddButtons(); // Pone los "+" para duplicar cosas
     }
     
-    // 2. ACTIVAR / DESACTIVAR ARRASTRE
+    // 2. ACTUALIZAR DESDE EL PANEL DERECHO
+    if (event.data.type === 'UPDATE_ELEMENT' && selectedEl) {
+        if(event.data.text !== undefined && selectedEl.tagName !== 'IMG' && selectedEl.tagName !== 'VIDEO') {
+            // Preservar icono interno si existe
+            let icon = selectedEl.querySelector('i');
+            selectedEl.innerText = event.data.text;
+            if(icon) selectedEl.prepend(icon);
+        }
+        if(event.data.href !== undefined) {
+            if(selectedEl.tagName === 'A') selectedEl.href = event.data.href;
+            if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = event.data.href;
+        }
+    }
+
+    // 3. ACTIVAR / DESACTIVAR ARRASTRE
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state;
-        const containers = document.querySelectorAll('.sortable-container, #product-grid, #courses-grid');
+        const containers = document.querySelectorAll('.sortable-zone');
         
         if (enabled) {
             document.body.classList.add('dragging-active');
             containers.forEach(grid => {
                 if(grid._sortable) grid._sortable.destroy();
-                grid._sortable = new Sortable(grid, {
-                    animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-ui-add'
-                });
+                grid._sortable = new Sortable(grid, { animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag' });
                 window.sortableInstances.push(grid._sortable);
             });
-            // Activar mapa para ignorar puntero mientras se arrastra
-            if(document.getElementById('leaflet-map')) document.getElementById('leaflet-map').style.pointerEvents = 'none';
         } else {
             document.body.classList.remove('dragging-active');
             window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = [];
         }
     }
 
-    // 3. GUARDAR SNAPSHOT HTML EN FIREBASE
+    // 4. GUARDAR HTML EN FIREBASE
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) {
             window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = [];
@@ -520,12 +465,11 @@ window.addEventListener('message', async (event) => {
         }
 
         const layoutData = {};
-        document.querySelectorAll('.editable-zone').forEach(zone => {
+        document.querySelectorAll('.editable-section').forEach(zone => {
             if(!zone.id) return;
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.admin-ui-add').forEach(e => e.remove());
-            clone.querySelectorAll('[contenteditable]').forEach(e => e.removeAttribute('contenteditable'));
-            clone.querySelectorAll('.bound-dblclick').forEach(e => e.classList.remove('bound-dblclick'));
+            clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             layoutData[zone.id] = clone.innerHTML;
         });
 
@@ -535,41 +479,12 @@ window.addEventListener('message', async (event) => {
         try {
             await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true });
         } catch(e) {}
-        window.enableInteractiveEditing();
-    }
-
-    // 4. RESTAURAR PLANTILLA (BORRAR FIREBASE)
-    if (event.data.type === 'RESET_LAYOUT') {
-        await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
-        alert("Plantilla original restaurada. La página se recargará.");
-        window.location.reload();
+        window.injectAddButtons();
     }
 });
 
-// Función central para inyectar poderes de edición en vivo
-window.enableInteractiveEditing = function() {
-    // a. Textos Editables
-    document.querySelectorAll('[data-edit="true"]').forEach(el => {
-        el.setAttribute('contenteditable', 'true');
-    });
-
-    // b. Enlaces e Imágenes Editables con Doble Clic
-    document.querySelectorAll('a, img, video').forEach(el => {
-        if(el.closest('.ignore-drag') || el.closest('.admin-ui-add')) return; 
-        if(!el.classList.contains('bound-dblclick')) {
-            el.classList.add('bound-dblclick');
-            el.addEventListener('dblclick', function(e) {
-                if(!window.isAdminMode) return;
-                e.preventDefault(); e.stopPropagation();
-                const attr = (el.tagName === 'IMG' || el.tagName === 'VIDEO') ? 'src' : 'href';
-                const currentVal = el.getAttribute(attr) || '';
-                const newUrl = prompt(`Ingresa el nuevo link o url de imagen/video:`, currentVal);
-                if(newUrl !== null) el.setAttribute(attr, newUrl);
-            });
-        }
-    });
-
-    // c. Botón + Añadir Testimonio Dinámico
+window.injectAddButtons = function() {
+    // Añadir Testimonio
     const testGrid = document.getElementById('testimonials-grid-right');
     if(testGrid && !testGrid.querySelector('.add-test-btn')) {
         const btn = document.createElement('button');
@@ -577,16 +492,12 @@ window.enableInteractiveEditing = function() {
         btn.innerHTML = '<i class="fa-solid fa-plus text-2xl mb-2"></i> Añadir Testimonio';
         btn.onclick = () => {
             const firstTest = testGrid.querySelector('.card:not(.admin-ui-add)');
-            if(firstTest) {
-                const clone = firstTest.cloneNode(true);
-                testGrid.insertBefore(clone, btn);
-                window.enableInteractiveEditing(); 
-            }
+            if(firstTest) testGrid.insertBefore(firstTest.cloneNode(true), btn);
         };
         testGrid.appendChild(btn);
     }
 
-    // d. Botón + Añadir Icono (Footer y Nav)
+    // Añadir Icono (Footer y Nav)
     ['social-nav-mobile', 'social-nav-pc', 'social-footer-links'].forEach(zoneId => {
         const zone = document.getElementById(zoneId);
         if(zone && !zone.querySelector('.add-soc-btn')) {
@@ -595,22 +506,17 @@ window.enableInteractiveEditing = function() {
             btn.innerHTML = '<i class="fa-solid fa-plus text-xs"></i>';
             btn.onclick = () => {
                 const firstIcon = zone.querySelector('a:not(.admin-ui-add)');
-                if(firstIcon) {
-                    const clone = firstIcon.cloneNode(true);
-                    clone.classList.remove('bound-dblclick');
-                    zone.insertBefore(clone, btn);
-                    window.enableInteractiveEditing();
-                }
+                if(firstIcon) zone.insertBefore(firstIcon.cloneNode(true), btn);
             };
             zone.appendChild(btn);
         }
     });
 }
 
+// Modales Puros (Editor)
 window.openEditor = function(type, id) {
     const modal = document.getElementById('editModal'); const fields = document.getElementById('em-fields');
     document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
-    
     if(type === 'product') {
         const p = id ? window.appProducts.find(x => x.id === id) : {};
         fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><option value="premium" ${p.category==='premium'?'selected':''}>Premium</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option><option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><input type="text" id="ef-img" value="${p.image||''}" placeholder="URL Imagen" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white">`;
@@ -623,9 +529,8 @@ window.openEditor = function(type, id) {
 }
 
 window.closeEditModal = function() {
-    const modal = document.getElementById('editModal'); 
-    modal.classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95');
-    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+    document.getElementById('editModal').classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95');
+    setTimeout(() => { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editModal').classList.remove('flex'); }, 300);
 }
 
 window.saveElementEdit = async function() {
@@ -655,6 +560,8 @@ window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMa
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
     initMap(); loadFirebaseData();
+    document.addEventListener('contextmenu', e => { if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') e.preventDefault(); });
+    document.addEventListener('keydown', e => { if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) { e.preventDefault(); return false; } });
 });
 </script>
 </body>
