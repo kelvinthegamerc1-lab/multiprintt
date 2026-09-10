@@ -99,22 +99,24 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
-/* ESTILOS MODO EDICIÓN */
-[contenteditable="true"] { outline: 2px dashed rgba(255,45,168,0.5); padding: 2px 6px; border-radius: 4px; transition: outline-color 0.2s; cursor: text; }
-[contenteditable="true"]:focus { outline: 2px solid var(--pink); background: rgba(255,45,168,0.1); }
+/* Elementor-like Edit Outline */
+[data-edit]:hover { outline: 2px dashed var(--cyan); cursor: text; border-radius: 4px; background: rgba(37, 216, 255, 0.05); }
+[data-edit]:focus { outline: 2px solid var(--pink); background: rgba(255, 45, 168, 0.05); }
+.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
+.card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 </style>
 </head>
 
 <body>
 <div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
 
-<!-- Banner de Edición -->
-<div id="admin-banner" class="hidden fixed top-0 left-0 right-0 bg-pink-600 text-white text-[10px] md:text-xs font-bold text-center py-1.5 z-[200] shadow-lg flex items-center justify-center gap-4">
-    <span><i class="fa-solid fa-pen-to-square mr-1"></i> MODO EDICIÓN ACTIVO</span>
-    <button onclick="exitAdminMode()" class="bg-black/30 hover:bg-black/50 px-3 py-1 rounded-full transition-colors"><i class="fa-solid fa-xmark mr-1"></i> Salir</button>
+<!-- Admin Banner -->
+<div id="admin-banner" class="hidden fixed top-0 left-0 right-0 z-[200] bg-red-600 text-white text-xs font-bold px-4 py-2 flex justify-between items-center shadow-lg">
+    <div class="flex items-center gap-2"><i class="fa-solid fa-pen-ruler"></i> Modo Edición Activo</div>
+    <button onclick="exitAdminMode()" class="bg-black/30 hover:bg-black/50 px-3 py-1 rounded">Cerrar Edición</button>
 </div>
 
-<header class="fixed top-0 left-0 right-0 z-50 glass h-[70px] md:h-[76px] transition-all" id="main-header">
+<header id="main-header" class="fixed top-0 left-0 right-0 z-50 glass h-[70px] md:h-[76px] transition-all">
   <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
     
     <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
@@ -122,8 +124,8 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
         <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\'w-full h-full flex items-center justify-center font-black\'>M</span>'">
       </div>
       <div>
-        <h1 class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0">MULTIPRINTT</h1>
-        <div class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors">Tú Imagen Viva</div>
+        <h1 class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
+        <div class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
       </div>
     </button>
 
@@ -188,10 +190,10 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
     <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
         <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20">
             <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
-                <span id="hero-subtitle" data-edit="settings/home.heroSubtitle" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
-                <span id="hero-title" data-edit="settings/home.heroTitle" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
+                <span id="hero-subtitle" data-edit="heroSubtitle" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
+                <span id="hero-title" data-edit="heroTitle" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
             </h2>
-            <p id="about-desc" data-edit="settings/home.aboutDesc" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
+            <p id="about-desc" data-edit="aboutDesc" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
             
             <div class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
                 <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400"></i> Envíos Nacionales</span>
@@ -285,24 +287,21 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
   </section>
 
   <section id="view-contact" class="view-slide flex flex-col slide-scroll">
-    <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col justify-between pt-4 pb-4 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col py-6 md:py-10 relative z-10">
         
-        <!-- Contenedor centralizado para Título y Contenido -->
-        <div class="flex-1 flex flex-col justify-center gap-6 lg:gap-8 py-2">
-            
-            <div class="reveal text-center shrink-0">
-                <div class="text-[9px] tracking-[.3em] uppercase text-cyan-300 font-bold mb-2">Hablemos</div>
-                <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-4xl lg:text-[2.8rem] font-extrabold tracking-[-.04em] leading-tight">
+        <div class="flex-1 flex flex-col justify-center max-w-5xl mx-auto w-full">
+            <div class="text-center shrink-0 relative z-20 mb-6 lg:mb-8">
+                <div class="text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1">Hablemos</div>
+                <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-[-.05em] relative z-20 leading-tight">
                     <span class="block">Tu próxima idea</span>
                     <span class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
                 </h2>
             </div>
 
-            <!-- Bloque compacto de Mapa y Datos -->
-            <div class="flex flex-col lg:flex-row gap-6 lg:gap-10 items-center reveal w-full">
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center w-full">
                 
-                <!-- Mapa Adaptable (Alturas controladas para evitar scroll) -->
-                <div class="w-full lg:w-1/2 h-[180px] sm:h-[220px] lg:h-[260px] xl:h-[280px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-2xl bg-[#0e0e12] shrink-0">
+                <!-- Mapa Optimizado (Tamaño fijo con max-h para no estirarse) -->
+                <div class="w-full lg:w-1/2 h-[200px] sm:h-[250px] lg:h-[280px] xl:h-[320px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-2xl bg-[#0e0e12] shrink-0">
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full"></div>
                     <div class="absolute bottom-3 left-3 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg">
@@ -310,18 +309,20 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
                             <p id="contact-address" class="text-[8px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1">Luis Vernaza y José Mascote.</p>
                         </div>
                     </div>
-                    <button onclick="recenterMap()" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 z-[400] w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg hover:bg-white/20 transition-all pointer-events-auto"><i class="fa-solid fa-location-crosshairs text-pink-400 text-sm md:text-base"></i></button>
+                    <button onclick="recenterMap()" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 z-[400] w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg hover:bg-white/20 transition-all pointer-events-auto">
+                        <i class="fa-solid fa-location-crosshairs text-pink-400 text-sm md:text-base"></i>
+                    </button>
                 </div>
 
-                <!-- Textos con espacios reducidos y simétricos -->
+                <!-- Datos de Contacto Limpios y Centrados -->
                 <div class="flex flex-col gap-5 lg:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0">
                     <div class="group">
                         <div class="text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1.5 block">WhatsApp</div>
-                        <a id="contact-phone" href="https://wa.me/593997591021" target="_blank" data-edit="settings/home.contactPhone" class="inline-block text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors">099 759 1021</a>
+                        <a id="contact-phone" data-edit="contactPhone" href="https://wa.me/593997591021" target="_blank" class="inline-block text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors">099 759 1021</a>
                     </div>
                     <div class="group">
                         <div class="text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1.5 block">Correo</div>
-                        <a id="contact-email" href="mailto:multiprintt@yahoo.com" data-edit="settings/home.contactEmail" class="inline-block text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors">multiprintt@yahoo.com</a>
+                        <a id="contact-email" data-edit="contactEmail" href="mailto:multiprintt@yahoo.com" class="inline-block text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors">multiprintt@yahoo.com</a>
                     </div>
                     <div class="group">
                         <div class="text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-3 block">Síguenos</div>
@@ -335,10 +336,9 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
             </div>
         </div>
 
-        <!-- Footer Protegido abajo -->
-        <footer class="mt-4 pt-4 text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex items-center justify-center gap-2">
+        <footer class="mt-8 pt-4 text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 relative">
             <span>© <span id="year"></span> Multiprintt. Tú Imagen Viva.</span>
-            <button onclick="openLoginModal()" class="text-zinc-700 hover:text-pink-500 transition-colors p-1"><i class="fa-solid fa-lock"></i></button>
+            <button onclick="openLoginModal()" class="absolute right-0 top-4 text-zinc-700 hover:text-zinc-400 transition-colors p-1"><i class="fa-solid fa-lock"></i></button>
         </footer>
     </div>
   </section>
@@ -364,32 +364,57 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
     </button>
 </nav>
 
+<!-- Modals -->
 <div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300">
   <div class="relative w-full max-w-4xl bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-300" id="courseModalContent">
-    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg"><i class="fa-solid fa-xmark"></i></button>
+    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    
     <div class="w-full md:w-1/2 h-48 sm:h-56 md:h-auto bg-[#101014] relative">
       <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e12] to-transparent md:hidden z-10 pointer-events-none"></div>
       <img id="cm-image" src="" alt="Curso Multiprintt" class="w-full h-full object-cover relative z-0" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1626786139589-9b43fb4e9124?q=80&w=800&auto=format&fit=crop';">
     </div>
+    
     <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative z-20">
       <span id="cm-modality" class="inline-block px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[9px] uppercase tracking-[.15em] text-violet-400 font-bold mb-4 w-max"></span>
       <h3 id="cm-title" class="display text-xl md:text-3xl font-extrabold tracking-tight mb-2 text-white"></h3>
       <p id="cm-desc" class="text-xs md:text-sm text-zinc-400 leading-relaxed mb-5 flex-1"></p>
+      
       <div class="space-y-4 mb-6">
-        <div class="flex items-center text-zinc-300"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-cyan-400"><i class="fa-regular fa-calendar"></i></div><div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Horarios</span><span id="cm-schedule" class="font-medium text-white text-xs md:text-sm"></span></div></div>
-        <div class="flex items-center text-zinc-300"><div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-pink-400"><i class="fa-solid fa-tag"></i></div><div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Inversión</span><span id="cm-price" class="font-bold text-white text-xs md:text-sm"></span></div></div>
+        <div class="flex items-center text-zinc-300">
+            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-cyan-400"><i class="fa-regular fa-calendar"></i></div>
+            <div>
+                <span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Horarios</span>
+                <span id="cm-schedule" class="font-medium text-white text-xs md:text-sm"></span>
+            </div>
+        </div>
+        <div class="flex items-center text-zinc-300">
+            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-pink-400"><i class="fa-solid fa-tag"></i></div>
+            <div>
+                <span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Inversión</span>
+                <span id="cm-price" class="font-bold text-white text-xs md:text-sm"></span>
+            </div>
+        </div>
       </div>
-      <a id="cm-btn" href="#" target="_blank" class="flex items-center justify-center w-full px-5 py-3.5 rounded-xl bg-white text-black text-xs md:text-sm font-extrabold hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-1">Separar cupo por WhatsApp <i class="fa-brands fa-whatsapp ml-2 text-base"></i></a>
+      
+      <a id="cm-btn" href="#" target="_blank" class="flex items-center justify-center w-full px-5 py-3.5 rounded-xl bg-white text-black text-xs md:text-sm font-extrabold hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-1">
+        Separar cupo por WhatsApp <i class="fa-brands fa-whatsapp ml-2 text-base"></i>
+      </a>
     </div>
   </div>
 </div>
 
 <div id="videoModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
   <div class="relative w-full max-w-sm mx-auto bg-[#0a0a0c] border border-white/10 rounded-[20px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="videoModalContent">
-    <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg"><i class="fa-solid fa-xmark"></i></button>
+    <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    
     <div class="w-full bg-black relative aspect-[9/16] max-h-[65vh]">
       <video id="testimonial-video" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4" controls playsinline class="w-full h-full object-cover"></video>
     </div>
+    
     <div class="p-6 bg-[#0e0e12]">
       <h4 class="text-white text-xl font-bold">Experiencia de Carlos P.</h4>
       <p class="text-cyan-400 text-xs font-bold uppercase tracking-widest mt-1">Curso de Serigrafía</p>
@@ -398,35 +423,28 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
   </div>
 </div>
 
-<!-- Modal Login Administrador -->
-<div id="loginModal" class="hidden fixed inset-0 z-[400] bg-black/80 backdrop-blur-xl p-4 items-center justify-center opacity-0 transition-opacity">
-  <div class="w-full max-w-sm bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl p-6 text-center relative transform scale-95 transition-transform" id="loginModalContent">
+<div id="loginModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
+  <div class="w-full max-w-sm bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl p-6 text-center relative transform scale-95 transition-transform duration-300" id="loginModalContent">
     <button onclick="closeLoginModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
     <div class="w-12 h-12 rounded-full bg-white/5 mx-auto flex items-center justify-center mb-4"><i class="fa-solid fa-lock text-pink-400 text-lg"></i></div>
-    <h3 class="font-bold text-lg mb-1">Modo Administrador</h3>
-    <p class="text-[10px] text-zinc-500 mb-4">Ingresa la contraseña para habilitar la edición en vivo.</p>
-    <input type="password" id="adminPin" class="w-full p-3 rounded-xl bg-black border border-white/10 text-sm text-center tracking-widest mb-3 outline-none focus:border-pink-500" placeholder="Contraseña">
-    <button onclick="checkAdminPin()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm hover:bg-zinc-200 transition-colors">Entrar</button>
+    <h3 class="font-bold text-lg mb-1">Acceso Administrativo</h3>
+    <p class="text-xs text-zinc-500 mb-4">Ingresa la contraseña maestra para habilitar el modo de edición visual.</p>
+    <input type="password" id="adminPin" class="w-full p-3 rounded-xl bg-black border border-white/10 text-sm text-center tracking-widest mb-3 outline-none focus:border-pink-500 transition-colors" placeholder="••••••••">
+    <button onclick="checkAdminPin()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm hover:bg-zinc-200 shadow-[0_0_15px_rgba(255,255,255,0.2)]">Desbloquear</button>
   </div>
 </div>
 
-<!-- Modal Genérico Creador -->
-<div id="creatorModal" class="hidden fixed inset-0 z-[400] bg-black/80 backdrop-blur-xl p-4 items-center justify-center opacity-0 transition-opacity">
-  <div class="w-full max-w-md bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl p-6 relative transform scale-95 transition-transform" id="creatorModalContent">
-    <button onclick="closeCreatorModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-    <h3 class="font-bold text-lg mb-4 border-b border-white/10 pb-2" id="creator-title">Añadir</h3>
-    <div id="creator-form" class="space-y-3"></div>
+<div id="itemModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
+  <div class="w-full max-w-md bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl p-6 relative transform scale-95 transition-transform duration-300" id="itemModalContent">
+    <button onclick="closeItemModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <h3 class="font-bold text-lg mb-4 border-b border-white/10 pb-3" id="im-title">Editar Elemento</h3>
+    <div id="im-form" class="space-y-3 slide-scroll max-h-[60vh]"></div>
+    <button onclick="saveItemData()" class="w-full py-3.5 mt-4 rounded-xl bg-pink-500 text-white font-bold text-sm hover:bg-pink-600 shadow-[0_0_15px_rgba(255,45,168,0.4)]">Guardar Cambios</button>
   </div>
-</div>
-
-<!-- Modal Notificaciones -->
-<div id="toast" class="fixed top-20 right-4 z-[500] bg-white text-black px-4 py-3 rounded-lg shadow-2xl font-bold text-sm transform translate-x-full opacity-0 transition-all duration-300 flex items-center gap-2">
-    <i class="fa-solid fa-circle-check text-green-500"></i> <span id="toast-msg">Guardado</span>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
-// ===== CONFIGURACIÓN FIREBASE =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -445,9 +463,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const APP_ID = "multiprintt-web"; 
-window.isAdminMode = false;
 
-// Variables Globales (Exactamente las solicitadas por el usuario)
+// Variables Globales 100% Seguras y con ID
 window.appProducts = [
     {id:'p1', name:'Fotocuadros en Madera y Aluminio',category:'premium',price:25,image:'',icon:'fa-image'},
     {id:'p2', name:'Sombreros Personalizados TRI',category:'textil',price:8,image:'',icon:'fa-hat-cowboy'},
@@ -455,20 +472,23 @@ window.appProducts = [
     {id:'p4', name:'Tazas Mágicas y Termos',category:'tazas',price:12,image:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=700&auto=format&fit=crop',icon:'fa-mug-hot'}
 ];
 window.appCourses = [
-    { id: 'c1', title: "Curso de Sublimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion0.jpg", desc: "Aprende a transferir imágenes de altísima calidad sobre múltiples superficies." },
+    { id: 'c1', title: "Curso de Sublimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion0.jpg", desc: "Aprende a transferir imágenes de altísima calidad." },
     { id: 'c2', title: "Curso de Serigrafía", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/serigrafia0.jpg", desc: "Especialízate en técnicas de impresión tradicional." },
     { id: 'c3', title: "Taller de Resina", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/resina0.jpg", desc: "Crea piezas únicas, accesorios exclusivos y dales acabados premium." },
     { id: 'c4', title: "Curso de Sellos", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/serigrafia4.jpg", desc: "Especialízate en el diseño y elaboración de sellos." },
-    { id: 'c5', title: "Plóter de corte", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf0.jpg", desc: "Manejo profesional de software y hardware para corte." },
-    { id: 'c6', title: "Pedrería textil", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/pedreria0.jpeg", desc: "Aprende la técnica de aplicación de pedrería y strass." },
-    { id: 'c7', title: "Grabado sobre vidrio", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/laser0.jpg", desc: "Domina el arte del esmerilado y grabado." },
-    { id: 'c8', title: "Curso completo impresión digital", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/general1.jpeg", desc: "El programa total. Ideal para crear tu propio negocio." },
-    { id: 'c9', title: "Curso de polimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf1.jpg", desc: "Descubre esta técnica innovadora de impresión directa." },
-    { id: 'c10', title: "Curso elaboración de agendas", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion21.jpg", desc: "Aprende el proceso completo para diseñar y armar agendas." }
+    { id: 'c5', title: "Manejo de Plóter de Corte", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf0.jpg", desc: "Manejo profesional de software y hardware para corte." },
+    { id: 'c6', title: "Curso de Pedrería Textil", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/pedreria0.jpeg", desc: "Aprende la técnica de aplicación de pedrería y strass." },
+    { id: 'c7', title: "Grabado sobre Vidrio", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/laser0.jpg", desc: "Domina el arte del esmerilado y grabado." },
+    { id: 'c8', title: "Curso Completo de Impresión Digital", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/general1.jpeg", desc: "El programa total. Ideal para crear tu propio negocio." },
+    { id: 'c9', title: "Curso de Polimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf1.jpg", desc: "Descubre esta técnica innovadora de impresión." },
+    { id: 'c10', title: "Elaboración de Agendas", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion21.jpg", desc: "Aprende el proceso completo para diseñar y armar agendas." }
 ];
 
 let currentFilter = 'all';
+window.isAdminMode = false;
+window.editingType = null; window.editingId = null;
 
+// Navegación (Hecha Global)
 window.navigate = function(targetId) {
     const views = ['catalog', 'about', 'courses', 'contact'];
     views.forEach(id => {
@@ -481,8 +501,7 @@ window.navigate = function(targetId) {
             if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
             setTimeout(() => { 
                 if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); 
-                // Mapa se inicializa SIEMPRE, pero si abren contacto, se repinta para ajustar tamaño
-                if(id === 'contact' && window.multiprinttMap) { window.multiprinttMap.invalidateSize(); }
+                if(id === 'contact') { if(!window.multiprinttMap) { initMap(); } else { window.multiprinttMap.invalidateSize(); } }
             }, 400); 
         } else {
             if (section) section.classList.remove('active-slide');
@@ -497,6 +516,7 @@ window.toggleUnifiedFilter = function() {
     const menu = document.getElementById('unified-filter-menu');
     menu.classList.toggle('hidden'); menu.classList.toggle('flex');
 }
+
 window.applyFilter = function(cat) {
     currentFilter = cat;
     document.querySelectorAll('.filter-check').forEach(chk => {
@@ -508,16 +528,11 @@ window.applyFilter = function(cat) {
 window.renderProducts = function(){
     const grid=document.getElementById('product-grid'); grid.innerHTML='';
     const list=currentFilter==='all'?window.appProducts:window.appProducts.filter(p=>p.category===currentFilter);
-    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full relative";
+    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full";
     if(list.length === 1) grid.classList.add("grid-cols-1", "max-w-xs");
     else if(list.length === 2) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "max-w-2xl");
     else if(list.length === 3) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "md:grid-cols-3", "max-w-4xl");
     else grid.classList.add("grid-cols-2", "sm:grid-cols-3", "lg:grid-cols-4");
-    
-    if(list.length === 0 && !window.isAdminMode) {
-        grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`;
-        return;
-    }
     
     let wppNumber = document.getElementById('contact-phone').textContent.replace(/\s+/g, '') || "593997591021";
     
@@ -526,41 +541,35 @@ window.renderProducts = function(){
         const art = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500">`
             : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60"></i></div>`;
         
-        const adminTools = window.isAdminMode ? `<div class="absolute top-2 right-2 z-50 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><button onclick="openCreator('product', '${p.id}')" class="w-8 h-8 rounded bg-cyan-500 text-white shadow-lg"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="deleteDocById('products', '${p.id}')" class="w-8 h-8 rounded bg-red-500 text-white shadow-lg"><i class="fa-solid fa-trash text-[10px]"></i></button></div>` : '';
-
-        grid.innerHTML+=`<article class="card rounded-[12px] overflow-hidden group transition-all duration-300 bg-[#0b0b0e] flex flex-col h-full relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/20">
-            ${adminTools}
-            <div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-32 h-32 rounded-full blur-2xl opacity-25 transition-transform duration-700 group-hover:scale-125" style="background:${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]}"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm">${p.category}</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95 backdrop-blur-xl"><h3 class="font-bold text-[11px] md:text-xs leading-snug line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between gap-2"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] border border-[#25D366]/15 text-[10px] font-bold hover:bg-[#25D366] hover:text-black transition-colors flex items-center justify-center shadow-sm">Pedir <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[9px]"></i></a></div></div></article>`;
+        const adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-white px-3 py-1 rounded text-xs font-bold w-24">Editar</button><button onclick="deleteItem('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1 rounded text-xs font-bold w-24">Eliminar</button></div>` : '';
+        
+        grid.innerHTML+=`<article class="card rounded-[12px] overflow-hidden group transition-all duration-300 bg-[#0b0b0e] flex flex-col h-full relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/20">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-32 h-32 rounded-full blur-2xl opacity-25 transition-transform duration-700 group-hover:scale-125" style="background:${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]}"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm">${p.category}</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95 backdrop-blur-xl"><h3 class="font-bold text-[11px] md:text-xs leading-snug line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between gap-2"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] border border-[#25D366]/15 text-[10px] font-bold hover:bg-[#25D366] hover:text-black transition-colors flex items-center justify-center shadow-sm">Pedir <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[9px]"></i></a></div></div></article>`;
     });
 
-    if(window.isAdminMode) {
-        grid.innerHTML += `<button onclick="openCreator('product')" class="border-2 border-dashed border-white/20 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 hover:text-pink-400 hover:border-pink-400/50 hover:bg-pink-400/5 transition-colors aspect-square md:aspect-auto"><i class="fa-solid fa-plus text-2xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Añadir Producto</span></button>`;
+    if (window.isAdminMode) {
+        grid.innerHTML += `<button onclick="openEditor('product', 'new')" class="card rounded-[12px] flex flex-col items-center justify-center h-full min-h-[220px] bg-white/5 border-2 border-dashed border-white/20 hover:border-pink-400 hover:bg-white/10 transition-all group"><i class="fa-solid fa-plus text-3xl text-zinc-500 group-hover:text-pink-400 mb-2 transition-colors"></i><span class="text-xs font-bold text-zinc-400 group-hover:text-white">Añadir Producto</span></button>`;
     }
 }
 
 window.renderCourses = function(){
     const grid=document.getElementById('courses-grid'); grid.innerHTML='';
-    if(window.appCourses.length === 0 && !window.isAdminMode) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">Próximamente nuevos cursos.</div>`; return; }
-    
     window.appCourses.forEach((c,i)=>{
-        const adminTools = window.isAdminMode ? `<div class="absolute top-2 left-2 z-50 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><button onclick="openCreator('course', '${c.id}')" class="w-8 h-8 rounded bg-cyan-500 text-white shadow-lg"><i class="fa-solid fa-pen text-[10px]"></i></button><button onclick="deleteDocById('courses', '${c.id}')" class="w-8 h-8 rounded bg-red-500 text-white shadow-lg"><i class="fa-solid fa-trash text-[10px]"></i></button></div>` : '';
-
-        grid.innerHTML+=`<article class="card rounded-[12px] relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/5 hover:border-white/15">
-            ${adminTools}
-            <div class="w-full h-36 relative overflow-hidden bg-black/40 shrink-0 border-b border-white/5"><img src="${c.image}" alt="${c.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-[#101014] to-transparent z-10 opacity-80"></div><span class="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[8px] uppercase tracking-[.15em] text-zinc-300 font-bold">${c.modality}</span></div><div class="relative z-20 flex flex-col w-full flex-1 p-4 pt-3"><h3 class="display text-[14px] md:text-base font-extrabold tracking-tight shrink-0 mb-1.5 leading-[1.2]">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3">${c.desc}</p><div class="mt-4 shrink-0 pt-3 border-t border-white/5"><button onclick="openCourseModal(${i})" class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white text-[9px] md:text-[10px] font-extrabold hover:bg-white hover:text-black transition-colors shadow-lg">Ver más información <i class="fa-solid fa-plus ml-1.5"></i></button></div></div></article>`;
+        const adminHtml = window.isAdminMode ? `<div class="admin-overlay z-50"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-white px-4 py-2 rounded text-xs font-bold w-28">Editar</button><button onclick="deleteItem('course', '${c.id}')" class="bg-red-500 text-white px-4 py-2 rounded text-xs font-bold w-28">Eliminar</button></div>` : '';
+        grid.innerHTML+=`<article class="card rounded-[12px] relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/5 hover:border-white/15">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 shrink-0 border-b border-white/5"><img src="${c.image}" alt="${c.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-[#101014] to-transparent z-10 opacity-80"></div><span class="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[8px] uppercase tracking-[.15em] text-zinc-300 font-bold">${c.modality}</span></div><div class="relative z-20 flex flex-col w-full flex-1 p-4 pt-3"><h3 class="display text-[14px] md:text-base font-extrabold tracking-tight shrink-0 mb-1.5 leading-[1.2]">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3">${c.desc}</p><div class="mt-4 shrink-0 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white text-[9px] md:text-[10px] font-extrabold hover:bg-white hover:text-black transition-colors shadow-lg relative z-20">Ver más información <i class="fa-solid fa-plus ml-1.5"></i></button></div></div></article>`;
     });
 
-    if(window.isAdminMode) {
-        grid.innerHTML += `<button onclick="openCreator('course')" class="border-2 border-dashed border-white/20 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 hover:text-pink-400 hover:border-pink-400/50 hover:bg-pink-400/5 transition-colors min-h-[250px]"><i class="fa-solid fa-plus text-2xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Añadir Curso</span></button>`;
+    if (window.isAdminMode) {
+        grid.innerHTML += `<button onclick="openEditor('course', 'new')" class="card rounded-[12px] flex flex-col items-center justify-center h-full min-h-[250px] bg-white/5 border-2 border-dashed border-white/20 hover:border-cyan-400 hover:bg-white/10 transition-all group"><i class="fa-solid fa-plus text-3xl text-zinc-500 group-hover:text-cyan-400 mb-2 transition-colors"></i><span class="text-xs font-bold text-zinc-400 group-hover:text-white">Añadir Curso</span></button>`;
     }
 }
 
+// Inicializar Firebase y Descargar Datos Reales
 async function loadFirebaseData() {
     try {
         await signInAnonymously(auth);
         if(!auth.currentUser) return;
         
-        // Cargar Textos
+        // Cargar Textos Principales
         const textRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home');
         const textSnap = await getDoc(textRef);
         if (textSnap.exists()) {
@@ -572,7 +581,8 @@ async function loadFirebaseData() {
             if(data.contactPhone) {
                 document.getElementById('contact-phone').textContent = data.contactPhone;
                 const wpLink = `https://wa.me/${data.contactPhone.replace(/\s+/g, '')}`;
-                document.getElementById('wa-link-pc').href = wpLink; document.getElementById('wa-link-mobile').href = wpLink;
+                document.getElementById('wa-link-pc').href = wpLink;
+                document.getElementById('wa-link-mobile').href = wpLink;
             }
             if(data.contactEmail) {
                 document.getElementById('contact-email').textContent = data.contactEmail;
@@ -589,23 +599,164 @@ async function loadFirebaseData() {
         // Cargar Cursos
         const coursesRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses');
         const coursesSnap = await getDocs(coursesRef);
-        if (!coursesSnap.empty) {
-            // Ordenar por ID para mantener el orden exacto si es posible
-            window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()}));
-            window.appCourses.sort((a,b) => {
-                let numA = parseInt(a.id.replace('c','')) || 99;
-                let numB = parseInt(b.id.replace('c','')) || 99;
-                return numA - numB;
-            });
-        }
+        if (!coursesSnap.empty) window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()}));
         window.renderCourses();
+
     } catch (error) {
-        console.warn("Esperando Firebase (Se usarán los datos de la plantilla)");
+        console.error("Error conectando a Firebase. Usando datos por defecto.", error);
     }
 }
 
-window.openCourseModal = function(index) {
-    const c = window.appCourses[index];
+// --- MODO ADMINISTRADOR (LOGIN Y EDICIÓN) ---
+window.openLoginModal = function() {
+    const m = document.getElementById('loginModal'); const c = document.getElementById('loginModalContent');
+    m.classList.remove('hidden'); m.classList.add('flex');
+    setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
+}
+window.closeLoginModal = function() {
+    const m = document.getElementById('loginModal'); const c = document.getElementById('loginModalContent');
+    m.classList.add('opacity-0'); c.classList.add('scale-95');
+    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+}
+
+window.checkAdminPin = async function() {
+    if(document.getElementById('adminPin').value === 'adminMultiprintt2026') {
+        window.isAdminMode = true;
+        closeLoginModal();
+        document.getElementById('admin-banner').classList.remove('hidden');
+        document.getElementById('main-header').classList.add('top-8'); // Bajar menú
+        
+        // --- AUTO-SINCRONIZACIÓN PROFUNDA ---
+        try {
+            // Revisar si los productos existen, si no, empujarlos todos.
+            const prodRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'products');
+            const prodSnap = await getDocs(prodRef);
+            if (prodSnap.size <= 1) { // Límite de seguridad
+                for (const p of window.appProducts) {
+                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', p.id), p);
+                }
+            }
+            
+            // Revisar si los cursos existen, si no, empujarlos todos.
+            const coursesRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses');
+            const coursesSnap = await getDocs(coursesRef);
+            if (coursesSnap.size <= 1) { // Límite de seguridad
+                for (const c of window.appCourses) {
+                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', c.id), c);
+                }
+            }
+            
+            // Recargar para mostrar los datos desde la nube 100% seguros
+            await loadFirebaseData();
+        } catch(e) { console.error("Error al sincronizar base de datos:", e); }
+        // ------------------------------------
+
+        // Habilitar edición de textos
+        document.querySelectorAll('[data-edit]').forEach(el => {
+            el.setAttribute('contenteditable', 'true');
+            el.addEventListener('blur', async (e) => {
+                const field = el.getAttribute('data-edit');
+                const text = el.innerText.trim();
+                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), { [field]: text }, { merge: true });
+                // Cambiar visual temporalmente para feedback
+                const origBg = el.style.background; el.style.background = 'rgba(37, 216, 255, 0.2)';
+                setTimeout(()=> el.style.background = origBg, 500);
+            });
+            // Evitar pegar formato
+            el.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            });
+        });
+        window.renderProducts(); window.renderCourses();
+    } else {
+        document.getElementById('adminPin').style.borderColor = 'red';
+        setTimeout(() => document.getElementById('adminPin').style.borderColor = '', 1000);
+    }
+}
+
+window.exitAdminMode = function() {
+    window.isAdminMode = false;
+    document.getElementById('admin-banner').classList.add('hidden');
+    document.getElementById('main-header').classList.remove('top-8');
+    document.querySelectorAll('[data-edit]').forEach(el => el.removeAttribute('contenteditable'));
+    window.renderProducts(); window.renderCourses();
+}
+
+window.openEditor = function(type, id) {
+    window.editingType = type; window.editingId = id;
+    const m = document.getElementById('itemModal'); const c = document.getElementById('itemModalContent');
+    const form = document.getElementById('im-form');
+    
+    if (type === 'product') {
+        document.getElementById('im-title').innerHTML = id === 'new' ? '<i class="fa-solid fa-plus text-pink-400 mr-2"></i> Nuevo Producto' : '<i class="fa-solid fa-pen text-cyan-400 mr-2"></i> Editar Producto';
+        const p = id === 'new' ? {name:'', category:'premium', price:'', image:'', icon:''} : window.appProducts.find(x => x.id === id);
+        form.innerHTML = `
+            <input id="f-name" value="${p.name}" placeholder="Nombre del Producto" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-pink-500">
+            <select id="f-cat" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-pink-500">
+                <option value="premium" ${p.category==='premium'?'selected':''}>Premium</option>
+                <option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option>
+                <option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option>
+            </select>
+            <input id="f-price" type="number" value="${p.price}" placeholder="Precio (Ej: 15.50)" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-pink-500">
+            <input id="f-image" value="${p.image||''}" placeholder="URL Imagen (https://...)" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-pink-500">
+            <input id="f-icon" value="${p.icon||''}" placeholder="Icono si no hay foto (fa-box)" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-pink-500">
+        `;
+    } else {
+        document.getElementById('im-title').innerHTML = id === 'new' ? '<i class="fa-solid fa-plus text-pink-400 mr-2"></i> Nuevo Curso' : '<i class="fa-solid fa-pen text-cyan-400 mr-2"></i> Editar Curso';
+        const c = id === 'new' ? {title:'', modality:'', price:'', schedule:'', image:'', desc:''} : window.appCourses.find(x => x.id === id);
+        form.innerHTML = `
+            <input id="f-title" value="${c.title}" placeholder="Título del Curso" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-cyan-500">
+            <input id="f-modality" value="${c.modality}" placeholder="Modalidad (Ej: Presencial)" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-cyan-500">
+            <input id="f-price" value="${c.price}" placeholder="Inversión (Ej: $50 o Consultar)" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-cyan-500">
+            <input id="f-schedule" value="${c.schedule}" placeholder="Horario" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-cyan-500">
+            <input id="f-image" value="${c.image}" placeholder="URL de la Imagen" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-cyan-500">
+            <textarea id="f-desc" rows="3" placeholder="Descripción corta" class="w-full p-3 rounded-lg bg-black border border-white/10 text-sm outline-none focus:border-cyan-500">${c.desc}</textarea>
+        `;
+    }
+    m.classList.remove('hidden'); m.classList.add('flex');
+    setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
+}
+
+window.closeItemModal = function() {
+    const m = document.getElementById('itemModal'); const c = document.getElementById('itemModalContent');
+    m.classList.add('opacity-0'); c.classList.add('scale-95');
+    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+}
+
+window.saveItemData = async function() {
+    const targetId = window.editingId === 'new' ? 'id_' + Date.now() : window.editingId;
+    let data = {};
+    if (window.editingType === 'product') {
+        data = { id: targetId, name: document.getElementById('f-name').value, category: document.getElementById('f-cat').value, price: parseFloat(document.getElementById('f-price').value||0), image: document.getElementById('f-image').value, icon: document.getElementById('f-icon').value };
+        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', targetId), data);
+        if(window.editingId === 'new') window.appProducts.push(data); else Object.assign(window.appProducts.find(x => x.id === targetId), data);
+        window.renderProducts();
+    } else {
+        data = { id: targetId, title: document.getElementById('f-title').value, modality: document.getElementById('f-modality').value, price: document.getElementById('f-price').value, schedule: document.getElementById('f-schedule').value, image: document.getElementById('f-image').value, desc: document.getElementById('f-desc').value };
+        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', targetId), data);
+        if(window.editingId === 'new') window.appCourses.push(data); else Object.assign(window.appCourses.find(x => x.id === targetId), data);
+        window.renderCourses();
+    }
+    closeItemModal();
+}
+
+window.deleteItem = async function(type, id) {
+    if(confirm("¿Seguro que deseas eliminar esto permanentemente?")) {
+        if(type === 'product') {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', id));
+            window.appProducts = window.appProducts.filter(x => x.id !== id); window.renderProducts();
+        } else {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', id));
+            window.appCourses = window.appCourses.filter(x => x.id !== id); window.renderCourses();
+        }
+    }
+}
+
+// Modales Públicos (Curso / Video)
+window.openCourseModal = function(id) {
+    const c = window.appCourses.find(x => x.id === id); if(!c) return;
     const modal = document.getElementById('courseModal'); const content = document.getElementById('courseModalContent');
     document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc;
     document.getElementById('cm-modality').textContent = c.modality; document.getElementById('cm-schedule').textContent = c.schedule;
@@ -645,6 +796,7 @@ function initMap() {
 }
 window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185722, -79.892194], 19, { animate: true }); }
 
+// Configurar Carrusel de Estudiantes
 const sliderImages = ["sublimacion4.jpg", "serigrafia2.jpg", "resina2.jpg", "dtf2.jpg", "pedreria1.jpeg", "sublimacion5.jpg", "serigrafia3.jpg", "sublimacion6.jpg", "resina3.jpg", "dtf3.jpg", "serigrafia10.jpg", "sublimacion15.jpg", "sublimacion22.jpg", "serigrafia14.jpg", "resina8.jpg"];
 function renderSlider() {
     const slider = document.getElementById('student-slider'); if(!slider) return;
@@ -656,142 +808,11 @@ window.scrollSlider = function(direction) {
     slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
 
-window.openLoginModal = function() {
-    const m = document.getElementById('loginModal'); const c = document.getElementById('loginModalContent');
-    m.classList.remove('hidden'); m.classList.add('flex');
-    setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
-}
-window.closeLoginModal = function() {
-    const m = document.getElementById('loginModal'); const c = document.getElementById('loginModalContent');
-    m.classList.add('opacity-0'); c.classList.add('scale-95');
-    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
-}
-
-window.checkAdminPin = function() {
-    if(document.getElementById('adminPin').value === 'adminMultiprintt2026') {
-        window.isAdminMode = true;
-        closeLoginModal();
-        document.getElementById('admin-banner').classList.remove('hidden');
-        document.getElementById('main-header').classList.add('top-8'); // Bajar menú para el banner
-        
-        // Hacer textos editables
-        document.querySelectorAll('[data-edit]').forEach(el => {
-            el.setAttribute('contenteditable', 'true');
-            el.addEventListener('blur', async (e) => {
-                const text = e.target.textContent;
-                const path = e.target.getAttribute('data-edit').split('.');
-                const fieldName = path[1];
-                try {
-                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), { [fieldName]: text }, { merge: true });
-                    showToast("Texto Actualizado");
-                } catch(err) { console.error(err); }
-            });
-            // Prevenir pegado con formato
-            el.addEventListener("paste", function(e) {
-                e.preventDefault();
-                var text = (e.originalEvent || e).clipboardData.getData('text/plain');
-                document.execCommand('insertText', false, text);
-            });
-        });
-        
-        window.renderProducts(); window.renderCourses(); // Redibujar con botones admin
-    } else { alert("Contraseña incorrecta"); }
-}
-
-window.exitAdminMode = function() {
-    window.isAdminMode = false;
-    document.getElementById('admin-banner').classList.add('hidden');
-    document.getElementById('main-header').classList.remove('top-8');
-    document.querySelectorAll('[data-edit]').forEach(el => el.removeAttribute('contenteditable'));
-    window.renderProducts(); window.renderCourses();
-}
-
-window.showToast = function(msg) {
-    const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = msg;
-    t.classList.remove('translate-x-full', 'opacity-0');
-    setTimeout(() => { t.classList.add('translate-x-full', 'opacity-0'); }, 2500);
-}
-
-// Formularios Creador (Productos y Cursos)
-window.openCreator = function(type, id = null) {
-    const m = document.getElementById('creatorModal'); const c = document.getElementById('creatorModalContent');
-    const title = document.getElementById('creator-title'); const form = document.getElementById('creator-form');
-    
-    if(type === 'product') {
-        title.textContent = id ? 'Editar Producto' : 'Añadir Producto';
-        const p = id ? window.appProducts.find(x => x.id === id) : {};
-        form.innerHTML = `
-            <input id="f-name" placeholder="Nombre" value="${p.name||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            <select id="f-cat" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-                <option value="premium" ${p.category==='premium'?'selected':''}>Premium</option>
-                <option value="textil" ${p.category==='textil'?'selected':''}>Textil</option>
-                <option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas</option>
-            </select>
-            <input id="f-price" type="number" placeholder="Precio" value="${p.price||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            <input id="f-img" placeholder="URL Imagen" value="${p.image||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            <button onclick="saveDoc('products', '${id||''}')" class="w-full py-3 mt-2 rounded-lg bg-white text-black font-bold hover:bg-zinc-200">Guardar</button>
-        `;
-    } else {
-        title.textContent = id ? 'Editar Curso' : 'Añadir Curso';
-        const cr = id ? window.appCourses.find(x => x.id === id) : {};
-        form.innerHTML = `
-            <input id="f-title" placeholder="Título" value="${cr.title||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            <div class="grid grid-cols-2 gap-2">
-                <input id="f-price" placeholder="Precio ($)" value="${cr.price||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-                <input id="f-modality" placeholder="Modalidad" value="${cr.modality||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            </div>
-            <input id="f-schedule" placeholder="Horarios" value="${cr.schedule||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            <input id="f-img" placeholder="URL Imagen" value="${cr.image||''}" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">
-            <textarea id="f-desc" placeholder="Descripción corta" class="w-full p-3 rounded-lg bg-black border border-white/10 text-white text-sm outline-none focus:border-cyan-500">${cr.desc||''}</textarea>
-            <button onclick="saveDoc('courses', '${id||''}')" class="w-full py-3 mt-2 rounded-lg bg-white text-black font-bold hover:bg-zinc-200">Guardar</button>
-        `;
-    }
-    m.classList.remove('hidden'); m.classList.add('flex');
-    setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
-}
-
-window.closeCreatorModal = function() {
-    const m = document.getElementById('creatorModal'); const c = document.getElementById('creatorModalContent');
-    m.classList.add('opacity-0'); c.classList.add('scale-95');
-    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
-}
-
-window.saveDoc = async function(collectionName, id) {
-    event.target.textContent = "Guardando...";
-    try {
-        let data = {};
-        if(collectionName === 'products') {
-            data = { name: document.getElementById('f-name').value, category: document.getElementById('f-cat').value, price: parseFloat(document.getElementById('f-price').value||0), image: document.getElementById('f-img').value };
-        } else {
-            data = { title: document.getElementById('f-title').value, modality: document.getElementById('f-modality').value, price: document.getElementById('f-price').value, schedule: document.getElementById('f-schedule').value, image: document.getElementById('f-img').value, desc: document.getElementById('f-desc').value };
-        }
-        
-        const docId = id || 'doc_' + Date.now(); // Crear ID si es nuevo
-        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, docId), data, { merge: true });
-        
-        showToast("Elemento Guardado");
-        closeCreatorModal();
-        loadFirebaseData(); // Recargar datos
-    } catch(err) { alert("Error al guardar: " + err); }
-}
-
-window.deleteDocById = async function(collectionName, id) {
-    if(confirm("¿Eliminar definitivamente?")) {
-        try {
-            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id));
-            showToast("Eliminado");
-            loadFirebaseData();
-        } catch(err) { console.error(err); }
-    }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
-    renderProducts(); // Dibuja la plantilla al instante
-    renderCourses(); // Dibuja la plantilla al instante
-    renderSlider(); 
-    initMap(); // Inicializa el mapa silenciosamente
-    loadFirebaseData(); // Actualiza si hay datos en Firebase
+    renderSlider();
+    window.renderProducts(); window.renderCourses(); // Carga Instantánea
+    loadFirebaseData(); // Sincroniza en background sin afectar la vista
 });
 </script>
 </body>
