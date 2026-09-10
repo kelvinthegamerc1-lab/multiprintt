@@ -149,7 +149,6 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 </header>
 
 <main class="relative w-full h-[100dvh] overflow-hidden">
-  
   <section id="view-catalog" class="view-slide active-slide slide-scroll">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 relative flex flex-col min-h-[calc(100vh-160px)]">
         <div class="absolute top-2 right-4 sm:right-6 lg:right-8 z-[60]">
@@ -166,7 +165,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
             </div>
         </div>
         <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8">
-            <div class="w-full flex items-center justify-center py-20 text-white/50"><i class="fa-solid fa-circle-notch fa-spin text-3xl"></i></div>
+            <!-- Productos se inyectan por JS inmediatamente -->
         </div>
     </div>
   </section>
@@ -274,59 +273,63 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
     </div>
   </section>
 
-  <section id="view-contact" class="view-slide flex flex-col">
-    <div class="max-w-6xl mx-auto px-4 sm:px-5 lg:px-8 w-full h-full flex flex-col pt-2 pb-3 md:pb-5 relative z-10 overflow-hidden">
+  <section id="view-contact" class="view-slide flex flex-col slide-scroll">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col justify-between pt-6 pb-6 relative z-10">
         
-        <div class="reveal text-center shrink-0 relative z-20 mb-3 md:mb-5 lg:mb-6">
-            <div class="text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1">Hablemos</div>
-            <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-4xl lg:text-[2.2rem] font-extrabold tracking-[-.05em] relative z-20 leading-tight">
-                <span class="block">Tu próxima idea</span>
-                <span class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
-            </h2>
-            <p class="text-zinc-400 text-[10px] md:text-[11px] max-w-xl mx-auto mt-1 leading-relaxed hidden sm:block">Cotiza productos, uniformes corporativos o visítanos en nuestra matriz.</p>
-        </div>
-
-        <div class="flex flex-col lg:flex-row gap-5 items-center reveal w-full flex-1 min-h-0 mt-auto">
+        <!-- Bloque Central: Todo se alinea perfectamente en el medio -->
+        <div class="flex-1 flex flex-col justify-center gap-8 lg:gap-12 py-4">
             
-            <div class="w-full flex-1 min-h-[200px] h-full max-h-[35vh] lg:max-h-[38vh] rounded-[12px] md:rounded-[16px] overflow-hidden relative border border-white/10 shadow-2xl bg-[#0e0e12] shrink-0">
-                <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full"></div>
-                <div class="absolute bottom-3 left-3 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10">
-                    <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg">
-                        <p class="text-[10px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                        <p id="contact-address" class="text-[8px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1">Luis Vernaza y José Mascote.</p>
-                    </div>
-                </div>
-                <button onclick="recenterMap()" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 z-[400] w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg hover:bg-white/20 transition-all pointer-events-auto">
-                    <i class="fa-solid fa-location-crosshairs text-pink-400 text-sm md:text-base"></i>
-                </button>
+            <div class="reveal text-center shrink-0">
+                <div class="text-[9px] tracking-[.3em] uppercase text-cyan-300 font-bold mb-2">Hablemos</div>
+                <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-4xl lg:text-[2.8rem] font-extrabold tracking-[-.04em] leading-tight">
+                    <span class="block">Tu próxima idea</span>
+                    <span class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
+                </h2>
             </div>
 
-            <div class="flex flex-col gap-3 lg:gap-4 justify-center w-full lg:w-[40%] lg:pl-6 text-center lg:text-left h-full shrink-0">
+            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center reveal w-full">
                 
-                <div class="group mb-2 lg:mb-3">
-                    <div class="text-[8px] uppercase tracking-[.4em] text-zinc-600 font-bold mb-1 block">WhatsApp</div>
-                    <a id="contact-phone" href="https://wa.me/593997591021" target="_blank" class="text-xl lg:text-2xl font-light tracking-wider text-white hover:text-pink-400 transition-colors block">099 759 1021</a>
+                <!-- Mapa Optimizado (Tamaño fijo para no estirarse) -->
+                <div class="w-full lg:w-1/2 h-[200px] sm:h-[250px] lg:h-[320px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-2xl bg-[#0e0e12] shrink-0">
+                    <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full"></div>
+                    <div class="absolute bottom-3 left-3 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10">
+                        <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg">
+                            <p class="text-[10px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
+                            <p id="contact-address" class="text-[8px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1">Luis Vernaza y José Mascote.</p>
+                        </div>
+                    </div>
+                    <button onclick="recenterMap()" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 z-[400] w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg hover:bg-white/20 transition-all pointer-events-auto">
+                        <i class="fa-solid fa-location-crosshairs text-pink-400 text-sm md:text-base"></i>
+                    </button>
                 </div>
-                
-                <div class="group mb-2 lg:mb-3">
-                    <div class="text-[8px] uppercase tracking-[.4em] text-zinc-600 font-bold mb-1 block">Correo</div>
-                    <a id="contact-email" href="mailto:multiprintt@yahoo.com" class="text-sm lg:text-base font-light tracking-wide text-white hover:text-cyan-400 transition-colors block line-clamp-1">multiprintt@yahoo.com</a>
-                </div>
-                
-                <div class="group">
-                    <div class="text-[8px] uppercase tracking-[.4em] text-zinc-600 font-bold mb-2 block">Síguenos</div>
-                    <div class="flex items-center justify-center lg:justify-start gap-5">
-                        <a id="ig-link-footer" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-pink-400 transition-colors text-lg"><i class="fa-brands fa-instagram"></i></a>
-                        <a id="fb-link-footer" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-blue-500 transition-colors text-lg"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a id="tk-link-footer" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-500 hover:text-white transition-colors text-lg"><i class="fa-brands fa-tiktok"></i></a>
+
+                <!-- Datos de Contacto Limpios y Centrados en Móvil -->
+                <div class="flex flex-col gap-6 lg:gap-8 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0">
+                    <div class="group">
+                        <div class="text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1.5 block">WhatsApp</div>
+                        <a id="contact-phone" href="https://wa.me/593997591021" target="_blank" class="inline-block text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors">099 759 1021</a>
+                    </div>
+                    <div class="group">
+                        <div class="text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1.5 block">Correo</div>
+                        <a id="contact-email" href="mailto:multiprintt@yahoo.com" class="inline-block text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors">multiprintt@yahoo.com</a>
+                    </div>
+                    <div class="group">
+                        <div class="text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-3 block">Síguenos</div>
+                        <div class="flex items-center justify-center lg:justify-start gap-6">
+                            <a id="ig-link-footer" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-pink-400 transition-colors text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                            <a id="fb-link-footer" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-blue-500 transition-colors text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a id="tk-link-footer" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-400 hover:text-white transition-colors text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                        </div>
                     </div>
                 </div>
-                
             </div>
         </div>
 
-        <footer class="mt-3 pt-3 text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5">
-            <span>© <span id="year"></span> Multiprintt. Tú Imagen Viva. Todos los derechos reservados.</span>
+        <!-- Pie de página (Separado permanentemente hacia abajo) -->
+        <footer class="mt-auto text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 pt-4 flex justify-center items-center gap-2">
+            <span>© <span id="year"></span> Multiprintt. Tú Imagen Viva.</span>
+            <!-- Botón Secreto para Admin -->
+            <a href="admin.html" class="text-zinc-700 hover:text-pink-500 transition-colors p-1"><i class="fa-solid fa-lock text-[10px]"></i></a>
         </footer>
     </div>
   </section>
@@ -412,11 +415,11 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script type="module">
-// ===== CONFIGURACIÓN FIREBASE (REAL) =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+// Tu Configuración Real de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",
   authDomain: "multiprintt-cc0f1.firebaseapp.com",
@@ -430,9 +433,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const APP_ID = "multiprintt-web"; // Identificador para la base de datos
+const APP_ID = "multiprintt-web";
 
-// Variables Globales (Datos por defecto en caso de base de datos vacía)
+// Datos por defecto (Cargan instantáneamente)
 window.appProducts = [
     {name:'Fotocuadros en Madera y Aluminio',category:'premium',price:25,image:'',icon:'fa-image'},
     {name:'Sombreros Personalizados TRI',category:'textil',price:8,image:'',icon:'fa-hat-cowboy'},
@@ -453,7 +456,7 @@ window.appCourses = [
 ];
 let currentFilter = 'all';
 
-// Navegación (Hecha Global)
+// Navegación Global
 window.navigate = function(targetId) {
     const views = ['catalog', 'about', 'courses', 'contact'];
     views.forEach(id => {
@@ -523,13 +526,13 @@ window.renderCourses = function(){
     });
 }
 
-// Inicializar Firebase y Descargar Datos Reales
+// Inicializar Firebase (Silencioso y sin demoras)
 async function loadFirebaseData() {
     try {
         await signInAnonymously(auth);
         if(!auth.currentUser) return;
         
-        // 1. Cargar Textos Principales
+        // 1. Textos
         const textRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home');
         const textSnap = await getDoc(textRef);
         if (textSnap.exists()) {
@@ -550,30 +553,28 @@ async function loadFirebaseData() {
             }
         }
 
-        // 2. Cargar Productos
+        // 2. Productos
         const prodRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'products');
         const prodSnap = await getDocs(prodRef);
         if (!prodSnap.empty) {
             window.appProducts = prodSnap.docs.map(d => ({id: d.id, ...d.data()}));
+            window.renderProducts();
         }
-        window.renderProducts();
 
-        // 3. Cargar Cursos
+        // 3. Cursos
         const coursesRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses');
         const coursesSnap = await getDocs(coursesRef);
         if (!coursesSnap.empty) {
             window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()}));
+            window.renderCourses();
         }
-        window.renderCourses();
 
     } catch (error) {
-        console.error("Error cargando Firebase, usando datos por defecto.", error);
-        window.renderProducts();
-        window.renderCourses();
+        console.warn("Usando datos locales por defecto.");
     }
 }
 
-// Modales y Otras Funciones
+// Modales
 window.openCourseModal = function(index) {
     const c = window.appCourses[index];
     const modal = document.getElementById('courseModal');
@@ -616,7 +617,7 @@ function initMap() {
 }
 window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185722, -79.892194], 19, { animate: true }); }
 
-// Configurar Carrusel de Estudiantes
+// Carrusel de Estudiantes
 const sliderImages = ["sublimacion4.jpg", "serigrafia2.jpg", "resina2.jpg", "dtf2.jpg", "pedreria1.jpeg", "sublimacion5.jpg", "serigrafia3.jpg", "sublimacion6.jpg", "resina3.jpg", "dtf3.jpg", "serigrafia10.jpg", "sublimacion15.jpg", "sublimacion22.jpg", "serigrafia14.jpg", "resina8.jpg"];
 function renderSlider() {
     const slider = document.getElementById('student-slider'); if(!slider) return;
@@ -630,8 +631,10 @@ window.scrollSlider = function(direction) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+    renderProducts(); 
+    renderCourses();
     renderSlider();
-    loadFirebaseData(); // Inicia la conexión real
+    loadFirebaseData();
 });
 </script>
 </body>
