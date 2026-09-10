@@ -66,6 +66,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
+/* Builder Visual */
 .admin-tool { display: none !important; }
 body.builder-mode .admin-tool { display: flex !important; }
 
@@ -82,7 +83,6 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
 
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 
-/* Efecto para hacer editables visualmente los testimonios de video en el builder */
 .admin-video-edit-overlay { display: none; }
 body.builder-mode .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
 body.builder-mode .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); }
@@ -199,25 +199,26 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
         
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
             
-            <!-- 🟢 COLUMNA DE VIDEOS ESCALABLE -->
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
                 <div class="video-testimonial-card relative rounded-[16px] overflow-hidden bg-[#0e0e12] border border-white/10 shadow-2xl group h-[280px] shrink-0">
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" muted playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-500"></video>
+                    
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-                        <div class="w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl pointer-events-auto cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)]" onclick="openVideoModal(this)"><i class="fa-solid fa-play ml-1"></i></div>
-                    </div>
+                    
+                    <!-- FIX: Botón con z-index alto para móvil -->
+                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[15] w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)] ignore-drag">
+                        <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
+                    </button>
+                    
                     <div class="absolute bottom-0 left-0 right-0 p-5 z-20 flex flex-col pointer-events-none">
                         <h4 data-editable="true" class="vt-name text-white text-lg font-bold pointer-events-auto w-max">Carlos P.</h4>
                         <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-bold uppercase tracking-[.2em] mb-1 pointer-events-auto w-max">Caso de Éxito</span>
                     </div>
-                    <!-- Capa de edición para el builder (oculta en modo normal) -->
                     <div class="admin-video-edit-overlay">
                         <p data-editable="true" class="vt-quote hidden text-xs text-center text-white/90 p-4 border border-dashed border-white/40 rounded bg-black/50">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."</p>
                     </div>
                 </div>
 
-                <!-- Botón Añadir Video -->
                 <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-cyan-500/50 rounded-[16px] flex items-center justify-center text-cyan-500 font-bold hover:bg-cyan-500/10 cursor-pointer transition-colors ignore-drag">
                     <i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Video</span>
                 </button>
@@ -248,7 +249,6 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
                     </div>
                 </div>
 
-                <!-- Botón Añadir Texto -->
                 <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-violet-500/50 rounded-[16px] flex flex-col items-center justify-center text-violet-400 font-bold hover:bg-violet-500/10 cursor-pointer transition-colors ignore-drag">
                     <i class="fa-solid fa-plus text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Texto</span>
                 </button>
@@ -342,18 +342,14 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
   </div>
 </div>
 
-<!-- 🟢 NUEVO MODAL DE VIDEO CINEMATOGRÁFICO 9:16 -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
     <div class="relative w-full max-w-[360px] aspect-[9/16] max-h-[85vh] bg-black border border-white/10 rounded-[24px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col" id="videoModalContent">
         <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg"><i class="fa-solid fa-xmark"></i></button>
         
-        <!-- Video inmutable sin controles -->
         <video id="testimonial-video" src="" playsinline class="absolute inset-0 w-full h-full object-cover pointer-events-none"></video>
         
-        <!-- Gradiente para el texto inferior -->
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none z-10"></div>
         
-        <!-- Textos superpuestos -->
         <div class="absolute bottom-0 left-0 right-0 p-6 z-20 pointer-events-none">
             <i class="fa-solid fa-quote-left text-cyan-500/50 text-2xl mb-2"></i>
             <p id="vm-quote" class="text-white text-[13px] font-medium leading-relaxed mb-4 shadow-black drop-shadow-md">...</p>
@@ -366,7 +362,6 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
             </div>
         </div>
 
-        <!-- Temporizador minimalista -->
         <div class="absolute bottom-5 right-5 z-20 bg-black/50 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 flex items-center gap-1.5 pointer-events-none">
             <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
             <span id="vm-timer" class="text-white text-[10px] font-mono font-bold">-0:00</span>
@@ -542,16 +537,12 @@ async function loadFirebaseData() {
         setTimeout(() => {
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden');
             if(window.multiprinttMap) { setTimeout(() => window.multiprinttMap.invalidateSize(), 400); }
-            // Forzar navegación al catálogo sin importar cómo se guardó en DB
             window.navigate('catalog');
             window.parent.postMessage({ type: 'APP_READY' }, '*');
         }, 500); 
     }
 }
 
-// ========================================================
-// ⚙️ SISTEMA POSTMESSAGE PARA EL ADMIN
-// ========================================================
 let selectedEl = null;
 
 const getHoverColor = (cls) => {
@@ -572,13 +563,15 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('builder-mode');
         
-        // INTERCEPTOR DE CLICKS
+        // INTERCEPTOR DE CLICKS IZQUIERDOS
         document.addEventListener('click', function(e) {
             if (!window.isAdminMode) return;
             
-            // 🟢 PERMITIR NAVEGACIÓN EN MODO BUILDER SIN ROMPERLO
+            // 🟢 OCULTAR EL MENÚ CONTEXTUAL SIEMPRE QUE HAGAN CLICK
+            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+            
             const navBtn = e.target.closest('button[onclick^="navigate("]');
-            if(navBtn) return; // Deja que el botón de navegación fluya normalmente
+            if(navBtn) return; // Permitir navegación
             
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
             if (target && !target.closest('.ignore-drag')) {
@@ -592,7 +585,7 @@ window.addEventListener('message', async (event) => {
             }
         }, true); 
 
-        // INTERCEPTOR DE CLICK DERECHO
+        // INTERCEPTOR DE CLICKS DERECHOS
         document.addEventListener('contextmenu', function(e) {
             if (!window.isAdminMode) return;
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
@@ -617,8 +610,9 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
         const iconClass = event.data.iconClass;
         const hoverCls = getHoverColor(iconClass);
-        const pcNav = document.getElementById('social-nav-pc');
         
+        // Añadir PC
+        const pcNav = document.getElementById('social-nav-pc');
         if(pcNav) {
             const a = document.createElement('a');
             a.setAttribute('data-editable', 'true');
@@ -626,8 +620,31 @@ window.addEventListener('message', async (event) => {
             a.className = `text-zinc-500 ${hoverCls} transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center`;
             a.innerHTML = `<i class="${iconClass} text-[18px] pointer-events-none"></i>`;
             const pcTool = pcNav.querySelector('.admin-tool');
-            if(pcTool) pcTool.insertAdjacentElement('afterend', a);
-            else pcNav.appendChild(a);
+            if(pcTool) pcTool.insertAdjacentElement('beforebegin', a); else pcNav.appendChild(a);
+        }
+
+        // Añadir Mobile
+        const mobileNav = document.getElementById('social-nav-mobile');
+        if(mobileNav) {
+            const a = document.createElement('a');
+            a.setAttribute('data-editable', 'true');
+            a.href = "#";
+            a.className = `text-zinc-400 ${hoverCls} transition-colors`;
+            a.innerHTML = `<i class="${iconClass} text-lg pointer-events-none"></i>`;
+            const mobTool = mobileNav.querySelector('.admin-tool');
+            if(mobTool) mobTool.insertAdjacentElement('beforebegin', a); else mobileNav.appendChild(a);
+        }
+
+        // Añadir Footer
+        const footerNav = document.getElementById('social-footer-links');
+        if(footerNav) {
+            const a = document.createElement('a');
+            a.setAttribute('data-editable', 'true');
+            a.href = "#";
+            a.className = `text-zinc-400 ${hoverCls} transition-colors text-xl sm:text-2xl`;
+            a.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
+            const footTool = footerNav.querySelector('.admin-tool');
+            if(footTool) footTool.insertAdjacentElement('beforebegin', a); else footerNav.appendChild(a);
         }
     }
 
@@ -657,6 +674,40 @@ window.addEventListener('message', async (event) => {
         }
     }
 
+    // 🟢 NUEVO: BORRAR PADRE (ej. cuadro de video)
+    if (event.data.type === 'DELETE_PARENT_NODE') {
+        if(selectedEl) {
+            let parent = selectedEl.parentElement;
+            if(parent && parent.tagName !== 'BODY' && parent.tagName !== 'MAIN') {
+                parent.style.transition = 'all 0.3s ease';
+                parent.style.opacity = '0';
+                parent.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    parent.remove();
+                    selectedEl = null;
+                }, 300);
+            }
+        }
+    }
+
+    // 🟢 NUEVO: SELECCIONAR PADRE
+    if (event.data.type === 'SELECT_PARENT_NODE') {
+        if(selectedEl) {
+            let parent = selectedEl.parentElement;
+            if(parent && parent.tagName !== 'BODY' && parent.tagName !== 'MAIN') {
+                selectedEl.classList.remove('builder-selected-el');
+                selectedEl = parent;
+                selectedEl.classList.add('builder-selected-el');
+                window.parent.postMessage({ 
+                    type: 'ELEMENT_SELECTED', 
+                    tagName: parent.tagName, 
+                    text: parent.innerText || '', 
+                    href: parent.href || parent.src || '' 
+                }, '*');
+            }
+        }
+    }
+
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state;
         const containers = document.querySelectorAll('.sortable-zone');
@@ -679,67 +730,17 @@ window.addEventListener('message', async (event) => {
             document.body.classList.remove('dragging-active');
         }
 
-        const pcNav = document.getElementById('social-nav-pc');
-        const mobileNav = document.getElementById('social-nav-mobile');
-        const footerNav = document.getElementById('social-footer-links');
-
-        if(pcNav && mobileNav && footerNav) {
-            const networks = Array.from(pcNav.querySelectorAll('a:not(.admin-tool)')).map(a => {
-                const icon = a.querySelector('i');
-                let baseClass = icon ? icon.className.replace(/text-\[.*?\]|text-(sm|md|lg|xl|2xl)|pointer-events-none/g, '').trim() : '';
-                return { href: a.href, iconClass: baseClass };
-            });
-
-            const pcTool = pcNav.querySelector('.admin-tool');
-            pcNav.innerHTML = '';
-            if(pcTool) pcNav.appendChild(pcTool); 
-            networks.forEach((net, index) => {
-                const a = document.createElement('a');
-                a.setAttribute('data-editable', 'true');
-                a.href = net.href;
-                a.target = '_blank';
-                const hoverCls = getHoverColor(net.iconClass);
-                if(index === networks.length - 1) {
-                    a.className = `text-zinc-400 ${hoverCls} transition-colors shrink-0 flex items-center justify-center`;
-                } else {
-                    a.className = `text-zinc-500 ${hoverCls} transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center`;
-                }
-                a.innerHTML = `<i class="${net.iconClass} text-[18px] pointer-events-none"></i>`;
-                pcNav.appendChild(a);
-            });
-
-            const mobTool = mobileNav.querySelector('.admin-tool');
-            mobileNav.innerHTML = '';
-            networks.forEach((net) => {
-                const a = document.createElement('a');
-                a.setAttribute('data-editable', 'true');
-                a.href = net.href;
-                a.target = '_blank';
-                a.className = `text-zinc-400 ${getHoverColor(net.iconClass)} transition-colors`;
-                a.innerHTML = `<i class="${net.iconClass} text-lg pointer-events-none"></i>`;
-                mobileNav.appendChild(a);
-            });
-            if(mobTool) mobileNav.appendChild(mobTool);
-
-            const footTool = footerNav.querySelector('.admin-tool');
-            footerNav.innerHTML = '';
-            networks.forEach((net) => {
-                const a = document.createElement('a');
-                a.setAttribute('data-editable', 'true');
-                a.href = net.href;
-                a.target = '_blank';
-                a.className = `text-zinc-400 ${getHoverColor(net.iconClass)} transition-colors text-xl sm:text-2xl`;
-                a.innerHTML = `<i class="${net.iconClass} pointer-events-none"></i>`;
-                footerNav.appendChild(a);
-            });
-            if(footTool) footerNav.appendChild(footTool);
-        }
-
         const layoutData = {};
         document.querySelectorAll('.editable-section').forEach(zone => {
             if(!zone.id) return;
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
+            
+            // 🟢 LIMPIEZA DE BASURA DE SORTABLE PARA QUE NO SE GUARDEN POSICIONES BUGEADAS
+            clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
+            clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = '');
+            clone.querySelectorAll('[style*="will-change"]').forEach(e => e.style.willChange = '');
+
             layoutData[zone.id] = clone.innerHTML;
         });
 
@@ -770,15 +771,12 @@ window.closeCourseModal = function() {
     setTimeout(() => { document.getElementById('courseModal').classList.add('hidden'); document.getElementById('courseModal').classList.remove('flex'); }, 300);
 }
 
-// 🟢 LÓGICA DINÁMICA DEL MODAL DE VIDEO CINEMÁTICO A PRUEBA DE FALLOS
 window.openVideoModal = function(btn) {
     if(window.isAdminMode) return;
     
-    // Valores por defecto
     let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1";
     let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."';
     
-    // Protección anti "undefined" en caso de que cargue el diseño antiguo de Firebase
     if (btn && typeof btn.closest === 'function') {
         const card = btn.closest('.video-testimonial-card');
         if (card) {
@@ -787,9 +785,6 @@ window.openVideoModal = function(btn) {
             const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
             const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
         }
-    } else {
-        const oldVid = document.getElementById('main-video-src');
-        if (oldVid) videoSrc = oldVid.src;
     }
     
     document.getElementById('testimonial-video').src = videoSrc;
