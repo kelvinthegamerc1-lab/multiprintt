@@ -10,12 +10,11 @@
 <!-- Google Search Console Verification -->
 <meta name="google-site-verification" content="fOxy3YXgVzVKik8PFB5AyU62JcSRD2E7Zk1dvwmavkA" />
 
-<!-- Open Graph / Compartir Redes Sociales (WhatsApp, Facebook, etc.) -->
+<!-- Open Graph / Compartir Redes Sociales -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
 <meta property="og:title" content="Multiprintt | Impresión & Publicidad">
 <meta property="og:description" content="Tú Imagen Viva. Expertos en personalización, impresión gráfica, DTF, sublimación y academia.">
-<!-- IMPORTANTE: WhatsApp requiere una URL absoluta para la imagen -->
 <meta property="og:image" content="https://multiprintt.web.app/recursos/favicon.png">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
@@ -27,7 +26,7 @@
 <meta name="twitter:description" content="Tú Imagen Viva. Expertos en personalización, impresión gráfica, DTF, sublimación y academia.">
 <meta name="twitter:image" content="https://multiprintt.web.app/recursos/favicon.png">
 
-<link rel="icon" type="image/png" href="/recursos/favicon.png">
+<link rel="icon" type="image/png" href="https://multiprintt.web.app/recursos/favicon.png">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -67,14 +66,8 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 
 .gradient-text{
     background:linear-gradient(100deg,#fff 15%,#d5d0ff 48%,#ff4bb8 90%);
-    -webkit-background-clip:text; 
-    background-clip:text; 
-    color:transparent;
-    line-height: 1.4 !important;
-    padding-bottom: 0.2em; 
-    display: inline-block;
-    position: relative;
-    z-index: 20; 
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    line-height: 1.4 !important; padding-bottom: 0.2em; display: inline-block; position: relative; z-index: 20; 
 }
 
 .gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
@@ -87,9 +80,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
     background: var(--bg); opacity: 0; visibility: hidden;
     transform: translateY(15px) scale(0.99);
     transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s;
-    z-index: 0; 
-    padding-top: 74px; 
-    padding-bottom: calc(75px + env(safe-area-inset-bottom));
+    z-index: 0; padding-top: 74px; padding-bottom: calc(75px + env(safe-area-inset-bottom));
 }
 @media(min-width: 768px) { .view-slide { padding-top: 80px; padding-bottom: 20px; } }
 .view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1); z-index: 10; }
@@ -118,11 +109,11 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
     
     <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
       <div class="w-9 h-9 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
-        <img src="/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\'w-full h-full flex items-center justify-center font-black\'>M</span>'">
+        <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\'w-full h-full flex items-center justify-center font-black\'>M</span>'">
       </div>
       <div>
-        <h1 class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0">MULTIPRINTT</h1>
-        <div class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors">Tú Imagen Viva</div>
+        <h1 class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
+        <div class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
       </div>
     </button>
 
@@ -135,21 +126,21 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 
     <div class="flex items-center relative">
         <div class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1">
-            <a href="https://wa.me/593997591021" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg"></i></a>
-            <a href="https://instagram.com/multiprintt" target="_blank" class="hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
-            <a href="https://facebook.com/multiprintt" target="_blank" class="hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-lg"></i></a>
-            <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
+            <a id="wa-link-mobile" href="https://wa.me/593997591021" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+            <a id="ig-link-mobile" href="https://instagram.com/multiprintt" target="_blank" class="hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+            <a id="fb-link-mobile" href="https://facebook.com/multiprintt" target="_blank" class="hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-lg"></i></a>
+            <a id="tk-link-mobile" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
         </div>
 
         <div class="hidden md:flex relative w-10 h-10 z-[110]">
             <div class="absolute top-0 right-0 flex flex-col items-center group w-10 h-10 hover:h-[200px] bg-[#25D366] hover:bg-[#101014]/95 hover:backdrop-blur-xl rounded-full transition-all duration-300 overflow-hidden border border-transparent hover:border-white/15 shadow-[0_0_15px_rgba(37,211,102,0.3)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-                <a href="https://wa.me/593997591021" target="_blank" class="w-10 h-10 shrink-0 flex items-center justify-center text-black group-hover:text-[#25D366] transition-colors">
+                <a id="wa-link-pc" href="https://wa.me/593997591021" target="_blank" class="w-10 h-10 shrink-0 flex items-center justify-center text-black group-hover:text-[#25D366] transition-colors">
                     <i class="fa-brands fa-whatsapp text-[22px]"></i>
                 </a>
                 <div class="flex flex-col items-center w-full flex-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
-                    <a href="https://instagram.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-[18px]"></i></a>
-                    <a href="https://facebook.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-[18px]"></i></a>
-                    <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-[18px]"></i></a>
+                    <a id="ig-link-pc" href="https://instagram.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-[18px]"></i></a>
+                    <a id="fb-link-pc" href="https://facebook.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-[18px]"></i></a>
+                    <a id="tk-link-pc" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-[18px]"></i></a>
                 </div>
             </div>
         </div>
@@ -174,7 +165,9 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
                 </div>
             </div>
         </div>
-        <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8"></div>
+        <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8">
+            <div class="w-full flex items-center justify-center py-20 text-white/50"><i class="fa-solid fa-circle-notch fa-spin text-3xl"></i></div>
+        </div>
     </div>
   </section>
 
@@ -185,10 +178,10 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
     <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
         <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20">
             <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
-                <span class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
-                <span class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
+                <span id="hero-subtitle" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
+                <span id="hero-title" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
             </h2>
-            <p class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
+            <p id="about-desc" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
             
             <div class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
                 <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400"></i> Envíos Nacionales</span>
@@ -221,20 +214,22 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
             </div>
         </div>
         
-        <div id="courses-grid" class="w-full pb-8 mb-8 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-7xl mx-auto"></div>
+        <div id="courses-grid" class="w-full pb-8 mb-8 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-7xl mx-auto">
+            <!-- Cursos inyectados dinámicamente -->
+        </div>
 
         <div class="reveal mt-4 mb-6 text-center md:text-left">
             <h3 class="display text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Trabajos de <span class="text-pink-400">Estudiantes</span></h3>
             <p class="text-zinc-400 text-xs md:text-sm">Resultados 100% reales creados por nuestros alumnos durante sus capacitaciones.</p>
         </div>
         
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-w-7xl mx-auto mb-10 pb-10 border-b border-white/10 reveal w-full">
-            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="/recursos/galeria1.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1626786139589-9b43fb4e9124?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
-            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="/recursos/galeria2.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1560205001-a7226db2a5f5?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
-            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="/recursos/galeria3.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
-            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="/recursos/galeria4.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1513346940221-6f673d962e97?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
-            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg hidden md:block"><img src="/recursos/galeria5.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
-            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg hidden md:block"><img src="/recursos/galeria6.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1629471167909-5a9e338eb2c1?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+        <div class="relative max-w-7xl mx-auto mb-10 pb-10 border-b border-white/10 reveal w-full group">
+            <button onclick="scrollSlider(-1)" class="hidden md:flex absolute -left-4 top-[40%] z-10 w-10 h-10 rounded-full bg-black/80 backdrop-blur border border-white/10 items-center justify-center text-white hover:bg-white/20 hover:scale-110 transition-all shadow-xl"><i class="fa-solid fa-chevron-left"></i></button>
+            <button onclick="scrollSlider(1)" class="hidden md:flex absolute -right-4 top-[40%] z-10 w-10 h-10 rounded-full bg-black/80 backdrop-blur border border-white/10 items-center justify-center text-white hover:bg-white/20 hover:scale-110 transition-all shadow-xl"><i class="fa-solid fa-chevron-right"></i></button>
+            
+            <div id="student-slider" class="flex overflow-x-auto snap-x snap-mandatory gap-3 sm:gap-4 hide-scrollbar px-1 pb-4">
+                <!-- Imágenes inyectadas por JS -->
+            </div>
         </div>
 
         <div class="reveal mt-4 mb-6 text-center md:text-left">
@@ -244,7 +239,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
         
         <div id="testimonials-grid" class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full">
             <button onclick="openVideoModal()" class="w-full lg:w-1/3 flex flex-col items-center justify-center p-8 rounded-[16px] bg-[#0e0e12] border border-white/10 hover:border-cyan-400/50 shadow-2xl group relative overflow-hidden h-[280px]">
-                <img src="/recursos/galeria2.jpg" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1560205001-a7226db2a5f5?q=80&w=400&auto=format&fit=crop'" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
+                <video src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" preload="metadata" muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500"></video>
                 <div class="w-16 h-16 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-10 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)]"><i class="fa-solid fa-play ml-1"></i></div>
                 <h4 class="text-white text-lg font-bold mt-5 z-10">Carlos P.</h4>
                 <span class="text-cyan-300 text-[10px] font-bold z-10 uppercase tracking-[.2em] mt-2 bg-black/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/10 shadow-lg">Ver Video Testimonio</span>
@@ -298,7 +293,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
                 <div class="absolute bottom-3 left-3 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10">
                     <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg">
                         <p class="text-[10px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                        <p class="text-[8px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1">Luis Vernaza y José Mascote.</p>
+                        <p id="contact-address" class="text-[8px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1">Luis Vernaza y José Mascote.</p>
                     </div>
                 </div>
                 <button onclick="recenterMap()" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 z-[400] w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg hover:bg-white/20 transition-all pointer-events-auto">
@@ -310,20 +305,20 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
                 
                 <div class="group mb-2 lg:mb-3">
                     <div class="text-[8px] uppercase tracking-[.4em] text-zinc-600 font-bold mb-1 block">WhatsApp</div>
-                    <a href="https://wa.me/593997591021" target="_blank" class="text-xl lg:text-2xl font-light tracking-wider text-white hover:text-pink-400 transition-colors block">099 759 1021</a>
+                    <a id="contact-phone" href="https://wa.me/593997591021" target="_blank" class="text-xl lg:text-2xl font-light tracking-wider text-white hover:text-pink-400 transition-colors block">099 759 1021</a>
                 </div>
                 
                 <div class="group mb-2 lg:mb-3">
                     <div class="text-[8px] uppercase tracking-[.4em] text-zinc-600 font-bold mb-1 block">Correo</div>
-                    <a href="mailto:multiprintt@yahoo.com" class="text-sm lg:text-base font-light tracking-wide text-white hover:text-cyan-400 transition-colors block line-clamp-1">multiprintt@yahoo.com</a>
+                    <a id="contact-email" href="mailto:multiprintt@yahoo.com" class="text-sm lg:text-base font-light tracking-wide text-white hover:text-cyan-400 transition-colors block line-clamp-1">multiprintt@yahoo.com</a>
                 </div>
                 
                 <div class="group">
                     <div class="text-[8px] uppercase tracking-[.4em] text-zinc-600 font-bold mb-2 block">Síguenos</div>
                     <div class="flex items-center justify-center lg:justify-start gap-5">
-                        <a href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-pink-400 transition-colors text-lg"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-blue-500 transition-colors text-lg"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-500 hover:text-white transition-colors text-lg"><i class="fa-brands fa-tiktok"></i></a>
+                        <a id="ig-link-footer" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-pink-400 transition-colors text-lg"><i class="fa-brands fa-instagram"></i></a>
+                        <a id="fb-link-footer" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-blue-500 transition-colors text-lg"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a id="tk-link-footer" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-500 hover:text-white transition-colors text-lg"><i class="fa-brands fa-tiktok"></i></a>
                     </div>
                 </div>
                 
@@ -398,235 +393,261 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 </div>
 
 <div id="videoModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
-  <div class="relative w-full max-w-4xl bg-[#0a0a0c] border border-white/10 rounded-[20px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="videoModalContent">
+  <div class="relative w-full max-w-sm mx-auto bg-[#0a0a0c] border border-white/10 rounded-[20px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="videoModalContent">
     <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg">
       <i class="fa-solid fa-xmark"></i>
     </button>
-    <div class="aspect-video w-full bg-black flex items-center justify-center relative group cursor-pointer border-b border-white/10">
-      <!-- Se corrige la ruta a absoluto /recursos/ -->
-      <img src="/recursos/galeria2.jpg" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1560205001-a7226db2a5f5?q=80&w=800&auto=format&fit=crop'" />
-      <div class="w-20 h-20 rounded-full bg-cyan-500/80 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-2xl z-10 group-hover:scale-110 transition-transform shadow-[0_0_30px_rgba(37,216,255,0.4)]">
-        <i class="fa-solid fa-play ml-1"></i>
-      </div>
+    
+    <div class="w-full bg-black relative aspect-[9/16] max-h-[65vh]">
+      <video id="testimonial-video" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4" controls playsinline class="w-full h-full object-cover"></video>
     </div>
+    
     <div class="p-6 bg-[#0e0e12]">
       <h4 class="text-white text-xl font-bold">Experiencia de Carlos P.</h4>
       <p class="text-cyan-400 text-xs font-bold uppercase tracking-widest mt-1">Curso de Serigrafía</p>
-      <p class="text-zinc-400 text-sm mt-3">"Fui sin saber nada y ahora produzco tirajes completos de camisetas para mi propia marca de ropa urbana."</p>
+      <p class="text-zinc-400 text-sm mt-3">"Deje mi empleo anterior para convertirme en mi propio jefe, gestionar mis propios horarios y transformar mi vida por completo."</p>
     </div>
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script>
-window.navigate = function(targetId) {
-    const views = ['catalog', 'about', 'courses', 'contact'];
-    
-    views.forEach(id => {
-        const section = document.getElementById(`view-${id}`);
-        const btn = document.getElementById(`nav-${id}`);
-        const botBtn = document.getElementById(`bot-${id}`);
-        
-        if (id === targetId) {
-            if (section) {
-                section.classList.add('active-slide');
-                setTimeout(() => { section.scrollTop = 0; }, 10);
-            }
-            if(btn) { btn.classList.add('active'); btn.classList.remove('text-[#aaaab3]'); }
-            if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
-            
-            setTimeout(() => { 
-                if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); 
-                if(id === 'contact') {
-                    if(!window.multiprinttMap) { initMap(); } 
-                    else { window.multiprinttMap.invalidateSize(); }
-                }
-            }, 400); 
-        } else {
-            if (section) section.classList.remove('active-slide');
-            
-            if(btn) { btn.classList.remove('active'); btn.classList.add('text-[#aaaab3]'); }
-            if(botBtn) { botBtn.classList.remove('active', 'text-white'); botBtn.classList.add('text-zinc-500'); }
-            
-            if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
-        }
-    });
+<script type="module">
+// ===== CONFIGURACIÓN FIREBASE (REEMPLAZA ESTO CON LOS DATOS DE TU CONSOLA FIREBASE) =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    // 🔥 Pega aquí tu configuración de Firebase
+    apiKey: "TU_API_KEY_AQUI",
+    authDomain: "multiprintt.firebaseapp.com",
+    projectId: "multiprintt",
+    storageBucket: "multiprintt.appspot.com",
+    messagingSenderId: "TUS_DATOS",
+    appId: "TUS_DATOS"
 };
 
-const defaultProducts=[
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const APP_ID = "multiprintt-web"; // Identificador para la base de datos
+
+// Variables Globales
+window.appProducts = [
     {name:'Fotocuadros en Madera y Aluminio',category:'premium',price:25,image:'',icon:'fa-image'},
     {name:'Sombreros Personalizados TRI',category:'textil',price:8,image:'',icon:'fa-hat-cowboy'},
     {name:'Camiseta Algodón Premium DTF',category:'textil',price:18.50,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=700&auto=format&fit=crop',icon:'fa-shirt'},
     {name:'Tazas Mágicas y Termos',category:'tazas',price:12,image:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=700&auto=format&fit=crop',icon:'fa-mug-hot'}
 ];
+window.appCourses = [
+    { id: 1, title: "Curso Completo de Impresión Digital", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/general1.jpeg", desc: "El programa total. Ideal para crear tu propio negocio." },
+    { id: 2, title: "Curso de Sublimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion0.jpg", desc: "Aprende a transferir imágenes de altísima calidad." },
+    { id: 3, title: "Curso de Serigrafía", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/serigrafia0.jpg", desc: "Especialízate en técnicas de impresión tradicional." },
+    { id: 4, title: "Taller de Resina", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/resina0.jpg", desc: "Crea piezas únicas, accesorios exclusivos y dales acabados premium." },
+    { id: 5, title: "Curso de Sellos", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sellos.jpg", desc: "Especialízate en el diseño y elaboración de sellos." },
+    { id: 6, title: "Manejo de Plóter de Corte", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/ploter.jpg", desc: "Manejo profesional de software y hardware para corte." },
+    { id: 7, title: "Curso de Pedrería Textil", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/pedreria0.jpeg", desc: "Aprende la técnica de aplicación de pedrería y strass." },
+    { id: 8, title: "Grabado sobre Vidrio", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/laser0.jpg", desc: "Domina el arte del esmerilado y grabado." },
+    { id: 9, title: "Curso de Polimación", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/dtf0.jpg", desc: "Descubre esta técnica innovadora de impresión." },
+    { id: 10, title: "Elaboración de Agendas", modality: "N/A", price: "$0", schedule: "Consultar", image: "https://multiprintt.web.app/recursos/sublimacion21.jpg", desc: "Aprende el proceso completo para diseñar y armar agendas." }
+];
+let currentFilter = 'all';
 
-// Eliminado el localStorage, usando directamente defaultProducts
-let products = defaultProducts;
-let courses = [];
-let current = 'all';
-
-async function loadCourses() {
-    try {
-        const isPreview = window.location.protocol === 'blob:' || window.location.hostname === '';
-        if (isPreview) throw new Error('Entorno de previsualización bloquea JSON local.');
-
-        // Se corrige la ruta a absoluto /recursos/
-        const response = await fetch('/recursos/imagenes.json');
-        if (response.ok) {
-            courses = await response.json();
-            renderCourses();
+// Navegación (Hecha Global)
+window.navigate = function(targetId) {
+    const views = ['catalog', 'about', 'courses', 'contact'];
+    views.forEach(id => {
+        const section = document.getElementById(`view-${id}`);
+        const btn = document.getElementById(`nav-${id}`);
+        const botBtn = document.getElementById(`bot-${id}`);
+        if (id === targetId) {
+            if (section) { section.classList.add('active-slide'); setTimeout(() => { section.scrollTop = 0; }, 10); }
+            if(btn) { btn.classList.add('active'); btn.classList.remove('text-[#aaaab3]'); }
+            if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
+            setTimeout(() => { 
+                if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); 
+                if(id === 'contact') { if(!window.multiprinttMap) { initMap(); } else { window.multiprinttMap.invalidateSize(); } }
+            }, 400); 
         } else {
-            throw new Error('Archivo JSON no encontrado en el servidor.');
+            if (section) section.classList.remove('active-slide');
+            if(btn) { btn.classList.remove('active'); btn.classList.add('text-[#aaaab3]'); }
+            if(botBtn) { botBtn.classList.remove('active', 'text-white'); botBtn.classList.add('text-zinc-500'); }
+            if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
         }
-    } catch (error) {
-        console.warn('Cargando respaldo de cursos:', error.message);
-        courses = [
-          { "id": 1, "title": "Curso Completo de Impresión Digital", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/completo.jpg", "desc": "El programa total (Sublimación, Serigrafía, DTF, UV DTF y Estampados). Ideal para crear tu propio negocio desde cero." },
-          { "id": 2, "title": "Curso de Sublimación", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/sublimacion.jpg", "desc": "Aprende a transferir imágenes de altísima calidad sobre tazas, camisetas y promocionales con resultados profesionales." },
-          { "id": 3, "title": "Curso de Serigrafía", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/serigrafia.jpg", "desc": "Especialízate en técnicas de impresión tradicional ideales para producción de camisetas y promocionales en gran volumen." },
-          { "id": 4, "title": "Taller de Resina", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/resina.jpg", "desc": "Crea piezas únicas, accesorios exclusivos y dales acabados premium, brillantes y duraderos a diferentes superficies." },
-          { "id": 5, "title": "Curso de Sellos", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/sellos.jpg", "desc": "Especialízate en el diseño, elaboración y fabricación de sellos de goma y microporosos profesionales." },
-          { "id": 6, "title": "Curso de Manejo de Plóter de Corte", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/ploter.jpg", "desc": "Manejo profesional de software y hardware para corte de vinil textil, adhesivos y creación de stickers de alta calidad." },
-          { "id": 7, "title": "Curso de Pedrería Textil", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/pedreria.jpg", "desc": "Aprende la técnica de aplicación de pedrería y strass para personalizar y embellecer todo tipo de prendas y textiles." },
-          { "id": 8, "title": "Curso de Grabado sobre Vidrio", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/grabado.jpg", "desc": "Domina el arte del esmerilado y grabado para personalizar copas, botellas y cristalería fina con precisión absoluta." },
-          { "id": 9, "title": "Curso de Polimación", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/polimacion.jpg", "desc": "Descubre esta técnica innovadora de impresión que permite realizar sublimación directa sobre prendas de algodón." },
-          { "id": 10, "title": "Curso de Elaboración de Agendas", "modality": "N/A", "price": "$0", "schedule": "Consultar disponibilidad", "image": "/recursos/agendas.jpg", "desc": "Aprende el proceso completo de principio a fin para diseñar, imprimir, encuadernar y armar agendas personalizadas." }
-        ];
-        renderCourses();
-    }
-}
+    });
+};
 
-function toggleUnifiedFilter() {
+window.toggleUnifiedFilter = function() {
     const menu = document.getElementById('unified-filter-menu');
     menu.classList.toggle('hidden'); menu.classList.toggle('flex');
 }
 
-function applyFilter(cat) {
-    current = cat;
+window.applyFilter = function(cat) {
+    currentFilter = cat;
     document.querySelectorAll('.filter-check').forEach(chk => {
         if(chk.dataset.cat === cat) chk.classList.remove('hidden'); else chk.classList.add('hidden');
     });
-    toggleUnifiedFilter(); renderProducts();
+    window.toggleUnifiedFilter(); window.renderProducts();
 }
 
-function renderProducts(){
+window.renderProducts = function(){
     const grid=document.getElementById('product-grid'); grid.innerHTML='';
-    const list=current==='all'?products:products.filter(p=>p.category===current);
-    
+    const list=currentFilter==='all'?window.appProducts:window.appProducts.filter(p=>p.category===currentFilter);
     grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full";
     if(list.length === 1) grid.classList.add("grid-cols-1", "max-w-xs");
     else if(list.length === 2) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "max-w-2xl");
     else if(list.length === 3) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "md:grid-cols-3", "max-w-4xl");
     else grid.classList.add("grid-cols-2", "sm:grid-cols-3", "lg:grid-cols-4");
     
+    if(list.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`;
+        return;
+    }
+    
+    let wppNumber = document.getElementById('contact-phone').textContent.replace(/\s+/g, '') || "593997591021";
+    
     list.forEach((p,i)=>{
-        const wa=`https://wa.me/593997591021?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre el producto: '+p.name+'.')}`;
-        const art = p.image 
-            ? `<img src="${p.image}" alt="${p.name}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/400x400/101014/ffffff?text=Multiprintt';">`
+        const wa=`https://wa.me/${wppNumber}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
+        const art = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500">`
             : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60"></i></div>`;
-        
-        grid.innerHTML+=`
-        <article class="card rounded-[12px] overflow-hidden group transition-all duration-300 bg-[#0b0b0e] flex flex-col h-full relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/20">
-           <div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2">
-            <div class="absolute w-32 h-32 rounded-full blur-2xl opacity-25 transition-transform duration-700 group-hover:scale-125" style="background:${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]}"></div>
-            ${art}
-            <span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm">${p.category}</span>
-           </div>
-           <div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95 backdrop-blur-xl">
-            <h3 class="font-bold text-[11px] md:text-xs leading-snug line-clamp-2">${p.name}</h3>
-            <div class="mt-auto pt-3 flex items-center justify-between gap-2">
-              <span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span>
-              <a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] border border-[#25D366]/15 text-[10px] font-bold hover:bg-[#25D366] hover:text-black transition-colors flex items-center justify-center shadow-sm">
-                Pedir <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[9px]"></i>
-              </a>
-            </div>
-           </div>
-        </article>`;
+        grid.innerHTML+=`<article class="card rounded-[12px] overflow-hidden group transition-all duration-300 bg-[#0b0b0e] flex flex-col h-full relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/20"><div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-32 h-32 rounded-full blur-2xl opacity-25 transition-transform duration-700 group-hover:scale-125" style="background:${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]}"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm">${p.category}</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95 backdrop-blur-xl"><h3 class="font-bold text-[11px] md:text-xs leading-snug line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between gap-2"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] border border-[#25D366]/15 text-[10px] font-bold hover:bg-[#25D366] hover:text-black transition-colors flex items-center justify-center shadow-sm">Pedir <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[9px]"></i></a></div></div></article>`;
     });
 }
 
-function renderCourses(){
+window.renderCourses = function(){
     const grid=document.getElementById('courses-grid'); grid.innerHTML='';
-    courses.forEach((c,i)=>{
-        grid.innerHTML+=`
-        <article class="card rounded-[12px] relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/5 hover:border-white/15">
-            <div class="w-full h-36 relative overflow-hidden bg-black/40 shrink-0 border-b border-white/5">
-                <img src="${c.image}" alt="${c.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1626786139589-9b43fb4e9124?q=80&w=400&auto=format&fit=crop';">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#101014] to-transparent z-10 opacity-80"></div>
-                <span class="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[8px] uppercase tracking-[.15em] text-zinc-300 font-bold">${c.modality}</span>
-            </div>
-            
-            <div class="relative z-20 flex flex-col w-full flex-1 p-4 pt-3">
-                <h3 class="display text-[14px] md:text-base font-extrabold tracking-tight shrink-0 mb-1.5 leading-[1.2]">${c.title}</h3>
-                <p class="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3">${c.desc}</p>
-                
-                <div class="mt-4 shrink-0 pt-3 border-t border-white/5">
-                    <button onclick="openCourseModal(${i})" class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white text-[9px] md:text-[10px] font-extrabold hover:bg-white hover:text-black transition-colors shadow-lg">
-                        Ver más información <i class="fa-solid fa-plus ml-1.5"></i>
-                    </button>
-                </div>
-            </div>
-        </article>`;
+    if(window.appCourses.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">Próximamente nuevos cursos.</div>`; return; }
+    
+    window.appCourses.forEach((c,i)=>{
+        grid.innerHTML+=`<article class="card rounded-[12px] relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/5 hover:border-white/15"><div class="w-full h-36 relative overflow-hidden bg-black/40 shrink-0 border-b border-white/5"><img src="${c.image}" alt="${c.title}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"><div class="absolute inset-0 bg-gradient-to-t from-[#101014] to-transparent z-10 opacity-80"></div><span class="absolute top-2 right-2 z-20 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md border border-white/10 text-[8px] uppercase tracking-[.15em] text-zinc-300 font-bold">${c.modality}</span></div><div class="relative z-20 flex flex-col w-full flex-1 p-4 pt-3"><h3 class="display text-[14px] md:text-base font-extrabold tracking-tight shrink-0 mb-1.5 leading-[1.2]">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3">${c.desc}</p><div class="mt-4 shrink-0 pt-3 border-t border-white/5"><button onclick="openCourseModal(${i})" class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white text-[9px] md:text-[10px] font-extrabold hover:bg-white hover:text-black transition-colors shadow-lg">Ver más información <i class="fa-solid fa-plus ml-1.5"></i></button></div></div></article>`;
     });
 }
 
-function openCourseModal(index) {
-    const c = courses[index];
+// Inicializar Firebase y Descargar Datos Reales
+async function loadFirebaseData() {
+    if (firebaseConfig.apiKey === "// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",
+  authDomain: "multiprintt-cc0f1.firebaseapp.com",
+  projectId: "multiprintt-cc0f1",
+  storageBucket: "multiprintt-cc0f1.firebasestorage.app",
+  messagingSenderId: "626369594335",
+  appId: "1:626369594335:web:711aac8c65197a0dceba6a",
+  measurementId: "G-VP3XV39H5M"
+};") {
+        console.warn("⚠️ Firebase no configurado: Mostrando base de datos por defecto. Recuerda poner tus credenciales en el código para conexión en vivo.");
+        window.renderProducts();
+        window.renderCourses();
+        return;
+    }
+
+    try {
+        await signInAnonymously(auth);
+        if(!auth.currentUser) return;
+        
+        // 1. Cargar Textos Principales
+        const textRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home');
+        const textSnap = await getDoc(textRef);
+        if (textSnap.exists()) {
+            const data = textSnap.data();
+            if(data.heroSubtitle) document.getElementById('hero-subtitle').textContent = data.heroSubtitle;
+            if(data.heroTitle) document.getElementById('hero-title').textContent = data.heroTitle;
+            if(data.aboutDesc) document.getElementById('about-desc').textContent = data.aboutDesc;
+            
+            if(data.contactPhone) {
+                document.getElementById('contact-phone').textContent = data.contactPhone;
+                const wpLink = `https://wa.me/${data.contactPhone.replace(/\s+/g, '')}`;
+                document.getElementById('wa-link-pc').href = wpLink;
+                document.getElementById('wa-link-mobile').href = wpLink;
+            }
+            if(data.contactEmail) {
+                document.getElementById('contact-email').textContent = data.contactEmail;
+                document.getElementById('contact-email').href = `mailto:${data.contactEmail}`;
+            }
+        }
+
+        // 2. Cargar Productos
+        const prodRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'products');
+        const prodSnap = await getDocs(prodRef);
+        if (!prodSnap.empty) {
+            window.appProducts = prodSnap.docs.map(d => ({id: d.id, ...d.data()}));
+        }
+        window.renderProducts();
+
+        // 3. Cargar Cursos
+        const coursesRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses');
+        const coursesSnap = await getDocs(coursesRef);
+        if (!coursesSnap.empty) {
+            window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()}));
+        }
+        window.renderCourses();
+
+    } catch (error) {
+        console.error("Error cargando Firebase, usando datos por defecto.", error);
+        window.renderProducts();
+        window.renderCourses();
+    }
+}
+
+// Modales y Otras Funciones
+window.openCourseModal = function(index) {
+    const c = window.appCourses[index];
     const modal = document.getElementById('courseModal');
     const content = document.getElementById('courseModalContent');
-    
-    document.getElementById('cm-title').textContent = c.title;
-    document.getElementById('cm-desc').textContent = c.desc;
-    document.getElementById('cm-modality').textContent = c.modality;
-    document.getElementById('cm-schedule').textContent = c.schedule;
-    document.getElementById('cm-price').textContent = c.price;
-    document.getElementById('cm-image').src = c.image;
-    
-    const waLink = `https://wa.me/593997591021?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
-    document.getElementById('cm-btn').href = waLink;
-    
+    document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc;
+    document.getElementById('cm-modality').textContent = c.modality; document.getElementById('cm-schedule').textContent = c.schedule;
+    document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
+    let wppNumber = document.getElementById('contact-phone').textContent.replace(/\s+/g, '') || "593997591021";
+    document.getElementById('cm-btn').href = `https://wa.me/${wppNumber}?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
     modal.classList.remove('hidden'); modal.classList.add('flex');
     setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
 }
-
-function closeCourseModal() {
-    const modal = document.getElementById('courseModal');
-    const content = document.getElementById('courseModalContent');
+window.closeCourseModal = function() {
+    const modal = document.getElementById('courseModal'); const content = document.getElementById('courseModalContent');
     modal.classList.add('opacity-0'); content.classList.add('scale-95');
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
 }
-
-function openVideoModal() {
-    const modal = document.getElementById('videoModal');
-    const content = document.getElementById('videoModalContent');
+window.openVideoModal = function() {
+    const modal = document.getElementById('videoModal'); const content = document.getElementById('videoModalContent');
+    const video = document.getElementById('testimonial-video');
     modal.classList.remove('hidden'); modal.classList.add('flex');
     setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
+    if(video) video.play();
 }
-
-function closeVideoModal() {
-    const modal = document.getElementById('videoModal');
-    const content = document.getElementById('videoModalContent');
+window.closeVideoModal = function() {
+    const modal = document.getElementById('videoModal'); const content = document.getElementById('videoModalContent');
+    const video = document.getElementById('testimonial-video');
     modal.classList.add('opacity-0'); content.classList.add('scale-95');
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+    if(video) video.pause();
 }
 
 function initMap() {
-    const mapEl = document.getElementById('leaflet-map');
-    if(!mapEl || mapEl.clientWidth === 0) return; 
-
+    const mapEl = document.getElementById('leaflet-map'); if(!mapEl || mapEl.clientWidth === 0) return; 
     const lat = -2.185722, lng = -79.892194; 
     window.multiprinttMap = L.map('leaflet-map', {zoomControl: true, attributionControl: false}).setView([lat, lng], 19);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
     const customIcon = L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] });
     L.marker([lat, lng], {icon: customIcon}).addTo(window.multiprinttMap);
 }
+window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185722, -79.892194], 19, { animate: true }); }
 
-function recenterMap() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185722, -79.892194], 19, { animate: true }); }
+// Configurar Carrusel de Estudiantes
+const sliderImages = ["sublimacion4.jpg", "serigrafia2.jpg", "resina2.jpg", "dtf2.jpg", "pedreria1.jpeg", "sublimacion5.jpg", "serigrafia3.jpg", "sublimacion6.jpg", "resina3.jpg", "dtf3.jpg", "serigrafia10.jpg", "sublimacion15.jpg", "sublimacion22.jpg", "serigrafia14.jpg", "resina8.jpg"];
+function renderSlider() {
+    const slider = document.getElementById('student-slider'); if(!slider) return;
+    slider.innerHTML = sliderImages.map(img => `<div class="snap-center shrink-0 w-[75vw] sm:w-[40vw] md:w-[28vw] lg:w-[22vw] aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="https://multiprintt.web.app/recursos/${img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>`).join('');
+}
+window.scrollSlider = function(direction) {
+    const slider = document.getElementById('student-slider');
+    const scrollAmount = slider.clientWidth * 0.8;
+    slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
-    renderProducts(); 
-    loadCourses(); 
+    renderSlider();
+    loadFirebaseData(); // Inicia la conexión
 });
 </script>
 </body>
