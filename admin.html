@@ -7,119 +7,135 @@
 
 <title>Multiprintt | Visual Builder Pro</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-    body { background-color: #070709; color: #fff; font-family: 'DM Sans', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
-    #auth-screen { position: fixed; inset: 0; background: #070709; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
-    .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+    
+    /* Scrollbars elegantes */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    #auth-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
+    .glass-panel { background: #0e0e11; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
     
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-    .topbar { height: 60px; background: #101014; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; z-index: 50;}
+    .topbar { height: 54px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
     .workspace { display: flex; flex: 1; overflow: hidden; }
     
-    .sidebar { width: 280px; background: #0b0b0e; border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; z-index:10; }
-    .sidebar-right { width: 300px; background: #0b0b0e; border-left: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; z-index:10; }
+    .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
+    .sidebar-right { width: 300px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     
     /* CONTENEDOR CENTRAL */
-    #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; }
-    #preview-wrapper { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: #070709; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column;}
+    #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
+    #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
     
-    .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 0 !important; border: none !important; }
-    .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 16px; margin: auto; border: 10px solid #222;}
-    .device-mobile { width: 390px !important; height: 844px !important; border-radius: 36px; margin: auto; border: 12px solid #222 !important;}
+    .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 8px !important; border: 1px solid rgba(255,255,255,0.1) !important; margin: 10px; }
+    .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 16px; margin: auto; border: 10px solid #1a1a1a !important;}
+    .device-mobile { width: 390px !important; height: 844px !important; border-radius: 36px; margin: auto; border: 12px solid #1a1a1a !important;}
     
-    #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709;}
+    #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit;}
     
-    .device-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; transition: all 0.2s; cursor: pointer; }
-    .device-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; }
+    .device-btn { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #737373; transition: all 0.2s; cursor: pointer; font-size: 14px;}
+    .device-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; }
+    .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
 
-    .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 8px; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: bold;}
-    .tool-btn:hover { background: rgba(37,216,255,0.2); border-color: #25d8ff; }
-    .tool-btn:active { transform: scale(0.97); }
-    .danger-btn { background: rgba(255,45,45,0.05); border: 1px solid rgba(255,45,45,0.2); color: #ff6b6b; }
-    .danger-btn:hover { background: rgba(255,45,45,0.2); border-color: #ff2d2d; color: white;}
+    .tool-btn { background: #121215; border: 1px solid rgba(255,255,255,0.08); padding: 10px 14px; border-radius: 8px; color: #e5e5e5; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500;}
+    .tool-btn:hover { background: #1a1a1e; border-color: rgba(37,216,255,0.4); color: white;}
+    .tool-btn:active { transform: scale(0.98); }
+    .danger-btn { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; }
+    .danger-btn:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; color: white;}
     
-    .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; outline: none; margin-top: 5px; font-size: 13px; }
-    .inspector-input:focus { border-color: #25d8ff; }
+    .inspector-label { font-size: 10px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;}
+    .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 12px; transition: 0.2s;}
+    .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
 
     /* PARRILLA DEL SELECTOR DE ICONOS VISUAL */
-    .icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-    .icon-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px 0; text-align: center; cursor: pointer; transition: 0.2s; }
-    .icon-box:hover { background: rgba(37,216,255,0.2); border-color: #25d8ff; color: #25d8ff;}
+    .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
+    .icon-box { background: #121215; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 0; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px;}
+    .icon-box i { font-size: 20px; color: #a3a3a3; transition: 0.2s;}
+    .icon-box:hover { background: rgba(37,216,255,0.1); border-color: rgba(37,216,255,0.3); }
+    .icon-box:hover i { color: #25d8ff; transform: scale(1.1);}
+
+    .panel-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #737373; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .divider { height: 1px; background: rgba(255,255,255,0.06); width: 100%; margin: 8px 0; }
 </style>
 </head>
 <body>
 
 <div id="auth-screen">
-    <div class="glass-panel p-10 w-full max-w-md text-center">
-        <div class="w-20 h-20 bg-cyan-500/10 border border-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.2)]">
-            <i class="fa-solid fa-code text-3xl text-cyan-400"></i>
+    <div class="glass-panel p-10 w-full max-w-sm text-center">
+        <div class="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.15)]">
+            <i class="fa-solid fa-layer-group text-2xl text-cyan-400"></i>
         </div>
-        <h1 class="text-2xl font-bold mb-2">Visual Builder <span class="text-cyan-400 text-sm">PRO</span></h1>
-        <p class="text-zinc-500 text-sm mb-8">Acceso Maestro a la Plataforma.</p>
-        <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-4 outline-none focus:border-cyan-400">
-        <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-6 outline-none focus:border-pink-400">
-        <button onclick="attemptLogin()" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-colors shadow-lg">Entrar</button>
-        <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-bold">Credenciales incorrectas.</p>
+        <h1 class="text-xl font-bold mb-1">Visual Builder <span class="text-cyan-400 text-xs bg-cyan-500/10 px-2 py-0.5 rounded-full ml-1">PRO</span></h1>
+        <p class="text-zinc-500 text-xs mb-8">Acceso Maestro al Entorno.</p>
+        <div class="space-y-3">
+            <input type="text" id="loginUser" placeholder="Usuario (admin)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
+            <input type="password" id="loginPass" placeholder="Contraseña (adminMultiprintt2026)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
+            <button onclick="attemptLogin()" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Acceder al Editor</button>
+        </div>
+        <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-medium bg-red-500/10 py-2 rounded-lg border border-red-500/20">Credenciales incorrectas.</p>
     </div>
 </div>
 
 <div id="builder-ui">
     <header class="topbar">
-        <div class="flex items-center gap-4">
-            <div class="w-8 h-8 rounded bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-black font-black text-sm">M</div>
-            <span class="font-bold text-sm tracking-widest uppercase text-zinc-300">Visual <span class="text-cyan-400">Builder</span></span>
+        <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-black font-black text-xs">M</div>
+            <span class="font-semibold text-xs tracking-wider text-zinc-300">MULTIPRINTT <span class="text-cyan-400 opacity-70">BUILDER</span></span>
         </div>
         
-        <div class="flex items-center bg-[#0b0b0e] border border-white/5 rounded-lg p-1">
-            <button onclick="setDevice('desktop')" class="device-btn active" id="btn-desktop"><i class="fa-solid fa-desktop"></i></button>
-            <button onclick="setDevice('tablet')" class="device-btn" id="btn-tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button onclick="setDevice('mobile')" class="device-btn" id="btn-mobile"><i class="fa-solid fa-mobile-screen"></i></button>
+        <div class="flex items-center bg-[#121215] border border-white/5 rounded-lg p-1 shadow-inner">
+            <button onclick="setDevice('desktop')" class="device-btn active" id="btn-desktop" title="Vista Escritorio"><i class="fa-solid fa-desktop"></i></button>
+            <button onclick="setDevice('tablet')" class="device-btn" id="btn-tablet" title="Vista Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button onclick="setDevice('mobile')" class="device-btn" id="btn-mobile" title="Vista Móvil"><i class="fa-solid fa-mobile-screen"></i></button>
         </div>
         
         <div class="flex items-center gap-3">
-            <button onclick="reloadIframe()" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors" title="Recargar App"><i class="fa-solid fa-rotate"></i></button>
-            <div class="w-[1px] h-6 bg-white/10 mx-2"></div>
-            <button onclick="saveLayoutAndPositions()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-[0_0_15px_rgba(37,216,255,0.4)] flex items-center gap-2">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Publicar Sitio
+            <button onclick="reloadIframe()" class="w-8 h-8 rounded-md border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center text-sm" title="Recargar Iframe"><i class="fa-solid fa-rotate-right"></i></button>
+            <div class="w-[1px] h-5 bg-white/10 mx-1"></div>
+            <button onclick="saveLayoutAndPositions()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-1.5 rounded-md font-semibold text-xs transition-all shadow-[0_0_15px_rgba(37,216,255,0.3)] flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios
             </button>
         </div>
     </header>
 
     <div class="workspace">
         <aside class="sidebar">
-            <div class="p-4 rounded-lg border border-dashed border-pink-500/50 text-xs text-white/80 leading-relaxed bg-pink-500/5 mb-2">
-                <b class="text-pink-400 block mb-2"><i class="fa-solid fa-lightbulb"></i> Tips de Edición</b>
-                <ul class="list-disc pl-3 space-y-2">
-                    <li><b>Redes Sociales:</b> Edita los links y el orden desde el Menú de PC superior. Al publicar, se copiará todo al móvil y footer automáticamente.</li>
-                    <li><b>Textos:</b> Haz clic en cualquier texto para escribir.</li>
-                    <li><b>Enlaces/Videos:</b> Haz <u>Doble Clic</u> sobre iconos o videos para cambiar la URL.</li>
+            
+            <div class="panel-header"><i class="fa-solid fa-layer-group text-cyan-400"></i> Estructura y Movimiento</div>
+            <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
+                <i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>
+            </button>
+            
+            <div class="divider"></div>
+            
+            <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Bases de Datos Vivas</div>
+            <button onclick="showAlert('Haz clic sobre los productos o botones (+) directamente en el lienzo visual para administrarlos.')" class="tool-btn group">
+                <i class="fa-solid fa-box-open w-4 text-center text-zinc-400 group-hover:text-violet-400 transition-colors"></i> Gestor de Productos
+            </button>
+            <button onclick="showAlert('Haz clic sobre los cursos o botones (+) directamente en el lienzo visual para administrarlos.')" class="tool-btn group">
+                <i class="fa-solid fa-graduation-cap w-4 text-center text-zinc-400 group-hover:text-yellow-400 transition-colors"></i> Gestor de Academia
+            </button>
+
+            <div class="divider"></div>
+
+            <div class="p-3 rounded-lg border border-white/5 bg-[#121215] text-[11px] text-zinc-400 leading-relaxed shadow-inner">
+                <b class="text-zinc-200 block mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-cyan-400"></i> Tips Pro</b>
+                <ul class="space-y-1.5 list-disc pl-3">
+                    <li><b>Clic Derecho:</b> Selecciona cualquier texto, imagen o icono y haz clic derecho para eliminarlo.</li>
+                    <li><b>Hipervínculos:</b> Los clics están bloqueados para no sacarte del editor. Selecciónalos para editar su URL a la derecha.</li>
                 </ul>
             </div>
 
-            <div class="w-full h-[1px] bg-white/10 my-2"></div>
-
-            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Diseño y Estructura</div>
-            <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
-                <i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i> Habilitar Movimiento (Drag)
-            </button>
-            
-            <div class="w-full h-[1px] bg-white/10 my-4"></div>
-            
-            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Bases de Datos Vivas</div>
-            <button onclick="alert('Navega al Catálogo. Haz clic en (+ Añadir Nuevo) o usa los botones Editar en las tarjetas.')" class="tool-btn">
-                <i class="fa-solid fa-box-open w-5 text-center text-violet-400"></i> Gestor de Productos
-            </button>
-            <button onclick="alert('Navega a la Academia. Haz clic en (+ Añadir Curso) o usa los botones Editar en las tarjetas.')" class="tool-btn">
-                <i class="fa-solid fa-graduation-cap w-5 text-center text-yellow-400"></i> Gestor de Academia
-            </button>
-
-            <div class="mt-auto">
-                <div class="text-[10px] uppercase tracking-[0.2em] text-red-500 font-bold mb-2">Opciones de Emergencia</div>
-                <button onclick="resetLayout()" class="tool-btn danger-btn w-full">
-                    <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> Restaurar Plantilla Original
+            <div class="mt-auto pt-4 border-t border-white/5">
+                <div class="panel-header text-red-500/70"><i class="fa-solid fa-triangle-exclamation"></i> Zona de Peligro</div>
+                <button onclick="resetLayout()" class="tool-btn danger-btn w-full justify-center">
+                    Restaurar Plantilla
                 </button>
             </div>
         </aside>
@@ -132,55 +148,141 @@
         </main>
 
         <aside class="sidebar-right">
-            <div class="text-[10px] uppercase tracking-[0.2em] text-cyan-400 font-bold mb-2"><i class="fa-solid fa-sliders"></i> Inspector</div>
+            <div class="panel-header"><i class="fa-solid fa-sliders text-cyan-400"></i> Propiedades Elemento</div>
             
-            <div id="no-selection" class="text-xs text-zinc-500 text-center mt-10">
-                <i class="fa-solid fa-hand-pointer text-3xl mb-3 opacity-50 block"></i>
-                Haz doble clic en enlaces o clic en textos para editarlos aquí.
+            <div id="no-selection" class="text-[11px] text-zinc-500 text-center mt-8 border border-dashed border-white/10 rounded-lg p-6 bg-[#121215]">
+                <i class="fa-solid fa-mouse-pointer text-2xl mb-3 opacity-30 block"></i>
+                Selecciona un elemento en el lienzo (texto, imagen, botón) para editar sus propiedades aquí.
             </div>
 
             <div id="inspector-tools" class="hidden flex-col gap-4">
+                
+                <div class="flex items-center gap-2 mb-2 p-2 bg-cyan-500/10 border border-cyan-500/20 rounded-md">
+                    <div class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                    <span class="text-[10px] font-bold text-cyan-400 font-mono" id="prop-tag-name">ETIQUETA</span>
+                </div>
+
                 <div id="prop-text-group">
-                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Texto Visual</label>
-                    <textarea id="prop-text" rows="4" class="inspector-input"></textarea>
+                    <label class="inspector-label">Contenido Textual</label>
+                    <textarea id="prop-text" rows="3" class="inspector-input resize-none"></textarea>
                 </div>
                 
                 <div id="prop-link-group" class="hidden">
-                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Enlace (URL) / Imagen</label>
+                    <label class="inspector-label">Enlace o URL de Origen</label>
                     <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
                 </div>
+
+                <div class="divider mt-2"></div>
+                
+                <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
+                    <i class="fa-solid fa-trash"></i> Eliminar Elemento
+                </button>
             </div>
         </aside>
     </div>
 </div>
 
+<!-- 🟢 MENU CONTEXTUAL (CLICK DERECHO) -->
+<div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
+    <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
+        <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
+    </div>
+    <button onclick="ctxAction('edit')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
+        <i class="fa-solid fa-pen w-3 text-center text-zinc-400"></i> Editar Atributos
+    </button>
+    <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
+    <button onclick="ctxAction('delete')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
+        <i class="fa-solid fa-trash w-3 text-center"></i> Eliminar
+    </button>
+</div>
+
 <!-- 🟢 MODAL VISUAL SELECTOR DE ICONOS -->
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
-    <div class="w-full max-w-lg bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl">
-        <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
-            <h3 class="text-lg font-bold text-white">Seleccionar Red Social</h3>
-            <button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
+            <h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Biblioteca de Iconos</h3>
+            <button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         
-        <div class="icon-grid text-3xl mb-4">
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-whatsapp')"><i class="fa-brands fa-whatsapp"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-instagram')"><i class="fa-brands fa-instagram"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-facebook-f')"><i class="fa-brands fa-facebook-f"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-tiktok')"><i class="fa-brands fa-tiktok"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-youtube')"><i class="fa-brands fa-youtube"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-x-twitter')"><i class="fa-brands fa-x-twitter"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-linkedin-in')"><i class="fa-brands fa-linkedin-in"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-telegram')"><i class="fa-brands fa-telegram"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-pinterest-p')"><i class="fa-brands fa-pinterest-p"></i></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-globe')"><i class="fa-solid fa-globe"></i><div class="text-[8px] mt-1">Web</div></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-envelope')"><i class="fa-solid fa-envelope"></i><div class="text-[8px] mt-1">Correo</div></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-phone')"><i class="fa-solid fa-phone"></i><div class="text-[8px] mt-1">Teléfono</div></div>
+        <div class="mb-4 shrink-0 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i>
+            <input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono (ej. whatsapp, cart, user, facebook...)" class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner">
+        </div>
+        
+        <div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]">
+            <!-- Generado dinámicamente por JS -->
+        </div>
+    </div>
+</div>
+
+<!-- 🛑 CUSTOM MODAL FOR ALERTS & CONFIRMS -->
+<div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0">
+    <div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content">
+        <i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i>
+        <h3 id="custom-modal-title" class="text-lg font-bold text-white mb-2">Mensaje</h3>
+        <p id="custom-modal-text" class="text-zinc-400 text-sm mb-6 whitespace-pre-wrap"></p>
+        <div class="flex gap-3 justify-center">
+            <button id="custom-modal-cancel" onclick="closeCustomModal()" class="hidden flex-1 bg-[#0a0a0c] border border-white/10 text-white font-medium py-2.5 rounded-lg hover:bg-white/5 transition-colors text-sm">Cancelar</button>
+            <button id="custom-modal-confirm" class="flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Aceptar</button>
         </div>
     </div>
 </div>
 
 <script>
     let dragEnabled = false;
+    let contextTargetElement = null;
+
+    // --- Base de Datos de Iconos Pro ---
+    const iconDB = [
+        { c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' },
+        { c: 'fa-brands fa-tiktok', n: 'TikTok' }, { c: 'fa-brands fa-youtube', n: 'YouTube' }, { c: 'fa-brands fa-x-twitter', n: 'X Twitter' },
+        { c: 'fa-brands fa-linkedin-in', n: 'LinkedIn' }, { c: 'fa-brands fa-telegram', n: 'Telegram' }, { c: 'fa-brands fa-pinterest-p', n: 'Pinterest' },
+        { c: 'fa-brands fa-snapchat', n: 'Snapchat' }, { c: 'fa-brands fa-reddit-alien', n: 'Reddit' }, { c: 'fa-brands fa-discord', n: 'Discord' },
+        { c: 'fa-brands fa-twitch', n: 'Twitch' }, { c: 'fa-brands fa-spotify', n: 'Spotify' }, { c: 'fa-brands fa-apple', n: 'Apple' },
+        { c: 'fa-brands fa-google', n: 'Google' }, { c: 'fa-brands fa-github', n: 'GitHub' }, { c: 'fa-brands fa-slack', n: 'Slack' },
+        { c: 'fa-brands fa-figma', n: 'Figma' }, { c: 'fa-brands fa-amazon', n: 'Amazon' }, { c: 'fa-brands fa-paypal', n: 'PayPal' },
+        { c: 'fa-brands fa-stripe', n: 'Stripe' }, { c: 'fa-brands fa-shopify', n: 'Shopify' }, { c: 'fa-brands fa-wordpress', n: 'WordPress' },
+        
+        { c: 'fa-solid fa-globe', n: 'Web/Mundo' }, { c: 'fa-solid fa-envelope', n: 'Correo' }, { c: 'fa-solid fa-phone', n: 'Teléfono' },
+        { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-link', n: 'Enlace' }, { c: 'fa-solid fa-shop', n: 'Tienda' },
+        { c: 'fa-solid fa-cart-shopping', n: 'Carrito' }, { c: 'fa-solid fa-user', n: 'Usuario' }, { c: 'fa-solid fa-image', n: 'Imagen' },
+        { c: 'fa-solid fa-video', n: 'Video' }, { c: 'fa-solid fa-music', n: 'Música' }, { c: 'fa-solid fa-heart', n: 'Corazón' },
+        { c: 'fa-solid fa-star', n: 'Estrella' }, { c: 'fa-solid fa-check', n: 'Check' }, { c: 'fa-solid fa-xmark', n: 'Cerrar' },
+        { c: 'fa-solid fa-arrow-right', n: 'Flecha Der' }, { c: 'fa-solid fa-download', n: 'Descargar' }, { c: 'fa-solid fa-magnifying-glass', n: 'Buscar' },
+        { c: 'fa-solid fa-bell', n: 'Campana' }, { c: 'fa-solid fa-comment', n: 'Comentario' }, { c: 'fa-solid fa-share-nodes', n: 'Compartir' }
+    ];
+
+    function renderIcons(filter = "") {
+        const container = document.getElementById('icon-grid-container');
+        container.innerHTML = '';
+        const term = filter.toLowerCase();
+        
+        const filtered = iconDB.filter(icon => icon.c.toLowerCase().includes(term) || icon.n.toLowerCase().includes(term));
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">No se encontraron iconos.</div>';
+            return;
+        }
+
+        filtered.forEach(icon => {
+            const div = document.createElement('div');
+            div.className = 'icon-box group relative';
+            div.onclick = () => sendSelectedIcon(icon.c);
+            div.innerHTML = `
+                <i class="${icon.c}"></i>
+                <div class="absolute opacity-0 group-hover:opacity-100 bg-black/90 text-white text-[9px] px-2 py-1 rounded bottom-full mb-1 pointer-events-none transition-opacity whitespace-nowrap z-10 border border-white/10">${icon.n}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function filterIcons() {
+        const val = document.getElementById('icon-search').value;
+        renderIcons(val);
+    }
+    // Render inicial
+    renderIcons();
+
 
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
@@ -198,11 +300,61 @@
     }
     document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') attemptLogin(); });
 
-    // Carga con Sello de Tiempo (Rompe la Caché)
+    // Modales Personalizados
+    function openCustomModal(msg, isConfirm, onConfirmCallback) {
+        const modal = document.getElementById('custom-modal');
+        const content = document.getElementById('custom-modal-content');
+        document.getElementById('custom-modal-text').innerText = msg;
+        
+        const btnCancel = document.getElementById('custom-modal-cancel');
+        const btnConfirm = document.getElementById('custom-modal-confirm');
+        const icon = document.getElementById('custom-modal-icon');
+
+        if (isConfirm) {
+            btnCancel.classList.remove('hidden');
+            btnConfirm.className = "flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-400 transition-colors text-sm";
+            btnConfirm.innerText = "Sí, continuar";
+            icon.className = "fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4";
+            document.getElementById('custom-modal-title').innerText = "ATENCIÓN";
+            
+            btnConfirm.onclick = () => {
+                closeCustomModal();
+                if(onConfirmCallback) onConfirmCallback();
+            };
+        } else {
+            btnCancel.classList.add('hidden');
+            btnConfirm.className = "flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm";
+            btnConfirm.innerText = "Entendido";
+            icon.className = "fa-solid fa-circle-info text-cyan-400 text-4xl mb-4";
+            document.getElementById('custom-modal-title').innerText = "Información";
+            
+            btnConfirm.onclick = () => closeCustomModal();
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeCustomModal() {
+        const modal = document.getElementById('custom-modal');
+        const content = document.getElementById('custom-modal-content');
+        modal.classList.add('opacity-0');
+        content.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function showAlert(msg) { openCustomModal(msg, false); }
+    function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
+
     function reloadIframe() {
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
-        iframe.src = `index.html?v=${timestamp}`;
+        iframe.src = `index (5).html?v=${timestamp}`;
     }
 
     function setDevice(device) {
@@ -217,41 +369,65 @@
         const btn = document.getElementById('drag-btn');
         const iframe = document.getElementById('site-frame');
         if(dragEnabled) {
-            btn.style.background = 'rgba(37,216,255,0.2)'; btn.style.borderColor = '#25d8ff';
-            btn.innerHTML = '<i class="fa-solid fa-check w-5 text-center text-cyan-400"></i> Movimiento Habilitado';
+            btn.style.background = 'rgba(37,216,255,0.1)'; btn.style.borderColor = 'rgba(37,216,255,0.3)'; btn.style.color = 'white';
+            btn.innerHTML = '<i class="fa-solid fa-check w-4 text-center text-cyan-400"></i> <span>Modo Movimiento Activo</span>';
             iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: true }, '*');
         } else {
-            btn.style.background = 'rgba(255,255,255,0.05)'; btn.style.borderColor = 'rgba(255,255,255,0.1)';
-            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i> Habilitar Movimiento';
+            btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5';
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>';
             iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: false }, '*');
         }
     }
 
     function saveLayoutAndPositions() {
         const btn = document.querySelector('.fa-cloud-arrow-up').parentElement;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizando y Guardando...';
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*');
     }
 
     function resetLayout() {
-        if(confirm("ATENCIÓN: ¿Estás seguro? \n\nEsta acción borrará la plantilla dañada en Firebase y forzará al sitio a cargar como nuevo desde el código original.\n\n(No se borrarán los productos ni los cursos).")) {
+        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla guardada y cargará el código original. No afectará a la base de datos de productos ni cursos.", () => {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
-        }
+        });
     }
 
     function closeIconPicker() {
         document.getElementById('iconPickerModal').classList.add('hidden');
         document.getElementById('iconPickerModal').classList.remove('flex');
+        document.getElementById('icon-search').value = ''; // Limpiar busqueda
+        renderIcons();
     }
 
     function sendSelectedIcon(iconClass) {
-        // Envia el icono al Iframe (Se inyecta en el PC, y al publicar se copia a los demás)
-        document.getElementById('site-frame').contentWindow.postMessage({ 
-            type: 'INSERT_ICON_GLOBAL', 
-            iconClass: iconClass 
-        }, '*');
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'INSERT_ICON_GLOBAL', iconClass: iconClass }, '*');
         closeIconPicker();
     }
+
+    // --- LOGICA DEL MENU CONTEXTUAL ---
+    function ctxAction(action) {
+        const ctxMenu = document.getElementById('context-menu');
+        ctxMenu.classList.add('hidden');
+
+        if (action === 'delete') {
+            triggerDeleteFromInspector();
+        } else if (action === 'edit') {
+            // El elemento ya se seleccionó visualmente, el inspector está listo a la derecha
+            document.getElementById('prop-text').focus();
+        }
+    }
+
+    function triggerDeleteFromInspector() {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_SELECTED_NODE' }, '*');
+        document.getElementById('inspector-tools').style.display = 'none';
+        document.getElementById('no-selection').style.display = 'block';
+    }
+
+    // Ocultar menu contextual al dar click fuera
+    document.addEventListener('click', (e) => {
+        if(!e.target.closest('#context-menu')) {
+            document.getElementById('context-menu').classList.add('hidden');
+        }
+    });
 
     const propText = document.getElementById('prop-text');
     const propLink = document.getElementById('prop-link');
@@ -264,28 +440,56 @@
         
         if(e.data.type === 'SAVE_DONE') {
             const btn = document.querySelector('.fa-spin').parentElement;
-            btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Sitio Publicado!';
+            btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!';
+            btn.classList.replace('bg-cyan-500', 'bg-green-400');
             setTimeout(() => { 
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Sitio'; 
+                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; 
+                btn.classList.replace('bg-green-400', 'bg-cyan-500');
                 reloadIframe(); 
             }, 2000);
         }
 
         if(e.data.type === 'LAYOUT_RESET_DONE') {
-            alert("¡Base de datos curada! El sitio volverá a la normalidad.");
+            showAlert("¡Plantilla restaurada con éxito!");
             reloadIframe();
         }
 
         if(e.data.type === 'OPEN_ICON_PICKER') {
             document.getElementById('iconPickerModal').classList.remove('hidden');
             document.getElementById('iconPickerModal').classList.add('flex');
+            document.getElementById('icon-search').focus();
+        }
+
+        if (e.data.type === 'SHOW_CONTEXT_MENU') {
+            const iframe = document.getElementById('site-frame');
+            const rect = iframe.getBoundingClientRect();
+            const ctxMenu = document.getElementById('context-menu');
+            
+            // Calculo de posicion basado en la pantalla del padre y el offset del iframe
+            let leftPos = rect.left + e.data.x;
+            let topPos = rect.top + e.data.y;
+
+            // Evitar que se salga de la pantalla
+            if (leftPos + 200 > window.innerWidth) leftPos -= 200;
+            if (topPos + 100 > window.innerHeight) topPos -= 100;
+
+            ctxMenu.style.left = leftPos + 'px';
+            ctxMenu.style.top = topPos + 'px';
+            document.getElementById('ctx-target-name').innerText = `<${e.data.tagName.toLowerCase()}>`;
+            ctxMenu.classList.remove('hidden');
+        }
+
+        if (e.data.type === 'HIDE_CONTEXT_MENU') {
+            document.getElementById('context-menu').classList.add('hidden');
         }
 
         if (e.data.type === 'ELEMENT_SELECTED') {
+            document.getElementById('context-menu').classList.add('hidden');
             document.getElementById('no-selection').style.display = 'none';
             document.getElementById('inspector-tools').style.display = 'flex';
             
             const tag = e.data.tagName;
+            document.getElementById('prop-tag-name').innerText = tag;
             propText.value = e.data.text;
             
             if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO') {
@@ -307,5 +511,3 @@
 </script>
 </body>
 </html>
-
-Al recargarse, verás tu menú móvil y tu pie de página perfectos, limpios e idénticos a lo que configuraste arriba. Además, he añadido el icono de **Telegram** en el grid del administrador por si lo necesitas. ¡Listo para conquistar!
