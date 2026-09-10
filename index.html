@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Multiprintt | Impresión & Publicidad, Tú Imagen Viva</title>
+<meta name="description" content="Multiprintt: Impresión & Publicidad, Tú Imagen Viva. Personalización, DTF, sublimación y academia.">
+<meta name="theme-color" content="#070709">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+  --bg:#070709;--panel:#101014;--line:rgba(255,255,255,.09);
+  --muted:#92929d;--white:#f7f7f8;--pink:#ff2da8;--violet:#735cff;--cyan:#25d8ff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body, html{
+    margin:0; padding:0; height: 100%; overflow: hidden; 
+    background:var(--bg); color:var(--white); font-family:"DM Sans",sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
+::selection{background:var(--pink);color:white}
+
+.slide-scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; 
+}
+.slide-scroll::-webkit-scrollbar{width:6px; height: 6px;}
+.slide-scroll::-webkit-scrollbar-track{background:transparent}
+.slide-scroll::-webkit-scrollbar-thumb{background:#292930;border-radius:99px}
+.slide-scroll::-webkit-scrollbar-thumb:hover{background:var(--pink)}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.glass{background:rgba(7,7,9,.72);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}
+.glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+
+/* Fix definitivo para la g cortada y superposicion */
+.gradient-text{
+    background:linear-gradient(100deg,#fff 15%,#d5d0ff 48%,#ff4bb8 90%);
+    -webkit-background-clip:text; 
+    background-clip:text; 
+    color:transparent;
+    line-height: 1.4 !important;
+    padding-bottom: 0.2em; 
+    display: inline-block;
+    position: relative;
+    z-index: 20; 
+}
+
+.gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025));border:1px solid var(--line);box-shadow:0 12px 40px rgba(0,0,0,.28);border-radius:12px;}
+.card:hover{border-color:rgba(255,255,255,.18);transform:translateY(-3px)}
+
+.view-slide {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%;
+    background: var(--bg); opacity: 0; visibility: hidden;
+    transform: translateY(15px) scale(0.99);
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s;
+    z-index: 0; 
+    padding-top: 74px; 
+    padding-bottom: calc(75px + env(safe-area-inset-bottom));
+}
+@media(min-width: 768px) { .view-slide { padding-top: 80px; padding-bottom: 20px; } }
+.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1); z-index: 10; }
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.show{opacity:1;transform:none}
+.btn{transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
+.btn:hover{transform:translateY(-2px)}
+.nav-link{color:#aaaab3;transition:.2s; background: transparent; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 99px;}
+.nav-link:hover{color:#fff; background: rgba(255,255,255,0.05);}
+.nav-link.active{color:#000; background: #fff; font-weight: bold;}
+
+.bot-nav-item { transition: all 0.3s ease; }
+.bot-nav-item.active { color: #fff; transform: translateY(-2px); }
+.bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
+
+/* Filtro Mágico Mapa Dark Mode */
+.leaflet-layer,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+</style>
+</head>
+
+<body>
+<div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
+
+<header class="fixed top-0 left-0 right-0 z-50 glass h-[70px] md:h-[76px]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
+    
+    <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
+      <div class="w-9 h-9 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0">
+        <img src="logo_mejorado.jpg" alt="Multiprintt" class="w-full h-full object-cover" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'w-full h-full flex items-center justify-center font-black\'>M</span>'">
+      </div>
+      <div>
+        <h1 class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0">MULTIPRINTT</h1>
+        <div class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors">Tú Imagen Viva</div>
+      </div>
+    </button>
+
+    <nav class="hidden md:flex items-center gap-2 text-sm font-medium bg-white/[0.03] p-1.5 rounded-full border border-white/10">
+      <button onclick="navigate('catalog')" id="nav-catalog" class="nav-link active">Catálogo</button>
+      <button onclick="navigate('courses')" id="nav-courses" class="nav-link">Academia</button>
+      <button onclick="navigate('about')" id="nav-about" class="nav-link">Nosotros</button>
+      <button onclick="navigate('contact')" id="nav-contact" class="nav-link">Contacto</button>
+    </nav>
+
+    <div class="flex items-center relative">
+        <!-- REDES MÓVIL: Iconos limpios -->
+        <div class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1">
+            <a href="https://wa.me/593997591021" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg"></i></a>
+            <a href="https://instagram.com/multiprintt" target="_blank" class="hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+            <a href="https://facebook.com/multiprintt" target="_blank" class="hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-lg"></i></a>
+            <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-lg"></i></a>
+        </div>
+
+        <!-- REDES PC: Botón WhatsApp expansivo con iconos perfectamente centrados -->
+        <div class="hidden md:flex relative w-10 h-10 z-[110]">
+            <div class="absolute top-0 right-0 flex flex-col items-center group w-10 h-10 hover:h-[180px] bg-[#25D366] hover:bg-[#101014]/95 hover:backdrop-blur-xl rounded-full transition-all duration-300 overflow-hidden border border-transparent hover:border-white/15 shadow-[0_0_15px_rgba(37,211,102,0.3)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+                
+                <a href="https://wa.me/593997591021" target="_blank" class="w-10 h-10 shrink-0 flex items-center justify-center text-black group-hover:text-[#25D366] transition-colors">
+                    <i class="fa-brands fa-whatsapp text-[22px]"></i>
+                </a>
+                
+                <div class="flex flex-col items-center w-full flex-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto pb-1 gap-0.5">
+                    <a href="https://instagram.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-[18px]"></i></a>
+                    <a href="https://facebook.com/multiprintt" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-[18px]"></i></a>
+                    <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-white transition-colors"><i class="fa-brands fa-tiktok text-[18px]"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</header>
+
+<main class="relative w-full h-[100dvh] overflow-hidden">
+  
+  <!-- VIEW: CATALOGO -->
+  <section id="view-catalog" class="view-slide active-slide slide-scroll">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 relative flex flex-col min-h-[calc(100vh-160px)]">
+        <div class="absolute top-2 right-4 sm:right-6 lg:right-8 z-[60]">
+            <div class="relative">
+                <button onclick="toggleUnifiedFilter()" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#101014]/80 backdrop-blur-xl border border-white/15 text-white shadow-xl hover:bg-white/20 hover:scale-105 transition-all">
+                    <i class="fa-solid fa-sliders text-pink-400"></i> 
+                </button>
+                <div id="unified-filter-menu" class="hidden absolute top-full mt-2 right-0 w-48 bg-[#101014]/95 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl flex-col p-1 z-[110]">
+                    <button onclick="applyFilter('all')" class="text-left px-4 py-3 text-[11px] font-bold text-white hover:bg-white/5 rounded-lg border-b border-white/5 flex items-center justify-between">Todos <i class="fa-solid fa-check text-pink-400 filter-check" data-cat="all"></i></button>
+                    <button onclick="applyFilter('premium')" class="text-left px-4 py-3 text-[11px] font-semibold text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg border-b border-white/5 flex items-center justify-between">Premium <i class="fa-solid fa-check text-pink-400 filter-check hidden" data-cat="premium"></i></button>
+                    <button onclick="applyFilter('textil')" class="text-left px-4 py-3 text-[11px] font-semibold text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg border-b border-white/5 flex items-center justify-between">Textil & Moda <i class="fa-solid fa-check text-pink-400 filter-check hidden" data-cat="textil"></i></button>
+                    <button onclick="applyFilter('tazas')" class="text-left px-4 py-3 text-[11px] font-semibold text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg flex items-center justify-between">Tazas & Promo <i class="fa-solid fa-check text-pink-400 filter-check hidden" data-cat="tazas"></i></button>
+                </div>
+            </div>
+        </div>
+        <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8"></div>
+    </div>
+  </section>
+
+  <!-- VIEW: NOSOTROS -->
+  <section id="view-about" class="view-slide slide-scroll">
+    <div class="hero-glow w-[350px] h-[350px] bg-violet-600/20 right-0 md:right-20 top-20"></div>
+    <div class="hero-glow w-[300px] h-[300px] bg-pink-500/15 left-[-50px] bottom-10"></div>
+    
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
+        <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20">
+            
+            <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
+                <span class="block text-lg sm:text-xl md:text-2xl font-medium text-white/50 mb-1">
+                    Impresión & Publicidad,
+                </span>
+                <span class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">
+                    Tú Imagen Viva.
+                </span>
+            </h2>
+            
+            <p class="mt-4 md:mt-8 text-zinc-400 text-[13px] md:text-lg leading-relaxed max-w-2xl mx-auto px-2">
+                Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.
+            </p>
+            
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <button onclick="navigate('catalog')" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl">Ver catálogo</button>
+                <button onclick="navigate('courses')" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10">Nuestra academia</button>
+            </div>
+        </div>
+    </div>
+  </section>
+
+  <!-- VIEW: ACADEMIA -->
+  <section id="view-courses" class="view-slide slide-scroll">
+    <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-8 relative z-10">
+        
+        <!-- HEADER ACADEMIA -->
+        <div class="reveal text-center md:text-left mb-6 md:mb-10 shrink-0 relative z-20">
+            <div class="text-[10px] tracking-[.25em] uppercase text-violet-400 font-bold mb-3">Multiprintt Academy</div>
+            <h2 class="display flex flex-col gap-0 text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20">
+                <span class="block">No solo vendemos.</span>
+                <span class="relative z-10 block gradient-text">Te enseñamos a crear.</span>
+            </h2>
+            <p class="text-[13px] md:text-sm text-zinc-500 leading-relaxed max-w-2xl mt-3 md:mt-4 mx-auto md:mx-0">Capacitaciones enfocadas en técnicas de impresión. Práctica garantizada y acompañamiento de por vida.</p>
+        </div>
+        
+        <!-- GRID CURSOS (Ajustado a 4 columnas, compacto y proporcionado sin estiramientos exagerados) -->
+        <div id="courses-grid" class="w-full pb-8 mb-8 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5 max-w-7xl mx-auto"></div>
+
+        <!-- SECCIÓN: TRABAJOS DE ESTUDIANTES -->
+        <div class="reveal mt-4 mb-6 text-center md:text-left">
+            <h3 class="display text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Trabajos de <span class="text-pink-400">Estudiantes</span></h3>
+            <p class="text-zinc-400 text-xs md:text-sm">Resultados 100% reales creados por nuestros alumnos durante sus capacitaciones.</p>
+        </div>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 max-w-7xl mx-auto mb-10 pb-10 border-b border-white/10 reveal w-full">
+            <!-- Galería -->
+            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="recursos/galeria1.jpg" onerror="this.src='https://images.unsplash.com/photo-1626786139589-9b43fb4e9124?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="recursos/galeria2.jpg" onerror="this.src='https://images.unsplash.com/photo-1560205001-a7226db2a5f5?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="recursos/galeria3.jpg" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg"><img src="recursos/galeria4.jpg" onerror="this.src='https://images.unsplash.com/photo-1513346940221-6f673d962e97?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg hidden md:block"><img src="recursos/galeria5.jpg" onerror="this.src='https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+            <div class="aspect-square rounded-[12px] overflow-hidden bg-white/5 border border-white/10 group shadow-lg hidden md:block"><img src="recursos/galeria6.jpg" onerror="this.src='https://images.unsplash.com/photo-1629471167909-5a9e338eb2c1?q=80&w=400&auto=format&fit=crop'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" alt="Trabajo Estudiante"></div>
+        </div>
+
+        <!-- SECCIÓN: EXPERIENCIAS DE ALUMNOS -->
+        <div class="reveal mt-4 mb-6 text-center md:text-left">
+            <h3 class="display text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
+            <p class="text-zinc-400 text-xs md:text-sm">Lo que dicen quienes ya emprendieron junto a nosotros.</p>
+        </div>
+        
+        <div id="testimonials-grid" class="flex flex-wrap justify-center md:justify-start gap-4 max-w-7xl mx-auto mb-16 reveal w-full">
+            <!-- Botones de Testimonios -->
+            <button onclick="openTestimonialModal(0)" class="btn flex items-center gap-3 px-5 py-3 rounded-full bg-[#101014] border border-white/10 hover:border-cyan-400/50 shadow-lg group">
+                <div class="w-10 h-10 rounded-full bg-white/10 border border-white/5 flex items-center justify-center font-bold text-white group-hover:bg-cyan-400/20 group-hover:text-cyan-400 transition-colors"><i class="fa-solid fa-play"></i></div>
+                <div class="text-left">
+                    <h4 class="text-white text-xs font-bold">Ver experiencia</h4>
+                    <span class="text-zinc-500 text-[10px]">María F. - Sublimación</span>
+                </div>
+            </button>
+            
+            <button onclick="openTestimonialModal(1)" class="btn flex items-center gap-3 px-5 py-3 rounded-full bg-[#101014] border border-white/10 hover:border-cyan-400/50 shadow-lg group">
+                <div class="w-10 h-10 rounded-full bg-white/10 border border-white/5 flex items-center justify-center font-bold text-white group-hover:bg-cyan-400/20 group-hover:text-cyan-400 transition-colors"><i class="fa-solid fa-play"></i></div>
+                <div class="text-left">
+                    <h4 class="text-white text-xs font-bold">Ver experiencia</h4>
+                    <span class="text-zinc-500 text-[10px]">Carlos R. - Serigrafía</span>
+                </div>
+            </button>
+
+            <button onclick="openTestimonialModal(2)" class="btn flex items-center gap-3 px-5 py-3 rounded-full bg-[#101014] border border-white/10 hover:border-cyan-400/50 shadow-lg group">
+                <div class="w-10 h-10 rounded-full bg-white/10 border border-white/5 flex items-center justify-center font-bold text-white group-hover:bg-cyan-400/20 group-hover:text-cyan-400 transition-colors"><i class="fa-solid fa-play"></i></div>
+                <div class="text-left">
+                    <h4 class="text-white text-xs font-bold">Ver experiencia</h4>
+                    <span class="text-zinc-500 text-[10px]">Ana P. - Resina</span>
+                </div>
+            </button>
+        </div>
+        
+    </div>
+  </section>
+
+  <!-- VIEW: CONTACTO -->
+  <section id="view-contact" class="view-slide flex flex-col">
+    <div class="max-w-6xl mx-auto px-4 sm:px-5 lg:px-8 w-full h-full flex flex-col justify-center pt-2 pb-2 md:pb-6 relative z-10">
+        
+        <div class="reveal text-center mb-3 md:mb-6 shrink-0 relative z-20">
+            <div class="text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 md:mb-2">Hablemos</div>
+            <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-[-.05em] relative z-20">
+                <span class="block text-2xl md:text-4xl">Tu próxima idea</span>
+                <span class="relative z-10 block gradient-text">empieza aquí.</span>
+            </h2>
+            <p class="text-zinc-400 text-xs md:text-sm max-w-xl mx-auto mt-0 md:mt-2 leading-relaxed hidden sm:block">Cotiza productos, uniformes corporativos o visítanos en nuestra matriz.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-16 items-center reveal w-full flex-1 min-h-0">
+            <!-- Mapa: Límite max-h-[45vh] en pantallas grandes para no tapar footer -->
+            <div class="w-full h-[200px] sm:h-[220px] lg:h-[350px] xl:max-h-[45vh] rounded-[12px] md:rounded-[16px] overflow-hidden relative border border-white/10 shadow-2xl bg-[#0e0e12]">
+                <div id="leaflet-map" class="absolute inset-0 z-0"></div>
+                <div class="absolute bottom-3 left-3 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10">
+                    <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-2 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg">
+                        <p class="text-[10px] md:text-xs font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
+                        <p class="text-[8px] md:text-[10px] text-zinc-400 mt-0.5 md:mt-1">Luis Vernaza y José Mascote.</p>
+                    </div>
+                </div>
+                <button onclick="recenterMap()" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 z-[400] w-8 h-8 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-white flex items-center justify-center shadow-lg hover:bg-white/20 transition-all pointer-events-auto">
+                    <i class="fa-solid fa-location-crosshairs text-pink-400 text-sm md:text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Contacto Minimalista (Sin cajas redondeadas) -->
+            <div class="flex flex-col gap-6 md:gap-8 justify-center w-full pl-0 lg:pl-8 text-center lg:text-left">
+                <div>
+                    <div class="text-[9px] uppercase tracking-[.25em] text-zinc-500 font-bold mb-1.5 flex items-center justify-center lg:justify-start gap-2"><i class="fa-solid fa-phone text-pink-400"></i> WhatsApp Directo</div>
+                    <a href="https://wa.me/593997591021" target="_blank" class="text-2xl md:text-4xl font-light tracking-tight text-white hover:text-pink-400 transition-colors">099 759 1021</a>
+                </div>
+                <div>
+                    <div class="text-[9px] uppercase tracking-[.25em] text-zinc-500 font-bold mb-1.5 flex items-center justify-center lg:justify-start gap-2"><i class="fa-solid fa-envelope text-cyan-400"></i> Correo Electrónico</div>
+                    <a href="mailto:multiprintt@yahoo.com" class="text-lg md:text-2xl font-light tracking-tight text-white hover:text-cyan-400 transition-colors block">multiprintt@yahoo.com</a>
+                </div>
+                <div>
+                    <div class="text-[9px] uppercase tracking-[.25em] text-zinc-500 font-bold mb-2.5 flex items-center justify-center lg:justify-start gap-2"><i class="fa-solid fa-hashtag text-violet-400"></i> Redes Sociales</div>
+                    <div class="flex items-center justify-center lg:justify-start gap-6">
+                        <a href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-pink-400 transition-colors text-xl md:text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-blue-500 transition-colors text-xl md:text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-400 hover:text-white transition-colors text-xl md:text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-4 md:mt-10 border-t border-white/5 pt-3 md:pt-4 text-center text-[9px] md:text-xs text-zinc-600 font-medium shrink-0">
+            <span>© <span id="year"></span> Multiprintt. Tú Imagen Viva. Todos los derechos reservados.</span>
+        </footer>
+    </div>
+  </section>
+</main>
+
+<nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
+    <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
+    <button onclick="navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white">
+        <i class="fa-solid fa-store text-[18px]"></i>
+        <span class="text-[9px] font-semibold tracking-wide">Tienda</span>
+    </button>
+    <button onclick="navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500">
+        <i class="fa-solid fa-graduation-cap text-[18px]"></i>
+        <span class="text-[9px] font-semibold tracking-wide">Academia</span>
+    </button>
+    <button onclick="navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500">
+        <i class="fa-solid fa-circle-info text-[18px]"></i>
+        <span class="text-[9px] font-semibold tracking-wide">Nosotros</span>
+    </button>
+    <button onclick="navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500">
+        <i class="fa-regular fa-envelope text-[18px]"></i>
+        <span class="text-[9px] font-semibold tracking-wide">Contacto</span>
+    </button>
+</nav>
+
+<button onclick="openAdminModal()" class="hidden md:flex fixed bottom-6 right-6 z-[60] w-12 h-12 rounded-full glass border border-white/20 text-zinc-400 hover:text-white transition-all shadow-xl hover:scale-110 items-center justify-center"><i class="fa-solid fa-sliders"></i></button>
+
+<div id="adminLogin" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-xl p-4 items-center justify-center transition-opacity">
+  <!-- (Admin Login Modal Resto - igual) -->
+  <div class="w-full max-w-sm bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl p-6 text-center relative">
+    <button onclick="closeAdminModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div class="w-12 h-12 rounded-full bg-white/5 mx-auto flex items-center justify-center mb-4"><i class="fa-solid fa-lock text-violet-400 text-lg"></i></div>
+    <h3 class="font-bold text-lg mb-1">Acceso Administrativo</h3>
+    <input type="password" id="pinInput" class="w-full p-3 rounded-xl bg-black border border-white/10 text-sm text-center tracking-widest mb-3 outline-none focus:border-violet-500" placeholder="••••">
+    <button onclick="checkPin()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-sm hover:bg-zinc-200">Verificar</button>
+  </div>
+</div>
+
+<div id="admin" class="hidden fixed inset-0 z-[200] bg-black/80 backdrop-blur-xl p-4 items-center justify-center">
+  <div class="w-full max-w-4xl max-h-[90vh] overflow-auto bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl hide-scrollbar">
+    <div class="sticky top-0 z-10 px-6 py-5 bg-[#0e0e12]/95 backdrop-blur border-b border-white/10 flex justify-between items-center">
+      <div class="font-bold text-lg">Panel Multiprintt</div>
+      <button onclick="closeAdmin()" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="adminBody" class="p-6"></div>
+  </div>
+</div>
+
+<!-- CARTILLA DE INFORMACIÓN DE CURSO -->
+<div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300">
+  <div class="relative w-full max-w-4xl bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-300" id="courseModalContent">
+    
+    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    
+    <div class="w-full md:w-1/2 h-48 sm:h-56 md:h-auto bg-[#101014] relative">
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0e0e12] to-transparent md:hidden z-10 pointer-events-none"></div>
+      <img id="cm-image" src="" alt="Curso Multiprintt" class="w-full h-full object-cover relative z-0" onerror="this.src='https://images.unsplash.com/photo-1626786139589-9b43fb4e9124?q=80&w=800&auto=format&fit=crop';">
+    </div>
+    
+    <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative z-20">
+      <span id="cm-modality" class="inline-block px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[9px] uppercase tracking-[.15em] text-violet-400 font-bold mb-4 w-max"></span>
+      
+      <h3 id="cm-title" class="display text-xl md:text-3xl font-extrabold tracking-tight mb-2 text-white"></h3>
+      <p id="cm-desc" class="text-xs md:text-sm text-zinc-400 leading-relaxed mb-5 flex-1"></p>
+      
+      <div class="space-y-4 mb-6">
+        <div class="flex items-center text-zinc-300">
+            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-cyan-400"><i class="fa-regular fa-calendar"></i></div>
+            <div>
+                <span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Horarios</span>
+                <span id="cm-schedule" class="font-medium text-white text-xs md:text-sm"></span>
+            </div>
+        </div>
+        <div class="flex items-center text-zinc-300">
+            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-pink-400"><i class="fa-solid fa-tag"></i></div>
+            <div>
+                <span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Inversión</span>
+                <span id="cm-price" class="font-bold text-white text-xs md:text-sm"></span>
+            </div>
+        </div>
+      </div>
+      
+      <a id="cm-btn" href="#" target="_blank" class="flex items-center justify-center w-full px-5 py-3.5 rounded-xl bg-white text-black text-xs md:text-sm font-extrabold hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-1">
+        Separar cupo por WhatsApp <i class="fa-brands fa-whatsapp ml-2 text-base"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CARTILLA DE TESTIMONIOS -->
+<div id="testimonialModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300">
+  <div class="relative w-full max-w-md bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl p-6 md:p-8 flex flex-col items-center text-center transform scale-95 transition-transform duration-300" id="testimonialModalContent">
+    
+    <button onclick="closeTestimonialModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition-colors">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    
+    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-cyan-400 to-violet-500 p-[2px] mb-4 shadow-lg">
+        <div class="w-full h-full bg-[#0e0e12] rounded-full flex items-center justify-center text-2xl">
+            <i class="fa-solid fa-user text-white"></i>
+        </div>
+    </div>
+    
+    <i class="fa-solid fa-quote-right text-3xl text-white/10 mb-3"></i>
+    <p id="tm-text" class="text-zinc-300 text-sm md:text-base italic mb-6 leading-relaxed"></p>
+    
+    <h4 id="tm-name" class="text-white text-sm font-bold mb-1"></h4>
+    <span id="tm-course" class="inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[9px] uppercase tracking-[.15em] text-cyan-400 font-bold"></span>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+window.navigate = function(targetId) {
+    const views = ['catalog', 'about', 'courses', 'contact'];
+    
+    views.forEach(id => {
+        const section = document.getElementById(`view-${id}`);
+        const btn = document.getElementById(`nav-${id}`);
+        const botBtn = document.getElementById(`bot-${id}`);
+        
+        if (id === targetId) {
+            if (section) {
+                section.classList.add('active-slide');
+                setTimeout(() => { section.scrollTop = 0; }, 10);
+            }
+            if(btn) { btn.classList.add('active'); btn.classList.remove('text-[#aaaab3]'); }
+            if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
+            
+            setTimeout(() => { 
+                if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); 
+                if(id === 'contact' && window.multiprinttMap) { window.multiprinttMap.invalidateSize(); }
+            }, 100);
+        } else {
+            if (section) section.classList.remove('active-slide');
+            if(btn) { btn.classList.remove('active'); btn.classList.add('text-[#aaaab3]'); }
+            if(botBtn) { botBtn.classList.remove('active', 'text-white'); botBtn.classList.add('text-zinc-500'); }
+            if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
+        }
+    });
+};
+
+const defaultProducts=[
+    {name:'Fotocuadros en Madera y Aluminio',category:'premium',price:25,image:'',icon:'fa-image'},
+    {name:'Sombreros Personalizados TRI',category:'textil',price:8,image:'',icon:'fa-hat-cowboy'},
+    {name:'Camiseta Algodón Premium DTF',category:'textil',price:18.50,image:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=700&auto=format&fit=crop',icon:'fa-shirt'},
+    {name:'Tazas Mágicas y Termos',category:'tazas',price:12,image:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?q=80&w=700&auto=format&fit=crop',icon:'fa-mug-hot'}
+];
+
+const defaultCourses=[
+    {title:'Curso Completo de Impresión Digital', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/completo.jpg', desc:'El programa total (Sublimación, Serigrafía, DTF, UV DTF y Estampados). Ideal para crear tu propio negocio desde cero.'},
+    {title:'Curso de Sublimación', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/sublimacion.jpg', desc:'Aprende a transferir imágenes de altísima calidad sobre tazas, camisetas y promocionales con resultados profesionales.'},
+    {title:'Curso de Serigrafía', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/serigrafia.jpg', desc:'Especialízate en técnicas de impresión tradicional ideales para producción de camisetas y promocionales en gran volumen.'},
+    {title:'Taller de Resina', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/resina.jpg', desc:'Crea piezas únicas, accesorios exclusivos y dales acabados premium, brillantes y duraderos a diferentes superficies.'},
+    {title:'Curso de Sellos', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/sellos.jpg', desc:'Especialízate en el diseño, elaboración y fabricación de sellos de goma y microporosos profesionales.'},
+    {title:'Curso de Manejo de Plóter de Corte', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/ploter.jpg', desc:'Manejo profesional de software y hardware para corte de vinil textil, adhesivos y creación de stickers de alta calidad.'},
+    {title:'Curso de Pedrería Textil', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/pedreria.jpg', desc:'Aprende la técnica de aplicación de pedrería y strass para personalizar y embellecer todo tipo de prendas y textiles.'},
+    {title:'Curso de Grabado sobre Vidrio', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/grabado.jpg', desc:'Domina el arte del esmerilado y grabado para personalizar copas, botellas y cristalería fina con precisión absoluta.'},
+    {title:'Curso de Polimación', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/polimacion.jpg', desc:'Descubre esta técnica innovadora de impresión que permite realizar sublimación directa sobre prendas de algodón.'},
+    {title:'Curso de Elaboración de Agendas', modality:'N/A', price:'$0', schedule:'Consultar disponibilidad', image:'recursos/agendas.jpg', desc:'Aprende el proceso completo de principio a fin para diseñar, imprimir, encuadernar y armar agendas personalizadas.'}
+];
+
+const testimonials = [
+    {name: 'María F.', course: 'Sublimación', text: 'Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo del profesor es increíble.'},
+    {name: 'Carlos R.', course: 'Serigrafía', text: 'Excelente metodología. Fui sin saber nada y ahora produzco tirajes completos de camisetas para mi propia marca de ropa urbana.'},
+    {name: 'Ana P.', course: 'Resina', text: 'Me encantó el taller. Hice piezas hermosas desde el primer día y el acompañamiento posterior me ha ayudado muchísimo.'}
+];
+
+let products=JSON.parse(localStorage.getItem('mp_products')||'null')||defaultProducts;
+let courses=defaultCourses;
+let current='all';
+
+function toggleUnifiedFilter() {
+    const menu = document.getElementById('unified-filter-menu');
+    menu.classList.toggle('hidden'); menu.classList.toggle('flex');
+}
+
+function applyFilter(cat) {
+    current = cat;
+    document.querySelectorAll('.filter-check').forEach(chk => {
+        if(chk.dataset.cat === cat) chk.classList.remove('hidden'); else chk.classList.add('hidden');
+    });
+    toggleUnifiedFilter(); renderProducts();
+}
+
+function renderProducts(){
+    const grid=document.getElementById('product-grid'); grid.innerHTML='';
+    const list=current==='all'?products:products.filter(p=>p.category===current);
+    
+    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full";
+    if(list.length === 1) grid.classList.add("grid-cols-1", "max-w-xs");
+    else if(list.length === 2) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "max-w-2xl");
+    else if(list.length === 3) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "md:grid-cols-3", "max-w-4xl");
+    else grid.classList.add("grid-cols-2", "sm:grid-cols-3", "lg:grid-cols-4");
+    
+    list.forEach((p,i)=>{
+        const wa=`https://wa.me/593997591021?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre el producto: '+p.name+'.')}`;
+        const art = p.image 
+            ? `<img src="${p.image}" alt="${p.name}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500">`
+            : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60"></i></div>`;
+        
+        grid.innerHTML+=`
+        <article class="card rounded-[12px] overflow-hidden group transition-all duration-300 bg-[#0b0b0e] flex flex-col h-full relative shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/20">
+           <div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2">
+            <div class="absolute w-32 h-32 rounded-full blur-2xl opacity-25 transition-transform duration-700 group-hover:scale-125" style="background:${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]}"></div>
+            ${art}
+            <span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm">${p.category}</span>
+           </div>
+           <div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95 backdrop-blur-xl">
+            <h3 class="font-bold text-[11px] md:text-xs leading-snug line-clamp-2">${p.name}</h3>
+            <div class="mt-auto pt-3 flex items-center justify-between gap-2">
+              <span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span>
+              <a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] border border-[#25D366]/15 text-[10px] font-bold hover:bg-[#25D366] hover:text-black transition-colors flex items-center justify-center shadow-sm">
+                Pedir <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-[9px]"></i>
+              </a>
+            </div>
+           </div>
+        </article>`;
+    });
+}
+
+function renderCourses(){
+    const grid=document.getElementById('courses-grid'); grid.innerHTML='';
+    courses.forEach((c,i)=>{
+        grid.innerHTML+=`
+        <!-- Se removió sm:aspect-square para que adopten su tamaño natural y no se estiren inmensamente -->
+        <article class="card rounded-[12px] p-4 relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full transition-all shadow-[0_8px_30px_rgba(0,0,0,0.2)] border border-white/5 hover:border-white/15">
+            <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-20 transition-transform duration-700 group-hover:scale-150" style="background:${i%2===0?'#735cff':'#ff2da8'}"></div>
+            
+            <div class="relative z-10 flex flex-col w-full h-full">
+                <div class="flex justify-between items-start mb-3 shrink-0">
+                    <span class="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[8px] uppercase tracking-[.15em] text-zinc-300 font-bold">${c.modality}</span>
+                </div>
+                
+                <h3 class="display text-[14px] md:text-base font-extrabold tracking-tight shrink-0 mb-1.5 leading-[1.2]">${c.title}</h3>
+                <p class="text-[10px] md:text-[11px] text-zinc-400 leading-relaxed flex-1 line-clamp-3">${c.desc}</p>
+                
+                <div class="mt-4 shrink-0 pt-3 border-t border-white/5">
+                    <button onclick="openCourseModal(${i})" class="inline-flex items-center justify-center w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-white text-[9px] md:text-[10px] font-extrabold hover:bg-white hover:text-black transition-colors shadow-lg">
+                        Ver más información <i class="fa-solid fa-plus ml-1.5"></i>
+                    </button>
+                </div>
+            </div>
+        </article>`;
+    });
+}
+
+function openCourseModal(index) {
+    const c = courses[index];
+    const modal = document.getElementById('courseModal');
+    const content = document.getElementById('courseModalContent');
+    
+    document.getElementById('cm-title').textContent = c.title;
+    document.getElementById('cm-desc').textContent = c.desc;
+    document.getElementById('cm-modality').textContent = c.modality;
+    document.getElementById('cm-schedule').textContent = c.schedule;
+    document.getElementById('cm-price').textContent = c.price;
+    document.getElementById('cm-image').src = c.image;
+    
+    const waLink = `https://wa.me/593997591021?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
+    document.getElementById('cm-btn').href = waLink;
+    
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
+}
+
+function closeCourseModal() {
+    const modal = document.getElementById('courseModal');
+    const content = document.getElementById('courseModalContent');
+    modal.classList.add('opacity-0'); content.classList.add('scale-95');
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+}
+
+function openTestimonialModal(index) {
+    const t = testimonials[index];
+    document.getElementById('tm-text').textContent = `"${t.text}"`;
+    document.getElementById('tm-name').textContent = t.name;
+    document.getElementById('tm-course').textContent = t.course;
+    
+    const modal = document.getElementById('testimonialModal');
+    const content = document.getElementById('testimonialModalContent');
+    
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
+}
+
+function closeTestimonialModal() {
+    const modal = document.getElementById('testimonialModal');
+    const content = document.getElementById('testimonialModalContent');
+    modal.classList.add('opacity-0'); content.classList.add('scale-95');
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+}
+
+function openAdminModal() { document.getElementById('adminLogin').classList.remove('hidden'); document.getElementById('adminLogin').classList.add('flex'); }
+function closeAdminModal() { document.getElementById('adminLogin').classList.add('hidden'); document.getElementById('adminLogin').classList.remove('flex'); }
+function checkPin() { if (document.getElementById('pinInput').value === '1234') { closeAdminModal(); document.getElementById('admin').classList.remove('hidden'); document.getElementById('admin').classList.add('flex'); renderAdmin(); } }
+function closeAdmin(){ document.getElementById('admin').classList.add('hidden'); document.getElementById('admin').classList.remove('flex'); }
+
+function renderAdmin(){
+    document.getElementById('adminBody').innerHTML=`
+    <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-white/[.03] rounded-2xl p-6 border border-white/10">
+            <h3 class="font-bold mb-5 text-base">Agregar producto</h3>
+            <div class="space-y-3">
+                <input id="an" placeholder="Nombre" class="w-full p-3.5 rounded-xl bg-black border border-white/10 text-sm text-white">
+                <select id="ac" class="w-full p-3.5 rounded-xl bg-black border border-white/10 text-sm text-white"><option value="premium">Premium</option><option value="textil">Textil</option><option value="tazas">Tazas</option></select>
+                <input id="ap" type="number" placeholder="Precio ($)" class="w-full p-3.5 rounded-xl bg-black border border-white/10 text-sm text-white">
+                <button onclick="addProduct()" class="w-full py-3.5 rounded-xl bg-white text-black font-bold text-sm mt-2 hover:bg-zinc-200">Guardar</button>
+            </div>
+        </div>
+        <div class="bg-white/[.03] rounded-2xl p-6 border border-white/10 max-h-[400px] overflow-y-auto slide-scroll">
+            <div class="space-y-2.5">${products.map((p,i)=>`<div class="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-black/50 border border-white/5"><span class="text-xs font-medium">${p.name}<br><b class="text-zinc-400 mt-1 block">$${Number(p.price).toFixed(2)}</b></span><button onclick="removeProduct(${i})" class="w-8 h-8 rounded-full bg-red-500/10 text-red-400"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`).join('')}</div>
+        </div>
+    </div>`;
+}
+
+function initMap() {
+    const lat = -2.185722, lng = -79.892194; 
+    window.multiprinttMap = L.map('leaflet-map', {zoomControl: true, attributionControl: false}).setView([lat, lng], 19);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
+    const customIcon = L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] });
+    L.marker([lat, lng], {icon: customIcon}).addTo(window.multiprinttMap);
+}
+
+function recenterMap() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185722, -79.892194], 19, { animate: true }); }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
+    renderProducts(); renderCourses(); initMap();
+});
+</script>
+</body>
+</html>
