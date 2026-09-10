@@ -29,6 +29,18 @@
 <link rel="icon" type="image/png" href="https://multiprintt.web.app/recursos/favicon.png">
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#070709',
+            panel: '#101014'
+          }
+        }
+      }
+    }
+</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,15 +111,35 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 
-/* Elementor-like Edit Outline (SOLO MODO ADMIN) */
+/* Elementor-like Edit Outline */
 body.admin-mode [data-edit]:hover { outline: 2px dashed var(--cyan); cursor: text; border-radius: 4px; background: rgba(37, 216, 255, 0.05); }
 body.admin-mode [data-edit]:focus { outline: 2px solid var(--pink); background: rgba(255, 45, 168, 0.05); }
 .admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
 .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
+
+/* Animaciones para el Loader Cinemático Minimalista */
+.loader-hidden { 
+    opacity: 0; 
+    visibility: hidden; 
+    transform: scale(1.05);
+    pointer-events: none; 
+}
 </style>
 </head>
 
 <body>
+<!-- Pantalla de Carga Cinemática (Minimalista y Funcional) -->
+<div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
+    <div class="relative flex items-center justify-center">
+        <!-- Resplandor sutil de fondo -->
+        <div class="absolute w-16 h-16 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-[25px] opacity-30 animate-pulse"></div>
+        <!-- Ruedita de carga (Spinner corregido) -->
+        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));">
+            <i class="fa-solid fa-circle-notch animate-spin text-4xl block"></i>
+        </div>
+    </div>
+</div>
+
 <div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
 
 <!-- Banner Modo Admin -->
@@ -178,7 +210,7 @@ body.admin-mode [data-edit]:focus { outline: 2px solid var(--pink); background: 
             </div>
         </div>
         <div id="product-grid" class="w-full reveal show transition-all mt-14 mb-8">
-            <div class="w-full flex items-center justify-center py-20 text-white/50"><i class="fa-solid fa-circle-notch fa-spin text-3xl"></i></div>
+            <div class="w-full flex items-center justify-center py-20 text-white/50"></div>
         </div>
     </div>
   </section>
@@ -286,8 +318,9 @@ body.admin-mode [data-edit]:focus { outline: 2px solid var(--pink); background: 
     </div>
   </section>
 
+  <!-- SOLUCIÓN AL FOOTER: Usar min-h-full en lugar de h-full y remover overflow-hidden -->
   <section id="view-contact" class="view-slide flex flex-col slide-scroll">
-    <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full h-full flex flex-col pt-2 pb-6 relative z-10 overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-2 pb-6 relative z-10">
         
         <div class="flex-1 flex flex-col justify-center">
             <div class="reveal text-center shrink-0 relative z-20 mb-6 lg:mb-8">
@@ -334,8 +367,9 @@ body.admin-mode [data-edit]:focus { outline: 2px solid var(--pink); background: 
             </div>
         </div>
 
-        <footer class="mt-6 pt-4 text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-2 relative z-20 pb-4">
+        <footer class="mt-8 pt-4 text-center text-[9px] md:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-2 relative z-20 pb-4">
             <span>© <span id="year"></span> Multiprintt. Tú Imagen Viva.</span>
+            <!-- AQUÍ ESTÁ EL CANDADO DEL EDITOR VISUAL -->
             <button onclick="openLoginModal()" class="text-zinc-800 hover:text-pink-600 transition-colors p-2"><i class="fa-solid fa-lock"></i></button>
         </footer>
     </div>
@@ -587,8 +621,14 @@ async function loadFirebaseData() {
     try {
         await signInAnonymously(auth);
         
-        const textRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home');
-        const textSnap = await getDoc(textRef);
+        // Optimización: Promesas en paralelo para cargar Colecciones simultáneamente
+        const [textSnap, prodSnap, coursesSnap] = await Promise.all([
+            getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home')),
+            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products')),
+            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'))
+        ]);
+
+        // Procesar textos del Hero y Contacto
         if (textSnap.exists()) {
             const data = textSnap.data();
             if(data.heroSubtitle) document.getElementById('hero-subtitle').textContent = data.heroSubtitle;
@@ -607,25 +647,30 @@ async function loadFirebaseData() {
             }
         }
 
-        const prodSnap = await getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'));
+        // Procesar arrays
         if (!prodSnap.empty) { window.appProducts = prodSnap.docs.map(d => ({id: d.id, ...d.data()})); }
-
-        const coursesSnap = await getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'));
-        if (!coursesSnap.empty) { 
-            // Sort to maintain original array order based on ID number logic if needed, but Firebase randomizes IDs unless specified.
-            // Using a simple load.
-            window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-        }
-
-        window.renderProducts(); window.renderCourses();
+        if (!coursesSnap.empty) { window.appCourses = coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); }
 
     } catch (error) {
-        console.log("Firebase no configurado, usando respaldo local.");
+        console.warn("Base de datos inalcanzable. Cargando respaldo inmersivo.", error);
+    } finally {
+        // Ejecutar el renderizado definitivo
+        window.renderProducts(); 
+        window.renderCourses();
+        
+        // Retirar la pantalla de carga suavemente
+        setTimeout(() => {
+            const loader = document.getElementById('global-loader');
+            if(loader) loader.classList.add('loader-hidden');
+            
+            if(window.multiprinttMap) { 
+                setTimeout(() => window.multiprinttMap.invalidateSize(), 400); 
+            }
+        }, 500); 
     }
 }
 
 async function forceSyncDefaultsToFirebase() {
-    // Si entras como admin y la base de datos está vacía, la llenamos para que editar no borre los demás.
     const prodSnap = await getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'));
     if (prodSnap.empty) {
         for(let p of defaultProducts) { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', p.id), p); }
@@ -634,7 +679,7 @@ async function forceSyncDefaultsToFirebase() {
     if (coursesSnap.empty) {
         for(let c of defaultCourses) { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'courses', c.id), c); }
     }
-    loadFirebaseData(); // Recarga lo real
+    loadFirebaseData(); 
 }
 
 window.openLoginModal = function() {
@@ -657,7 +702,7 @@ window.checkAdminPin = async function() {
         document.getElementById('main-header').classList.add('top-8');
         enableInlineEditing();
         window.renderProducts(); window.renderCourses();
-        await forceSyncDefaultsToFirebase(); // Protege y sube a Firebase si estaba vacía
+        await forceSyncDefaultsToFirebase(); 
     } else {
         alert("Contraseña Incorrecta");
     }
@@ -676,7 +721,7 @@ function enableInlineEditing() {
     document.querySelectorAll('[data-edit]').forEach(el => {
         el.setAttribute('contenteditable', 'true');
         el.addEventListener('blur', saveTextChanges);
-        el.addEventListener('paste', handlePaste); // Fuerza pegado limpio
+        el.addEventListener('paste', handlePaste);
     });
 }
 function disableInlineEditing() {
@@ -697,7 +742,6 @@ async function saveTextChanges(e) {
     const value = e.target.innerText;
     try {
         await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'home'), { [key]: value }, { merge: true });
-        // Si editó el teléfono, actualizar botones inmediatamente
         if(key === 'contactPhone') {
             const clean = value.replace(/\D/g, '');
             document.getElementById('wa-link-pc').href = `https://wa.me/${clean}`;
@@ -706,7 +750,6 @@ async function saveTextChanges(e) {
     } catch(err) { console.error("Error guardando texto", err); }
 }
 
-// Editor Modal para Catálogo y Cursos
 window.openEditor = function(type, id) {
     const modal = document.getElementById('editModal'); const content = document.getElementById('editModalContent');
     const fields = document.getElementById('em-fields');
@@ -831,7 +874,7 @@ window.scrollSlider = function(direction) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
-    renderSlider(); initMap(); window.renderProducts(); window.renderCourses();
+    renderSlider(); initMap();
     loadFirebaseData();
 });
 </script>
