@@ -85,6 +85,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
+  /* ========================================== */
+/* MODO OSCURO PARA EL MAPA GPS               */
+/* ========================================== */
+.leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { 
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); 
+}
 :root{ --bg:#070709;--panel:#101014;--line:rgba(255,255,255,.09); --pink:#ff2da8;--violet:#735cff;--cyan:#25d8ff; }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
