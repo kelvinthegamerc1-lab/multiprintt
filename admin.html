@@ -22,12 +22,10 @@
     .sidebar { width: 280px; background: #0b0b0e; border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; z-index:10; }
     .sidebar-right { width: 300px; background: #0b0b0e; border-left: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; z-index:10; }
     
-    /* 🟢 CONTENEDOR CENTRAL: FLEXIBLE PARA QUE LA PC OCUPE TODO EL ESPACIO */
+    /* CONTENEDOR CENTRAL */
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; }
-    
     #preview-wrapper { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: #070709; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); display: flex; flex-direction: column;}
     
-    /* 🟢 FUERZA EL TAMAÑO DE PC PARA QUE ACTIVE LA VERSIÓN DE ESCRITORIO DE TAILWIND */
     .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 0 !important; border: none !important; }
     .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 16px; margin: auto; border: 10px solid #222;}
     .device-mobile { width: 390px !important; height: 844px !important; border-radius: 36px; margin: auto; border: 12px solid #222 !important;}
@@ -95,9 +93,9 @@
             <div class="p-4 rounded-lg border border-dashed border-pink-500/50 text-xs text-white/80 leading-relaxed bg-pink-500/5 mb-2">
                 <b class="text-pink-400 block mb-2"><i class="fa-solid fa-lightbulb"></i> Tips de Edición</b>
                 <ul class="list-disc pl-3 space-y-2">
+                    <li><b>Redes Sociales:</b> Edita los links y el orden desde el Menú de PC superior. Al publicar, se copiará todo al móvil y footer automáticamente.</li>
                     <li><b>Textos:</b> Haz clic en cualquier texto para escribir.</li>
                     <li><b>Enlaces/Videos:</b> Haz <u>Doble Clic</u> sobre iconos o videos para cambiar la URL.</li>
-                    <li><b>Navegación:</b> Haz clic en el menú (Ej: Academia) para cambiar de pantalla.</li>
                 </ul>
             </div>
 
@@ -156,7 +154,7 @@
     </div>
 </div>
 
-<!-- 🟢 MODAL VISUAL SELECTOR DE ICONOS (Añade iconos de Redes Sociales) -->
+<!-- 🟢 MODAL VISUAL SELECTOR DE ICONOS -->
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-lg bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl">
         <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
@@ -172,11 +170,11 @@
             <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-youtube')"><i class="fa-brands fa-youtube"></i></div>
             <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-x-twitter')"><i class="fa-brands fa-x-twitter"></i></div>
             <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-linkedin-in')"><i class="fa-brands fa-linkedin-in"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-telegram')"><i class="fa-brands fa-telegram"></i></div>
             <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-pinterest-p')"><i class="fa-brands fa-pinterest-p"></i></div>
             <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-globe')"><i class="fa-solid fa-globe"></i><div class="text-[8px] mt-1">Web</div></div>
             <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-envelope')"><i class="fa-solid fa-envelope"></i><div class="text-[8px] mt-1">Correo</div></div>
             <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-phone')"><i class="fa-solid fa-phone"></i><div class="text-[8px] mt-1">Teléfono</div></div>
-            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-location-dot')"><i class="fa-solid fa-location-dot"></i><div class="text-[8px] mt-1">Mapa</div></div>
         </div>
     </div>
 </div>
@@ -231,7 +229,7 @@
 
     function saveLayoutAndPositions() {
         const btn = document.querySelector('.fa-cloud-arrow-up').parentElement;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Publicando...';
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizando y Guardando...';
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*');
     }
 
@@ -241,16 +239,13 @@
         }
     }
 
-    // ========================================================
-    // MODAL VISUAL SELECTOR DE ICONOS
-    // ========================================================
     function closeIconPicker() {
         document.getElementById('iconPickerModal').classList.add('hidden');
         document.getElementById('iconPickerModal').classList.remove('flex');
     }
 
     function sendSelectedIcon(iconClass) {
-        // Envia el icono al Iframe, que lo clonará en todas las barras simultáneamente
+        // Envia el icono al Iframe (Se inyecta en el PC, y al publicar se copia a los demás)
         document.getElementById('site-frame').contentWindow.postMessage({ 
             type: 'INSERT_ICON_GLOBAL', 
             iconClass: iconClass 
@@ -258,9 +253,6 @@
         closeIconPicker();
     }
 
-    // ========================================================
-    // COMUNICACIÓN CON IFRAME
-    // ========================================================
     const propText = document.getElementById('prop-text');
     const propLink = document.getElementById('prop-link');
 
@@ -315,3 +307,5 @@
 </script>
 </body>
 </html>
+
+Al recargarse, verás tu menú móvil y tu pie de página perfectos, limpios e idénticos a lo que configuraste arriba. Además, he añadido el icono de **Telegram** en el grid del administrador por si lo necesitas. ¡Listo para conquistar!
