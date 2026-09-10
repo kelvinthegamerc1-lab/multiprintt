@@ -60,9 +60,6 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .btn{transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
 .btn:hover{transform:translateY(-2px)}
 
-/* ========================================== */
-/* NAVBAR ARREGLADO                           */
-/* ========================================== */
 .nav-link { color: #aaaab3; transition: all 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 99px; font-weight: 500; }
 .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
 .nav-link.active { color: #000 !important; background: #fff !important; font-weight: 700 !important; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
@@ -71,9 +68,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* ========================================== */
-/* MOTOR VISUAL BUILDER PRO                   */
-/* ========================================== */
+/* MOTOR VISUAL BUILDER PRO */
 .admin-tool { display: none !important; }
 body.builder-mode .admin-tool { display: flex !important; }
 
@@ -124,29 +119,32 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
 
     <div class="flex items-center relative">
         
-        <!-- REDES MOVILES -->
+        <!-- REDES MOVILES (Se sincroniza mágicamente) -->
         <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
-            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="hover:text-pink-400 transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
-            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="hover:text-blue-500 transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
-            
+            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
+            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
+            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
             <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
         </div>
         
-        <!-- 🟢 NUEVO HOVER HORIZONTAL MINIMALISTA (PC) -->
-        <div class="hidden md:flex relative h-10 w-10 justify-end items-center z-[110]">
-            <div class="absolute right-0 flex flex-row-reverse items-center group h-9 w-9 hover:w-[auto] max-w-[36px] hover:max-w-[400px] bg-white/[0.05] hover:bg-[#101014]/95 backdrop-blur-md rounded-full transition-all duration-500 overflow-hidden border border-white/5 hover:border-white/10 shadow-sm hover:px-1">
+        <!-- 🟢 HOVER PC (Este es el master. Lo que arrastres aquí se copiará al footer y móvil) -->
+        <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
+            <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 shadow-lg px-[9px] whitespace-nowrap sortable-zone">
                 
-                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="w-9 h-9 shrink-0 flex items-center justify-center text-zinc-400 group-hover:text-white transition-colors z-20">
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
+
+                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center">
+                    <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
+                </a>
+
+                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center">
+                    <i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i>
+                </a>
+
+                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center">
                     <i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i>
                 </a>
 
-                <div id="social-nav-pc" class="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-75 pl-3 pr-2 editable-zone sortable-zone whitespace-nowrap">
-                    <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-white transition-colors"><i class="fa-brands fa-instagram text-[16px] pointer-events-none"></i></a>
-                    <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-white transition-colors"><i class="fa-brands fa-facebook-f text-[16px] pointer-events-none"></i></a>
-                    
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-[9px] pointer-events-none"></i></button>
-                </div>
             </div>
         </div>
     </div>
@@ -288,11 +286,11 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
                     </div>
                     <div class="group">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
+                        <!-- FOOTER REDES (Se sincroniza mágicamente) -->
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone">
-                            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-white transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></a>
-                            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-white transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></a>
-                            <a data-editable="true" href="https://tiktok.com/@alfredoaguilar734" target="_blank" class="text-zinc-400 hover:text-white transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-tiktok pointer-events-none"></i></a>
-                            
+                            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></a>
+                            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></a>
+                            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-whatsapp pointer-events-none"></i></a>
                             <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
                         </div>
                     </div>
@@ -391,7 +389,6 @@ const defaultCourses = [
 window.appProducts = [...defaultProducts];
 window.appCourses = [...defaultCourses];
 
-// 🟢 NAVEGACIÓN TOTALMENTE REPARADA
 window.navigate = function(targetId) {
     ['catalog', 'about', 'courses', 'contact'].forEach(id => {
         const section = document.getElementById(`view-${id}`); 
@@ -454,7 +451,6 @@ window.renderCourses = function(){
     }
 }
 
-// 🟢 CLONADOR INMORTAL DE TESTIMONIOS
 window.cloneTestimonial = function(btnNode) {
     if(!window.isAdminMode) return;
     const grid = btnNode.parentElement;
@@ -509,6 +505,20 @@ async function loadFirebaseData() {
 // ========================================================
 let selectedEl = null;
 
+// Mapa global de colores de hover para redes sociales
+const getHoverColor = (cls) => {
+    if(!cls) return 'hover:text-cyan-400';
+    if(cls.includes('whatsapp')) return 'hover:text-[#25D366]';
+    if(cls.includes('instagram')) return 'hover:text-[#E1306C]';
+    if(cls.includes('facebook')) return 'hover:text-[#1877F2]';
+    if(cls.includes('youtube')) return 'hover:text-[#FF0000]';
+    if(cls.includes('linkedin')) return 'hover:text-[#0A66C2]';
+    if(cls.includes('telegram')) return 'hover:text-[#229ED9]';
+    if(cls.includes('tiktok')) return 'hover:text-white';
+    if(cls.includes('twitter') || cls.includes('x-twitter')) return 'hover:text-white';
+    return 'hover:text-cyan-400';
+};
+
 window.addEventListener('message', async (event) => {
     
     if (event.data.type === 'ENABLE_BUILDER') {
@@ -529,20 +539,22 @@ window.addEventListener('message', async (event) => {
         window.renderProducts(); window.renderCourses();
     }
     
-    // 🟢 SINCRONIZACIÓN MÁGICA DE REDES (Añade a PC, Móvil y Footer a la vez)
+    // Añadir icono en vivo al PC Hover y el resto (Se sincronizarán mágicamente al guardar)
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
-        ['social-nav-pc', 'social-nav-mobile', 'social-footer-links'].forEach(zoneId => {
-            const zone = document.getElementById(zoneId);
-            if(zone) {
-                const firstIcon = zone.querySelector('a:not(.admin-tool)');
-                if(firstIcon) {
-                    const clone = firstIcon.cloneNode(true);
-                    clone.href = "#"; clone.classList.remove('builder-selected-el');
-                    clone.querySelector('i').className = event.data.iconClass + " pointer-events-none";
-                    zone.insertBefore(clone, zone.querySelector('.admin-tool'));
-                }
-            }
-        });
+        const iconClass = event.data.iconClass;
+        const hoverCls = getHoverColor(iconClass);
+        const pcNav = document.getElementById('social-nav-pc');
+        
+        if(pcNav) {
+            const a = document.createElement('a');
+            a.setAttribute('data-editable', 'true');
+            a.href = "#";
+            a.className = `text-zinc-500 ${hoverCls} transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center`;
+            a.innerHTML = `<i class="${iconClass} text-[18px] pointer-events-none"></i>`;
+            const pcTool = pcNav.querySelector('.admin-tool');
+            if(pcTool) pcTool.insertAdjacentElement('afterend', a);
+            else pcNav.appendChild(a);
+        }
     }
 
     if (event.data.type === 'UPDATE_ELEMENT' && selectedEl) {
@@ -579,15 +591,67 @@ window.addEventListener('message', async (event) => {
             document.body.classList.remove('dragging-active');
         }
 
-        // 🟢 Sincroniza enlaces editados en PC al Móvil antes de guardar
+        // 🟢 MAGIA DE SINCRONIZACIÓN DE REDES EN TIEMPO REAL
+        // Copia el menú PC y lo traslada inteligente al Móvil y al Footer
         const pcNav = document.getElementById('social-nav-pc');
         const mobileNav = document.getElementById('social-nav-mobile');
-        if(pcNav && mobileNav) {
-            const iconsHTML = Array.from(pcNav.querySelectorAll('a:not(.admin-tool)'));
-            const tool = mobileNav.querySelector('.admin-tool');
+        const footerNav = document.getElementById('social-footer-links');
+
+        if(pcNav && mobileNav && footerNav) {
+            // Extraer las redes basándose en la píldora de PC (ignorando el botón de añadir admin)
+            const networks = Array.from(pcNav.querySelectorAll('a:not(.admin-tool)')).map(a => {
+                const icon = a.querySelector('i');
+                let baseClass = icon ? icon.className.replace(/text-\[.*?\]|text-(sm|md|lg|xl|2xl)|pointer-events-none/g, '').trim() : '';
+                return { href: a.href, iconClass: baseClass };
+            });
+
+            // Reconstruir PC Nav (Con las reglas visuales de opacidad y expansión a la izquierda)
+            const pcTool = pcNav.querySelector('.admin-tool');
+            pcNav.innerHTML = '';
+            if(pcTool) pcNav.appendChild(pcTool); // Botón de añadir siempre primero en el DOM (Izquierda extrema)
+            networks.forEach((net, index) => {
+                const a = document.createElement('a');
+                a.setAttribute('data-editable', 'true');
+                a.href = net.href;
+                a.target = '_blank';
+                const hoverCls = getHoverColor(net.iconClass);
+                // El último elemento SIEMPRE es visible como "ancla". Los demás se esconden y aparecen al hacer hover.
+                if(index === networks.length - 1) {
+                    a.className = `text-zinc-400 ${hoverCls} transition-colors shrink-0 flex items-center justify-center`;
+                } else {
+                    a.className = `text-zinc-500 ${hoverCls} transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center`;
+                }
+                a.innerHTML = `<i class="${net.iconClass} text-[18px] pointer-events-none"></i>`;
+                pcNav.appendChild(a);
+            });
+
+            // Reconstruir Nav Móvil (Perfectamente sincronizado)
+            const mobTool = mobileNav.querySelector('.admin-tool');
             mobileNav.innerHTML = '';
-            iconsHTML.forEach(a => mobileNav.appendChild(a.cloneNode(true)));
-            if(tool) mobileNav.appendChild(tool);
+            networks.forEach((net) => {
+                const a = document.createElement('a');
+                a.setAttribute('data-editable', 'true');
+                a.href = net.href;
+                a.target = '_blank';
+                a.className = `text-zinc-400 ${getHoverColor(net.iconClass)} transition-colors`;
+                a.innerHTML = `<i class="${net.iconClass} text-lg pointer-events-none"></i>`;
+                mobileNav.appendChild(a);
+            });
+            if(mobTool) mobileNav.appendChild(mobTool);
+
+            // Reconstruir Footer (Perfectamente sincronizado)
+            const footTool = footerNav.querySelector('.admin-tool');
+            footerNav.innerHTML = '';
+            networks.forEach((net) => {
+                const a = document.createElement('a');
+                a.setAttribute('data-editable', 'true');
+                a.href = net.href;
+                a.target = '_blank';
+                a.className = `text-zinc-400 ${getHoverColor(net.iconClass)} transition-colors text-xl sm:text-2xl`;
+                a.innerHTML = `<i class="${net.iconClass} pointer-events-none"></i>`;
+                footerNav.appendChild(a);
+            });
+            if(footTool) footerNav.appendChild(footTool);
         }
 
         const layoutData = {};
@@ -611,7 +675,7 @@ window.addEventListener('message', async (event) => {
     }
 });
 
-// MODALES PUBLICOS
+// Modales Públicos
 window.openCourseModal = function(id) {
     if(window.isAdminMode) return;
     const c = window.appCourses.find(x => x.id === id); if(!c) return;
