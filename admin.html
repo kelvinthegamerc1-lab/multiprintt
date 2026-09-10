@@ -3,10 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
 
 <title>Multiprintt | Visual Builder Pro</title>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -25,15 +22,15 @@
     .sidebar { width: 280px; background: #0b0b0e; border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
     .sidebar-right { width: 300px; background: #0b0b0e; border-left: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
     
-    /* Contenedores arreglados para Previsualización Exacta */
+    /* VISTA DE DISPOSITIVO PERFECTA */
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; }
-    #preview-wrapper { transition: all 0.3s ease; background: #070709; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+    #preview-wrapper { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); background: #070709; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; display: flex; }
     
     .device-desktop { width: 100%; height: 100%; border-radius: 0 !important; border: none !important; }
-    .device-tablet { width: 820px; height: 1180px; }
-    .device-mobile { width: 390px; height: 844px; }
+    .device-tablet { width: 820px; height: 1180px; max-height: 100%; }
+    .device-mobile { width: 390px; height: 844px; max-height: 100%; }
     
-    #site-frame { width: 100%; height: 100%; border: none; }
+    #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709;}
     
     .device-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; transition: all 0.2s; cursor: pointer; }
     .device-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; }
@@ -46,6 +43,10 @@
     
     .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; outline: none; margin-top: 5px; font-size: 13px; }
     .inspector-input:focus { border-color: #25d8ff; }
+
+    .icon-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .icon-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px 0; text-align: center; cursor: pointer; transition: 0.2s; }
+    .icon-box:hover { background: rgba(37,216,255,0.2); border-color: #25d8ff; color: #25d8ff;}
 </style>
 </head>
 <body>
@@ -111,7 +112,7 @@
             </div>
         </aside>
 
-        <!-- PREVIEW WRAPPER AÑADIDO PARA SIMULAR TAMAÑOS EXACTOS -->
+        <!-- VISTA PERFECTAMENTE ADAPTABLE AL TAMAÑO -->
         <main id="preview-container">
             <div id="preview-wrapper" class="device-desktop">
                 <iframe id="site-frame" src=""></iframe>
@@ -123,7 +124,7 @@
             
             <div id="no-selection" class="text-xs text-zinc-500 text-center mt-10">
                 <i class="fa-solid fa-hand-pointer text-3xl mb-3 opacity-50 block"></i>
-                Haz doble clic en cualquier enlace, botón o texto para editarlo.
+                Haz clic en cualquier texto, enlace o imagen del sitio para editarlo aquí.
             </div>
 
             <div id="inspector-tools" class="hidden flex-col gap-4">
@@ -141,8 +142,34 @@
     </div>
 </div>
 
+<!-- MODAL VISUAL SELECTOR DE ICONOS -->
+<div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
+    <div class="w-full max-w-lg bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl">
+        <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+            <h3 class="text-lg font-bold text-white">Seleccionar Red Social</h3>
+            <button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        
+        <div class="icon-grid text-3xl mb-4">
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-whatsapp')"><i class="fa-brands fa-whatsapp"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-instagram')"><i class="fa-brands fa-instagram"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-facebook-f')"><i class="fa-brands fa-facebook-f"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-tiktok')"><i class="fa-brands fa-tiktok"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-youtube')"><i class="fa-brands fa-youtube"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-x-twitter')"><i class="fa-brands fa-x-twitter"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-linkedin-in')"><i class="fa-brands fa-linkedin-in"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-brands fa-pinterest-p')"><i class="fa-brands fa-pinterest-p"></i></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-globe')"><i class="fa-solid fa-globe"></i><div class="text-[8px] mt-1">Web</div></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-envelope')"><i class="fa-solid fa-envelope"></i><div class="text-[8px] mt-1">Correo</div></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-phone')"><i class="fa-solid fa-phone"></i><div class="text-[8px] mt-1">Teléfono</div></div>
+            <div class="icon-box" onclick="sendSelectedIcon('fa-solid fa-location-dot')"><i class="fa-solid fa-location-dot"></i><div class="text-[8px] mt-1">Mapa</div></div>
+        </div>
+    </div>
+</div>
+
 <script>
     let dragEnabled = false;
+    let activeIconZone = null;
 
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
@@ -160,14 +187,13 @@
     }
     document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') attemptLogin(); });
 
-    // Carga de Iframe con sello de tiempo (Bloquea Caché)
+    // CARGA PERFECTA CON ANTI-CACHE (Sello de tiempo único cada vez)
     function reloadIframe() {
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
         iframe.src = `index.html?v=${timestamp}`;
     }
 
-    // Centrado y tamaño perfecto de dispositivos
     function setDevice(device) {
         document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + device).classList.add('active');
@@ -196,42 +222,63 @@
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*');
     }
 
+    // BOTON ROJO MAGICO PARA CURAR LA BASE DE DATOS
     function resetLayout() {
-        if(confirm("ATENCIÓN: ¿Estás seguro? \n\nEsto borrará la plantilla visual dañada en Firebase y forzará al sitio a cargar desde cero. Todo volverá a la normalidad.")) {
+        if(confirm("ATENCIÓN: ¿Estás seguro? \n\nEsta acción borrará la plantilla dañada en Firebase y forzará al sitio a cargar como nuevo desde el código original. Solucionará cualquier bug visual o botón que haya desaparecido.\n\n(No se borrarán los productos ni los cursos).")) {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
         }
     }
 
     // ========================================================
-    // COMUNICACIÓN PERFECTA CON IFRAME
+    // MODAL DE ICONOS
+    // ========================================================
+    function closeIconPicker() {
+        document.getElementById('iconPickerModal').classList.add('hidden');
+        document.getElementById('iconPickerModal').classList.remove('flex');
+    }
+
+    function sendSelectedIcon(iconClass) {
+        document.getElementById('site-frame').contentWindow.postMessage({ 
+            type: 'INSERT_ICON', 
+            zoneId: activeIconZone, 
+            iconClass: iconClass 
+        }, '*');
+        closeIconPicker();
+    }
+
+    // ========================================================
+    // COMUNICACIÓN CON IFRAME
     // ========================================================
     const propText = document.getElementById('prop-text');
     const propLink = document.getElementById('prop-link');
 
     window.addEventListener('message', (e) => {
         
-        // 1. Cuando el iframe dice que Firebase terminó de cargar
         if(e.data.type === 'APP_READY') {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
         }
         
-        // 2. Cuando guardó exitosamente en Firebase
         if(e.data.type === 'SAVE_DONE') {
             const btn = document.querySelector('.fa-spin').parentElement;
             btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Sitio Publicado!';
             setTimeout(() => { 
                 btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Sitio'; 
-                reloadIframe(); 
+                reloadIframe(); // Recarga con versión fresca al guardar
             }, 2000);
         }
 
-        // 3. Cuando reseteó la plantilla
         if(e.data.type === 'LAYOUT_RESET_DONE') {
-            alert("Base de datos visual purgada. El editor se recargará limpio.");
-            window.location.reload(true);
+            alert("¡Base de datos curada! El sitio volverá a la normalidad.");
+            reloadIframe();
         }
 
-        // 4. Cuando el usuario seleccionó un elemento en el iframe
+        // Abre el selector de iconos visuales
+        if(e.data.type === 'OPEN_ICON_PICKER') {
+            activeIconZone = e.data.zone;
+            document.getElementById('iconPickerModal').classList.remove('hidden');
+            document.getElementById('iconPickerModal').classList.add('flex');
+        }
+
         if (e.data.type === 'ELEMENT_SELECTED') {
             document.getElementById('no-selection').style.display = 'none';
             document.getElementById('inspector-tools').style.display = 'flex';
