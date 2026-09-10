@@ -118,7 +118,6 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
     </nav>
 
     <div class="flex items-center relative">
-        <!-- REDES MOVILES (Se sincroniza mágicamente) -->
         <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
             <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
             <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
@@ -126,24 +125,12 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
             <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
         </div>
         
-        <!-- 🟢 HOVER PC (Este es el master. Lo que arrastres aquí se copiará al footer y móvil) -->
         <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
             <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 shadow-lg px-[9px] whitespace-nowrap sortable-zone">
-                
                 <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
-
-                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center">
-                    <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
-                </a>
-
-                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center">
-                    <i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i>
-                </a>
-
-                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center">
-                    <i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i>
-                </a>
-
+                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
+                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
+                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
             </div>
         </div>
     </div>
@@ -186,7 +173,6 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
 
   <section id="view-courses" class="view-slide slide-scroll editable-section" id="section-courses">
     <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-8 relative z-10">
-        
         <div class="reveal text-center md:text-left shrink-0 relative z-20 mb-2">
             <div data-editable="true" class="text-[10px] tracking-[.25em] uppercase text-violet-400 font-bold mb-3">Multiprintt Academy</div>
             <h2 class="display flex flex-col gap-0 text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20">
@@ -210,7 +196,7 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0 sortable-zone">
             
             <button onclick="openVideoModal()" class="w-full lg:w-1/3 flex flex-col items-center justify-center p-8 rounded-[16px] bg-[#0e0e12] border border-white/10 shadow-2xl group relative overflow-hidden h-[280px]">
-                <video data-editable="true" id="main-video-src" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500"></video>
+                <video data-editable="true" id="main-video-src" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500" onerror="this.poster='https://placehold.co/400x300/101014/ffffff?text=Video'"></video>
                 <div class="w-16 h-16 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-10"><i class="fa-solid fa-play ml-1 pointer-events-none"></i></div>
                 <h4 data-editable="true" class="text-white text-lg font-bold mt-5 z-10">Carlos P.</h4>
                 <span data-editable="true" class="text-cyan-300 text-[10px] font-bold z-10 uppercase tracking-[.2em] mt-2 bg-black/60 px-4 py-1.5 rounded-full border border-white/10 shadow-lg">Ver Video</span>
@@ -240,8 +226,6 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
                         </div>
                     </div>
                 </div>
-
-                <!-- Botón Añadir Inmortal -->
                 <button onclick="window.cloneTestimonial(this)" class="admin-tool w-full h-full min-h-[150px] border-2 border-dashed border-cyan-500/50 rounded-2xl flex-col items-center justify-center text-cyan-500 font-bold hover:bg-cyan-500/10 cursor-pointer transition-colors ignore-drag">
                     <i class="fa-solid fa-plus text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Testimonio</span>
                 </button>
@@ -263,7 +247,6 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
             </div>
 
             <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
-                
                 <div id="contact-map-col" class="w-full lg:w-1/2 h-[140px] min-[400px]:h-[170px] sm:h-[260px] lg:h-[280px] xl:h-[320px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
@@ -285,7 +268,6 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
                     </div>
                     <div class="group">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
-                        <!-- FOOTER REDES (Se sincroniza mágicamente) -->
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone">
                             <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></a>
                             <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></a>
@@ -402,6 +384,7 @@ window.appProducts = [...defaultProducts];
 window.appCourses = [...defaultCourses];
 
 window.navigate = function(targetId) {
+    // ESTA FUNCIÓN LIMPIA CORRECTAMENTE EL ESTADO "ACTIVO" DE CUALQUIER PESTAÑA QUE NO SEA LA ELEGIDA
     ['catalog', 'about', 'courses', 'contact'].forEach(id => {
         const section = document.getElementById(`view-${id}`); 
         const btns = document.querySelectorAll(`[data-target="${id}"]`); 
@@ -414,7 +397,7 @@ window.navigate = function(targetId) {
             setTimeout(() => { if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); if(id === 'contact' && window.multiprinttMap) window.multiprinttMap.invalidateSize(); }, 400); 
         } else {
             if (section) section.classList.remove('active-slide');
-            btns.forEach(b => b.classList.remove('active'));
+            btns.forEach(b => b.classList.remove('active')); // REMUEVE EL ESTILO ACTIVO
             if(botBtn) { botBtn.classList.remove('active', 'text-white'); botBtn.classList.add('text-zinc-500'); }
             if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
         }
@@ -504,6 +487,12 @@ async function loadFirebaseData() {
         window.productOrderArray = window.productOrderArray || [];
         window.courseOrderArray = window.courseOrderArray || [];
         window.renderProducts(); window.renderCourses();
+        
+        // 🟢 MAGIA DE SOLUCIÓN: 
+        // Forzamos al sistema a sobreescribir cualquier cosa que haya venido de la BD 
+        // en el Navbar, mandando al usuario obligatoriamente a "Catálogo".
+        window.navigate('catalog');
+
         setTimeout(() => {
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden');
             if(window.multiprinttMap) { setTimeout(() => window.multiprinttMap.invalidateSize(), 400); }
@@ -517,7 +506,6 @@ async function loadFirebaseData() {
 // ========================================================
 let selectedEl = null;
 
-// Mapa global de colores de hover para redes sociales
 const getHoverColor = (cls) => {
     if(!cls) return 'hover:text-cyan-400';
     if(cls.includes('whatsapp')) return 'hover:text-[#25D366]';
@@ -536,22 +524,23 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('builder-mode');
         
-        // INTERCEPTOR DE CLICKS (Fase de captura para evitar que navegue o ejecute scripts)
+        // FASE DE CAPTURA (true) - Esto bloquea agresivamente cualquier link o navegación dentro del builder
         document.addEventListener('click', function(e) {
             if (!window.isAdminMode) return;
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
             if (target && !target.closest('.ignore-drag')) {
+                // Detenemos instantáneamente el click real para no abrir links
                 e.preventDefault(); 
                 e.stopPropagation();
-                
+
                 if(selectedEl) selectedEl.classList.remove('builder-selected-el');
                 selectedEl = target;
                 selectedEl.classList.add('builder-selected-el');
                 window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.href || target.src || '' }, '*');
             }
-        }, true); 
+        }, true); // <- Este "true" es vital
 
-        // INTERCEPTOR DE CLICK DERECHO (Menú contextual)
+        // INTERCEPTOR DE CLICK DERECHO
         document.addEventListener('contextmenu', function(e) {
             if (!window.isAdminMode) return;
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
@@ -579,7 +568,6 @@ window.addEventListener('message', async (event) => {
         window.renderProducts(); window.renderCourses();
     }
     
-    // Añadir icono en vivo al PC Hover y el resto (Se sincronizarán mágicamente al guardar)
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
         const iconClass = event.data.iconClass;
         const hoverCls = getHoverColor(iconClass);
@@ -611,7 +599,6 @@ window.addEventListener('message', async (event) => {
 
     if (event.data.type === 'DELETE_SELECTED_NODE') {
         if(selectedEl) {
-            // Animación de salida y eliminación
             selectedEl.style.transition = 'all 0.3s ease';
             selectedEl.style.opacity = '0';
             selectedEl.style.transform = 'scale(0.8)';
@@ -646,31 +633,26 @@ window.addEventListener('message', async (event) => {
             document.body.classList.remove('dragging-active');
         }
 
-        // 🟢 MAGIA DE SINCRONIZACIÓN DE REDES EN TIEMPO REAL
-        // Copia el menú PC y lo traslada inteligente al Móvil y al Footer
         const pcNav = document.getElementById('social-nav-pc');
         const mobileNav = document.getElementById('social-nav-mobile');
         const footerNav = document.getElementById('social-footer-links');
 
         if(pcNav && mobileNav && footerNav) {
-            // Extraer las redes basándose en la píldora de PC (ignorando el botón de añadir admin)
             const networks = Array.from(pcNav.querySelectorAll('a:not(.admin-tool)')).map(a => {
                 const icon = a.querySelector('i');
                 let baseClass = icon ? icon.className.replace(/text-\[.*?\]|text-(sm|md|lg|xl|2xl)|pointer-events-none/g, '').trim() : '';
                 return { href: a.href, iconClass: baseClass };
             });
 
-            // Reconstruir PC Nav (Con las reglas visuales de opacidad y expansión a la izquierda)
             const pcTool = pcNav.querySelector('.admin-tool');
             pcNav.innerHTML = '';
-            if(pcTool) pcNav.appendChild(pcTool); // Botón de añadir siempre primero en el DOM (Izquierda extrema)
+            if(pcTool) pcNav.appendChild(pcTool); 
             networks.forEach((net, index) => {
                 const a = document.createElement('a');
                 a.setAttribute('data-editable', 'true');
                 a.href = net.href;
                 a.target = '_blank';
                 const hoverCls = getHoverColor(net.iconClass);
-                // El último elemento SIEMPRE es visible como "ancla". Los demás se esconden y aparecen al hacer hover.
                 if(index === networks.length - 1) {
                     a.className = `text-zinc-400 ${hoverCls} transition-colors shrink-0 flex items-center justify-center`;
                 } else {
@@ -680,7 +662,6 @@ window.addEventListener('message', async (event) => {
                 pcNav.appendChild(a);
             });
 
-            // Reconstruir Nav Móvil (Perfectamente sincronizado)
             const mobTool = mobileNav.querySelector('.admin-tool');
             mobileNav.innerHTML = '';
             networks.forEach((net) => {
@@ -694,7 +675,6 @@ window.addEventListener('message', async (event) => {
             });
             if(mobTool) mobileNav.appendChild(mobTool);
 
-            // Reconstruir Footer (Perfectamente sincronizado)
             const footTool = footerNav.querySelector('.admin-tool');
             footerNav.innerHTML = '';
             networks.forEach((net) => {
@@ -730,6 +710,7 @@ window.addEventListener('message', async (event) => {
     }
 });
 
+// Modales Públicos
 window.openCourseModal = function(id) {
     if(window.isAdminMode) return;
     const c = window.appCourses.find(x => x.id === id); if(!c) return;
@@ -760,6 +741,7 @@ window.closeVideoModal = function() {
     document.getElementById('testimonial-video').pause();
 }
 
+// Editores Modales (Admin)
 window.openEditor = function(type, id) {
     const modal = document.getElementById('editModal'); const fields = document.getElementById('em-fields');
     document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
@@ -788,7 +770,6 @@ window.saveElementEdit = async function() {
 }
 
 window.deleteElement = function(type, id) {
-    // Reemplazando confirm() para cumplir reglas de entorno.
     const modal = document.getElementById('custom-confirm-modal');
     modal.classList.remove('hidden'); modal.classList.add('flex');
     setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('custom-confirm-content').classList.remove('scale-95'); }, 10);
