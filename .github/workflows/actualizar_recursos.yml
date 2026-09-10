@@ -1,12 +1,15 @@
 name: Actualizar JSON y Renombrar Recursos
 
 on:
+  # Se ejecuta automáticamente cuando subes algo a la carpeta recursos
   push:
     branches:
       - main
     paths:
       - 'recursos/**'
       - '!recursos/imagenes.json' # Evita un bucle infinito si el bot modifica el JSON
+  # Te habilita un botón en GitHub para ejecutarlo manualmente cuando quieras
+  workflow_dispatch: 
 
 jobs:
   procesar_recursos:
@@ -49,7 +52,7 @@ jobs:
           max_idx = -1
           archivos_para_renombrar = []
 
-          # Buscar el número más alto existente y separar los archivos nuevos
+          # Buscar el número más alto existente (ej. resina3.jpg) y separar los archivos nuevos
           for f in testimonio_archivos:
               filepath = os.path.join(testimonios_dir, f)
               if not os.path.isfile(filepath): continue
@@ -58,10 +61,10 @@ jobs:
               if match:
                   max_idx = max(max_idx, int(match.group(1)))
               elif f.lower().endswith(('.jpg', '.jpeg', '.png')):
-                  # Es una imagen que no tiene el formato, hay que renombrarla
+                  # Es una imagen que no tiene el formato "resinaX", hay que renombrarla
                   archivos_para_renombrar.append(f)
 
-          # Renombrar los archivos nuevos
+          # Renombrar los archivos nuevos siguiendo la secuencia
           for f in archivos_para_renombrar:
               ext = f.split('.')[-1].lower()
               max_idx += 1
@@ -75,7 +78,7 @@ jobs:
           data["testimonios"]["videos"] = [f for f in testimonio_archivos_actualizados if f.lower().endswith(('.mp4', '.webm'))]
           data["testimonios"]["total_testimonios"] = len(data["testimonios"]["imagenes"]) + len(data["testimonios"]["videos"])
 
-          # 2. Leer archivos en la raíz de 'recursos'
+          # 2. Leer archivos en la raíz de 'recursos' (excluyendo carpetas y el propio JSON)
           for f in sorted(os.listdir(recursos_dir)):
               if os.path.isfile(os.path.join(recursos_dir, f)) and f != 'imagenes.json':
                   data["recursos_general"].append(f)
