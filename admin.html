@@ -74,8 +74,8 @@
         <h1 class="text-xl font-bold mb-1">Visual Builder <span class="text-cyan-400 text-xs bg-cyan-500/10 px-2 py-0.5 rounded-full ml-1">PRO</span></h1>
         <p class="text-zinc-500 text-xs mb-8">Acceso Maestro al Entorno.</p>
         <div class="space-y-3">
-            <input type="text" id="loginUser" placeholder="Usuario (admin)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
-            <input type="password" id="loginPass" placeholder="Contraseña (adminMultiprintt2026)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
+            <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
+            <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
             <button onclick="attemptLogin()" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Acceder al Editor</button>
         </div>
         <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-medium bg-red-500/10 py-2 rounded-lg border border-red-500/20">Credenciales incorrectas.</p>
@@ -127,8 +127,8 @@
             <div class="p-3 rounded-lg border border-white/5 bg-[#121215] text-[11px] text-zinc-400 leading-relaxed shadow-inner">
                 <b class="text-zinc-200 block mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-cyan-400"></i> Tips Pro</b>
                 <ul class="space-y-1.5 list-disc pl-3">
-                    <li><b>Clic Derecho:</b> Selecciona cualquier texto, imagen o icono y haz clic derecho para eliminarlo.</li>
-                    <li><b>Hipervínculos:</b> Los clics están bloqueados para no sacarte del editor. Selecciónalos para editar su URL a la derecha.</li>
+                    <li><b>Clic Derecho:</b> Selecciona cualquier texto, imagen o icono y haz clic derecho para editar o eliminar.</li>
+                    <li><b>Hipervínculos:</b> Los enlaces no te redirigirán fuera del editor, permitiéndote editarlos tranquilamente a la derecha.</li>
                 </ul>
             </div>
 
@@ -351,10 +351,11 @@
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
+    // 🟢 ESTA ES LA RUTA ABSOLUTA PARA EVITAR EL ERROR 404 EN FIREBASE
     function reloadIframe() {
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
-        iframe.src = `index (5).html?v=${timestamp}`;
+        iframe.src = `/index.html?v=${timestamp}`;
     }
 
     function setDevice(device) {
