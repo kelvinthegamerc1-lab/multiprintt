@@ -3,11 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-
 <title>Multiprintt | Visual Builder Pro</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,55 +10,57 @@
 
 <style>
     body { background-color: #070709; color: #fff; font-family: 'DM Sans', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
-    
     #auth-screen { position: fixed; inset: 0; background: #070709; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
     
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
     .topbar { height: 60px; background: #101014; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
     .workspace { display: flex; flex: 1; overflow: hidden; }
-    .sidebar { width: 300px; background: #0b0b0e; border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+    
+    .sidebar { width: 280px; background: #0b0b0e; border-right: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+    .sidebar-right { width: 300px; background: #0b0b0e; border-left: 1px solid rgba(255,255,255,0.05); padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
     
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; }
     #site-frame { width: 100%; height: 100%; background: #070709; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
     
     .device-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; transition: all 0.2s; cursor: pointer; }
     .device-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; }
-    
     .frame-mobile { width: 390px !important; height: 844px !important; }
     .frame-tablet { width: 820px !important; height: 1180px !important; }
 
     .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px 15px; border-radius: 8px; color: white; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: bold;}
     .tool-btn:hover { background: rgba(37,216,255,0.2); border-color: #25d8ff; }
     .tool-btn:active { transform: scale(0.97); }
-    
-    .danger-btn { background: rgba(255,45,45,0.05); border: 1px solid rgba(255,45,45,0.2); }
+    .danger-btn { background: rgba(255,45,45,0.05); border: 1px solid rgba(255,45,45,0.2); color: #ff6b6b; }
     .danger-btn:hover { background: rgba(255,45,45,0.2); border-color: #ff2d2d; color: white;}
+    
+    .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; outline: none; margin-top: 5px; font-size: 13px; }
+    .inspector-input:focus { border-color: #25d8ff; }
 </style>
 </head>
 <body>
 
+<!-- Login -->
 <div id="auth-screen">
     <div class="glass-panel p-10 w-full max-w-md text-center">
         <div class="w-20 h-20 bg-cyan-500/10 border border-cyan-500/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.2)]">
             <i class="fa-solid fa-code text-3xl text-cyan-400"></i>
         </div>
         <h1 class="text-2xl font-bold mb-2">Visual Builder <span class="text-cyan-400 text-sm">PRO</span></h1>
-        <p class="text-zinc-500 text-sm mb-8">Gestor visual definitivo 100% editable.</p>
-        
-        <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-4 outline-none focus:border-cyan-400 transition-colors">
-        <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-6 outline-none focus:border-pink-400 transition-colors">
-        
-        <button onclick="attemptLogin()" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-colors shadow-lg">Desbloquear Constructor</button>
+        <p class="text-zinc-500 text-sm mb-8">Acceso Maestro a la Plataforma.</p>
+        <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-4 outline-none focus:border-cyan-400">
+        <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-6 outline-none focus:border-pink-400">
+        <button onclick="attemptLogin()" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-zinc-200 transition-colors shadow-lg">Entrar</button>
         <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-bold">Credenciales incorrectas.</p>
     </div>
 </div>
 
+<!-- Builder UI -->
 <div id="builder-ui">
     <header class="topbar">
         <div class="flex items-center gap-4">
             <div class="w-8 h-8 rounded bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-black font-black text-sm">M</div>
-            <span class="font-bold text-sm tracking-widest uppercase text-zinc-300">Multiprintt <span class="text-cyan-400">Builder</span></span>
+            <span class="font-bold text-sm tracking-widest uppercase text-zinc-300">Visual <span class="text-cyan-400">Builder</span></span>
         </div>
         
         <div class="flex items-center bg-[#0b0b0e] border border-white/5 rounded-lg p-1">
@@ -73,97 +70,104 @@
         </div>
         
         <div class="flex items-center gap-3">
-            <button onclick="document.getElementById('site-frame').src='index.html'" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Recargar"><i class="fa-solid fa-rotate"></i></button>
+            <button onclick="reloadIframe()" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors" title="Recargar"><i class="fa-solid fa-rotate"></i></button>
             <div class="w-[1px] h-6 bg-white/10 mx-2"></div>
-            <!-- Botón Maestro de Guardar TODO -->
             <button onclick="saveLayoutAndPositions()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-[0_0_15px_rgba(37,216,255,0.4)] flex items-center gap-2">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Sitio Web Completo
+                <i class="fa-solid fa-cloud-arrow-up"></i> Publicar Sitio
             </button>
         </div>
     </header>
 
     <div class="workspace">
+        <!-- Panel Izquierdo: Herramientas Generales -->
         <aside class="sidebar">
-            
-            <div class="p-4 rounded-lg border border-dashed border-pink-500/50 text-xs text-white/80 leading-relaxed bg-pink-500/5 mb-2">
-                <b class="text-pink-400 block mb-2"><i class="fa-solid fa-lightbulb"></i> Tips de Edición (¡NUEVO!)</b>
-                <ul class="list-disc pl-3 space-y-2">
-                    <li><b>Textos:</b> Clic normal en cualquier texto.</li>
-                    <li><b>Enlaces/Videos:</b> <u>Doble Clic</u> sobre cualquier botón, icono o video. Se bloqueó la navegación para evitar que te saque del editor.</li>
-                    <li><b>Añadir Redes/Testimonios:</b> Busca los botones con un <b>[+]</b> que han aparecido en la plantilla a tu derecha.</li>
-                </ul>
-            </div>
-
-            <div class="w-full h-[1px] bg-white/10 my-2"></div>
-
-            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Herramientas Globales</div>
-            
+            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Diseño y Estructura</div>
             <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
-                <i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i>
-                Habilitar Movimiento (Drag)
+                <i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i> Habilitar Movimiento
             </button>
             
             <div class="w-full h-[1px] bg-white/10 my-4"></div>
             
-            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Bases de Datos (Catálogo y Cursos)</div>
-            <button onclick="alert('Navega al Catálogo. Haz clic en (+ Añadir Nuevo) o usa los botones de Editar/Borrar en las tarjetas que ya existen.')" class="tool-btn">
-                <i class="fa-solid fa-box-open w-5 text-center text-violet-400"></i>
-                Gestor de Productos
+            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Bases de Datos Vivas</div>
+            <button onclick="alert('Navega al Catálogo. Haz clic en (+ Añadir Nuevo) o usa los botones Editar en las tarjetas.')" class="tool-btn">
+                <i class="fa-solid fa-box-open w-5 text-center text-violet-400"></i> Gestor de Productos
             </button>
-            <button onclick="alert('Navega a la Academia. Haz clic en (+ Añadir Curso) o usa los botones de Editar/Borrar en las tarjetas.')" class="tool-btn">
-                <i class="fa-solid fa-graduation-cap w-5 text-center text-yellow-400"></i>
-                Gestor de Academia
+            <button onclick="alert('Navega a la Academia. Haz clic en (+ Añadir Curso) o usa los botones Editar en las tarjetas.')" class="tool-btn">
+                <i class="fa-solid fa-graduation-cap w-5 text-center text-yellow-400"></i> Gestor de Academia
             </button>
 
             <div class="mt-auto">
                 <div class="text-[10px] uppercase tracking-[0.2em] text-red-500 font-bold mb-2">Opciones de Emergencia</div>
-                <button onclick="resetLayout()" class="tool-btn danger-btn w-full text-red-400">
-                    <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i>
-                    Restaurar Plantilla Original
+                <button onclick="resetLayout()" class="tool-btn danger-btn w-full">
+                    <i class="fa-solid fa-triangle-exclamation w-5 text-center"></i> Borrar Caché y Restaurar
                 </button>
             </div>
         </aside>
 
+        <!-- Centro: Vista Previa Real -->
         <main id="preview-container">
-            <iframe id="site-frame" src="index.html"></iframe>
+            <iframe id="site-frame" src=""></iframe>
         </main>
+
+        <!-- Panel Derecho: Inspector de Propiedades -->
+        <aside class="sidebar-right">
+            <div class="text-[10px] uppercase tracking-[0.2em] text-cyan-400 font-bold mb-2"><i class="fa-solid fa-sliders"></i> Propiedades del Elemento</div>
+            
+            <div id="no-selection" class="text-xs text-zinc-500 text-center mt-10">
+                <i class="fa-solid fa-hand-pointer text-3xl mb-3 opacity-50 block"></i>
+                Haz clic en cualquier texto, botón o imagen del sitio para editarlo aquí.
+            </div>
+
+            <div id="inspector-tools" class="hidden flex-col gap-4">
+                <div id="prop-text-group">
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Texto del Elemento</label>
+                    <textarea id="prop-text" rows="4" class="inspector-input"></textarea>
+                </div>
+                
+                <div id="prop-link-group" class="hidden">
+                    <label class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Enlace (URL) / Imagen</label>
+                    <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
+                </div>
+            </div>
+        </aside>
     </div>
 </div>
 
 <script>
     let dragEnabled = false;
 
+    // Login
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
         const p = document.getElementById('loginPass').value;
-        const err = document.getElementById('auth-error');
-
         if(u === 'admin' && p === 'adminMultiprintt2026') {
             document.getElementById('auth-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('builder-ui').style.display = 'flex';
-                
-                const iframe = document.getElementById('site-frame');
-                iframe.onload = () => {
-                    iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
-                };
-                iframe.src = iframe.src; 
+                reloadIframe(); // Carga el Iframe con Anti-Caché Mágico
             }, 500);
         } else {
-            err.classList.remove('hidden');
-            setTimeout(() => err.classList.add('hidden'), 3000);
+            document.getElementById('auth-error').classList.remove('hidden');
         }
     }
+    document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') attemptLogin(); });
 
-    document.getElementById('loginPass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') attemptLogin();
-    });
+    // Carga de Iframe con Truco Anti-Caché Avanzado
+    function reloadIframe() {
+        const iframe = document.getElementById('site-frame');
+        const timestamp = new Date().getTime(); // Jamás cargará la versión vieja
+        iframe.src = `index.html?v=${timestamp}`;
+        
+        iframe.onload = () => {
+            iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+        };
+    }
 
+    // Responsive
     function setDevice(device) {
         document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + device).classList.add('active');
-        
         const iframe = document.getElementById('site-frame');
         iframe.className = 'border-none transition-all duration-500 ease-in-out bg-[#070709] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10';
         if(device === 'mobile') iframe.classList.add('frame-mobile');
@@ -171,14 +175,14 @@
         else iframe.style.width = '100%', iframe.style.height = '100%';
     }
 
+    // Arrastre Global
     function toggleDraggable() {
         dragEnabled = !dragEnabled;
         const btn = document.getElementById('drag-btn');
         const iframe = document.getElementById('site-frame');
-        
         if(dragEnabled) {
             btn.style.background = 'rgba(37,216,255,0.2)'; btn.style.borderColor = '#25d8ff';
-            btn.innerHTML = '<i class="fa-solid fa-check w-5 text-center text-cyan-400"></i> Movimiento Activado';
+            btn.innerHTML = '<i class="fa-solid fa-check w-5 text-center text-cyan-400"></i> Movimiento Habilitado';
             iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: true }, '*');
         } else {
             btn.style.background = 'rgba(255,255,255,0.05)'; btn.style.borderColor = 'rgba(255,255,255,0.1)';
@@ -187,27 +191,56 @@
         }
     }
 
+    // Guardado y Reseteo
     function saveLayoutAndPositions() {
         const btn = document.querySelector('.fa-cloud-arrow-up').parentElement;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando Plantilla...';
-        
-        const iframe = document.getElementById('site-frame');
-        iframe.contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*');
-        
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Publicando...';
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*');
         setTimeout(() => {
-            btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Sitio Publicado con Éxito!';
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Sitio Web Completo';
-            }, 4000);
-        }, 2000);
+            btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Sitio Publicado!';
+            setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Sitio'; }, 3000);
+        }, 1500);
     }
 
     function resetLayout() {
-        if(confirm("ATENCIÓN: ¿Estás completamente seguro de hacer esto?\n\nSe borrará cualquier cambio visual que hayas guardado en Firebase (Testimonios extra, textos movidos) y el sitio volverá a su estado original de fábrica.\n\n(Tus productos y cursos NO se borrarán, solo el diseño visual).")) {
-            const iframe = document.getElementById('site-frame');
-            iframe.contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
+        if(confirm("ATENCIÓN: ¿Estás seguro? \n\nEsta acción borrará cualquier error de caché en Firebase y restaurará la estructura visual del sitio exactamente a como está en tu archivo original index.html.\n\n(No se borrarán los productos ni los cursos).")) {
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
         }
     }
+
+    // ========================================================
+    // LÓGICA DEL INSPECTOR (Panel Derecho)
+    // ========================================================
+    const propText = document.getElementById('prop-text');
+    const propLink = document.getElementById('prop-link');
+
+    // Escucha al Iframe cuando tocas un elemento
+    window.addEventListener('message', (e) => {
+        if (e.data.type === 'ELEMENT_SELECTED') {
+            document.getElementById('no-selection').style.display = 'none';
+            document.getElementById('inspector-tools').style.display = 'flex';
+            
+            const tag = e.data.tagName;
+            propText.value = e.data.text;
+            
+            // Si es Enlace, Imagen o Video, muestra la caja de Link
+            if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO') {
+                document.getElementById('prop-link-group').style.display = 'block';
+                propLink.value = e.data.href;
+            } else {
+                document.getElementById('prop-link-group').style.display = 'none';
+            }
+        }
+    });
+
+    // Envía los cambios al Iframe en tiempo real mientras escribes
+    propText.addEventListener('input', () => {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: propText.value }, '*');
+    });
+
+    propLink.addEventListener('input', () => {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: propLink.value }, '*');
+    });
 </script>
 </body>
 </html>
