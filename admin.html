@@ -13,7 +13,6 @@
 <style>
     body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
     
-    /* Scrollbars elegantes */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
@@ -29,7 +28,6 @@
     .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     .sidebar-right { width: 300px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     
-    /* CONTENEDOR CENTRAL */
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
     #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
     
@@ -53,7 +51,6 @@
     .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 12px; transition: 0.2s;}
     .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
 
-    /* PARRILLA DEL SELECTOR DE ICONOS VISUAL */
     .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
     .icon-box { background: #121215; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 0; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px;}
     .icon-box i { font-size: 20px; color: #a3a3a3; transition: 0.2s;}
@@ -106,7 +103,6 @@
 
     <div class="workspace">
         <aside class="sidebar">
-            
             <div class="panel-header"><i class="fa-solid fa-layer-group text-cyan-400"></i> Estructura y Movimiento</div>
             <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
                 <i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>
@@ -115,10 +111,10 @@
             <div class="divider"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Bases de Datos Vivas</div>
-            <button onclick="showAlert('Haz clic sobre los productos o botones (+) directamente en el lienzo visual para administrarlos.')" class="tool-btn group">
+            <button onclick="showAlert('Navega al Catálogo en la vista central y haz clic en (+ Añadir Nuevo) para gestionar.')" class="tool-btn group">
                 <i class="fa-solid fa-box-open w-4 text-center text-zinc-400 group-hover:text-violet-400 transition-colors"></i> Gestor de Productos
             </button>
-            <button onclick="showAlert('Haz clic sobre los cursos o botones (+) directamente en el lienzo visual para administrarlos.')" class="tool-btn group">
+            <button onclick="showAlert('Navega a Academia en la vista central y haz clic en (+ Añadir Curso) para gestionar.')" class="tool-btn group">
                 <i class="fa-solid fa-graduation-cap w-4 text-center text-zinc-400 group-hover:text-yellow-400 transition-colors"></i> Gestor de Academia
             </button>
 
@@ -127,8 +123,8 @@
             <div class="p-3 rounded-lg border border-white/5 bg-[#121215] text-[11px] text-zinc-400 leading-relaxed shadow-inner">
                 <b class="text-zinc-200 block mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-cyan-400"></i> Tips Pro</b>
                 <ul class="space-y-1.5 list-disc pl-3">
-                    <li><b>Clic Derecho:</b> Selecciona cualquier texto, imagen o icono y haz clic derecho para editar o eliminar.</li>
-                    <li><b>Hipervínculos:</b> Los enlaces no te redirigirán fuera del editor, permitiéndote editarlos tranquilamente a la derecha.</li>
+                    <li><b>Clic Derecho:</b> Selecciona cualquier texto, imagen o icono y haz clic derecho para editarlo o eliminarlo al instante.</li>
+                    <li><b>Navegación:</b> Haz clic en el menú (Catálogo, Academia) de la vista web para cambiar de sección.</li>
                 </ul>
             </div>
 
@@ -182,7 +178,6 @@
     </div>
 </div>
 
-<!-- 🟢 MENU CONTEXTUAL (CLICK DERECHO) -->
 <div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
     <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
         <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
@@ -196,7 +191,6 @@
     </button>
 </div>
 
-<!-- 🟢 MODAL VISUAL SELECTOR DE ICONOS -->
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
         <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
@@ -210,12 +204,11 @@
         </div>
         
         <div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]">
-            <!-- Generado dinámicamente por JS -->
+            <!-- Generado dinámicamente -->
         </div>
     </div>
 </div>
 
-<!-- 🛑 CUSTOM MODAL FOR ALERTS & CONFIRMS -->
 <div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0">
     <div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content">
         <i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i>
@@ -232,24 +225,16 @@
     let dragEnabled = false;
     let contextTargetElement = null;
 
-    // --- Base de Datos de Iconos Pro ---
     const iconDB = [
         { c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' },
         { c: 'fa-brands fa-tiktok', n: 'TikTok' }, { c: 'fa-brands fa-youtube', n: 'YouTube' }, { c: 'fa-brands fa-x-twitter', n: 'X Twitter' },
         { c: 'fa-brands fa-linkedin-in', n: 'LinkedIn' }, { c: 'fa-brands fa-telegram', n: 'Telegram' }, { c: 'fa-brands fa-pinterest-p', n: 'Pinterest' },
         { c: 'fa-brands fa-snapchat', n: 'Snapchat' }, { c: 'fa-brands fa-reddit-alien', n: 'Reddit' }, { c: 'fa-brands fa-discord', n: 'Discord' },
-        { c: 'fa-brands fa-twitch', n: 'Twitch' }, { c: 'fa-brands fa-spotify', n: 'Spotify' }, { c: 'fa-brands fa-apple', n: 'Apple' },
-        { c: 'fa-brands fa-google', n: 'Google' }, { c: 'fa-brands fa-github', n: 'GitHub' }, { c: 'fa-brands fa-slack', n: 'Slack' },
-        { c: 'fa-brands fa-figma', n: 'Figma' }, { c: 'fa-brands fa-amazon', n: 'Amazon' }, { c: 'fa-brands fa-paypal', n: 'PayPal' },
-        { c: 'fa-brands fa-stripe', n: 'Stripe' }, { c: 'fa-brands fa-shopify', n: 'Shopify' }, { c: 'fa-brands fa-wordpress', n: 'WordPress' },
-        
         { c: 'fa-solid fa-globe', n: 'Web/Mundo' }, { c: 'fa-solid fa-envelope', n: 'Correo' }, { c: 'fa-solid fa-phone', n: 'Teléfono' },
         { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-link', n: 'Enlace' }, { c: 'fa-solid fa-shop', n: 'Tienda' },
         { c: 'fa-solid fa-cart-shopping', n: 'Carrito' }, { c: 'fa-solid fa-user', n: 'Usuario' }, { c: 'fa-solid fa-image', n: 'Imagen' },
         { c: 'fa-solid fa-video', n: 'Video' }, { c: 'fa-solid fa-music', n: 'Música' }, { c: 'fa-solid fa-heart', n: 'Corazón' },
-        { c: 'fa-solid fa-star', n: 'Estrella' }, { c: 'fa-solid fa-check', n: 'Check' }, { c: 'fa-solid fa-xmark', n: 'Cerrar' },
-        { c: 'fa-solid fa-arrow-right', n: 'Flecha Der' }, { c: 'fa-solid fa-download', n: 'Descargar' }, { c: 'fa-solid fa-magnifying-glass', n: 'Buscar' },
-        { c: 'fa-solid fa-bell', n: 'Campana' }, { c: 'fa-solid fa-comment', n: 'Comentario' }, { c: 'fa-solid fa-share-nodes', n: 'Compartir' }
+        { c: 'fa-solid fa-star', n: 'Estrella' }, { c: 'fa-solid fa-check', n: 'Check' }, { c: 'fa-solid fa-xmark', n: 'Cerrar' }
     ];
 
     function renderIcons(filter = "") {
@@ -268,21 +253,13 @@
             const div = document.createElement('div');
             div.className = 'icon-box group relative';
             div.onclick = () => sendSelectedIcon(icon.c);
-            div.innerHTML = `
-                <i class="${icon.c}"></i>
-                <div class="absolute opacity-0 group-hover:opacity-100 bg-black/90 text-white text-[9px] px-2 py-1 rounded bottom-full mb-1 pointer-events-none transition-opacity whitespace-nowrap z-10 border border-white/10">${icon.n}</div>
-            `;
+            div.innerHTML = `<i class="${icon.c}"></i><div class="absolute opacity-0 group-hover:opacity-100 bg-black/90 text-white text-[9px] px-2 py-1 rounded bottom-full mb-1 pointer-events-none transition-opacity whitespace-nowrap z-10 border border-white/10">${icon.n}</div>`;
             container.appendChild(div);
         });
     }
 
-    function filterIcons() {
-        const val = document.getElementById('icon-search').value;
-        renderIcons(val);
-    }
-    // Render inicial
+    function filterIcons() { renderIcons(document.getElementById('icon-search').value); }
     renderIcons();
-
 
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
@@ -300,7 +277,6 @@
     }
     document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') attemptLogin(); });
 
-    // Modales Personalizados
     function openCustomModal(msg, isConfirm, onConfirmCallback) {
         const modal = document.getElementById('custom-modal');
         const content = document.getElementById('custom-modal-content');
@@ -317,10 +293,7 @@
             icon.className = "fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4";
             document.getElementById('custom-modal-title').innerText = "ATENCIÓN";
             
-            btnConfirm.onclick = () => {
-                closeCustomModal();
-                if(onConfirmCallback) onConfirmCallback();
-            };
+            btnConfirm.onclick = () => { closeCustomModal(); if(onConfirmCallback) onConfirmCallback(); };
         } else {
             btnCancel.classList.add('hidden');
             btnConfirm.className = "flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm";
@@ -332,26 +305,19 @@
         }
 
         modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            content.classList.remove('scale-95');
-        }, 10);
+        setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
     }
 
     function closeCustomModal() {
-        const modal = document.getElementById('custom-modal');
-        const content = document.getElementById('custom-modal-content');
-        modal.classList.add('opacity-0');
-        content.classList.add('scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
+        const modal = document.getElementById('custom-modal'); const content = document.getElementById('custom-modal-content');
+        modal.classList.add('opacity-0'); content.classList.add('scale-95');
+        setTimeout(() => { modal.classList.add('hidden'); }, 300);
     }
 
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
-    // 🟢 ESTA ES LA RUTA ABSOLUTA PARA EVITAR EL ERROR 404 EN FIREBASE
+    // 🟢 RUTA CORREGIDA: Apunta a /index.html en la raíz para evitar el error 404
     function reloadIframe() {
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
@@ -395,8 +361,7 @@
     function closeIconPicker() {
         document.getElementById('iconPickerModal').classList.add('hidden');
         document.getElementById('iconPickerModal').classList.remove('flex');
-        document.getElementById('icon-search').value = ''; // Limpiar busqueda
-        renderIcons();
+        document.getElementById('icon-search').value = ''; renderIcons();
     }
 
     function sendSelectedIcon(iconClass) {
@@ -404,17 +369,12 @@
         closeIconPicker();
     }
 
-    // --- LOGICA DEL MENU CONTEXTUAL ---
     function ctxAction(action) {
         const ctxMenu = document.getElementById('context-menu');
         ctxMenu.classList.add('hidden');
 
-        if (action === 'delete') {
-            triggerDeleteFromInspector();
-        } else if (action === 'edit') {
-            // El elemento ya se seleccionó visualmente, el inspector está listo a la derecha
-            document.getElementById('prop-text').focus();
-        }
+        if (action === 'delete') { triggerDeleteFromInspector(); } 
+        else if (action === 'edit') { document.getElementById('prop-text').focus(); }
     }
 
     function triggerDeleteFromInspector() {
@@ -423,11 +383,8 @@
         document.getElementById('no-selection').style.display = 'block';
     }
 
-    // Ocultar menu contextual al dar click fuera
     document.addEventListener('click', (e) => {
-        if(!e.target.closest('#context-menu')) {
-            document.getElementById('context-menu').classList.add('hidden');
-        }
+        if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); }
     });
 
     const propText = document.getElementById('prop-text');
@@ -466,11 +423,9 @@
             const rect = iframe.getBoundingClientRect();
             const ctxMenu = document.getElementById('context-menu');
             
-            // Calculo de posicion basado en la pantalla del padre y el offset del iframe
             let leftPos = rect.left + e.data.x;
             let topPos = rect.top + e.data.y;
 
-            // Evitar que se salga de la pantalla
             if (leftPos + 200 > window.innerWidth) leftPos -= 200;
             if (topPos + 100 > window.innerHeight) topPos -= 100;
 
