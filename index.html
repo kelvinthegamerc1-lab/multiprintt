@@ -66,7 +66,6 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* Builder Visual Estilos */
 .admin-tool { display: none !important; }
 body.builder-mode .admin-tool { display: flex !important; }
 
@@ -83,6 +82,7 @@ body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto;
 
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 
+/* Efecto para hacer editables visualmente los testimonios de video en el builder */
 .admin-video-edit-overlay { display: none; }
 body.builder-mode .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
 body.builder-mode .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); }
@@ -137,7 +137,7 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
             </div>
         </div>
     </div>
-  </section>
+  </div>
 </header>
 
 <main class="relative w-full h-[100dvh] overflow-hidden">
@@ -204,8 +204,8 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" muted playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-500"></video>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                     
-                    <!-- 🟢 BOTÓN REPARADO PARA MÓVILES (Uso de <button> con pointer-events-auto) -->
-                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-20 pointer-events-auto cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)] ignore-drag">
+                    <!-- 🟢 BOTÓN DE PLAY CORREGIDO PARA IOS/MÓVIL -->
+                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-20 pointer-events-auto cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)] ignore-drag outline-none">
                         <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
                     </button>
                     
@@ -269,7 +269,8 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
             </div>
 
             <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
-                <div id="contact-map-col" class="w-full lg:w-1/2 h-[140px] min-[400px]:h-[170px] sm:h-[260px] lg:h-[280px] xl:h-[320px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
+                <!-- 🟢 GPS SOLUCIONADO: Incremento de altura mínima a 220px en móvil para evitar que se aplaste -->
+                <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
@@ -344,11 +345,8 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
     <div class="relative w-full max-w-[360px] aspect-[9/16] max-h-[85vh] bg-black border border-white/10 rounded-[24px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col" id="videoModalContent">
         <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg"><i class="fa-solid fa-xmark"></i></button>
-        
         <video id="testimonial-video" src="" playsinline class="absolute inset-0 w-full h-full object-cover pointer-events-none"></video>
-        
         <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none z-10"></div>
-        
         <div class="absolute bottom-0 left-0 right-0 p-6 z-20 pointer-events-none">
             <i class="fa-solid fa-quote-left text-cyan-500/50 text-2xl mb-2"></i>
             <p id="vm-quote" class="text-white text-[13px] font-medium leading-relaxed mb-4 shadow-black drop-shadow-md">...</p>
@@ -360,7 +358,6 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
                 </div>
             </div>
         </div>
-
         <div class="absolute bottom-5 right-5 z-20 bg-black/50 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 flex items-center gap-1.5 pointer-events-none">
             <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
             <span id="vm-timer" class="text-white text-[10px] font-mono font-bold">-0:00</span>
@@ -430,7 +427,15 @@ window.navigate = function(targetId) {
             if (section) { section.classList.add('active-slide'); setTimeout(() => section.scrollTop = 0, 10); }
             btns.forEach(b => b.classList.add('active'));
             if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
-            setTimeout(() => { if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); if(id === 'contact' && window.multiprinttMap) window.multiprinttMap.invalidateSize(); }, 400); 
+            
+            // 🟢 SOLUCIÓN MAPA: Esperamos 500ms exactos a que la animación CSS termine para renderizar el mapa
+            setTimeout(() => { 
+                if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); 
+                if(id === 'contact' && window.multiprinttMap) {
+                    window.multiprinttMap.invalidateSize();
+                    window.recenterMap();
+                }
+            }, 500); 
         } else {
             if (section) section.classList.remove('active-slide');
             btns.forEach(b => b.classList.remove('active'));
@@ -535,7 +540,12 @@ async function loadFirebaseData() {
         window.renderProducts(); window.renderCourses();
         setTimeout(() => {
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden');
-            if(window.multiprinttMap) { setTimeout(() => window.multiprinttMap.invalidateSize(), 400); }
+            if(window.multiprinttMap) { 
+                setTimeout(() => {
+                    window.multiprinttMap.invalidateSize();
+                    window.recenterMap();
+                }, 800); 
+            }
             window.navigate('catalog');
             window.parent.postMessage({ type: 'APP_READY' }, '*');
         }, 500); 
@@ -543,7 +553,6 @@ async function loadFirebaseData() {
 }
 
 let selectedEl = null;
-
 const getHoverColor = (cls) => {
     if(!cls) return 'hover:text-cyan-400';
     if(cls.includes('whatsapp')) return 'hover:text-[#25D366]';
@@ -562,11 +571,8 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('builder-mode');
         
-        // INTERCEPTOR DE CLICKS
         document.addEventListener('click', function(e) {
             if (!window.isAdminMode) return;
-            
-            // Cerrar menú contextual en admin si hace click izquierdo aquí
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
             const navBtn = e.target.closest('button[onclick^="navigate("]');
@@ -584,7 +590,6 @@ window.addEventListener('message', async (event) => {
             }
         }, true); 
 
-        // INTERCEPTOR DE CLICK DERECHO
         document.addEventListener('contextmenu', function(e) {
             if (!window.isAdminMode) return;
             let target = e.target.closest('[data-editable="true"], a, button, video, img');
@@ -609,8 +614,8 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
         const iconClass = event.data.iconClass;
         const hoverCls = getHoverColor(iconClass);
-        const pcNav = document.getElementById('social-nav-pc');
         
+        const pcNav = document.getElementById('social-nav-pc');
         if(pcNav) {
             const a = document.createElement('a');
             a.setAttribute('data-editable', 'true');
@@ -618,8 +623,32 @@ window.addEventListener('message', async (event) => {
             a.className = `text-zinc-500 ${hoverCls} transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center`;
             a.innerHTML = `<i class="${iconClass} text-[18px] pointer-events-none"></i>`;
             const pcTool = pcNav.querySelector('.admin-tool');
-            if(pcTool) pcTool.insertAdjacentElement('afterend', a);
+            if(pcTool) pcTool.insertAdjacentElement('beforebegin', a);
             else pcNav.appendChild(a);
+        }
+
+        const mobileNav = document.getElementById('social-nav-mobile');
+        if(mobileNav) {
+            const a = document.createElement('a');
+            a.setAttribute('data-editable', 'true');
+            a.href = "#";
+            a.className = `text-zinc-400 ${hoverCls} transition-colors`;
+            a.innerHTML = `<i class="${iconClass} text-lg pointer-events-none"></i>`;
+            const mobTool = mobileNav.querySelector('.admin-tool');
+            if(mobTool) mobTool.insertAdjacentElement('beforebegin', a);
+            else mobileNav.appendChild(a);
+        }
+
+        const footerNav = document.getElementById('social-footer-links');
+        if(footerNav) {
+            const a = document.createElement('a');
+            a.setAttribute('data-editable', 'true');
+            a.href = "#";
+            a.className = `text-zinc-400 ${hoverCls} transition-colors text-xl sm:text-2xl`;
+            a.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
+            const footTool = footerNav.querySelector('.admin-tool');
+            if(footTool) footTool.insertAdjacentElement('beforebegin', a);
+            else footerNav.appendChild(a);
         }
     }
 
@@ -709,10 +738,8 @@ window.addEventListener('message', async (event) => {
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             
-            // Clean up SortableJS artifacts to prevent saving bugged inline styles
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
             clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = ''); 
-            clone.querySelectorAll('[style*="will-change"]').forEach(e => e.style.willChange = '');
 
             layoutData[zone.id] = clone.innerHTML;
         });
@@ -842,16 +869,16 @@ window.closeCustomConfirm = function() {
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
 }
 
+// 🟢 SOLUCIÓN MAPA: Ocultamos los botones de zoom para que no invadan en móviles
 function initMap() {
-    const mapEl = document.getElementById('leaflet-map'); if(!mapEl || mapEl.clientWidth === 0) return; 
-    window.multiprinttMap = L.map('leaflet-map', {zoomControl: true, attributionControl: false}).setView([-2.185722, -79.892194], 19);
+    const mapEl = document.getElementById('leaflet-map'); if(!mapEl) return; 
+    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185722, -79.892194], 19);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
     L.marker([-2.185722, -79.892194], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
 }
 window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185722, -79.892194], 19, { animate: true }); }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const yearEl = document.getElementById('year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
     initMap(); loadFirebaseData();
     document.addEventListener('contextmenu', e => { if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') e.preventDefault(); });
 });
