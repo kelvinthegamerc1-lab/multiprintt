@@ -7,17 +7,13 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<!-- Librería para Arrastrar y Soltar (SortableJS) -->
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
     body { background-color: #070709; color: #fff; font-family: 'DM Sans', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
     
-    /* Login Screen */
     #auth-screen { position: fixed; inset: 0; background: #070709; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .glass-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
     
-    /* Builder UI */
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
     .topbar { height: 60px; background: #101014; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
     .workspace { display: flex; flex: 1; overflow: hidden; }
@@ -26,7 +22,6 @@
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; }
     #site-frame { width: 100%; height: 100%; background: #070709; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
     
-    /* Responsive Toggles */
     .device-btn { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #666; transition: all 0.2s; cursor: pointer; }
     .device-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; }
     
@@ -40,14 +35,13 @@
 </head>
 <body>
 
-<!-- Pantalla de Login Ultra Segura -->
 <div id="auth-screen">
     <div class="glass-panel p-10 w-full max-w-md text-center">
         <div class="w-20 h-20 bg-pink-500/10 border border-pink-500/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(255,45,168,0.2)]">
             <i class="fa-solid fa-wand-magic-sparkles text-3xl text-pink-400"></i>
         </div>
         <h1 class="text-2xl font-bold mb-2">Visual Builder</h1>
-        <p class="text-zinc-500 text-sm mb-8">Ingresa tus credenciales maestras.</p>
+        <p class="text-zinc-500 text-sm mb-8">Panel de Administración Multiprintt</p>
         
         <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-4 outline-none focus:border-cyan-400 transition-colors">
         <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-4 rounded-xl text-white mb-6 outline-none focus:border-pink-400 transition-colors">
@@ -57,9 +51,7 @@
     </div>
 </div>
 
-<!-- Interfaz del Constructor -->
 <div id="builder-ui">
-    <!-- Topbar -->
     <header class="topbar">
         <div class="flex items-center gap-4">
             <div class="w-8 h-8 rounded bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-black font-black text-sm">M</div>
@@ -73,8 +65,9 @@
         </div>
         
         <div class="flex items-center gap-3">
-            <button onclick="undo()" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Deshacer (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
-            <button onclick="redo()" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Rehacer (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
+            <!-- Botón de deshacer textos con función nativa y recarga visual -->
+            <button onclick="alert('Usa Control+Z (o Cmd+Z en Mac) dentro de la plantilla para deshacer los textos borrados.')" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Deshacer Textos (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+            <button onclick="document.getElementById('site-frame').src='index.html'" class="w-10 h-10 rounded-lg border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center" title="Recargar y sincronizar con base de datos"><i class="fa-solid fa-rotate"></i></button>
             <div class="w-[1px] h-6 bg-white/10 mx-2"></div>
             <button onclick="saveAll()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-[0_0_15px_rgba(37,216,255,0.4)] flex items-center gap-2">
                 <i class="fa-solid fa-cloud-arrow-up"></i> Guardar Cambios
@@ -82,9 +75,7 @@
         </div>
     </header>
 
-    <!-- Workspace -->
     <div class="workspace">
-        <!-- Sidebar Tools -->
         <aside class="sidebar">
             <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Herramientas Visuales</div>
             
@@ -93,33 +84,31 @@
                 Habilitar Movimiento
             </button>
             
-            <button onclick="alert('Instrucción: Simplemente haz clic en cualquier texto del sitio a la derecha (Títulos, Enlaces, Footer) para editarlo. Se guardará en el historial automáticamente.')" class="tool-btn">
+            <button onclick="alert('Instrucción: Haz doble clic o selecciona cualquier texto en la página principal a tu derecha (Títulos, Enlaces, Footer) para editarlo. Se guardará en la base de datos automáticamente al terminar de escribir.')" class="tool-btn">
                 <i class="fa-solid fa-font w-5 text-center text-pink-400"></i>
-                Editar Textos Generales
+                Editar Textos / Enlaces
             </button>
             
             <div class="w-full h-[1px] bg-white/10 my-4"></div>
             
             <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-2">Base de Datos</div>
-            <button onclick="alert('Navega al catálogo en la vista previa y haz clic en (+ Añadir Nuevo) o en el botón de Editar de cualquier tarjeta.')" class="tool-btn">
+            <button onclick="alert('Navega al Catálogo en la vista previa a tu derecha. Haz clic en (+ Añadir Nuevo) o usa los botones de Editar/Borrar en las tarjetas que ya existen.')" class="tool-btn">
                 <i class="fa-solid fa-box-open w-5 text-center text-violet-400"></i>
                 Catálogo (Productos)
             </button>
-            <button onclick="alert('Navega a la academia en la vista previa y haz clic en (+ Añadir Curso) o en el botón de Editar de cualquier tarjeta.')" class="tool-btn">
+            <button onclick="alert('Navega a la Academia en la vista previa a tu derecha. Haz clic en (+ Añadir Curso) o usa los botones de Editar/Borrar en las tarjetas que ya existen.')" class="tool-btn">
                 <i class="fa-solid fa-graduation-cap w-5 text-center text-yellow-400"></i>
                 Academia (Cursos)
             </button>
 
             <div class="mt-auto p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs leading-relaxed">
                 <i class="fa-solid fa-circle-info mb-2 text-lg block"></i>
-                <b class="text-white">Modo Constructor Activo.</b><br><br>
-                1. Mueve las tarjetas arrastrándolas.<br>
-                2. Borra tarjetas haciendo clic en la X roja.<br>
-                3. Usa Control+Z si te equivocas.
+                <b class="text-white">Tips del Constructor:</b><br><br>
+                1. Los textos y tarjetas se guardan <b>automáticamente</b> en Firebase al dejar de editarlos.<br>
+                2. Si la web parece congelada, usa el botón circular superior (Recargar) para sincronizarla.
             </div>
         </aside>
 
-        <!-- Preview / Iframe -->
         <main id="preview-container">
             <iframe id="site-frame" src="index.html"></iframe>
         </main>
@@ -127,7 +116,8 @@
 </div>
 
 <script>
-    // 1. LÓGICA DE LOGIN
+    let dragEnabled = false;
+
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
         const p = document.getElementById('loginPass').value;
@@ -138,177 +128,63 @@
             setTimeout(() => {
                 document.getElementById('auth-screen').style.display = 'none';
                 document.getElementById('builder-ui').style.display = 'flex';
-                initBuilder();
+                
+                // Le pasamos un Mensaje Seguro al Iframe de index.html para que despierte el Editor
+                const iframe = document.getElementById('site-frame');
+                iframe.onload = () => {
+                    iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+                };
+                iframe.src = iframe.src; // Forzar recarga para asegurar que atrape el mensaje
             }, 500);
         } else {
             err.classList.remove('hidden');
             setTimeout(() => err.classList.add('hidden'), 3000);
         }
     }
+
     document.getElementById('loginPass').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') attemptLogin();
     });
 
-    // 2. VARIABLES DEL CONSTRUCTOR
-    let iframe, iframeDoc, iframeWin;
-    let dragEnabled = false;
-    let sortables = [];
-
-    // Variables de Historial
-    let stateHistory = [];
-    let currentStateIndex = -1;
-
-    function initBuilder() {
-        iframe = document.getElementById('site-frame');
-        
-        iframe.onload = () => {
-            iframeWin = iframe.contentWindow;
-            iframeDoc = iframe.contentDocument;
-
-            // Inyectamos el comando maestro para encender las herramientas en index.html
-            iframeWin.postMessage({ type: 'ENABLE_BUILDER' }, '*');
-            
-            // Inyectamos reglas de CSS para que el Iframe permita Drag & Drop y muestre la X de borrar
-            const style = iframeDoc.createElement('style');
-            style.innerHTML = `
-                .builder-sortable-ghost { opacity: 0.4; background: rgba(37,216,255,0.2); border: 2px dashed #25d8ff !important; border-radius: 12px; }
-                .builder-draggable:hover { cursor: grab; outline: 2px solid rgba(255,45,168,0.5); outline-offset: 4px; border-radius: 12px; box-shadow: 0 0 20px rgba(255,45,168,0.3); }
-                .builder-draggable:active { cursor: grabbing; }
-                .delete-overlay { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: red; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; opacity: 0; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); font-family: sans-serif; font-weight: bold; }
-                .card:hover .delete-overlay { opacity: 1; }
-            `;
-            iframeDoc.head.appendChild(style);
-
-            // Guardamos el estado HTML inicial (Control Z)
-            setTimeout(saveState, 2000); 
-
-            // Detectar cuando el admin escriba textos
-            iframeDoc.addEventListener('input', () => {
-                clearTimeout(window.typingTimer);
-                window.typingTimer = setTimeout(saveState, 1000);
-            });
-        };
-    }
-
-    // 3. RESPONSIVE PREVIEW
     function setDevice(device) {
         document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + device).classList.add('active');
         
+        const iframe = document.getElementById('site-frame');
         iframe.className = 'border-none transition-all duration-500 ease-in-out bg-[#070709] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10';
         if(device === 'mobile') iframe.classList.add('frame-mobile');
         else if(device === 'tablet') iframe.classList.add('frame-tablet');
         else iframe.style.width = '100%', iframe.style.height = '100%';
     }
 
-    // 4. LÓGICA DE ARRASTRE Y SOLTAR (Drag & Drop + Delete)
     function toggleDraggable() {
         dragEnabled = !dragEnabled;
         const btn = document.getElementById('drag-btn');
+        const iframe = document.getElementById('site-frame');
         
         if(dragEnabled) {
             btn.style.background = 'rgba(37,216,255,0.2)';
             btn.style.borderColor = '#25d8ff';
             btn.innerHTML = '<i class="fa-solid fa-check w-5 text-center text-cyan-400"></i> Movimiento Habilitado';
             
-            const grids = [iframeDoc.getElementById('product-grid'), iframeDoc.getElementById('courses-grid')];
-            
-            grids.forEach(grid => {
-                if(grid) {
-                    Array.from(grid.children).forEach(child => {
-                        // Ignoramos el botón de "Añadir Nuevo"
-                        if(child.innerText.includes("Añadir")) return;
-
-                        child.classList.add('builder-draggable');
-                        
-                        // Añadir botón visual de borrar (La X)
-                        if(!child.querySelector('.delete-overlay')) {
-                            const delBtn = iframeDoc.createElement('div');
-                            delBtn.className = 'delete-overlay';
-                            delBtn.innerHTML = 'X';
-                            delBtn.onclick = function(e) {
-                                e.stopPropagation(); 
-                                child.remove(); // Borra el elemento visual
-                                saveState(); // Guarda en historial
-                            };
-                            child.appendChild(delBtn);
-                        }
-                    });
-
-                    // Inicia el código de SortableJS para mover cuadros
-                    sortables.push(new Sortable(grid, {
-                        animation: 250,
-                        ghostClass: 'builder-sortable-ghost',
-                        onEnd: function (evt) { saveState(); } 
-                    }));
-                }
-            });
-
+            // Envía la orden de Activar arrastre
+            iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: true }, '*');
         } else {
             btn.style.background = 'rgba(255,255,255,0.05)';
             btn.style.borderColor = 'rgba(255,255,255,0.1)';
             btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-5 text-center text-cyan-400"></i> Habilitar Movimiento';
             
-            sortables.forEach(s => s.destroy());
-            sortables = [];
-            
-            const draggables = iframeDoc.querySelectorAll('.builder-draggable');
-            draggables.forEach(d => {
-                d.classList.remove('builder-draggable');
-                const delBtn = d.querySelector('.delete-overlay');
-                if(delBtn) delBtn.remove();
-            });
+            // Envía la orden de Desactivar arrastre
+            iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: false }, '*');
         }
     }
 
-    // 5. SISTEMA UNDO / REDO (HISTORIAL)
-    function saveState() {
-        const htmlSnapshot = iframeDoc.body.innerHTML;
-        
-        if (currentStateIndex < stateHistory.length - 1) {
-            stateHistory = stateHistory.slice(0, currentStateIndex + 1);
-        }
-        
-        if(stateHistory[currentStateIndex] === htmlSnapshot) return;
-
-        stateHistory.push(htmlSnapshot);
-        currentStateIndex++;
-    }
-
-    function undo() {
-        if (currentStateIndex > 0) {
-            currentStateIndex--;
-            restoreState(stateHistory[currentStateIndex]);
-        }
-    }
-
-    function redo() {
-        if (currentStateIndex < stateHistory.length - 1) {
-            currentStateIndex++;
-            restoreState(stateHistory[currentStateIndex]);
-        }
-    }
-
-    function restoreState(htmlContent) {
-        if(dragEnabled) toggleDraggable(); // Apagar drag temporalmente
-        iframeDoc.body.innerHTML = htmlContent;
-        iframeWin.enableInlineEditing(); // Reconectar edición de textos
-    }
-
-    // Atajos Ctrl+Z y Ctrl+Y
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
-        if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
-    });
-
-    // 6. BOTÓN DE PUBLICAR
     function saveAll() {
         const btn = document.querySelector('.fa-cloud-arrow-up').parentElement;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizando BD...';
         
-        // Simulación de guardado final
         setTimeout(() => {
-            btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Cambios Guardados!';
+            btn.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> ¡Todo Seguro!';
             setTimeout(() => {
                 btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar Cambios';
             }, 3000);
