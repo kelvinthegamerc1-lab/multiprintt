@@ -239,7 +239,6 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
     </div>
   </section>
 
-  <!-- Contacto igual... omitido un poco por brevedad pero estructura HTML original respetada -->
   <section id="view-contact" class="view-slide flex flex-col slide-scroll editable-section">
     <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-1 sm:pt-2 pb-2 sm:pb-6 relative z-10">
         <div class="flex-1 flex flex-col justify-evenly">
@@ -251,6 +250,7 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
             </div>
             <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
                 <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
+                    <!-- Contenedor del Mapa (No se debe editar visualmente para no romper Leaflet) -->
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
@@ -355,8 +355,52 @@ window.navigate = function(targetId) {
     });
 };
 
-window.renderProducts = function(){ /* Omitido por brevedad de renderizado DB, tu lógica funciona bien */ }
-window.renderCourses = function(){ /* Omitido por brevedad de renderizado DB, tu lógica funciona bien */ }
+window.renderProducts = function(){
+    const grid = document.getElementById('product-grid'); 
+    if(!grid) return;
+    grid.innerHTML = '';
+    
+    let safeProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
+    let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
+    safeProducts.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
+    
+    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full sortable-zone";
+    if(safeProducts.length === 1) grid.classList.add("grid-cols-1", "max-w-xs"); else if(safeProducts.length === 2) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "max-w-2xl"); else if(safeProducts.length === 3) grid.classList.add("grid-cols-1", "sm:grid-cols-2", "md:grid-cols-3", "max-w-4xl"); else grid.classList.add("grid-cols-2", "sm:grid-cols-3", "lg:grid-cols-4");
+    
+    if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos.</div>`; }
+    
+    let phoneEl = document.getElementById('contact-phone');
+    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
+
+    safeProducts.forEach((p,i)=>{
+        const wa=`https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
+        const art = p.image ? `<img src="${p.image}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-star text-[#ffd84d]"></i> Premium</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</a></div></div></article>`;
+    });
+    if(window.isAdminMode) {
+        grid.innerHTML += `<article onclick="openEditor('product', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[200px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400 pointer-events-none"><i class="fa-solid fa-plus text-xl pointer-events-none"></i></div><span class="text-xs text-zinc-400 font-bold mt-2 pointer-events-none">Añadir Nuevo</span></article>`;
+    }
+}
+
+window.renderCourses = function(){
+    const grid = document.getElementById('courses-grid'); 
+    if(!grid) return;
+    grid.innerHTML = '';
+    
+    let safeCourses = Array.isArray(window.appCourses) && window.appCourses.length > 0 ? [...window.appCourses] : [...defaultCourses];
+    let safeOrder = Array.isArray(window.courseOrderArray) ? window.courseOrderArray : [];
+    safeCourses.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
+    
+    safeCourses.forEach((c)=>{
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black ignore-drag">Ver más</button></div></div></article>`;
+    });
+    if(window.isAdminMode) {
+        grid.innerHTML += `<article onclick="openEditor('course', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[250px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400 pointer-events-none"><i class="fa-solid fa-plus text-xl pointer-events-none"></i></div><span class="text-xs text-zinc-400 font-bold mt-2 pointer-events-none">Añadir Curso</span></article>`;
+    }
+}
 
 window.cloneTextTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.card:not(.admin-tool)'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
 window.cloneVideoTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.video-testimonial-card'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
@@ -364,18 +408,57 @@ window.cloneVideoTestimonial = function(btnNode) { if(!window.isAdminMode) retur
 async function loadFirebaseData() {
     try {
         await signInAnonymously(auth);
-        const [layoutSnap] = await Promise.all([getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'))]);
+        const [layoutSnap, prodSnap, coursesSnap] = await Promise.all([
+            getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')),
+            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products')),
+            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'))
+        ]);
+
         if (layoutSnap.exists()) {
             const data = layoutSnap.data();
-            if(data.zones) { document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); }
+            if(data.zones) { 
+                document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
+                
+                // Recuperar la plantilla del modal editado si existe
+                if(data.zones['videoModalTpl']) {
+                    const modalContent = document.getElementById('videoModalContent');
+                    if(modalContent) modalContent.innerHTML = data.zones['videoModalTpl'];
+                }
+            }
+            if(data.prodOrder) window.productOrderArray = data.prodOrder;
+            if(data.courseOrder) window.courseOrderArray = data.courseOrder;
         }
-    } catch (error) { console.warn("Error Firebase."); } 
+
+        window.appProducts = prodSnap.empty ? [...defaultProducts] : prodSnap.docs.map(d => ({id: d.id, ...d.data()})); 
+        window.appCourses = coursesSnap.empty ? [...defaultCourses] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
+
+    } catch (error) { 
+        console.warn("Error Firebase, usando respaldo seguro."); 
+        window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
+    } 
     finally {
+        window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
         try { window.renderProducts(); window.renderCourses(); } catch(e) {}
-        setTimeout(() => { const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); window.navigate('catalog'); initMap(); window.parent.postMessage({ type: 'APP_READY' }, '*'); }, 500); 
+        
+        setTimeout(() => { 
+            const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
+            window.navigate('catalog'); initMap(); window.parent.postMessage({ type: 'APP_READY' }, '*'); 
+        }, 500); 
     }
 }
-window.initMap = function() { /* ... */ }
+
+window.initMap = function() {
+    const mapContainer = document.getElementById('contact-map-col');
+    if(!mapContainer) return;
+    let oldMap = document.getElementById('leaflet-map'); if(oldMap) { oldMap.remove(); } 
+    let newMapDiv = document.createElement('div'); newMapDiv.id = 'leaflet-map'; newMapDiv.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
+    mapContainer.insertBefore(newMapDiv, mapContainer.firstChild);
+
+    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
+    L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
+}
+window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
 
 // ============================================
 // ENGINE DE TEMAS MAGICO (THEME SWAPPER)
@@ -392,19 +475,16 @@ window.applyThemeSwap = function(element, newThemeKey) {
     const newTheme = themeData[newThemeKey];
     if (!newTheme) return;
     
-    // Encuentra este elemento y todos sus hijos
     const els = [element, ...element.querySelectorAll('*')];
     const colorNames = ['cyan', 'pink', 'violet', 'yellow', 'emerald'];
     const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '250,204,21', '52,211,153'];
     
     els.forEach(el => {
         if(!el.className || typeof el.className !== 'string') return;
-        // 1. Reemplaza nombres de clases de tailwind (ej. text-cyan-400 -> text-pink-400)
         colorNames.forEach(c => {
             if(c === newTheme.base) return;
             el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(`-${c}-`, 'g'), `-${newTheme.base}-`)).join(' ');
         });
-        // 2. Reemplaza códigos RGB en clases de Sombras y Brillos Neón
         rgbValues.forEach(rgb => {
             if(rgb === newTheme.rgb) return;
             el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(rgb, 'g'), newTheme.rgb)).join(' ');
@@ -425,7 +505,6 @@ window.addEventListener('message', async (event) => {
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag')) return;
             
-            // Permitimos clic dentro del modal también
             let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, div:not(#videoModalContent)');
             
             if (target && !target.closest('.ignore-drag')) {
@@ -434,7 +513,7 @@ window.addEventListener('message', async (event) => {
                 selectedEl = target; selectedEl.classList.add('builder-selected-el');
                 
                 let isVideoCard = target.classList.contains('video-testimonial-card');
-                if(isVideoCard) currentVideoCardRef = target; // Guardamos referencia por si abre modal
+                if(isVideoCard) currentVideoCardRef = target; 
                 
                 let hasTheme = target.hasAttribute('data-theme');
                 let currentTheme = target.getAttribute('data-theme') || '';
@@ -458,7 +537,6 @@ window.addEventListener('message', async (event) => {
         window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
     }
 
-    // ABRIR MODAL DESDE EL BUILDER (Carga Theme automático)
     if (event.data.type === 'TRIGGER_VIDEO_MODAL') {
         if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); }
     }
@@ -468,7 +546,6 @@ window.addEventListener('message', async (event) => {
         if(event.data.href !== undefined) { if(selectedEl.tagName === 'A') selectedEl.href = event.data.href; if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = event.data.href; }
     }
     
-    // LOGICA PROFESIONAL DE ESTILOS
     if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
         if(event.data.prop === 'color') { selectedEl.style.color = event.data.value; }
         if(event.data.prop === 'bg') { selectedEl.style.backgroundColor = event.data.value; }
@@ -488,7 +565,6 @@ window.addEventListener('message', async (event) => {
         }
         if(event.data.prop === 'theme') {
             applyThemeSwap(selectedEl, event.data.value);
-            // Si editamos el modal abierto, sincronizamos la tarjeta original atrás también
             if(selectedEl.id === 'videoModalContent' && currentVideoCardRef) {
                 applyThemeSwap(currentVideoCardRef, event.data.value);
             }
@@ -503,39 +579,145 @@ window.addEventListener('message', async (event) => {
         else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
 
+    // 🟢 CORRECCIÓN: GUARDADO LIMPIO DE LAYOUT
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
+        
         const layoutData = {};
+        
         document.querySelectorAll('.editable-section').forEach(zone => {
             if(!zone.id) return;
             const clone = zone.cloneNode(true);
+            
+            // 1. Quitar los recuadros azules de selección
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
+            clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
             clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = ''); 
+            
+            // 2. Limpiar el mapa para que el GPS cargue limpio la próxima vez
+            const mapInClone = clone.querySelector('#leaflet-map'); 
+            if(mapInClone) { 
+                mapInClone.innerHTML = ''; 
+                mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; 
+                mapInClone.removeAttribute('style'); 
+                mapInClone.removeAttribute('tabindex'); 
+            }
+            
+            // 3. VACIAR LAS GRILLAS DINÁMICAS (Esto evita que "Añadir Curso" se guarde por error en el diseño público)
+            const pGrid = clone.querySelector('#product-grid');
+            if(pGrid) pGrid.innerHTML = '';
+            
+            const cGrid = clone.querySelector('#courses-grid');
+            if(cGrid) cGrid.innerHTML = '';
+            
+            // 4. Asegurarnos que no se guarden botones de "Añadir Testimonio"
+            clone.querySelectorAll('.admin-tool, .admin-overlay, .admin-video-edit-overlay').forEach(el => el.remove());
+
             layoutData[zone.id] = clone.innerHTML;
         });
         
-        // ¡Importante! Guardar el estado del modal (Si le moviste cosas por dentro)
+        // Guardar el estado del modal de video modificado
         const modalClone = document.getElementById('videoModalContent').cloneNode(true);
         modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-        layoutData['videoModalTpl'] = modalClone.innerHTML; // Lo guardamos oculto en layout
+        layoutData['videoModalTpl'] = modalClone.innerHTML; 
 
-        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData }, { merge: true }); } catch(e) {}
+        // Guardar el orden de los elementos
+        const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
+        const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
+
+        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true }); } catch(e) {}
         window.parent.postMessage({ type: 'SAVE_DONE' }, '*');
     }
 });
 
-// Modales omitidos por brevedad (la lógica DB que ya funcionaba sigue intacta)
-window.openMediaSelector = async function(type) { /* Se mantiene la lectura JSON dinámica del index.html que hicimos antes */ }
-window.closeMediaSelector = function() { document.getElementById('mediaModal').classList.add('hidden'); }
-window.selectMedia = function(url) { /* ... */ }
+// Modales de Galeria BD
+window.openMediaSelector = async function(type) {
+    const modal = document.getElementById('mediaModal'); const grid = document.getElementById('media-grid'); const label = document.getElementById('media-folder-label');
+    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('mediaModalContent').classList.remove('scale-95'); }, 10);
+    grid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Leyendo repositorio...</div>';
+    
+    let baseUrl = ""; let jsonName = "imagenes.json";
+    if (type === 'product') { baseUrl = "https://multiprintt.web.app/recursos/productos/"; label.innerText = "RUTA: /recursos/productos/"; } 
+    else if (type === 'course') { baseUrl = "https://multiprintt.web.app/recursos/"; label.innerText = "RUTA: /recursos/"; } 
+    else if (type === 'testimonial') { baseUrl = "https://multiprintt.web.app/recursos/testimonio/"; label.innerText = "RUTA: /recursos/testimonio/"; }
 
-// MODAL DE VIDEO (Con Sync de Temas)
+    let fileNames = [];
+    if (type === 'testimonial') { fileNames = ['testimonio0.mp4']; } 
+    else {
+        try { const response = await fetch(`${baseUrl}${jsonName}?v=${new Date().getTime()}`); if (response.ok) { fileNames = await response.json(); } else throw new Error("HTTP " + response.status); } 
+        catch(e) { grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p>Error al cargar <b>imagenes.json</b></p></div>`; return; }
+    }
+
+    grid.innerHTML = '';
+    if (!fileNames || fileNames.length === 0) { grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON no contiene imágenes.</div>'; return; }
+
+    fileNames.forEach(nombre => {
+        const url = baseUrl + nombre; const isVideo = url.endsWith('.mp4'); const box = document.createElement('div');
+        box.className = 'relative aspect-square rounded-xl bg-black border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-colors shadow-lg';
+        box.onclick = () => selectMedia(url);
+        
+        if (isVideo) {
+            box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`;
+            box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); };
+        } else {
+            box.innerHTML = `<div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10"></div><img src="${url}" class="relative z-10 w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">`; 
+        }
+        grid.appendChild(box);
+    });
+}
+
+window.closeMediaSelector = function() { document.getElementById('mediaModal').classList.add('opacity-0'); document.getElementById('mediaModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('mediaModal').classList.add('hidden'); document.getElementById('mediaModal').classList.remove('flex'); }, 300); }
+window.selectMedia = function(url) {
+    document.getElementById('ef-img').value = url; const preview = document.getElementById('preview-ef-img');
+    if(preview) { if(url.endsWith('.mp4')) { preview.style.backgroundImage = 'none'; preview.innerHTML = `<video src="${url}#t=0.1" class="w-full h-full object-cover rounded-lg"></video>`; } else { preview.innerHTML = ''; preview.style.backgroundImage = `url('${url}')`; } }
+    closeMediaSelector();
+}
+
+// RESTO DE MODALES (Editores de BD)
+window.openEditor = function(type, id, btnNode) {
+    const modal = document.getElementById('editModal'); const fields = document.getElementById('em-fields'); document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
+    if(type === 'product') { const p = id ? window.appProducts.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><option value="premium" ${p.category==='premium'?'selected':''}>Premium</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option><option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><button onclick="openMediaSelector('product')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${p.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center ignore-drag" style="background-image: url('${p.image||''}')"></div>`; } 
+    else if (type === 'course') { const c = id ? window.appCourses.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><div class="flex gap-2 mb-2 ignore-drag"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"></div><button onclick="openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${c.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2 ignore-drag" style="background-image: url('${c.image||''}')"></div><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24 ignore-drag">${c.desc||''}</textarea>`; }
+    else if (type === 'testimonial') { if(btnNode) { const card = btnNode.closest('.video-testimonial-card'); editingCardNode = card; if(card) { const vid = card.querySelector('.vt-video') ? card.querySelector('.vt-video').src.split('#')[0] : ''; const name = card.querySelector('.vt-name') ? card.querySelector('.vt-name').innerText : ''; const role = card.querySelector('.vt-role') ? card.querySelector('.vt-role').innerText : ''; const quote = card.querySelector('.vt-quote') ? card.querySelector('.vt-quote').innerText : ''; fields.innerHTML = `<input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2 ignore-drag">${quote}</textarea><button onclick="openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button><input type="hidden" id="ef-img" value="${vid}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden ignore-drag"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>`; } } }
+    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
+}
+
+window.closeEditModal = function() { document.getElementById('editModal').classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editModal').classList.remove('flex'); editingCardNode = null; }, 300); }
+window.saveElementEdit = async function() {
+    const type = document.getElementById('em-type').value; 
+    if (type === 'testimonial' && editingCardNode) {
+        if(editingCardNode.querySelector('.vt-video')) editingCardNode.querySelector('.vt-video').src = document.getElementById('ef-img').value;
+        if(editingCardNode.querySelector('.vt-name')) editingCardNode.querySelector('.vt-name').innerText = document.getElementById('ef-name').value;
+        if(editingCardNode.querySelector('.vt-role')) editingCardNode.querySelector('.vt-role').innerText = document.getElementById('ef-role').value;
+        if(editingCardNode.querySelector('.vt-quote')) editingCardNode.querySelector('.vt-quote').innerText = document.getElementById('ef-desc').value;
+        closeEditModal(); return;
+    }
+    const id = document.getElementById('em-id').value || Date.now().toString(); const collectionName = type === 'product' ? 'products' : 'courses'; let data = {};
+    if(type === 'product') data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, price: parseFloat(document.getElementById('ef-price').value||0), image: document.getElementById('ef-img').value };
+    else data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
+    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id), data, { merge: true }); closeEditModal(); loadFirebaseData();
+}
+
+window.deleteElement = function(type, id) {
+    const modal = document.getElementById('custom-confirm-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('custom-confirm-content').classList.remove('scale-95'); }, 10);
+    const confirmBtn = document.getElementById('custom-confirm-btn'); confirmBtn.onclick = async function() { window.closeCustomConfirm(); await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', type === 'product' ? 'products' : 'courses', id)); loadFirebaseData(); };
+}
+window.closeCustomConfirm = function() { const modal = document.getElementById('custom-confirm-modal'); modal.classList.add('opacity-0'); document.getElementById('custom-confirm-content').classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
+
+window.openCourseModal = function(id) {
+    if(document.body.classList.contains('builder-mode')) return;
+    const c = window.appCourses.find(x => x.id === id); if(!c) return;
+    document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc;
+    document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
+    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    document.getElementById('cm-btn').href = `https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
+    document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
+}
+
 window.openVideoModal = function(btn) {
     if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
     
-    let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4";
-    let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."';
-    let themeKey = "cyan"; 
+    let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4"; let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."'; let themeKey = "cyan"; 
     
     if (btn && typeof btn.closest === 'function') {
         const card = btn.closest('.video-testimonial-card, .card');
@@ -549,31 +731,20 @@ window.openVideoModal = function(btn) {
     }
     
     const video = document.getElementById('testimonial-video'); video.src = videoSrc; video.muted = false; 
-    document.getElementById('vm-name').innerText = name; document.getElementById('vm-role').innerText = role;
-    document.getElementById('vm-quote').innerText = quote; document.getElementById('vm-initial').innerText = name ? name.charAt(0) : 'C';
+    document.getElementById('vm-name').innerText = name; document.getElementById('vm-role').innerText = role; document.getElementById('vm-quote').innerText = quote; document.getElementById('vm-initial').innerText = name ? name.charAt(0) : 'C';
     
-    // Inyecta el Tema exacto en todo el modal con nuestro Swapper
-    const modalContent = document.getElementById('videoModalContent');
-    applyThemeSwap(modalContent, themeKey);
+    const modalContent = document.getElementById('videoModalContent'); applyThemeSwap(modalContent, themeKey);
+    const modal = document.getElementById('videoModal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); }, 10);
     
-    const modal = document.getElementById('videoModal');
-    modal.classList.remove('hidden'); modal.classList.add('flex');
-    setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); }, 10);
-    
-    video.currentTime = 0; 
-    const p = video.play(); if (p) { p.catch(() => { video.muted = true; video.play(); }); }
+    video.currentTime = 0; const p = video.play(); if (p) { p.catch(() => { video.muted = true; video.play(); }); }
 
-    // En Builder Mode, el video NO debe cerrarse automático ni parar
-    if(!window.isAdminMode) { video.onended = () => closeVideoModal(); }
-    else { video.loop = true; } // Loop para editar tranquilos
+    if(!window.isAdminMode) { video.onended = () => closeVideoModal(); } else { video.loop = true; } 
 }
 
 window.closeVideoModal = function(e) {
     if(e) e.stopPropagation(); 
     const video = document.getElementById('testimonial-video'); const modal = document.getElementById('videoModal'); const content = document.getElementById('videoModalContent');
-    modal.classList.add('opacity-0'); content.classList.add('scale-95');
-    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-    video.pause(); video.currentTime = 0; 
+    modal.classList.add('opacity-0'); content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); video.pause(); video.currentTime = 0; 
 }
 
 document.addEventListener('DOMContentLoaded', () => { loadFirebaseData(); });
