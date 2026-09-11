@@ -108,6 +108,13 @@
 
     <div class="workspace">
         <aside class="sidebar">
+            <!-- NUEVO: Selector de Modo de Puntero -->
+            <div class="panel-header"><i class="fa-solid fa-hand-pointer text-cyan-400"></i> Modo de Puntero</div>
+            <div class="flex gap-2 bg-[#121215] p-1 rounded-lg border border-white/5 shadow-inner mb-4">
+                <button onclick="setPointerMode('build')" id="btn-mode-build" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all"><i class="fa-solid fa-pen-nib"></i> Diseñar</button>
+                <button onclick="setPointerMode('interact')" id="btn-mode-interact" class="flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all"><i class="fa-solid fa-share-square"></i> Navegar (Clics)</button>
+            </div>
+
             <div class="panel-header"><i class="fa-solid fa-layer-group text-cyan-400"></i> Estructura y Movimiento</div>
             <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
                 <i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>
@@ -116,10 +123,10 @@
             <div class="divider"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Bases de Datos Vivas</div>
-            <button onclick="showAlert('Navega al Catálogo en la vista central y haz clic en (+ Añadir Nuevo) para gestionar.')" class="tool-btn group">
+            <button onclick="showAlert('Activa el [Modo Navegar] arriba, ve al Catálogo en la vista central y gestiona libremente tus botones.')" class="tool-btn group">
                 <i class="fa-solid fa-box-open w-4 text-center text-zinc-400 group-hover:text-violet-400 transition-colors"></i> Gestor de Productos
             </button>
-            <button onclick="showAlert('Navega a Academia en la vista central y haz clic en (+ Añadir Curso) para gestionar.')" class="tool-btn group">
+            <button onclick="showAlert('Activa el [Modo Navegar] arriba, ve a Academia en la vista central y gestiona libremente tus botones.')" class="tool-btn group">
                 <i class="fa-solid fa-graduation-cap w-4 text-center text-zinc-400 group-hover:text-yellow-400 transition-colors"></i> Gestor de Academia
             </button>
 
@@ -157,8 +164,6 @@
             </div>
 
             <div id="inspector-tools" class="hidden flex-col gap-3">
-                
-                <!-- Navegador de Capas Estilo Elementor -->
                 <div class="bg-[#121215] border border-white/5 rounded-lg p-2.5 shadow-inner">
                     <div class="text-[9px] uppercase tracking-wider font-bold text-zinc-500 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-sitemap text-cyan-400"></i> Navegador de Capas</div>
                     <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap"></div>
@@ -175,7 +180,6 @@
                         <textarea id="prop-text" rows="3" class="inspector-input resize-none"></textarea>
                     </div>
                     
-                    <!-- NUEVA ESTRUCTURA PARA EL SELECTOR DE URL Y ARCHIVOS -->
                     <div id="prop-link-group" class="hidden">
                         <label class="inspector-label">Enlace o Archivo de Origen</label>
                         <div class="flex gap-2">
@@ -187,7 +191,6 @@
                     </div>
                 </div>
 
-                <!-- Panel de Estilos Visuales Pro -->
                 <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5">
                     <div>
                         <label class="inspector-label">Color de Texto</label>
@@ -234,7 +237,8 @@
     </div>
 </div>
 
-<div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
+<!-- CORRECCIÓN: Z-Index muy alto para asegurar que los clics no se intercepten por error -->
+<div id="context-menu" class="hidden fixed z-[9999999] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
     <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
         <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
     </div>
@@ -270,7 +274,6 @@
     </div>
 </div>
 
-<!-- NUEVO MODAL DE SELECCIÓN DE RECURSOS (MEDIA PICKER) -->
 <div id="mediaPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-4xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col h-[85vh]">
         <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
@@ -285,7 +288,6 @@
         </div>
         
         <div id="media-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto pr-2 pb-2 h-full content-start hide-scrollbar">
-            <!-- Los elementos se cargan vía JavaScript -->
         </div>
     </div>
 </div>
@@ -390,6 +392,25 @@
         document.getElementById('preview-wrapper').className = `device-${device}`;
     }
 
+    // NUEVA FUNCIÓN: Selector de Modos para evitar que el constructor bloquee clics
+    function setPointerMode(mode) {
+        const iframe = document.getElementById('site-frame');
+        const btnBuild = document.getElementById('btn-mode-build');
+        const btnInteract = document.getElementById('btn-mode-interact');
+        
+        if (mode === 'interact') {
+            btnInteract.className = 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all';
+            btnBuild.className = 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
+            iframe.contentWindow.postMessage({ type: 'DISABLE_BUILDER' }, '*');
+            resetPanelSelection();
+            document.getElementById('context-menu').classList.add('hidden');
+        } else {
+            btnBuild.className = 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all';
+            btnInteract.className = 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
+            iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+        }
+    }
+
     function toggleDraggable() {
         dragEnabled = !dragEnabled;
         const btn = document.getElementById('drag-btn');
@@ -465,8 +486,14 @@
         document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
     }
 
-    document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); } });
-    window.addEventListener('blur', () => { document.getElementById('context-menu').classList.add('hidden'); });
+    // CORRECCIÓN: Event Listener optimizado para no interferir con los clics en el menú contextual
+    document.addEventListener('click', (e) => { 
+        if(!e.target.closest('#context-menu')) { 
+            document.getElementById('context-menu').classList.add('hidden'); 
+        } 
+    });
+
+    // Se eliminó la línea problemática de window.addEventListener('blur', ...) que cerraba los cuadros sin dejarte hacer clic
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Delete' && document.getElementById('inspector-tools').style.display === 'flex') {
@@ -492,7 +519,6 @@
     propText.addEventListener('input', () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: propText.value }, '*'); });
     propLink.addEventListener('input', () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: propLink.value }, '*'); });
 
-    // DICCIONARIO INTELIGENTE DE ETIQUETAS
     const tagDictionary = { 'DIV': 'Contenedor Libre', 'SECTION': 'Sección Completa', 'ARTICLE': 'Tarjeta', 'P': 'Párrafo', 'SPAN': 'Texto en línea', 'H1': 'Título Principal', 'H2': 'Subtítulo', 'H3': 'Encabezado', 'H4': 'Encabezado Pequeño', 'A': 'Botón / Enlace', 'IMG': 'Imagen', 'VIDEO': 'Reproductor de Video', 'BUTTON': 'Botón de Acción', 'I': 'Icono Vectorial', 'NAV': 'Barra de Navegación' };
 
     window.addEventListener('message', (e) => {
@@ -545,14 +571,6 @@
         }
     });
 
-    // ==========================================
-    // LÓGICA DEL GESTOR DE RECURSOS (MEDIA PICKER)
-    // ==========================================
-    
-    // IMPORTANTE: Como Javascript puro en el navegador no lee carpetas locales,
-    // usamos esta estructura ("mock") para simular los archivos.
-    // Si tu proyecto usa un backend (PHP, Node, Firebase), debes poblar este objeto
-    // trayendo la lista de archivos mediante un fetch() o API.
     const mockMediaDB = {
         productos: [
             '/recursos/productos/producto1.jpg',
@@ -572,7 +590,7 @@
     function openMediaPicker() {
         document.getElementById('mediaPickerModal').classList.remove('hidden');
         document.getElementById('mediaPickerModal').classList.add('flex');
-        loadMedia('productos'); // Cargar catálogo de productos por defecto
+        loadMedia('productos'); 
     }
 
     function closeMediaPicker() {
@@ -581,7 +599,6 @@
     }
 
     function loadMedia(category) {
-        // Actualizar el estilo visual de las pestañas
         const tabs = ['productos', 'academia', 'testimonios'];
         tabs.forEach(tab => {
             const btn = document.getElementById(`tab-${tab}`);
@@ -602,7 +619,6 @@
             return;
         }
 
-        // Renderizar los archivos
         items.forEach(url => {
             const isVideo = url.endsWith('.mp4') || url.endsWith('.webm');
             const div = document.createElement('div');
@@ -611,7 +627,6 @@
             div.onclick = () => selectMedia(url);
 
             if (isVideo) {
-                // Previsualización de Videos con autoreproducción en Hover
                 div.innerHTML = `
                     <video src="${url}" muted loop class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" onmouseover="this.play()" onmouseout="this.pause()"></video>
                     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -620,7 +635,6 @@
                     <div class="absolute bottom-0 inset-x-0 bg-black/80 p-2 text-[10px] text-zinc-300 font-medium truncate text-center pointer-events-none border-t border-white/10">${url.split('/').pop()}</div>
                 `;
             } else {
-                // Previsualización de Imágenes
                 div.innerHTML = `
                     <img src="${url}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
                     <div class="absolute bottom-0 inset-x-0 bg-black/80 p-2 text-[10px] text-zinc-300 font-medium truncate text-center pointer-events-none border-t border-white/10">${url.split('/').pop()}</div>
@@ -633,7 +647,6 @@
     function selectMedia(url) {
         const propLink = document.getElementById('prop-link');
         propLink.value = url;
-        // Notificar al Iframe el cambio de URL
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: url }, '*');
         closeMediaPicker();
     }
