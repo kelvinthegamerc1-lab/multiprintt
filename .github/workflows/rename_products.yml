@@ -38,6 +38,27 @@ jobs:
             fi
           done
 
+      - name: Generar lista de imágenes en JSON
+        run: |
+          cd recursos/productos
+          shopt -s nullglob
+          
+          # Crear o vaciar el archivo JSON
+          echo "[" > imagenes.json
+          
+          first=true
+          for file in *.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP,GIF}; do
+            if [ "$first" = true ]; then
+              first=false
+            else
+              echo "," >> imagenes.json
+            fi
+            # Agrega el nombre del archivo en formato JSON
+            echo "  \"$file\"" >> imagenes.json
+          done
+          
+          echo "]" >> imagenes.json
+
       - name: Confirmar y subir cambios
         run: |
           git config --global user.name "github-actions[bot]"
@@ -46,8 +67,8 @@ jobs:
           git add recursos/productos/
           
           if git diff --staged --quiet; then
-            echo "No hay imágenes para renombrar o ya están actualizadas."
+            echo "No hay cambios para subir."
           else
-            git commit -m "chore: renombrar imágenes a producto1, producto2, etc."
+            git commit -m "chore: renombrar imágenes y actualizar lista JSON"
             git push
           fi
