@@ -6,7 +6,6 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 <title>Multiprintt | Visual Builder Pro</title>
 
-<!-- Dependencias -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -170,7 +169,6 @@
                 <!-- Pestaña CONTENIDO -->
                 <div id="panel-content" class="flex flex-col gap-3">
                     
-                    <!-- Botón Especial para Modales -->
                     <button onclick="triggerVideoModal()" id="btn-open-video-modal" class="hidden tool-btn w-full justify-center bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20 hover:border-violet-500 mb-2">
                         <i class="fa-solid fa-layer-group"></i> Configurar Modal (Popup)
                     </button>
@@ -194,7 +192,6 @@
                 <!-- Pestaña ESTILO -->
                 <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5">
                     
-                    <!-- NUEVO: Tema de un Clic -->
                     <div id="prop-theme-group" class="hidden pb-3 border-b border-white/5">
                         <label class="inspector-label text-pink-400 flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles"></i> Tema Visual (1 Clic)</label>
                         <select id="prop-theme" class="inspector-input" onchange="triggerStyleUpdate('theme', this.value)">
@@ -208,7 +205,6 @@
                         <p class="text-[9px] text-zinc-500 mt-1">Cambia bordes, sombras, botones e iconos al instante.</p>
                     </div>
 
-                    <!-- NUEVO: Tipografía Profesional -->
                     <div>
                         <label class="inspector-label"><i class="fa-solid fa-font text-cyan-400 mr-1"></i> Tipografía</label>
                         <div class="flex gap-2 mb-2">
@@ -251,7 +247,6 @@
                     <div>
                         <label class="inspector-label">Color de Fondo / Desenfoque</label>
                         <div class="flex gap-2 items-center">
-                            <!-- Nota: Soporta transparencias si usas códigos RGBA en el iframe directo, pero aquí dejamos color base -->
                             <input type="color" id="prop-bg" class="color-picker w-1/4" value="#000000">
                             <button onclick="document.getElementById('prop-bg').value=''; triggerStyleUpdate('bg', '')" class="text-[9px] text-zinc-500 hover:text-white"><i class="fa-solid fa-eraser"></i> Limpiar</button>
                         </div>
@@ -278,7 +273,6 @@
     </div>
 </div>
 
-<!-- Menú Contextual (Clic Derecho) -->
 <div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
     <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
         <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
@@ -299,15 +293,27 @@
     </button>
 </div>
 
-<!-- Modales de Iconos y Alertas (Reducidos por espacio, permanecen igual) -->
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300"><div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]"><div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0"><h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Biblioteca de Iconos</h3><button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="mb-4 shrink-0 relative"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i><input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono..." class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner"></div><div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div></div></div>
 <div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0"><div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content"><i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i><h3 id="custom-modal-title" class="text-lg font-bold text-white mb-2">Mensaje</h3><p id="custom-modal-text" class="text-zinc-400 text-sm mb-6 whitespace-pre-wrap"></p><div class="flex gap-3 justify-center"><button id="custom-modal-cancel" onclick="closeCustomModal()" class="hidden flex-1 bg-[#0a0a0c] border border-white/10 text-white font-medium py-2.5 rounded-lg hover:bg-white/5 transition-colors text-sm">Cancelar</button><button id="custom-modal-confirm" class="flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Aceptar</button></div></div></div>
 
-<!-- Modal Galería Dinámica -->
-<div id="imageGalleryModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300"><div class="w-full max-w-4xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]"><div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0"><h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-images text-cyan-400"></i> Galería de Recursos <span id="gallery-type-label" class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-zinc-300 ml-2 uppercase tracking-wide"></span></h3><button onclick="closeImageGallery()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="flex gap-3 mb-4 shrink-0"><button onclick="loadGalleryImages('productos')" class="flex-1 bg-[#121215] border border-white/10 hover:border-cyan-400 hover:bg-cyan-500/10 text-white font-medium py-2 rounded-lg transition-all text-sm flex justify-center items-center gap-2"><i class="fa-solid fa-box text-cyan-400"></i> Productos</button><button onclick="loadGalleryImages('cursos')" class="flex-1 bg-[#121215] border border-white/10 hover:border-yellow-400 hover:bg-yellow-500/10 text-white font-medium py-2 rounded-lg transition-all text-sm flex justify-center items-center gap-2"><i class="fa-solid fa-graduation-cap text-yellow-400"></i> Cursos</button></div><div id="gallery-path" class="text-[9px] font-mono text-zinc-500 mb-3 tracking-widest uppercase">/RECURSOS/</div><div id="image-grid-container" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto pr-2 pb-2 h-full min-h-[300px] content-start"></div></div></div>
+<!-- 🟢 MODAL GALERÍA ESTRUCTURADA PROFESIONALMENTE (Anti-Aglomeraciones) -->
+<div id="imageGalleryModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
+    <div class="w-full max-w-4xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
+            <h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-images text-cyan-400"></i> Galería de Recursos <span id="gallery-type-label" class="text-[10px] bg-white/10 px-2 py-0.5 rounded text-zinc-300 ml-2 uppercase tracking-wide"></span></h3>
+            <button onclick="closeImageGallery()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div class="flex gap-3 mb-4 shrink-0">
+            <button onclick="loadGalleryImages('productos')" class="flex-1 bg-[#121215] border border-white/10 hover:border-cyan-400 hover:bg-cyan-500/10 text-white font-medium py-2 rounded-lg transition-all text-sm flex justify-center items-center gap-2"><i class="fa-solid fa-box text-cyan-400"></i> Productos</button>
+            <button onclick="loadGalleryImages('cursos')" class="flex-1 bg-[#121215] border border-white/10 hover:border-yellow-400 hover:bg-yellow-500/10 text-white font-medium py-2 rounded-lg transition-all text-sm flex justify-center items-center gap-2"><i class="fa-solid fa-graduation-cap text-yellow-400"></i> Cursos</button>
+        </div>
+        <div id="gallery-path" class="text-[9px] font-mono text-zinc-500 mb-3 tracking-widest uppercase">/RECURSOS/</div>
+        <!-- Contenedor Grid con altura estricta auto-rows -->
+        <div id="image-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto pr-2 pb-2 h-full min-h-[300px] auto-rows-max content-start"></div>
+    </div>
+</div>
 
 <script>
-    // Variables de Estado
     let dragEnabled = false; let currentMode = 'edit';
     const iconDB = [{ c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' }, { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-quote-left', n: 'Comillas' }, { c: 'fa-solid fa-play', n: 'Reproducir' }];
     const STRUCTURAL_TAGS = ['DIV', 'SECTION', 'ARTICLE', 'MAIN', 'HEADER', 'FOOTER', 'UL', 'NAV', 'FORM'];
@@ -322,7 +328,7 @@
 
     function openCustomModal(msg, isConfirm, onConfirmCallback) {
         const m = document.getElementById('custom-modal'), c = document.getElementById('custom-modal-content'), btnOk = document.getElementById('custom-modal-confirm'), btnCancel = document.getElementById('custom-modal-cancel');
-        document.getElementById('custom-modal-text').innerText = msg;
+        document.getElementById('custom-modal-text').innerHTML = msg; // Permite inyectar HTML para mostrar errores
         if (isConfirm) { btnCancel.classList.remove('hidden'); btnOk.className = "flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-400"; btnOk.innerText = "Sí, continuar"; document.getElementById('custom-modal-title').innerText = "ATENCIÓN"; btnOk.onclick = () => { closeCustomModal(); if(onConfirmCallback) onConfirmCallback(); }; } 
         else { btnCancel.classList.add('hidden'); btnOk.className = "flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400"; btnOk.innerText = "Entendido"; document.getElementById('custom-modal-title').innerText = "Información"; btnOk.onclick = () => closeCustomModal(); }
         m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
@@ -345,7 +351,7 @@
             if (dragEnabled) toggleDraggable(); document.getElementById('drag-btn').style.opacity = '0.4'; document.getElementById('drag-btn').style.pointerEvents = 'none'; resetPanelSelection();
         }
     }
-    function activateInteractMode(tipo) { setMode('interact'); showAlert('MODO NAVEGACIÓN ACTIVADO\n\nConstructor visual apagado. Haz clic en los botones Editar/Borrar en la web para actualizar la Base de Datos.'); }
+    function activateInteractMode(tipo) { setMode('interact'); showAlert('MODO NAVEGACIÓN ACTIVADO<br><br>Constructor visual apagado. Haz clic en los botones Editar/Borrar en la web para actualizar la Base de Datos.'); }
 
     function toggleDraggable() {
         dragEnabled = !dragEnabled; const btn = document.getElementById('drag-btn'), iframe = document.getElementById('site-frame');
@@ -357,30 +363,68 @@
     function resetLayout() { showConfirm("¿Restaurar diseño de fábrica?", () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*'); }); }
     function resetBuilderUI() { dragEnabled = false; const btn = document.getElementById('drag-btn'); if(btn) { btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5'; btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400"></i> <span>Activar Movimiento (Drag)</span>'; } resetPanelSelection(); document.getElementById('context-menu').classList.add('hidden'); }
 
-    // Iconos y Galería omitidas por brevedad pero están funcionales (mismo código tuyo anterior)
+    // 🟢 NUEVA FUNCIÓN GALERÍA (Lógica Anti-Errores JSON y CSS Flexbox)
     function openImageGallery(tipo = 'productos') { document.getElementById('imageGalleryModal').classList.remove('hidden'); document.getElementById('imageGalleryModal').classList.add('flex'); loadGalleryImages(tipo); }
     function closeImageGallery() { document.getElementById('imageGalleryModal').classList.add('hidden'); document.getElementById('imageGalleryModal').classList.remove('flex'); }
+    
     async function loadGalleryImages(tipo) {
-        const container = document.getElementById('image-grid-container'); container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Cargando...</div>';
+        const container = document.getElementById('image-grid-container'); 
+        const pathLabel = document.getElementById('gallery-path');
+        const typeLabel = document.getElementById('gallery-type-label');
+        
+        container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Consultando Base de Datos...</div>';
+        
         let baseUrl = tipo === 'productos' ? "https://multiprintt.web.app/recursos/productos/" : "https://multiprintt.web.app/recursos/";
+        pathLabel.innerText = "RUTA: " + (tipo === 'productos' ? "/recursos/productos/" : "/recursos/");
+        typeLabel.innerText = tipo;
+
         try {
-            const resp = await fetch(`${baseUrl}imagenes.json?v=${new Date().getTime()}`); if(!resp.ok) throw new Error();
-            const lista = await resp.json(); container.innerHTML = '';
+            const resp = await fetch(`${baseUrl}imagenes.json?v=${new Date().getTime()}`); 
+            if(!resp.ok) throw new Error("HTTP " + resp.status);
+            
+            const rawText = await resp.text();
+            let lista = [];
+            
+            try {
+                lista = JSON.parse(rawText);
+            } catch (parseError) {
+                // Captura el error clásico de sintaxis de JSON que estabas experimentando
+                console.error("Error de sintaxis en JSON:", parseError, rawText);
+                container.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">El archivo existe pero tiene un error de sintaxis.<br><br><span class="text-cyan-400">Verifica que no tengas comas (,) sobrantes al final de la última línea ni comillas simples.</span></p></div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            
+            if (lista.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return;
+            }
+
             lista.forEach(n => {
-                const url = baseUrl + n; const div = document.createElement('div'); div.className = 'bg-[#121215] border border-white/5 rounded-xl cursor-pointer hover:border-cyan-400 h-36 flex flex-col group';
-                div.innerHTML = `<div class="h-28 bg-black/80 flex items-center justify-center relative"><img src="${url}" class="relative z-10 w-full h-full object-contain p-2 group-hover:scale-110 transition-transform"></div><div class="px-2 py-1.5 border-t border-white/5"><p class="text-[10px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400">${n}</p></div>`;
+                const url = baseUrl + n; const div = document.createElement('div'); 
+                // Cajas estrictamente cuadradas con Flexbox para evitar solapamientos
+                div.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between';
+                div.innerHTML = `
+                    <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div>
+                    <div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10">
+                        <img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0">
+                        <p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${n}</p>
+                    </div>
+                `;
                 div.onclick = () => { document.getElementById('prop-link').value = url; document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: url, src: url }, '*'); closeImageGallery(); };
                 container.appendChild(div);
             });
-        } catch(e) { container.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Error al cargar galería.</div>`; }
+        } catch(e) { 
+            container.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Error de Conexión: No se encontró el archivo.</div>`; 
+        }
     }
 
     function ctxAction(action) { document.getElementById('context-menu').classList.add('hidden'); if (action === 'delete') { triggerDeleteFromInspector(); } else if (action === 'selectParent') { triggerSelectParent(); } else if (action === 'selectChild') { triggerSelectChild(); } else if (action === 'edit') { switchTab('content'); document.getElementById('prop-text').focus(); } }
     function triggerDeleteFromInspector() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_SELECTED_NODE' }, '*'); resetPanelSelection(); }
     function triggerSelectParent() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*'); }
     function triggerSelectChild() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_CHILD_NODE' }, '*'); }
-    
-    // Disparador del Modal de Video
     function triggerVideoModal() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'TRIGGER_VIDEO_MODAL' }, '*'); }
 
     function resetPanelSelection() { document.getElementById('inspector-tools').style.display = 'none'; document.getElementById('no-selection').style.display = 'block'; }
@@ -394,11 +438,8 @@
     document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) document.getElementById('context-menu').classList.add('hidden'); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Delete' && document.getElementById('inspector-tools').style.display === 'flex' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') triggerDeleteFromInspector(); if (e.key === 'Escape') { document.getElementById('context-menu').classList.add('hidden'); resetPanelSelection(); document.getElementById('site-frame').contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*'); } });
 
-    // ACTUALIZADOR PRO: Envía colores, textos y también temas y alineaciones
     function triggerStyleUpdate(prop, value) { 
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_STYLE', prop: prop, value: value }, '*'); 
-        
-        // Efecto visual en los botones de alineación
         if(prop === 'textAlign') {
             document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
             if(value === 'text-left') document.getElementById('btn-align-left').classList.add('active');
@@ -409,7 +450,6 @@
     
     document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
     document.getElementById('prop-bg').addEventListener('input', (e) => triggerStyleUpdate('bg', e.target.value));
-    
     document.getElementById('prop-text').addEventListener('input', (e) => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: e.target.value }, '*'); });
     document.getElementById('prop-link').addEventListener('input', (e) => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: e.target.value, src: e.target.value }, '*'); });
 
@@ -435,20 +475,8 @@
             const tag = e.data.tagName;
             document.getElementById('prop-breadcrumb').innerHTML = `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">${tagDictionary[tag] || `<${tag.toLowerCase()}>`}</span>`;
 
-            // Muestra botón "Configurar Modal" solo si es una tarjeta de video Testimonio
-            if(e.data.isVideoCard) {
-                document.getElementById('btn-open-video-modal').classList.remove('hidden');
-            } else {
-                document.getElementById('btn-open-video-modal').classList.add('hidden');
-            }
-
-            // Muestra Selector de "Temas" si el elemento tiene data-theme
-            if(e.data.hasTheme) {
-                document.getElementById('prop-theme-group').classList.remove('hidden');
-                document.getElementById('prop-theme').value = e.data.currentTheme || '';
-            } else {
-                document.getElementById('prop-theme-group').classList.add('hidden');
-            }
+            if(e.data.isVideoCard) document.getElementById('btn-open-video-modal').classList.remove('hidden'); else document.getElementById('btn-open-video-modal').classList.add('hidden');
+            if(e.data.hasTheme) { document.getElementById('prop-theme-group').classList.remove('hidden'); document.getElementById('prop-theme').value = e.data.currentTheme || ''; } else document.getElementById('prop-theme-group').classList.add('hidden');
 
             const textInput = document.getElementById('prop-text');
             if (STRUCTURAL_TAGS.includes(tag)) {
@@ -460,18 +488,12 @@
             }
 
             if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO' || tag === 'IFRAME') {
-                document.getElementById('prop-link-group').style.display = 'block';
-                document.getElementById('prop-link').value = e.data.src || e.data.href || '';
-                if(tag === 'IMG') document.getElementById('btn-open-gallery').classList.remove('hidden');
-                else document.getElementById('btn-open-gallery').classList.add('hidden');
+                document.getElementById('prop-link-group').style.display = 'block'; document.getElementById('prop-link').value = e.data.src || e.data.href || '';
+                if(tag === 'IMG') document.getElementById('btn-open-gallery').classList.remove('hidden'); else document.getElementById('btn-open-gallery').classList.add('hidden');
             } else {
-                document.getElementById('prop-link-group').style.display = 'none';
-                document.getElementById('btn-open-gallery').classList.add('hidden');
+                document.getElementById('prop-link-group').style.display = 'none'; document.getElementById('btn-open-gallery').classList.add('hidden');
             }
-            switchTab('content');
-            
-            // Resetea los botones visuales de alineación
-            document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+            switchTab('content'); document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
         }
     });
 </script>
