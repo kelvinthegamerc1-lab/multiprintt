@@ -20,7 +20,6 @@
 
     #auth-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .glass-panel { background: #0e0e11; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
-    
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
     .topbar { height: 54px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
     
@@ -30,7 +29,6 @@
     
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
     #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
-    
     .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 8px !important; border: 1px solid rgba(255,255,255,0.1) !important; margin: 10px; }
     .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 16px; margin: auto; border: 10px solid #1a1a1a !important;}
     .device-mobile { width: 390px !important; height: 844px !important; border-radius: 36px; margin: auto; border: 12px solid #1a1a1a !important;}
@@ -54,12 +52,6 @@
     .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
     .color-picker::-webkit-color-swatch { border: none; border-radius: 4px; }
 
-    .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
-    .icon-box { background: #121215; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 0; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px;}
-    .icon-box i { font-size: 20px; color: #a3a3a3; transition: 0.2s;}
-    .icon-box:hover { background: rgba(37,216,255,0.1); border-color: rgba(37,216,255,0.3); }
-    .icon-box:hover i { color: #25d8ff; transform: scale(1.1);}
-
     .panel-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #737373; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .divider { height: 1px; background: rgba(255,255,255,0.06); width: 100%; margin: 8px 0; }
     
@@ -74,13 +66,13 @@
             <i class="fa-solid fa-layer-group text-2xl text-cyan-400"></i>
         </div>
         <h1 class="text-xl font-bold mb-1">Visual Builder <span class="text-cyan-400 text-xs bg-cyan-500/10 px-2 py-0.5 rounded-full ml-1">PRO</span></h1>
-        <p class="text-zinc-500 text-xs mb-8">Acceso Maestro al Entorno.</p>
+        <p class="text-zinc-500 text-xs mb-8">Acceso Seguro Firebase Auth.</p>
         <div class="space-y-3">
-            <input type="text" id="loginUser" placeholder="Usuario" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
+            <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
             <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
-            <button onclick="attemptLogin()" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Acceder al Editor</button>
+            <button onclick="attemptLogin()" id="btn-login" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Iniciar Sesión Segura</button>
         </div>
-        <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-medium bg-red-500/10 py-2 rounded-lg border border-red-500/20">Credenciales incorrectas.</p>
+        <p id="auth-error" class="text-red-500 text-xs mt-4 hidden font-medium bg-red-500/10 py-2 rounded-lg border border-red-500/20">Acceso denegado.</p>
     </div>
 </div>
 
@@ -109,14 +101,16 @@
         <div class="flex items-center gap-3">
             <button onclick="reloadIframe()" class="w-8 h-8 rounded-md border border-white/10 hover:bg-white/10 text-zinc-400 hover:text-white transition-colors flex items-center justify-center text-sm" title="Recargar Iframe"><i class="fa-solid fa-rotate-right"></i></button>
             <div class="w-[1px] h-5 bg-white/10 mx-1"></div>
-            <button id="btn-save-layout" onclick="saveLayoutAndPositions()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-1.5 rounded-md font-semibold text-xs transition-all shadow-[0_0_15px_rgba(37,216,255,0.3)] flex items-center gap-2">
+            <button onclick="saveLayoutAndPositions()" class="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-1.5 rounded-md font-semibold text-xs transition-all shadow-[0_0_15px_rgba(37,216,255,0.3)] flex items-center gap-2">
                 <i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios
+            </button>
+            <button onclick="logoutAdmin()" class="bg-red-500/10 border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white px-3 py-1.5 rounded-md font-semibold text-xs transition-all" title="Cerrar Sesión">
+                <i class="fa-solid fa-power-off"></i>
             </button>
         </div>
     </header>
 
     <div class="workspace">
-        <!-- BARRA IZQUIERDA -->
         <aside class="sidebar">
             <div class="panel-header"><i class="fa-solid fa-layer-group text-cyan-400"></i> Estructura y Movimiento</div>
             <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
@@ -151,7 +145,6 @@
             </div>
         </main>
 
-        <!-- BARRA DERECHA (INSPECTOR) -->
         <aside class="sidebar-right relative">
             <div class="panel-header"><i class="fa-solid fa-sliders text-cyan-400"></i> Propiedades Elemento</div>
             
@@ -315,37 +308,73 @@
     </div>
 </div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+        const authScreen = document.getElementById('auth-screen');
+        if (user) {
+            document.getElementById('auth-error').classList.add('hidden');
+            authScreen.style.transition = 'opacity 0.4s';
+            authScreen.style.opacity = '0';
+            setTimeout(() => { 
+                authScreen.style.display = 'none'; 
+                document.getElementById('builder-ui').style.display = 'flex'; 
+                window.reloadIframe(); 
+            }, 400);
+        } else {
+            authScreen.style.display = 'flex';
+            setTimeout(() => { authScreen.style.opacity = '1'; }, 10);
+            document.getElementById('builder-ui').style.display = 'none';
+            document.getElementById('site-frame').src = 'about:blank';
+        }
+    });
+
+    window.attemptLogin = async function() {
+        const email = document.getElementById('loginUser').value;
+        const pass = document.getElementById('loginPass').value;
+        const btn = document.getElementById('btn-login');
+        const err = document.getElementById('auth-error');
+
+        try {
+            err.classList.add('hidden');
+            if(btn) btn.innerText = "Verificando...";
+            await signInWithEmailAndPassword(auth, email, pass);
+            if(btn) btn.innerText = "Iniciar Sesión Segura"; 
+        } catch (error) { 
+            if(btn) btn.innerText = "Iniciar Sesión Segura";
+            err.innerText = "Acceso denegado. Credenciales incorrectas.";
+            err.classList.remove('hidden'); 
+        }
+    }
+
+    window.logoutAdmin = async function() { await signOut(auth); }
+    document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') window.attemptLogin(); });
+
     let dragEnabled = false; let currentMode = 'edit';
     const STRUCTURAL_TAGS = ['DIV', 'SECTION', 'ARTICLE', 'MAIN', 'HEADER', 'FOOTER', 'UL', 'NAV', 'FORM'];
     const tagDictionary = { 'DIV': 'Caja / Contenedor', 'ARTICLE': 'Tarjeta', 'P': 'Párrafo', 'SPAN': 'Texto en línea', 'H1': 'Título Principal', 'H2': 'Subtítulo', 'H3': 'Encabezado', 'A': 'Enlace', 'IMG': 'Imagen', 'VIDEO': 'Video', 'BUTTON': 'Botón', 'I': 'Icono' };
 
-    if(sessionStorage.getItem('mp_admin_auth') === 'true') {
-        document.getElementById('auth-screen').style.display = 'none'; document.getElementById('builder-ui').style.display = 'flex';
-    }
-
-    function attemptLogin() {
-        if(document.getElementById('loginUser').value === 'admin' && document.getElementById('loginPass').value === 'adminMultiprintt2026') {
-            sessionStorage.setItem('mp_admin_auth', 'true');
-            document.getElementById('auth-screen').style.opacity = '0'; setTimeout(() => { document.getElementById('auth-screen').style.display = 'none'; document.getElementById('builder-ui').style.display = 'flex'; reloadIframe(); }, 500);
-        } else { document.getElementById('auth-error').classList.remove('hidden'); }
-    }
-    document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') attemptLogin(); });
-
-    function openCustomModal(msg, isConfirm, onConfirmCallback) {
+    window.openCustomModal = function(msg, isConfirm, onConfirmCallback) {
         const m = document.getElementById('custom-modal'), c = document.getElementById('custom-modal-content'), btnOk = document.getElementById('custom-modal-confirm'), btnCancel = document.getElementById('custom-modal-cancel');
         document.getElementById('custom-modal-text').innerHTML = msg; 
-        if (isConfirm) { btnCancel.classList.remove('hidden'); btnOk.className = "flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-400 transition-colors text-sm"; btnOk.innerText = "Sí, continuar"; document.getElementById('custom-modal-title').innerText = "ATENCIÓN"; btnOk.onclick = () => { closeCustomModal(); if(onConfirmCallback) onConfirmCallback(); }; } 
-        else { btnCancel.classList.add('hidden'); btnOk.className = "flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm"; btnOk.innerText = "Entendido"; document.getElementById('custom-modal-title').innerText = "Información"; btnOk.onclick = () => closeCustomModal(); }
+        if (isConfirm) { btnCancel.classList.remove('hidden'); btnOk.className = "flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-400 transition-colors text-sm"; btnOk.innerText = "Sí, continuar"; document.getElementById('custom-modal-title').innerText = "ATENCIÓN"; btnOk.onclick = () => { window.closeCustomModal(); if(onConfirmCallback) onConfirmCallback(); }; } 
+        else { btnCancel.classList.add('hidden'); btnOk.className = "flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm"; btnOk.innerText = "Entendido"; document.getElementById('custom-modal-title').innerText = "Información"; btnOk.onclick = () => window.closeCustomModal(); }
         m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
     }
-    function closeCustomModal() { const m = document.getElementById('custom-modal'), c = document.getElementById('custom-modal-content'); m.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(() => { m.classList.add('hidden'); }, 300); }
-    function showAlert(msg) { openCustomModal(msg, false); } function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
+    window.closeCustomModal = function() { const m = document.getElementById('custom-modal'), c = document.getElementById('custom-modal-content'); m.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(() => { m.classList.add('hidden'); }, 300); }
+    window.showAlert = function(msg) { window.openCustomModal(msg, false); } 
+    window.showConfirm = function(msg, callback) { window.openCustomModal(msg, true, callback); }
 
-    function reloadIframe() { resetBuilderUI(); setMode('edit'); document.getElementById('site-frame').src = `./index.html?v=${new Date().getTime()}`; }
-    function setDevice(device) { document.querySelectorAll('.device-btn').forEach(b => { if(b.id.startsWith('btn-desktop') || b.id.startsWith('btn-tablet') || b.id.startsWith('btn-mobile')) b.classList.remove('active'); }); document.getElementById('btn-' + device).classList.add('active'); document.getElementById('preview-wrapper').className = `device-${device}`; }
+    window.reloadIframe = function() { window.resetBuilderUI(); window.setMode('edit'); document.getElementById('site-frame').src = `./index.html?v=${new Date().getTime()}`; }
+    window.setDevice = function(device) { document.querySelectorAll('.device-btn').forEach(b => { if(b.id.startsWith('btn-desktop') || b.id.startsWith('btn-tablet') || b.id.startsWith('btn-mobile')) b.classList.remove('active'); }); document.getElementById('btn-' + device).classList.add('active'); document.getElementById('preview-wrapper').className = `device-${device}`; }
 
-    function setMode(mode) {
+    window.setMode = function(mode) {
         currentMode = mode;
         document.getElementById('btn-mode-edit').classList.toggle('active', mode === 'edit');
         document.getElementById('btn-mode-interact').classList.toggle('active', mode === 'interact');
@@ -354,40 +383,46 @@
             iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); document.getElementById('drag-btn').style.opacity = '1'; document.getElementById('drag-btn').style.pointerEvents = 'auto';
         } else {
             iframe.contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*'); iframe.contentWindow.postMessage({ type: 'DISABLE_BUILDER' }, '*');
-            if (dragEnabled) toggleDraggable(); document.getElementById('drag-btn').style.opacity = '0.4'; document.getElementById('drag-btn').style.pointerEvents = 'none'; resetPanelSelection();
+            if (dragEnabled) window.toggleDraggable(); document.getElementById('drag-btn').style.opacity = '0.4'; document.getElementById('drag-btn').style.pointerEvents = 'none'; window.resetPanelSelection();
         }
     }
-    function activateInteractMode(tipo) { setMode('interact'); showAlert('MODO NAVEGACIÓN ACTIVADO<br><br>Constructor visual apagado. Haz clic en los botones "Editar BD" / "Borrar" en la web para actualizar la Base de Datos.'); }
+    window.activateInteractMode = function(tipo) { window.setMode('interact'); window.showAlert('MODO NAVEGACIÓN ACTIVADO<br><br>Constructor visual apagado. Haz clic en los botones Editar/Borrar en la web para actualizar la Base de Datos.'); }
 
-    function toggleDraggable() {
+    window.toggleDraggable = function() {
         dragEnabled = !dragEnabled; const btn = document.getElementById('drag-btn'), iframe = document.getElementById('site-frame');
-        if(dragEnabled) { btn.style.background = 'rgba(37,216,255,0.1)'; btn.style.borderColor = 'rgba(37,216,255,0.3)'; btn.style.color = 'white'; btn.innerHTML = '<i class="fa-solid fa-check w-4 text-center text-cyan-400"></i> <span>Modo Movimiento Activo</span>'; iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: true }, '*'); } 
-        else { btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5'; btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400"></i> <span>Activar Movimiento (Drag)</span>'; iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: false }, '*'); }
+        if(dragEnabled) { 
+            btn.style.background = 'rgba(37,216,255,0.1)'; btn.style.borderColor = 'rgba(37,216,255,0.3)'; btn.style.color = 'white'; btn.innerHTML = '<i class="fa-solid fa-check w-4 text-center text-cyan-400"></i> <span>Modo Movimiento Activo</span>'; 
+            window.resetPanelSelection(); iframe.contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*'); iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: true }, '*'); 
+        } 
+        else { 
+            btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5'; btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400"></i> <span>Activar Movimiento (Drag)</span>'; 
+            iframe.contentWindow.postMessage({ type: 'TOGGLE_DRAG', state: false }, '*'); 
+        }
     }
 
-    function saveLayoutAndPositions() { const btn = document.getElementById('btn-save-layout'); btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...'; document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*'); }
+    window.saveLayoutAndPositions = function() { const btn = document.querySelector('.fa-cloud-arrow-up').parentElement; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...'; document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*'); }
     
-    function resetLayout() { 
-        showConfirm("¿Restaurar diseño de fábrica? Esto descartará todos los cambios guardados.", () => { 
+    window.resetLayout = function() { 
+        window.showConfirm("¿Restaurar diseño de fábrica? Esto descartará todos los cambios guardados.", () => { 
             const btn = document.getElementById('btn-reset-layout');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Restaurando...';
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*'); 
             
             setTimeout(() => {
-                reloadIframe();
+                window.reloadIframe();
                 btn.innerHTML = originalText;
-                showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
+                window.showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
             }, 1000);
         }); 
     }
 
-    function resetBuilderUI() { dragEnabled = false; const btn = document.getElementById('drag-btn'); if(btn) { btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5'; btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400"></i> <span>Activar Movimiento (Drag)</span>'; } resetPanelSelection(); document.getElementById('context-menu').classList.add('hidden'); }
+    window.resetBuilderUI = function() { dragEnabled = false; const btn = document.getElementById('drag-btn'); if(btn) { btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5'; btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400"></i> <span>Activar Movimiento (Drag)</span>'; } window.resetPanelSelection(); document.getElementById('context-menu').classList.add('hidden'); }
 
-    function openImageGallery(tipo = 'productos') { document.getElementById('imageGalleryModal').classList.remove('hidden'); document.getElementById('imageGalleryModal').classList.add('flex'); loadGalleryImages(tipo); }
-    function closeImageGallery() { document.getElementById('imageGalleryModal').classList.add('hidden'); document.getElementById('imageGalleryModal').classList.remove('flex'); }
+    window.openImageGallery = function(tipo = 'productos') { document.getElementById('imageGalleryModal').classList.remove('hidden'); document.getElementById('imageGalleryModal').classList.add('flex'); window.loadGalleryImages(tipo); }
+    window.closeImageGallery = function() { document.getElementById('imageGalleryModal').classList.add('hidden'); document.getElementById('imageGalleryModal').classList.remove('flex'); }
     
-    async function loadGalleryImages(tipo) {
+    window.loadGalleryImages = async function(tipo) {
         const container = document.getElementById('image-grid-container'); 
         const pathLabel = document.getElementById('gallery-path');
         const typeLabel = document.getElementById('gallery-type-label');
@@ -408,8 +443,7 @@
             try {
                 lista = JSON.parse(rawText);
             } catch (parseError) {
-                console.error("Error de sintaxis en JSON:", parseError, rawText);
-                container.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">El archivo existe pero tiene un error de sintaxis.<br><br><span class="text-cyan-400">Verifica que no tengas comas (,) sobrantes al final de la última línea ni comillas simples.</span></p></div>`;
+                container.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20 p-4"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold text-center">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">El archivo existe pero tiene un error de sintaxis.<br><br><span class="text-cyan-400">Verifica que no tengas comas (,) sobrantes al final de la última línea ni comillas simples.</span></p></div>`;
                 return;
             }
 
@@ -431,7 +465,7 @@
                         <p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${n}</p>
                     </div>
                 `;
-                div.onclick = () => { document.getElementById('prop-link').value = url; document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: url, src: url }, '*'); closeImageGallery(); };
+                div.onclick = () => { document.getElementById('prop-link').value = url; document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: url, src: url }, '*'); window.closeImageGallery(); };
                 container.appendChild(div);
             });
         } catch(e) { 
@@ -439,14 +473,14 @@
         }
     }
 
-    function ctxAction(action) { document.getElementById('context-menu').classList.add('hidden'); if (action === 'delete') { triggerDeleteFromInspector(); } else if (action === 'selectParent') { triggerSelectParent(); } else if (action === 'selectChild') { triggerSelectChild(); } else if (action === 'edit') { switchTab('content'); document.getElementById('prop-text').focus(); } }
-    function triggerDeleteFromInspector() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_SELECTED_NODE' }, '*'); resetPanelSelection(); }
-    function triggerSelectParent() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*'); }
-    function triggerSelectChild() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_CHILD_NODE' }, '*'); }
-    function triggerVideoModal() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'TRIGGER_VIDEO_MODAL' }, '*'); }
+    window.ctxAction = function(action) { document.getElementById('context-menu').classList.add('hidden'); if (action === 'delete') { window.triggerDeleteFromInspector(); } else if (action === 'selectParent') { window.triggerSelectParent(); } else if (action === 'selectChild') { window.triggerSelectChild(); } else if (action === 'edit') { window.switchTab('content'); document.getElementById('prop-text').focus(); } }
+    window.triggerDeleteFromInspector = function() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_SELECTED_NODE' }, '*'); window.resetPanelSelection(); }
+    window.triggerSelectParent = function() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*'); }
+    window.triggerSelectChild = function() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_CHILD_NODE' }, '*'); }
+    window.triggerVideoModal = function() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'TRIGGER_VIDEO_MODAL' }, '*'); }
 
-    function resetPanelSelection() { document.getElementById('inspector-tools').style.display = 'none'; document.getElementById('no-selection').style.display = 'block'; }
-    function switchTab(tab) {
+    window.resetPanelSelection = function() { document.getElementById('inspector-tools').style.display = 'none'; document.getElementById('no-selection').style.display = 'block'; }
+    window.switchTab = function(tab) {
         document.getElementById('panel-content').style.display = tab === 'content' ? 'flex' : 'none';
         document.getElementById('panel-style').style.display = tab === 'style' ? 'flex' : 'none';
         document.getElementById('panel-position').style.display = tab === 'position' ? 'flex' : 'none';
@@ -459,9 +493,9 @@
     }
 
     document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) document.getElementById('context-menu').classList.add('hidden'); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Delete' && document.getElementById('inspector-tools').style.display === 'flex' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') triggerDeleteFromInspector(); if (e.key === 'Escape') { document.getElementById('context-menu').classList.add('hidden'); resetPanelSelection(); document.getElementById('site-frame').contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*'); } });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Delete' && document.getElementById('inspector-tools').style.display === 'flex' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') window.triggerDeleteFromInspector(); if (e.key === 'Escape') { document.getElementById('context-menu').classList.add('hidden'); window.resetPanelSelection(); document.getElementById('site-frame').contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*'); } });
 
-    function triggerStyleUpdate(prop, value) { 
+    window.triggerStyleUpdate = function(prop, value) { 
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_STYLE', prop: prop, value: value }, '*'); 
         if(prop === 'textAlign') {
             document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
@@ -471,44 +505,27 @@
         }
     }
     
-    function triggerTransformUpdate() {
+    window.triggerTransformUpdate = function() {
         const s = document.getElementById('prop-scale').value;
         const x = document.getElementById('prop-x').value;
         const y = document.getElementById('prop-y').value;
-        triggerStyleUpdate('transform', `scale(${s}) translate(${x}px, ${y}px)`);
+        window.triggerStyleUpdate('transform', `scale(${s}) translate(${x}px, ${y}px)`);
     }
     
-    document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
-    document.getElementById('prop-bg').addEventListener('input', (e) => triggerStyleUpdate('bg', e.target.value));
+    document.getElementById('prop-color').addEventListener('input', (e) => window.triggerStyleUpdate('color', e.target.value));
+    document.getElementById('prop-bg').addEventListener('input', (e) => window.triggerStyleUpdate('bg', e.target.value));
     document.getElementById('prop-text').addEventListener('input', (e) => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: e.target.value }, '*'); });
     document.getElementById('prop-link').addEventListener('input', (e) => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: e.target.value, src: e.target.value }, '*'); });
 
     window.addEventListener('message', (e) => {
-        if(e.data.type === 'APP_READY') { 
-            if(sessionStorage.getItem('mp_admin_auth') === 'true') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER' }, '*'); 
-            }
-        }
-        
-        if(e.data.type === 'SAVE_DONE') { 
-            const btn = document.getElementById('btn-save-layout'); 
-            btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!'; 
-            btn.classList.replace('bg-cyan-500', 'bg-green-400'); 
-            resetBuilderUI(); 
-            setTimeout(() => { 
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; 
-                btn.classList.replace('bg-green-400', 'bg-cyan-500'); 
-                reloadIframe(); 
-            }, 2000); 
-        }
-        
-        if(e.data.type === 'SAVE_ERROR') { 
-            const btn = document.getElementById('btn-save-layout'); 
-            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; 
-            openCustomModal("<span class='text-red-400 font-bold'>Error al Guardar en Firebase:</span><br>" + e.data.msg); 
-        }
+        if (e.source !== window.parent && e.source !== document.getElementById('site-frame').contentWindow) return;
 
-        if (e.data.type === 'RESET_DONE') { resetBuilderUI(); reloadIframe(); }
+        if(e.data.type === 'APP_READY') { document.getElementById('site-frame').contentWindow.postMessage({ type: currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER' }, '*'); }
+        
+        if(e.data.type === 'SAVE_DONE') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!'; btn.classList.replace('bg-cyan-500', 'bg-green-400'); window.resetBuilderUI(); setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); window.reloadIframe(); }, 2000); }
+        if(e.data.type === 'SAVE_ERROR') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; window.openCustomModal("<span class='text-red-400 font-bold'>Error al Guardar en Base de Datos:</span><br>" + e.data.msg); }
+
+        if (e.data.type === 'RESET_DONE') { window.resetBuilderUI(); window.reloadIframe(); }
 
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
             const rect = document.getElementById('site-frame').getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
@@ -521,6 +538,8 @@
         if (e.data.type === 'HIDE_CONTEXT_MENU') { document.getElementById('context-menu').classList.add('hidden'); }
         
         if (e.data.type === 'ELEMENT_SELECTED') {
+            if(dragEnabled) return; 
+
             document.getElementById('context-menu').classList.add('hidden');
             document.getElementById('no-selection').style.display = 'none';
             document.getElementById('inspector-tools').style.display = 'flex';
@@ -546,11 +565,9 @@
             } else {
                 document.getElementById('prop-link-group').style.display = 'none'; document.getElementById('btn-open-gallery').classList.add('hidden');
             }
-            switchTab('content'); document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+            window.switchTab('content'); document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
         }
     });
-
-    if(sessionStorage.getItem('mp_admin_auth') === 'true') { setTimeout(() => { document.getElementById('site-frame').src = `./index.html?v=${new Date().getTime()}`; }, 100); }
 </script>
 </body>
 </html>
