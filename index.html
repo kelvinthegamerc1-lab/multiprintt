@@ -692,28 +692,88 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'RESET_LAYOUT') { try { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')); } catch(e){} window.parent.postMessage({ type: 'LAYOUT_RESET_DONE' }, '*'); }
 });
 
-const mockMediaFiles = {
-    product: ['https://placehold.co/600x600/101014/ffffff?text=prod1.jpg', 'https://placehold.co/600x600/101014/ffffff?text=prod2.jpg'],
-    course: ['https://placehold.co/600x400/101014/ffffff?text=curso1.jpg', 'https://placehold.co/600x400/101014/ffffff?text=curso2.jpg'],
-    testimonial: ['https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4']
-};
+// =========================================================
+// NUEVA FUNCIÓN: LECTURA DE IMAGENES DINÁMICA
+// =========================================================
+window.openMediaSelector = async function(type) {
+    const modal = document.getElementById('mediaModal'); 
+    const grid = document.getElementById('media-grid'); 
+    const label = document.getElementById('media-folder-label');
+    
+    // Mostramos modal con animación rápida
+    modal.classList.remove('hidden'); modal.classList.add('flex'); 
+    setTimeout(() => { 
+        modal.classList.remove('opacity-0'); 
+        document.getElementById('mediaModalContent').classList.remove('scale-95'); 
+    }, 10);
+    
+    // Spinner de carga mientras lee el JSON
+    grid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Leyendo repositorio...</div>';
+    
+    let baseUrl = "";
+    let jsonName = "imagenes.json";
 
-window.openMediaSelector = function(type) {
-    const modal = document.getElementById('mediaModal'); const grid = document.getElementById('media-grid'); const label = document.getElementById('media-folder-label');
-    grid.innerHTML = ''; let files = mockMediaFiles[type] || [];
-    label.innerText = `/recursos/${type === 'product' ? 'productos/' : type === 'course' ? 'cursos/' : 'testimonio/'}`;
-    files.forEach(url => {
-        const isVideo = url.endsWith('.mp4'); const box = document.createElement('div');
+    if (type === 'product') {
+        baseUrl = "https://multiprintt.web.app/recursos/productos/";
+        label.innerText = "RUTA: /recursos/productos/";
+    } else if (type === 'course') {
+        baseUrl = "https://multiprintt.web.app/recursos/";
+        label.innerText = "RUTA: /recursos/";
+    } else if (type === 'testimonial') {
+        baseUrl = "https://multiprintt.web.app/recursos/testimonio/";
+        label.innerText = "RUTA: /recursos/testimonio/";
+    }
+
+    let fileNames = [];
+    
+    if (type === 'testimonial') {
+        // Mantenemos el video por defecto para testimonios por si no usas un JSON ahí.
+        fileNames = ['testimonio0.mp4'];
+    } else {
+        try {
+            // Lectura Anti-Caché del JSON en tu servidor web
+            const response = await fetch(`${baseUrl}${jsonName}?v=${new Date().getTime()}`);
+            if (response.ok) {
+                fileNames = await response.json();
+            } else {
+                throw new Error("HTTP " + response.status);
+            }
+        } catch(e) {
+            console.error("Error leyendo JSON de la galería:", e);
+            grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p>Error al cargar <b>imagenes.json</b></p><p class="text-xs text-zinc-500 mt-1">Verifica que el archivo exista en la ruta indicada.</p></div>`;
+            return;
+        }
+    }
+
+    grid.innerHTML = '';
+    
+    if (!fileNames || fileNames.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON no contiene imágenes.</div>';
+        return;
+    }
+
+    // Renderizamos las imágenes extraídas del JSON
+    fileNames.forEach(nombre => {
+        const url = baseUrl + nombre;
+        const isVideo = url.endsWith('.mp4'); 
+        const box = document.createElement('div');
         box.className = 'relative aspect-square rounded-xl bg-black border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-colors shadow-lg';
         box.onclick = () => selectMedia(url);
-        if(isVideo) {
+        
+        if (isVideo) {
             box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`;
-            box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); };
-        } else { box.innerHTML = `<img src="${url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">`; }
+            box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; 
+            box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); };
+        } else {
+            // A las imágenes les ponemos un grid de transparencia por detrás por si son PNGs
+            box.innerHTML = `
+            <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10"></div>
+            <img src="${url}" class="relative z-10 w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-500">`; 
+        }
         grid.appendChild(box);
     });
-    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('mediaModalContent').classList.remove('scale-95'); }, 10);
 }
+
 window.closeMediaSelector = function() { document.getElementById('mediaModal').classList.add('opacity-0'); document.getElementById('mediaModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('mediaModal').classList.add('hidden'); document.getElementById('mediaModal').classList.remove('flex'); }, 300); }
 window.selectMedia = function(url) {
     document.getElementById('ef-img').value = url; const preview = document.getElementById('preview-ef-img');
