@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -27,13 +26,13 @@ html{scroll-behavior:smooth}
 body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(--bg); color:#f7f7f8; font-family:"DM Sans",sans-serif; -webkit-tap-highlight-color: transparent; }
 
 body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
-.leaflet-container { background: #0e0e12 !important; }
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+.leaflet-container { background: #0e0e12 !important; }
 
 h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 ::selection{background:var(--pink);color:white}
 
-.slide-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; will-change: scroll-position; }
+.slide-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; will-change: scroll-position; transform: translate3d(0,0,0); }
 .slide-scroll::-webkit-scrollbar{width:6px; height: 6px;}
 .slide-scroll::-webkit-scrollbar-track{background:transparent}
 .slide-scroll::-webkit-scrollbar-thumb{background:#292930;border-radius:99px}
@@ -47,32 +46,34 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
 .hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
 
-.card{ background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025)); border:1px solid var(--line); box-shadow:0 12px 40px rgba(0,0,0,.28); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease; will-change: transform; }
+.card{ background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025)); border:1px solid var(--line); box-shadow:0 12px 40px rgba(0,0,0,.28); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; will-change: transform; }
 .card:hover{border-color:rgba(255,255,255,.18);transform:translateY(-3px) translate3d(0,0,0)}
 
-.view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 74px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
+.view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99) translate3d(0,0,0); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 74px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
 @media(min-width: 768px) { .view-slide { padding-top: 80px; padding-bottom: 20px; } }
-.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1); z-index: 10; }
+.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1) translate3d(0,0,0); z-index: 10; }
 
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease; will-change: transform, opacity;}
-.reveal.show{opacity:1;transform:none}
-.btn{transition:transform .25s ease,box-shadow .25s ease,background .25s ease; transform: translate3d(0,0,0);}
-.btn:hover{transform:translateY(-2px) translate3d(0,0,0);}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.show{opacity:1;transform:translate3d(0,0,0)}
+.btn{transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
+.btn:hover{transform:translateY(-2px)}
 
 .nav-link { color: #aaaab3; transition: all 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 99px; font-weight: 500; }
 .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
 .nav-link.active { color: #000 !important; background: #fff !important; font-weight: 700 !important; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
-.bot-nav-item { transition: all 0.3s ease; transform: translate3d(0,0,0); }
-.bot-nav-item.active { color: #fff; transform: translateY(-2px) translate3d(0,0,0); }
+.bot-nav-item { transition: all 0.3s ease; }
+.bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
+/* ESTILOS DEL BUILDER PRO */
 .admin-tool { display: none !important; }
 body.builder-mode .admin-tool { display: flex !important; }
 
 body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
 body.builder-mode .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1); border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3); }
 body.builder-mode a:hover, body.builder-mode video:hover, body.builder-mode img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
+body.builder-mode .ignore-drag { pointer-events: none !important; }
 
 body.dragging-active .sortable-zone > * { cursor: grab !important; }
 body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
@@ -200,9 +201,8 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
             
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
-                <div class="video-testimonial-card relative rounded-[16px] overflow-hidden bg-[#0e0e12] border border-white/10 shadow-2xl group h-[280px] shrink-0 transform translate3d(0,0,0)">
-                    <!-- 🟢 VIDEO OPTIMIZADO PARA CARGA INMEDIATA EN FONDO -->
-                    <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" autoplay loop muted playsinline preload="auto" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-500"></video>
+                <div class="video-testimonial-card relative rounded-[16px] overflow-hidden bg-[#0e0e12] border border-white/10 shadow-2xl group h-[280px] shrink-0">
+                    <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" preload="auto" autoplay loop muted playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-500"></video>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                     
                     <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-cyan-500/90 backdrop-blur-md border border-cyan-300/50 flex items-center justify-center text-white text-xl z-20 pointer-events-auto cursor-pointer hover:scale-110 transition-transform shadow-[0_0_20px_rgba(37,216,255,0.4)] ignore-drag outline-none">
@@ -213,8 +213,8 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
                         <h4 data-editable="true" class="vt-name text-white text-lg font-bold pointer-events-auto w-max">Carlos P.</h4>
                         <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-bold uppercase tracking-[.2em] mb-1 pointer-events-auto w-max">Caso de Éxito</span>
                     </div>
-                    <div class="admin-video-edit-overlay ignore-drag">
-                        <p data-editable="true" class="vt-quote hidden text-xs text-center text-white/90 p-4 border border-dashed border-white/40 rounded bg-black/50">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo."</p>
+                    <div class="admin-video-edit-overlay">
+                        <p data-editable="true" class="vt-quote hidden text-xs text-center text-white/90 p-4 border border-dashed border-white/40 rounded bg-black/50">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."</p>
                     </div>
                 </div>
 
@@ -269,12 +269,14 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
             </div>
 
             <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
-                <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0 transform translate3d(0,0,0)">
+                <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
+                    <!-- Contenedor Base del Mapa para Recreación Segura -->
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
+                    
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
                             <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza Lazarte y 090514 205</p>
+                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
                         </div>
                     </div>
                 </div>
@@ -282,7 +284,7 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
                 <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
                     <div class="group">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
-                        <a data-editable="true" id="contact-phone" href="https://wa.me/593997591021" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors">+593 99 759 1021</a>
+                        <a data-editable="true" href="https://wa.me/593997591021" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors" id="contact-phone">+593 99 759 1021</a>
                     </div>
                     <div class="group">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
@@ -316,17 +318,17 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
     <button onclick="navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
-<div id="courseModal" class="ignore-drag hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300">
-  <div class="relative w-full max-w-4xl bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-300" id="courseModalContent">
-    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg ignore-drag"><i class="fa-solid fa-xmark"></i></button>
+<div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag">
+  <div class="relative w-full max-w-4xl bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-300 ignore-drag" id="courseModalContent">
+    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg ignore-drag"><i class="fa-solid fa-xmark pointer-events-none"></i></button>
     <div class="w-full md:w-1/2 h-48 sm:h-56 md:h-auto bg-[#101014] relative">
-      <img id="cm-image" src="" alt="Curso" class="w-full h-full object-cover relative z-0" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Curso'">
+      <img id="cm-image" src="" alt="Curso" class="w-full h-full object-cover relative z-0 ignore-drag" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Curso'">
     </div>
     <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative z-20">
-      <span id="cm-modality" class="inline-block px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[9px] uppercase tracking-[.15em] text-violet-400 font-bold mb-4 w-max"></span>
-      <h3 id="cm-title" class="display text-xl md:text-3xl font-extrabold tracking-tight mb-2 text-white"></h3>
-      <p id="cm-desc" class="text-xs md:text-sm text-zinc-400 leading-relaxed mb-5 flex-1"></p>
-      <div class="space-y-4 mb-6">
+      <span id="cm-modality" class="inline-block px-3 py-1 rounded-md bg-white/5 border border-white/10 text-[9px] uppercase tracking-[.15em] text-violet-400 font-bold mb-4 w-max ignore-drag"></span>
+      <h3 id="cm-title" class="display text-xl md:text-3xl font-extrabold tracking-tight mb-2 text-white ignore-drag"></h3>
+      <p id="cm-desc" class="text-xs md:text-sm text-zinc-400 leading-relaxed mb-5 flex-1 ignore-drag"></p>
+      <div class="space-y-4 mb-6 ignore-drag">
         <div class="flex items-center text-zinc-300">
             <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-cyan-400"><i class="fa-regular fa-calendar"></i></div>
             <div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Horarios</span><span id="cm-schedule" class="font-medium text-white text-xs md:text-sm"></span></div>
@@ -341,49 +343,48 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
   </div>
 </div>
 
-<div id="videoModal" class="ignore-drag hidden fixed inset-0 z-[9999] bg-black/50 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
-    <div class="relative w-full max-w-[360px] aspect-[9/16] max-h-[85vh] bg-black border border-white/10 rounded-[24px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col" id="videoModalContent">
-        <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg ignore-drag"><i class="fa-solid fa-xmark"></i></button>
-        <video id="testimonial-video" preload="metadata" src="" playsinline class="absolute inset-0 w-full h-full object-cover pointer-events-none"></video>
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none z-10"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-6 z-20 pointer-events-none">
-            <i class="fa-solid fa-quote-left text-cyan-500/50 text-2xl mb-2"></i>
-            <p id="vm-quote" class="text-white text-[13px] font-medium leading-relaxed mb-4 shadow-black drop-shadow-md">...</p>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm" id="vm-initial">C</div>
+<div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-black/80 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag">
+    <div class="relative w-full max-w-[360px] aspect-[9/16] max-h-[85vh] bg-black border border-white/10 rounded-[24px] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col ignore-drag" id="videoModalContent">
+        <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg ignore-drag"><i class="fa-solid fa-xmark pointer-events-none"></i></button>
+        
+        <!-- 🟢 VIDEO REPARADO: Controles nativos y pointer-events-auto para que los móviles de gama baja lo puedan reproducir -->
+        <video id="testimonial-video" preload="auto" playsinline controls class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-auto ignore-drag"></video>
+        
+        <!-- 🟢 TEXTO ELEVADO: No estorbará a la barra de controles del celular -->
+        <div class="absolute bottom-12 left-0 right-0 p-6 z-20 pointer-events-none bg-gradient-to-t from-black/90 via-black/50 to-transparent pt-12 ignore-drag">
+            <i class="fa-solid fa-quote-left text-cyan-500/50 text-2xl mb-2 pointer-events-none"></i>
+            <p id="vm-quote" class="text-white text-[13px] font-medium leading-relaxed mb-4 shadow-black drop-shadow-md pointer-events-none">...</p>
+            <div class="flex items-center gap-3 pointer-events-none">
+                <div class="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-sm pointer-events-none" id="vm-initial">C</div>
                 <div>
-                    <h4 id="vm-name" class="text-white text-sm font-bold">Carlos P.</h4>
-                    <span id="vm-role" class="text-cyan-400 text-[10px] uppercase tracking-wider font-bold">Caso de Éxito</span>
+                    <h4 id="vm-name" class="text-white text-sm font-bold pointer-events-none">Carlos P.</h4>
+                    <span id="vm-role" class="text-cyan-400 text-[10px] uppercase tracking-wider font-bold pointer-events-none">Caso de Éxito</span>
                 </div>
             </div>
         </div>
-        <div class="absolute bottom-5 right-5 z-20 bg-black/50 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 flex items-center gap-1.5 pointer-events-none">
-            <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
-            <span id="vm-timer" class="text-white text-[10px] font-mono font-bold">-0:00</span>
+    </div>
+</div>
+
+<div id="editModal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag">
+    <div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative ignore-drag" id="editModalContent">
+        <h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2 ignore-drag">Editar Elemento</h3>
+        <input type="hidden" id="em-id" class="ignore-drag"> <input type="hidden" id="em-type" class="ignore-drag">
+        <div id="em-fields" class="space-y-3 mb-6 ignore-drag"></div>
+        <div class="flex gap-3 ignore-drag">
+            <button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-white font-bold py-2.5 rounded-lg hover:bg-cyan-600 ignore-drag">Guardar Cambios</button>
+            <button onclick="closeEditModal()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button>
         </div>
     </div>
 </div>
 
-<div id="editModal" class="ignore-drag hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
-    <div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative" id="editModalContent">
-        <h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2">Editar Elemento</h3>
-        <input type="hidden" id="em-id"> <input type="hidden" id="em-type">
-        <div id="em-fields" class="space-y-3 mb-6"></div>
-        <div class="flex gap-3">
-            <button onclick="saveElementEdit()" class="ignore-drag flex-1 bg-cyan-500 text-white font-bold py-2.5 rounded-lg hover:bg-cyan-600">Guardar Cambios</button>
-            <button onclick="closeEditModal()" class="ignore-drag px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<div id="custom-confirm-modal" class="ignore-drag hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300">
-    <div class="w-full max-w-sm bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 text-center" id="custom-confirm-content">
-        <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4"></i>
-        <h3 class="text-lg font-bold text-white mb-2">¿Estás seguro?</h3>
-        <p class="text-zinc-400 text-sm mb-6">¿Quieres borrar este elemento permanentemente?</p>
-        <div class="flex gap-3">
-            <button id="custom-confirm-btn" class="ignore-drag flex-1 bg-red-500 text-white font-bold py-2.5 rounded-lg hover:bg-red-600">Borrar</button>
-            <button onclick="closeCustomConfirm()" class="ignore-drag flex-1 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900">Cancelar</button>
+<div id="custom-confirm-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag">
+    <div class="w-full max-w-sm bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 text-center ignore-drag" id="custom-confirm-content">
+        <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4 ignore-drag"></i>
+        <h3 class="text-lg font-bold text-white mb-2 ignore-drag">¿Estás seguro?</h3>
+        <p class="text-zinc-400 text-sm mb-6 ignore-drag">¿Quieres borrar este elemento permanentemente?</p>
+        <div class="flex gap-3 ignore-drag">
+            <button id="custom-confirm-btn" class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-lg hover:bg-red-600 ignore-drag">Borrar</button>
+            <button onclick="closeCustomConfirm()" class="flex-1 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button>
         </div>
     </div>
 </div>
@@ -429,8 +430,9 @@ window.navigate = function(targetId) {
             
             setTimeout(() => { 
                 if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); 
-                if(id === 'contact' && window.multiprinttMap) {
-                    window.multiprinttMap.invalidateSize();
+                if(id === 'contact') {
+                    if(!window.multiprinttMap) { initMap(); }
+                    else { window.multiprinttMap.invalidateSize(); window.recenterMap(); }
                 }
             }, 500); 
         } else {
@@ -456,17 +458,19 @@ window.renderProducts = function(){
     
     if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos.</div>`; }
     
+    // Obtener número de Wpp
     let phoneEl = document.getElementById('contact-phone');
-    let wppNumber = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    if(!rawPhone.startsWith('593')) rawPhone = "593997591021"; // Backup
 
     safeProducts.forEach((p,i)=>{
-        const wa=`https://wa.me/${wppNumber}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
-        const art = p.image ? `<img src="${p.image}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60"></i></div>`;
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 hover:bg-cyan-400 transition-colors ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 hover:bg-red-400 transition-colors ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
-        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none will-change-transform" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm"><i class="fa-solid fa-star text-[#ffd84d]"></i> Premium</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</a></div></div></article>`;
+        const wa=`https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
+        const art = p.image ? `<img src="${p.image}" loading="lazy" class="w-[85%] h-[85%] object-cover rounded relative z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20 p-2"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-star text-[#ffd84d]"></i> Premium</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</a></div></div></article>`;
     });
     if(window.isAdminMode) {
-        grid.innerHTML += `<article onclick="openEditor('product', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[200px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400"><i class="fa-solid fa-plus text-xl"></i></div><span class="text-xs text-zinc-400 font-bold mt-2">Añadir Nuevo</span></article>`;
+        grid.innerHTML += `<article onclick="openEditor('product', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[200px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400 pointer-events-none"><i class="fa-solid fa-plus text-xl pointer-events-none"></i></div><span class="text-xs text-zinc-400 font-bold mt-2 pointer-events-none">Añadir Nuevo</span></article>`;
     }
 }
 
@@ -480,11 +484,11 @@ window.renderCourses = function(){
     safeCourses.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     
     safeCourses.forEach((c)=>{
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 hover:bg-cyan-400 transition-colors ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 hover:bg-red-400 transition-colors ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
-        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="ignore-drag w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black">Ver más</button></div></div></article>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black ignore-drag">Ver más</button></div></div></article>`;
     });
     if(window.isAdminMode) {
-        grid.innerHTML += `<article onclick="openEditor('course', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[250px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400"><i class="fa-solid fa-plus text-xl"></i></div><span class="text-xs text-zinc-400 font-bold mt-2">Añadir Curso</span></article>`;
+        grid.innerHTML += `<article onclick="openEditor('course', null)" class="card group bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center h-full min-h-[250px] cursor-pointer hover:border-cyan-400 ignore-drag"><div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-cyan-400 pointer-events-none"><i class="fa-solid fa-plus text-xl pointer-events-none"></i></div><span class="text-xs text-zinc-400 font-bold mt-2 pointer-events-none">Añadir Curso</span></article>`;
     }
 }
 
@@ -506,31 +510,6 @@ window.cloneVideoTestimonial = function(btnNode) {
         const clone = cards[0].cloneNode(true);
         grid.insertBefore(clone, btnNode);
     }
-}
-
-// 🟢 FUNCIÓN DE LIMPIEZA Y REINICIO DEL MAPA BLINDADA
-window.initMap = function() {
-    let mapContainer = document.getElementById('contact-map-col');
-    if(!mapContainer) return;
-    
-    if(window.multiprinttMap) {
-        window.multiprinttMap.remove();
-        window.multiprinttMap = null;
-    }
-    
-    // Destrucción total de cualquier rastro viejo
-    let oldMap = document.getElementById('leaflet-map');
-    if (oldMap) oldMap.remove();
-    
-    // Creación de un lienzo puro para evitar crasheos
-    let newMap = document.createElement('div');
-    newMap.id = 'leaflet-map';
-    newMap.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
-    mapContainer.insertBefore(newMap, mapContainer.firstChild);
-    
-    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
-    L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
 }
 
 async function loadFirebaseData() {
@@ -557,24 +536,47 @@ async function loadFirebaseData() {
         window.appCourses = coursesSnap.empty ? [...defaultCourses] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
 
     } catch (error) { 
-        console.warn("Bloqueo de red. Usando respaldo seguro."); 
+        console.warn("Bloqueo de red o sin conexión. Usando respaldo seguro."); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
     } 
     finally {
         window.productOrderArray = window.productOrderArray || [];
         window.courseOrderArray = window.courseOrderArray || [];
-        window.renderProducts(); window.renderCourses();
         
-        // El mapa SÓLO se inicia cuando la estructura HTML final ya fue pintada por Firebase
-        window.initMap();
-
+        try { window.renderProducts(); window.renderCourses(); } catch(e) { console.error("Error renderizando catálogos", e); }
+        
+        // Carga completada garantizada
         setTimeout(() => {
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden');
             window.navigate('catalog');
+            initMap(); // Inicializar el mapa al final de todo el proceso
             window.parent.postMessage({ type: 'APP_READY' }, '*');
         }, 500); 
     }
 }
+
+// 🟢 SOLUCIÓN MAPA: Destrucción Total y Recreación Limpia
+window.initMap = function() {
+    const mapContainer = document.getElementById('contact-map-col');
+    if(!mapContainer) return;
+    
+    // 1. Destruimos cualquier residuo del mapa anterior
+    let oldMap = document.getElementById('leaflet-map');
+    if(oldMap) { oldMap.remove(); } 
+    
+    // 2. Creamos un contenedor puro y en blanco
+    let newMapDiv = document.createElement('div');
+    newMapDiv.id = 'leaflet-map';
+    newMapDiv.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
+    mapContainer.insertBefore(newMapDiv, mapContainer.firstChild);
+
+    // 3. Inicializamos Leaflet con coordenadas ultra precisas
+    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
+    L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
+}
+window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
+
 
 let selectedEl = null;
 const getHoverColor = (cls) => {
@@ -582,7 +584,10 @@ const getHoverColor = (cls) => {
     if(cls.includes('whatsapp')) return 'hover:text-[#25D366]';
     if(cls.includes('instagram')) return 'hover:text-[#E1306C]';
     if(cls.includes('facebook')) return 'hover:text-[#1877F2]';
-    if(cls.includes('tiktok')) return 'hover:text-white';
+    if(cls.includes('youtube')) return 'hover:text-[#FF0000]';
+    if(cls.includes('linkedin')) return 'hover:text-[#0A66C2]';
+    if(cls.includes('telegram')) return 'hover:text-[#229ED9]';
+    if(cls.includes('tiktok') || cls.includes('x-twitter')) return 'hover:text-white';
     return 'hover:text-cyan-400';
 };
 
@@ -595,10 +600,10 @@ window.addEventListener('message', async (event) => {
             if (!window.isAdminMode) return;
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
-            const navBtn = e.target.closest('button[onclick^="navigate("]');
-            if(navBtn) return;
+            // Protección contra botones de sistema
+            if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag')) return;
             
-            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section');
+            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, div');
             if (target && !target.closest('.ignore-drag')) {
                 e.preventDefault(); 
                 e.stopPropagation();
@@ -612,7 +617,10 @@ window.addEventListener('message', async (event) => {
 
         document.addEventListener('contextmenu', function(e) {
             if (!window.isAdminMode) return;
-            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section');
+            
+            if(e.target.closest('.ignore-drag')) return;
+            
+            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, div');
             if (target && !target.closest('.ignore-drag')) {
                 e.preventDefault(); 
                 e.stopPropagation();
@@ -631,22 +639,6 @@ window.addEventListener('message', async (event) => {
         window.renderProducts(); window.renderCourses();
     }
     
-    if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
-        const { prop, value } = event.data;
-        if(prop === 'color') { selectedEl.style.color = value; if(!value) selectedEl.style.removeProperty('color'); }
-        if(prop === 'bg') { selectedEl.style.backgroundColor = value; if(!value) selectedEl.style.removeProperty('background-color'); }
-        if(prop === 'radius') { selectedEl.style.borderRadius = value ? `${value}px` : ''; }
-        if(prop === 'hover') {
-            selectedEl.className = selectedEl.className.replace(/hover:.*?(?=\s|$)/g, '').trim();
-            if(value) selectedEl.className += ` ${value}`;
-        }
-    }
-
-    if (event.data.type === 'CLEAR_SELECTION') {
-        if(selectedEl) selectedEl.classList.remove('builder-selected-el');
-        selectedEl = null;
-    }
-
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
         const iconClass = event.data.iconClass;
         const hoverCls = getHoverColor(iconClass);
@@ -699,6 +691,17 @@ window.addEventListener('message', async (event) => {
             if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = event.data.href;
         }
     }
+    
+    // Panel de Estilos Visuales Pro (Colores, Background, Radius, Hover)
+    if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
+        if(event.data.prop === 'color') { selectedEl.style.color = event.data.value; }
+        if(event.data.prop === 'bg') { selectedEl.style.backgroundColor = event.data.value; }
+        if(event.data.prop === 'radius') { selectedEl.style.borderRadius = event.data.value + 'px'; }
+        if(event.data.prop === 'hover') {
+            selectedEl.className = selectedEl.className.replace(/hover:scale-\d+|hover:-translate-y-\d+|hover:shadow-\[[^\]]+\]|hover:opacity-\d+|transition-[a-z]+/g, '').trim();
+            if(event.data.value) selectedEl.className += ' ' + event.data.value;
+        }
+    }
 
     if (event.data.type === 'DELETE_SELECTED_NODE') {
         if(selectedEl) {
@@ -746,6 +749,13 @@ window.addEventListener('message', async (event) => {
         }
     }
 
+    if (event.data.type === 'CLEAR_SELECTION') {
+        if(selectedEl) {
+            selectedEl.classList.remove('builder-selected-el');
+            selectedEl = null;
+        }
+    }
+
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state;
         const containers = document.querySelectorAll('.sortable-zone');
@@ -762,6 +772,7 @@ window.addEventListener('message', async (event) => {
         }
     }
 
+    // 🟢 GUARADO LIMPIO DEL GPS
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) {
             window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = [];
@@ -776,7 +787,7 @@ window.addEventListener('message', async (event) => {
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
             clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = ''); 
 
-            // 🔥 LIMPIEZA ABSOLUTA: Destruimos el mapa de Leaflet en el código clonado antes de enviarlo a Firebase.
+            // DESTRUCCIÓN DEL MAPA ANTES DE GUARDAR
             const mapInClone = clone.querySelector('#leaflet-map');
             if(mapInClone) {
                 mapInClone.innerHTML = '';
@@ -807,6 +818,12 @@ window.openCourseModal = function(id) {
     document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc;
     document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; 
     document.getElementById('cm-image').src = c.image;
+    
+    // Auto-WhatsApp Link con número actual
+    let phoneEl = document.getElementById('contact-phone');
+    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    document.getElementById('cm-btn').href = `https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
+
     document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex');
     setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
 }
@@ -818,13 +835,16 @@ window.closeCourseModal = function() {
 window.openVideoModal = function(btn) {
     if(window.isAdminMode) return;
     
-    let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1";
-    let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo."';
+    let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4";
+    let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."';
     
     if (btn && typeof btn.closest === 'function') {
         const card = btn.closest('.video-testimonial-card');
         if (card) {
-            const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src;
+            const vidEl = card.querySelector('.vt-video'); 
+            // 🟢 SOLUCIÓN VIDEO MÓVIL: Eliminamos el #t=0.1 para que el celular no se congele
+            if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
+            
             const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
             const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
             const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
@@ -833,6 +853,7 @@ window.openVideoModal = function(btn) {
     
     const video = document.getElementById('testimonial-video');
     video.src = videoSrc;
+    
     document.getElementById('vm-name').innerText = name;
     document.getElementById('vm-role').innerText = role;
     document.getElementById('vm-quote').innerText = quote;
@@ -842,32 +863,23 @@ window.openVideoModal = function(btn) {
     modal.classList.remove('hidden'); modal.classList.add('flex');
     setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('videoModalContent').classList.remove('scale-95'); }, 10);
     
-    // Disparo inmediato para iOS / Android
-    video.play().catch(e => console.log('Auto-play bloqueado, requiere clic manual', e));
-    video.addEventListener('timeupdate', window.updateCinematicTime);
+    // 🟢 FORZAR REPRODUCCIÓN (MÓVIL FRIENDLY)
+    video.load(); 
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(error => { console.log("Autoplay móvil bloqueado. Se muestra botón nativo Play."); });
+    }
 }
 
 window.closeVideoModal = function() {
     const video = document.getElementById('testimonial-video');
-    video.removeEventListener('timeupdate', window.updateCinematicTime);
-    
     const modal = document.getElementById('videoModal');
     const content = document.getElementById('videoModalContent');
-    modal.classList.add('opacity-0'); content.classList.add('scale-95');
     
+    modal.classList.add('opacity-0'); content.classList.add('scale-95');
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
     video.pause();
-}
-
-window.updateCinematicTime = function() {
-    const video = document.getElementById('testimonial-video');
-    const timer = document.getElementById('vm-timer');
-    if(!video || !timer || isNaN(video.duration)) return;
-    
-    const remaining = Math.max(0, video.duration - video.currentTime);
-    const minutes = Math.floor(remaining / 60);
-    const seconds = Math.floor(remaining % 60).toString().padStart(2, '0');
-    timer.innerText = `-${minutes}:${seconds}`;
+    video.currentTime = 0; // Reiniciar video
 }
 
 window.openEditor = function(type, id) {
@@ -875,10 +887,10 @@ window.openEditor = function(type, id) {
     document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
     if(type === 'product') {
         const p = id ? window.appProducts.find(x => x.id === id) : {};
-        fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><option value="premium" ${p.category==='premium'?'selected':''}>Premium</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option><option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><input type="text" id="ef-img" value="${p.image||''}" placeholder="URL Imagen" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white">`;
+        fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><option value="premium" ${p.category==='premium'?'selected':''}>Premium</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option><option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><input type="text" id="ef-img" value="${p.image||''}" placeholder="URL Imagen" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag">`;
     } else {
         const c = id ? window.appCourses.find(x => x.id === id) : {};
-        fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><div class="flex gap-2 mb-2"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white"></div><input type="text" id="ef-img" value="${c.image||''}" placeholder="URL Imagen" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24">${c.desc||''}</textarea>`;
+        fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><div class="flex gap-2 mb-2 ignore-drag"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"></div><input type="text" id="ef-img" value="${c.image||''}" placeholder="URL Imagen" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24 ignore-drag">${c.desc||''}</textarea>`;
     }
     modal.classList.remove('hidden'); modal.classList.add('flex');
     setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
