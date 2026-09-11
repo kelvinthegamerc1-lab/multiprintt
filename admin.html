@@ -158,6 +158,7 @@
 
             <div id="inspector-tools" class="hidden flex-col gap-3">
                 
+                <!-- Navegador de Capas Estilo Elementor -->
                 <div class="bg-[#121215] border border-white/5 rounded-lg p-2.5 shadow-inner">
                     <div class="text-[9px] uppercase tracking-wider font-bold text-zinc-500 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-sitemap text-cyan-400"></i> Navegador de Capas</div>
                     <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap"></div>
@@ -180,6 +181,7 @@
                     </div>
                 </div>
 
+                <!-- Panel de Estilos Visuales Pro -->
                 <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5">
                     <div>
                         <label class="inspector-label">Color de Texto</label>
@@ -306,6 +308,7 @@
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
         const p = document.getElementById('loginPass').value;
+        // VALIDACIÓN LIMPIA DE USUARIO
         if(u === 'admin' && p === 'adminMultiprintt2026') {
             document.getElementById('auth-screen').style.opacity = '0';
             setTimeout(() => {
@@ -351,7 +354,7 @@
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
     function reloadIframe() {
-        resetBuilderUI();
+        resetBuilderUI(); // Limpia bugs fantasma de la UI
         const iframe = document.getElementById('site-frame');
         iframe.src = `https://multiprintt.web.app/index.html?v=${new Date().getTime()}`;
     }
