@@ -112,6 +112,7 @@ body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { 
 <div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
 
 <div class="fixed top-0 left-0 right-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+    <!-- El Header original (Este sí se sobrescribe si Firebase tiene un backup viejo) -->
     <header id="section-header" class="glass h-[56px] md:h-[64px] transition-all editable-section border-b border-white/5">
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
         <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
@@ -132,39 +133,52 @@ body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { 
         </nav>
 
         <div class="flex items-center relative">
-            <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
-            </div>
-            
-            <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
-                <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 px-[9px] whitespace-nowrap sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
-                    <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
-                    <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
-                    <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
-                </div>
+        <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
+            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
+            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
+            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
+            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+        </div>
+        
+        <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
+            <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 shadow-lg px-[9px] whitespace-nowrap sortable-zone">
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
+                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
+                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
+                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
             </div>
         </div>
       </div>
+      </div>
     </header>
 
-    <!-- Submenú Seamless Filtros: 34px en móvil, fuente minúscula y minimalista -->
-    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 overflow-x-auto hide-scrollbar transition-all duration-300">
-        <div class="flex items-center justify-start md:justify-center min-w-max md:min-w-0 w-full">
-            <button onclick="setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Más Vendidos</button>
-            <button onclick="setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Promocionales</button>
-            <button onclick="setFilter('textil')" id="filter-textil" class="filter-btn cat-textil h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Textil</button>
-            <button onclick="setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Jarros & Thermos</button>
-            <button onclick="setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Imp. General</button>
-            <button onclick="setFilter('packs')" id="filter-packs" class="filter-btn cat-packs h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Packs</button>
-        </div>
+    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden">
+      <div class="flex items-center justify-between md:justify-center w-full px-1 md:px-0">
+          <button onclick="setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
+              <span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span>
+          </button>
+          <button onclick="setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
+              <span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span>
+          </button>
+          <button onclick="setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
+              Textil
+          </button>
+          <button onclick="setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
+              <span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span>
+          </button>
+          <button onclick="setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
+              <span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span>
+          </button>
+          <button onclick="setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
+              Packs
+          </button>
+      </div>
     </div>
 </div>
 
 <main class="relative w-full h-[100dvh] overflow-hidden">
   
   <section id="view-catalog" class="view-slide active-slide slide-scroll">
-    <!-- ESPACIO DE RESPIRACIÓN APLICADO AQUÍ (pt-6 y pt-10) PARA EVITAR QUE JS LO BORRE -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex flex-col min-h-[calc(100vh-160px)] pt-6 md:pt-10 pb-24 md:pb-8">
         <div id="product-grid" class="w-full reveal show transition-all sortable-zone"></div>
     </div>
@@ -377,8 +391,8 @@ const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db =
 
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
 let editingCardNode = null; let currentVideoCardRef = null;
-const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
 
+const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
 const defaultProducts = [{id:'p1',name:'Fotocuadros',category:'mas-vendidos',price:25,image:'',icon:'fa-image'}];
 const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:""}];
 window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
@@ -395,15 +409,19 @@ window.navigate = function(targetId) {
             if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
         }
     });
+    
     const subnav = document.getElementById('catalog-subnav');
-    if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '40px'; subnav.style.opacity = '1'; } 
-    else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
+    if (subnav) {
+        if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '40px'; subnav.style.opacity = '1'; } 
+        else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
+    }
 };
 
 window.setFilter = function(filterStr) {
     window.currentFilter = filterStr;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active', 'font-bold'));
-    document.getElementById(`filter-${filterStr}`).classList.add('active', 'font-bold');
+    let activeBtn = document.getElementById(`filter-${filterStr}`);
+    if(activeBtn) activeBtn.classList.add('active', 'font-bold');
     window.renderProducts();
 };
 
@@ -473,7 +491,7 @@ async function loadFirebaseData() {
                         const newModalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
                         if(newModalContent) {
                             newModalContent.id = 'videoModalContent'; // Garantiza ID para panel admin
-                            newModalContent.classList.add('relative', 'w-[90vw]', 'max-w-[360px]', 'aspect-[9/16]', 'rounded-[24px]', 'overflow-hidden', 'mx-auto');
+                            newModalContent.classList.add('relative', 'w-[90vw]', 'max-w-[360px]', 'aspect-[9/16]', 'rounded-[24px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col');
                             newModalContent.style.webkitMaskImage = '-webkit-radial-gradient(white, black)';
                         }
                     }
@@ -491,7 +509,7 @@ async function loadFirebaseData() {
     } 
     finally {
         window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
-        try { window.setFilter('mas-vendidos'); window.renderCourses(); } catch(e) {}
+        try { window.setFilter('mas-vendidos'); window.renderCourses(); } catch(e) { console.error("Ignorando error de interfaz:", e); }
         
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
@@ -723,7 +741,6 @@ window.openCourseModal = function(id) {
     document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
 }
 
-// 🟢 FUNCIÓN RECUPERADA PARA CERRAR EL MODAL DE CURSO (Ver más)
 window.closeCourseModal = function() {
     const modal = document.getElementById('courseModal');
     const content = document.getElementById('courseModalContent');
