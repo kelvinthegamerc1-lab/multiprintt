@@ -4,13 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-
 <title>Multiprintt | Visual Builder Pro</title>
+
+<!-- Dependencias -->
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
+    /* Reset y Variables Globales */
     body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
     
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -19,27 +21,34 @@
     ::-webkit-scrollbar-thumb:hover { background: #555; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
 
+    /* Autenticación */
     #auth-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .glass-panel { background: #0e0e11; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
     
+    /* Layout Principal */
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-    .topbar { height: 54px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
-    .workspace { display: flex; flex: 1; overflow: hidden; }
     
+    /* Topbar */
+    .topbar { height: 54px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
+    
+    /* Espacio de Trabajo */
+    .workspace { display: flex; flex: 1; overflow: hidden; }
     .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     .sidebar-right { width: 320px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     
+    /* Canvas / Iframe */
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
     #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
     
     .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 8px !important; border: 1px solid rgba(255,255,255,0.1) !important; margin: 10px; }
     .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 16px; margin: auto; border: 10px solid #1a1a1a !important;}
     .device-mobile { width: 390px !important; height: 844px !important; border-radius: 36px; margin: auto; border: 12px solid #1a1a1a !important;}
-    
     #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit;}
     
+    /* Botones y UI */
     .device-btn { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #737373; transition: all 0.2s; cursor: pointer; font-size: 14px;}
     .device-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; }
+    #btn-mode-interact.active { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
     .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
 
     .tool-btn { background: #121215; border: 1px solid rgba(255,255,255,0.08); padding: 10px 14px; border-radius: 8px; color: #e5e5e5; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500;}
@@ -48,6 +57,7 @@
     .danger-btn { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; }
     .danger-btn:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; color: white;}
     
+    /* Panel de Inspector */
     .inspector-label { font-size: 10px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;}
     .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 12px; transition: 0.2s;}
     .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
@@ -56,6 +66,7 @@
     .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
     .color-picker::-webkit-color-swatch { border: none; border-radius: 4px; }
 
+    /* Modales y Utilidades */
     .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
     .icon-box { background: #121215; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 0; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px;}
     .icon-box i { font-size: 20px; color: #a3a3a3; transition: 0.2s;}
@@ -85,16 +96,32 @@
 </div>
 
 <div id="builder-ui">
+    
+    <!-- HEADER -->
     <header class="topbar">
         <div class="flex items-center gap-3">
             <div class="w-7 h-7 rounded bg-gradient-to-br from-pink-500 to-cyan-500 flex items-center justify-center text-black font-black text-xs">M</div>
             <span class="font-semibold text-xs tracking-wider text-zinc-300">MULTIPRINTT <span class="text-cyan-400 opacity-70">BUILDER</span></span>
         </div>
         
-        <div class="flex items-center bg-[#121215] border border-white/5 rounded-lg p-1 shadow-inner">
-            <button onclick="setDevice('desktop')" class="device-btn active" id="btn-desktop" title="Vista Escritorio"><i class="fa-solid fa-desktop"></i></button>
-            <button onclick="setDevice('tablet')" class="device-btn" id="btn-tablet" title="Vista Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button onclick="setDevice('mobile')" class="device-btn" id="btn-mobile" title="Vista Móvil"><i class="fa-solid fa-mobile-screen"></i></button>
+        <!-- SELECTORES DE MODO (CRÍTICO PARA INTERACTUAR CON BASE DE DATOS) -->
+        <div class="flex items-center gap-2">
+            <div class="flex items-center bg-[#121215] border border-white/5 rounded-lg p-1 shadow-inner">
+                <button onclick="setMode('edit')" class="device-btn active w-auto px-3 text-xs flex gap-2 items-center transition-all" id="btn-mode-edit" title="Diseño Visual">
+                    <i class="fa-solid fa-pen-ruler"></i> <span class="hidden md:inline">Diseño</span>
+                </button>
+                <button onclick="setMode('interact')" class="device-btn w-auto px-3 text-xs flex gap-2 items-center transition-all" id="btn-mode-interact" title="Usar los botones de la web">
+                    <i class="fa-solid fa-hand-pointer"></i> <span class="hidden md:inline">Navegar / Usar</span>
+                </button>
+            </div>
+            
+            <div class="w-[1px] h-5 bg-white/10 mx-1"></div>
+
+            <div class="flex items-center bg-[#121215] border border-white/5 rounded-lg p-1 shadow-inner">
+                <button onclick="setDevice('desktop')" class="device-btn active" id="btn-desktop" title="Vista Escritorio"><i class="fa-solid fa-desktop"></i></button>
+                <button onclick="setDevice('tablet')" class="device-btn" id="btn-tablet" title="Vista Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+                <button onclick="setDevice('mobile')" class="device-btn" id="btn-mobile" title="Vista Móvil"><i class="fa-solid fa-mobile-screen"></i></button>
+            </div>
         </div>
         
         <div class="flex items-center gap-3">
@@ -106,7 +133,9 @@
         </div>
     </header>
 
+    <!-- ÁREA DE TRABAJO -->
     <div class="workspace">
+        <!-- Barra Izquierda: Herramientas Globales -->
         <aside class="sidebar">
             <div class="panel-header"><i class="fa-solid fa-layer-group text-cyan-400"></i> Estructura y Movimiento</div>
             <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
@@ -116,10 +145,10 @@
             <div class="divider"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Bases de Datos Vivas</div>
-            <button onclick="showAlert('Navega al Catálogo en la vista central y haz clic en (+ Añadir Nuevo) para gestionar.')" class="tool-btn group">
+            <button onclick="activateInteractMode('productos')" class="tool-btn group">
                 <i class="fa-solid fa-box-open w-4 text-center text-zinc-400 group-hover:text-violet-400 transition-colors"></i> Gestor de Productos
             </button>
-            <button onclick="showAlert('Navega a Academia en la vista central y haz clic en (+ Añadir Curso) para gestionar.')" class="tool-btn group">
+            <button onclick="activateInteractMode('cursos')" class="tool-btn group">
                 <i class="fa-solid fa-graduation-cap w-4 text-center text-zinc-400 group-hover:text-yellow-400 transition-colors"></i> Gestor de Academia
             </button>
 
@@ -148,32 +177,32 @@
             </div>
         </main>
 
+        <!-- Barra Derecha: Inspector Visual -->
         <aside class="sidebar-right relative">
             <div class="panel-header"><i class="fa-solid fa-sliders text-cyan-400"></i> Propiedades Elemento</div>
             
             <div id="no-selection" class="text-[11px] text-zinc-500 text-center mt-8 border border-dashed border-white/10 rounded-lg p-6 bg-[#121215]">
                 <i class="fa-solid fa-mouse-pointer text-2xl mb-3 opacity-30 block"></i>
-                Selecciona un elemento en el lienzo (texto, imagen, botón o tarjeta) para editar sus propiedades aquí.
+                Selecciona cualquier elemento en el lienzo para editar sus propiedades.<br><br>
+                <span class="text-cyan-500">¿Quieres editar o borrar productos de la BD? Cambia al botón superior "Navegar / Usar"</span>
             </div>
 
             <div id="inspector-tools" class="hidden flex-col gap-3">
-                
                 <div class="bg-[#121215] border border-white/5 rounded-lg p-2.5 shadow-inner">
                     <div class="text-[9px] uppercase tracking-wider font-bold text-zinc-500 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-sitemap text-cyan-400"></i> Navegador de Capas</div>
                     <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap"></div>
                 </div>
 
                 <div class="flex w-full mt-1 bg-[#0a0a0c] p-1 rounded-lg border border-white/5">
-                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido</button>
+                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido / HTML</button>
                     <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all">Estilos CSS</button>
                 </div>
 
                 <div id="panel-content" class="flex flex-col gap-3">
                     <div id="prop-text-group">
-                        <label class="inspector-label">Texto Visible</label>
-                        <textarea id="prop-text" rows="3" class="inspector-input resize-none"></textarea>
+                        <label class="inspector-label">Texto Visible / HTML</label>
+                        <textarea id="prop-text" rows="4" class="inspector-input resize-y"></textarea>
                     </div>
-                    
                     <div id="prop-link-group" class="hidden">
                         <label class="inspector-label">Enlace o URL de Origen</label>
                         <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
@@ -201,13 +230,12 @@
                     </div>
                     <div class="divider"></div>
                     <div>
-                        <label class="inspector-label text-pink-400"><i class="fa-solid fa-bolt"></i> Interacción Hover (Animación)</label>
+                        <label class="inspector-label text-pink-400"><i class="fa-solid fa-bolt"></i> Interacción Hover</label>
                         <select id="prop-hover" class="inspector-input">
                             <option value="">Ninguno</option>
                             <option value="hover:scale-105 transition-transform duration-300">Aumento Suave (Zoom)</option>
                             <option value="hover:-translate-y-2 transition-transform duration-300">Flotar hacia Arriba</option>
                             <option value="hover:shadow-[0_0_30px_rgba(37,216,255,0.4)] transition-shadow">Resplandor Neón Cyan</option>
-                            <option value="hover:shadow-[0_0_30px_rgba(255,45,168,0.4)] transition-shadow">Resplandor Neón Rosa</option>
                             <option value="hover:opacity-70 transition-opacity">Difuminar Opacidad</option>
                         </select>
                     </div>
@@ -215,8 +243,11 @@
 
                 <div class="divider mt-2"></div>
                 
-                <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2">
-                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor
+                <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2" title="Selecciona la caja entera que contiene este elemento">
+                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor Padre
+                </button>
+                <button onclick="triggerSelectChild()" class="tool-btn w-full justify-center mb-2" title="Si seleccionaste la caja entera, baja a editar el botón/texto interior.">
+                    <i class="fa-solid fa-turn-down text-cyan-400"></i> Seleccionar Elemento Interno
                 </button>
                 <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
                     <i class="fa-solid fa-trash"></i> Eliminar Elemento
@@ -237,12 +268,12 @@
     <button onclick="ctxAction('selectParent')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
         <i class="fa-solid fa-turn-up w-3 text-center text-zinc-400"></i> Seleccionar Contenedor
     </button>
+    <button onclick="ctxAction('selectChild')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
+        <i class="fa-solid fa-turn-down w-3 text-center text-cyan-400"></i> Seleccionar Interno
+    </button>
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
     <button onclick="ctxAction('delete')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
         <i class="fa-solid fa-trash w-3 text-center"></i> Eliminar Elemento
-    </button>
-    <button onclick="ctxAction('deleteParent')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
-        <i class="fa-solid fa-object-ungroup w-3 text-center"></i> Eliminar Contenedor
     </button>
 </div>
 
@@ -252,12 +283,10 @@
             <h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Biblioteca de Iconos</h3>
             <button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-        
         <div class="mb-4 shrink-0 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i>
-            <input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono (ej. whatsapp, cart, user, facebook...)" class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner">
+            <input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono..." class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner">
         </div>
-        
         <div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div>
     </div>
 </div>
@@ -275,8 +304,11 @@
 </div>
 
 <script>
+    // Variables de Estado
     let dragEnabled = false;
+    let currentMode = 'edit'; // edit | interact
 
+    // Base de Datos de Iconos Ligera
     const iconDB = [
         { c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' },
         { c: 'fa-brands fa-tiktok', n: 'TikTok' }, { c: 'fa-brands fa-youtube', n: 'YouTube' }, { c: 'fa-brands fa-x-twitter', n: 'X Twitter' },
@@ -285,24 +317,7 @@
         { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-image', n: 'Imagen' }, { c: 'fa-solid fa-video', n: 'Video' }
     ];
 
-    function renderIcons(filter = "") {
-        const container = document.getElementById('icon-grid-container');
-        container.innerHTML = '';
-        const term = filter.toLowerCase();
-        const filtered = iconDB.filter(icon => icon.c.toLowerCase().includes(term) || icon.n.toLowerCase().includes(term));
-        if (filtered.length === 0) { container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">No se encontraron iconos.</div>'; return; }
-        filtered.forEach(icon => {
-            const div = document.createElement('div');
-            div.className = 'icon-box group relative';
-            div.onclick = () => sendSelectedIcon(icon.c);
-            div.innerHTML = `<i class="${icon.c}"></i><div class="absolute opacity-0 group-hover:opacity-100 bg-black/90 text-white text-[9px] px-2 py-1 rounded bottom-full mb-1 pointer-events-none transition-opacity whitespace-nowrap z-10 border border-white/10">${icon.n}</div>`;
-            container.appendChild(div);
-        });
-    }
-
-    function filterIcons() { renderIcons(document.getElementById('icon-search').value); }
-    renderIcons();
-
+    // Funciones de Login y Modales Globales
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
         const p = document.getElementById('loginPass').value;
@@ -350,16 +365,74 @@
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
+    // Control de Dispositivo y Recarga
     function reloadIframe() {
         resetBuilderUI(); 
+        setMode('edit'); 
         const iframe = document.getElementById('site-frame');
-        iframe.src = `https://multiprintt.web.app/index.html?v=${new Date().getTime()}`;
+        // Apuntamos al archivo local en lugar de la nube para poder probar los cambios en vivo.
+        // Nota: Asegúrate de que tu archivo de la web se llame exactamente "index.html" en tu carpeta.
+        iframe.src = `./index.html?v=${new Date().getTime()}`;
     }
 
     function setDevice(device) {
-        document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.device-btn').forEach(b => {
+            if(b.id.startsWith('btn-desktop') || b.id.startsWith('btn-tablet') || b.id.startsWith('btn-mobile')) {
+                b.classList.remove('active');
+            }
+        });
         document.getElementById('btn-' + device).classList.add('active');
         document.getElementById('preview-wrapper').className = `device-${device}`;
+    }
+
+    function setMode(mode) {
+        currentMode = mode;
+        // Actualizamos UI de botones superiores
+        document.getElementById('btn-mode-edit').classList.toggle('active', mode === 'edit');
+        document.getElementById('btn-mode-interact').classList.toggle('active', mode === 'interact');
+        
+        const iframe = document.getElementById('site-frame');
+        if (!iframe || !iframe.contentWindow) return;
+
+        if (mode === 'edit') {
+            // Activamos la capa visual protectora
+            iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+            
+            // Reactivamos el botón de Drag en la barra izquierda
+            document.getElementById('drag-btn').style.opacity = '1';
+            document.getElementById('drag-btn').style.pointerEvents = 'auto';
+        } else {
+            // MODO NAVEGACIÓN: LIMPIEZA PROFUNDA DE LA CAPA VISUAL
+            console.log("Activando Modo Interact. Enviando comandos de limpieza al iframe...");
+            
+            // 1. Limpiamos cualquier selección activa que esté bloqueando clics
+            iframe.contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*');
+            
+            // 2. Apagamos el motor del constructor dentro de la web
+            iframe.contentWindow.postMessage({ type: 'DISABLE_BUILDER' }, '*');
+            
+            // 3. Desactivamos el movimiento drag si estaba encendido
+            if (dragEnabled) toggleDraggable();
+            
+            // 4. Apagamos el botón de Drag en la interfaz
+            document.getElementById('drag-btn').style.opacity = '0.4';
+            document.getElementById('drag-btn').style.pointerEvents = 'none';
+            
+            // 5. Cerramos el panel derecho y menú contextual
+            resetPanelSelection();
+            document.getElementById('context-menu').classList.add('hidden');
+        }
+    }
+
+    function activateInteractMode(tipo) {
+        // Obligamos al sistema a soltar la página web por completo
+        setMode('interact');
+        
+        if(tipo === 'productos') {
+            showAlert('MODO NAVEGACIÓN ACTIVADO\n\nEl constructor visual se ha apagado temporalmente.\n\nNavega a la zona de Productos en la vista central; ahora podrás hacer clic libremente en "Editar" o "Borrar" para abrir los formularios reales de la Base de Datos.');
+        } else {
+            showAlert('MODO NAVEGACIÓN ACTIVADO\n\nEl constructor visual se ha apagado temporalmente.\n\nNavega a la zona de Academia en la vista central; ahora podrás hacer clic libremente en "Editar" o "Borrar" los cursos.');
+        }
     }
 
     function toggleDraggable() {
@@ -377,6 +450,7 @@
         }
     }
 
+    // Funciones del Panel y Comunicación
     function saveLayoutAndPositions() {
         const btn = document.querySelector('.fa-cloud-arrow-up').parentElement;
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
@@ -384,7 +458,7 @@
     }
 
     function resetLayout() {
-        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla guardada y cargará el código original. No afectará a la base de datos de productos ni cursos.", () => {
+        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla guardada. NO afectará a la base de datos de productos.", () => {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
         });
     }
@@ -392,17 +466,36 @@
     function resetBuilderUI() {
         dragEnabled = false;
         const btn = document.getElementById('drag-btn');
-        btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5';
-        btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>';
+        if(btn) {
+            btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5';
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>';
+        }
         resetPanelSelection();
         document.getElementById('context-menu').classList.add('hidden');
     }
+
+    // Iconos
+    function renderIcons(filter = "") {
+        const container = document.getElementById('icon-grid-container');
+        container.innerHTML = '';
+        const term = filter.toLowerCase();
+        const filtered = iconDB.filter(icon => icon.c.toLowerCase().includes(term) || icon.n.toLowerCase().includes(term));
+        if (filtered.length === 0) { container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">No se encontraron iconos.</div>'; return; }
+        filtered.forEach(icon => {
+            const div = document.createElement('div');
+            div.className = 'icon-box group relative';
+            div.onclick = () => sendSelectedIcon(icon.c);
+            div.innerHTML = `<i class="${icon.c}"></i><div class="absolute opacity-0 group-hover:opacity-100 bg-black/90 text-white text-[9px] px-2 py-1 rounded bottom-full mb-1 pointer-events-none transition-opacity whitespace-nowrap z-10 border border-white/10">${icon.n}</div>`;
+            container.appendChild(div);
+        });
+    }
+    function filterIcons() { renderIcons(document.getElementById('icon-search').value); }
+    renderIcons();
 
     function closeIconPicker() {
         document.getElementById('iconPickerModal').classList.add('hidden');
         document.getElementById('iconPickerModal').classList.remove('flex');
     }
-
     function sendSelectedIcon(iconClass) {
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'INSERT_ICON_GLOBAL', iconClass: iconClass }, '*');
         closeIconPicker();
@@ -411,8 +504,8 @@
     function ctxAction(action) {
         document.getElementById('context-menu').classList.add('hidden');
         if (action === 'delete') { triggerDeleteFromInspector(); } 
-        else if (action === 'deleteParent') { document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_PARENT_NODE' }, '*'); resetPanelSelection(); }
         else if (action === 'selectParent') { triggerSelectParent(); }
+        else if (action === 'selectChild') { triggerSelectChild(); }
         else if (action === 'edit') { switchTab('content'); document.getElementById('prop-text').focus(); }
     }
 
@@ -420,10 +513,8 @@
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_SELECTED_NODE' }, '*');
         resetPanelSelection();
     }
-
-    function triggerSelectParent() {
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*');
-    }
+    function triggerSelectParent() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*'); }
+    function triggerSelectChild() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_CHILD_NODE' }, '*'); }
 
     function resetPanelSelection() {
         document.getElementById('inspector-tools').style.display = 'none';
@@ -437,6 +528,7 @@
         document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
     }
 
+    // Listeners del Teclado y Click Fuera
     document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); } });
     window.addEventListener('blur', () => { document.getElementById('context-menu').classList.add('hidden'); });
 
@@ -451,6 +543,7 @@
         }
     });
 
+    // Actualizaciones en Tiempo Real
     function triggerStyleUpdate(prop, value) { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_STYLE', prop: prop, value: value }, '*'); }
     
     document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
@@ -458,17 +551,21 @@
     document.getElementById('prop-radius').addEventListener('input', (e) => triggerStyleUpdate('radius', e.target.value));
     document.getElementById('prop-hover').addEventListener('change', (e) => triggerStyleUpdate('hover', e.target.value));
 
-    const propText = document.getElementById('prop-text');
-    const propLink = document.getElementById('prop-link');
+    // AQUÍ SE USA GET_ELEMENT_BY_ID DIRECTAMENTE PARA NO PERDER LA REFERENCIA JAMÁS
+    document.getElementById('prop-text').addEventListener('input', (e) => { 
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: e.target.value }, '*'); 
+    });
+    document.getElementById('prop-link').addEventListener('input', (e) => { 
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: e.target.value }, '*'); 
+    });
 
-    propText.addEventListener('input', () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: propText.value }, '*'); });
-    propLink.addEventListener('input', () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: propLink.value }, '*'); });
+    const tagDictionary = { 'DIV': 'Contenedor', 'SECTION': 'Sección Completa', 'ARTICLE': 'Tarjeta', 'P': 'Párrafo', 'SPAN': 'Texto en línea', 'H1': 'Título Principal', 'H2': 'Subtítulo', 'H3': 'Encabezado', 'H4': 'Encabezado Pequeño', 'A': 'Botón / Enlace', 'IMG': 'Imagen', 'VIDEO': 'Reproductor', 'BUTTON': 'Botón', 'I': 'Icono Vectorial', 'NAV': 'Barra de Navegación' };
 
-    const tagDictionary = { 'DIV': 'Contenedor Libre', 'SECTION': 'Sección Completa', 'ARTICLE': 'Tarjeta', 'P': 'Párrafo', 'SPAN': 'Texto en línea', 'H1': 'Título Principal', 'H2': 'Subtítulo', 'H3': 'Encabezado', 'H4': 'Encabezado Pequeño', 'A': 'Botón / Enlace', 'IMG': 'Imagen', 'VIDEO': 'Reproductor de Video', 'BUTTON': 'Botón de Acción', 'I': 'Icono Vectorial', 'NAV': 'Barra de Navegación' };
-
+    // Escucha de Eventos desde el Iframe (Recibe mensajes sin crashear)
     window.addEventListener('message', (e) => {
         if(e.data.type === 'APP_READY') {
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+            // Mantiene el estado si se recarga la página interna
+            document.getElementById('site-frame').contentWindow.postMessage({ type: currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER' }, '*');
         }
         if(e.data.type === 'SAVE_DONE') {
             const btn = document.querySelector('.fa-spin').parentElement;
@@ -488,6 +585,7 @@
             document.getElementById('ctx-target-name').innerText = tagDictionary[e.data.tagName] || `<${e.data.tagName.toLowerCase()}>`;
             ctxMenu.classList.remove('hidden');
         }
+        
         if (e.data.type === 'HIDE_CONTEXT_MENU') { document.getElementById('context-menu').classList.add('hidden'); }
         
         if (e.data.type === 'ELEMENT_SELECTED') {
@@ -499,21 +597,18 @@
             const prettyName = tagDictionary[tag] || `<${tag.toLowerCase()}>`;
             document.getElementById('prop-breadcrumb').innerHTML = `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">${prettyName}</span>`;
 
-            if (tag === 'DIV' || tag === 'SECTION' || tag === 'ARTICLE' || tag === 'FORM' || tag === 'NAV') {
-                document.getElementById('prop-text-group').style.display = 'none';
-                document.getElementById('prop-link-group').style.display = 'none';
-                switchTab('style'); 
+            // SIEMPRE MOSTRAMOS LA CAJA DE TEXTO (Para editar contenido entero de DIVs/Tarjetas)
+            document.getElementById('prop-text-group').style.display = 'block';
+            document.getElementById('prop-text').value = e.data.text || '';
+
+            if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO' || tag === 'IFRAME') {
+                document.getElementById('prop-link-group').style.display = 'block';
+                document.getElementById('prop-link').value = e.data.href || '';
             } else {
-                document.getElementById('prop-text-group').style.display = 'block';
-                propText.value = e.data.text;
-                if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO' || tag === 'IFRAME') {
-                    document.getElementById('prop-link-group').style.display = 'block';
-                    propLink.value = e.data.href;
-                } else {
-                    document.getElementById('prop-link-group').style.display = 'none';
-                }
-                switchTab('content');
+                document.getElementById('prop-link-group').style.display = 'none';
             }
+            
+            switchTab('content');
         }
     });
 </script>
