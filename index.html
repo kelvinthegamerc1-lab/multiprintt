@@ -66,35 +66,27 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* 🛡️ BLINDAJE DE BOTONES ADMINISTRATIVOS: Desactivados para el público */
-body:not(.is-admin-session) .admin-tool,
-body:not(.is-admin-session) .admin-overlay,
-body:not(.is-admin-session) .admin-video-edit-overlay { 
-    display: none !important; 
-    opacity: 0 !important; 
-    pointer-events: none !important; 
-}
-
-/* BUILDER PRO - ESTILOS ACTIVOS SOLO EN MODO ADMIN */
+/* --- REGLAS ESTRICTAS DEL BUILDER --- */
+.admin-tool { display: none !important; }
 body.is-admin-session .admin-tool { display: flex !important; }
-body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
-body.builder-mode .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; z-index: 100; position: relative;}
-body.builder-mode a:hover, body.builder-mode video:hover, body.builder-mode img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
-body.builder-mode .ignore-drag { pointer-events: none !important; }
-body.builder-mode .builder-pointer-auto { pointer-events: auto !important; }
 
+body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
+body.builder-mode .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; }
+body.builder-mode a:hover, body.builder-mode video:hover, body.builder-mode img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
+
+/* Control inteligente de arrastre */
 body.dragging-active .sortable-zone > * { cursor: grab !important; }
 body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
 .sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
 
-/* 🛡️ CORRECCIÓN DE LA CAPA OSCURA: Deja pasar el ratón para poder arrastrar, pero los botones internos sí son clickeables */
-.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
-body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: none; }
+/* Control de Botones Administrativos (Hover y Clics reparados) */
+.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
+body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 .admin-video-edit-overlay { display: none; }
 body.is-admin-session .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
-body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: none; }
+body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
 body.is-admin-session .video-testimonial-card .vt-quote { display: block !important; position: relative; z-index: 40; pointer-events: auto; }
 
 body.builder-mode #videoModal { pointer-events: auto !important; }
@@ -137,12 +129,12 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
             <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
             <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
             <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
-            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors pointer-events-auto"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
         </div>
         
         <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
             <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 shadow-lg px-[9px] whitespace-nowrap sortable-zone">
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors pointer-events-auto shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
                 <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
                 <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
                 <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
@@ -215,7 +207,7 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
                 <div class="video-testimonial-card relative rounded-[20px] overflow-hidden bg-[#0e0e12] border border-cyan-400/40 shadow-[0_15px_40px_rgba(37,216,255,0.2)] group h-[280px] shrink-0 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(37,216,255,0.4)]" data-theme="cyan">
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" preload="metadata" playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-70 transition-opacity duration-500 group-hover:opacity-90"></video>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none"></div>
-                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/30 flex items-center justify-center text-cyan-400 text-xl z-20 pointer-events-auto cursor-pointer hover:bg-cyan-400 hover:text-black hover:scale-105 transition-all shadow-[0_0_15px_rgba(37,216,255,0.2)] ignore-drag outline-none">
+                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/30 flex items-center justify-center text-cyan-400 text-xl z-20 pointer-events-auto cursor-pointer hover:bg-cyan-400 hover:text-black hover:scale-105 transition-all shadow-[0_0_15px_rgba(37,216,255,0.2)] outline-none">
                         <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
                     </button>
                     <div class="absolute bottom-0 left-0 right-0 p-6 z-20 flex flex-col pointer-events-none">
@@ -223,12 +215,12 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
                         <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-bold uppercase tracking-[.2em] mb-1 pointer-events-auto w-max drop-shadow-md">Caso de Éxito</span>
                     </div>
                     <div class="admin-video-edit-overlay">
-                        <button onclick="openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 mb-4 flex items-center gap-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
+                        <button onclick="event.preventDefault(); event.stopPropagation(); openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 mb-4 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
                         <p data-editable="true" class="vt-quote hidden text-xs text-center text-white/90 p-4 border border-dashed border-white/40 rounded bg-black/50">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."</p>
                     </div>
                 </div>
 
-                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-zinc-600 rounded-[20px] flex items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag pointer-events-auto">
+                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-zinc-600 rounded-[20px] flex items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all">
                     <i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Video</span>
                 </button>
             </div>
@@ -258,7 +250,7 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
                     </div>
                 </div>
 
-                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-zinc-600 rounded-[20px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag pointer-events-auto">
+                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-zinc-600 rounded-[20px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all">
                     <i class="fa-solid fa-plus text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Texto</span>
                 </button>
             </div>
@@ -305,7 +297,7 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
                             <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></a>
                             <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></a>
                             <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-whatsapp pointer-events-none"></i></a>
-                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag pointer-events-auto"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors pointer-events-auto"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
                         </div>
                     </div>
                 </div>
@@ -351,9 +343,8 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
   </div>
 </div>
 
-<!-- 🛡️ MODAL TESTIMONIAL 100% BLINDADO Y EDITABLE -->
+<!-- 🟢 POP-UP DE TESTIMONIO 100% LIBRE PARA DISEÑO Y EDICIÓN -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500">
-    
     <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] aspect-[9/16] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto" data-theme="cyan">
         
         <button onclick="closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all outline-none shadow-lg">
@@ -364,18 +355,18 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
             <span id="vm-time">00:00</span>
         </div>
 
-        <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"></video>
+        <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
         
-        <div id="vm-gradient" data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10"></div>
+        <div id="vm-gradient" data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 pointer-events-none"></div>
         
-        <div id="vm-text-zone" data-editable="true" class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12">
+        <div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12">
             <i id="vm-quote-icon" data-editable="true" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1"></i>
             <div class="overflow-y-auto hide-scrollbar max-h-[160px] mb-4">
                 <p id="vm-quote" data-editable="true" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1">"..."</p>
             </div>
             <div class="border-t border-white/10 pt-4 shrink-0 flex items-center gap-4">
                 <div id="vm-avatar-container" data-editable="true" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300">
-                    <span class="font-bold text-sm text-cyan-400" id="vm-initial">C</span>
+                    <span class="font-bold text-sm text-cyan-400" id="vm-initial" data-editable="true">C</span>
                 </div>
                 <div class="flex flex-col justify-center">
                     <h4 id="vm-name" data-editable="true" class="text-white text-sm font-bold tracking-wide drop-shadow-sm">Carlos P.</h4>
@@ -427,7 +418,6 @@ window.navigate = function(targetId) {
     });
 };
 
-/* 🟢 SIEMPRE IMPRIMIMOS EL HTML DE EDICIÓN: El CSS se encarga de ocultarlos a los clientes */
 window.renderProducts = function(){
     const grid = document.getElementById('product-grid'); 
     if(!grid) return;
@@ -450,13 +440,13 @@ window.renderProducts = function(){
         const wa=`https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
         const art = p.image ? `<img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500 drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
         
-        // 🟢 Códgio de edición permanente (El CSS se encarga del resto)
-        let adminHtml = `<div class="admin-overlay"><button onclick="openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>`;
-        
-        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-star text-[#ffd84d]"></i> Premium</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold hover:bg-[#25d366] hover:text-black transition-colors pointer-events-auto ignore-drag">Pedir</a></div></div></article>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="event.preventDefault(); event.stopPropagation(); openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto shadow-lg"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.preventDefault(); event.stopPropagation(); deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto shadow-lg"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/20"><div class="absolute w-[150%] h-[150%] opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 60%);"></div>${art}<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/80 font-bold bg-[#101014]/90 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-star text-[#ffd84d]"></i> Premium</span></div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2">${p.name}</h3><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors">Pedir</a></div></div></article>`;
     });
 
-    grid.innerHTML += `<button onclick="openEditor('product', null)" class="admin-tool min-h-[220px] border-2 border-dashed border-zinc-600 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-cyan-400 hover:text-cyan-400 cursor-pointer transition-all ignore-drag w-full h-full pointer-events-auto"><i class="fa-solid fa-plus text-3xl mb-2 pointer-events-none"></i> <span class="pointer-events-none text-xs">Añadir Producto</span></button>`;
+    if(window.isAdminMode) {
+        grid.innerHTML += `<button onclick="openEditor('product', null)" class="admin-tool min-h-[220px] border-2 border-dashed border-zinc-600 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-cyan-400 hover:text-cyan-400 cursor-pointer transition-all w-full h-full pointer-events-auto"><i class="fa-solid fa-plus text-3xl mb-2 pointer-events-none"></i> <span class="pointer-events-none text-xs">Añadir Producto</span></button>`;
+    }
 }
 
 window.renderCourses = function(){
@@ -469,11 +459,13 @@ window.renderCourses = function(){
     safeCourses.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     
     safeCourses.forEach((c)=>{
-        let adminHtml = `<div class="admin-overlay"><button onclick="openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>`;
-        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold transition-colors hover:bg-white hover:text-black pointer-events-auto ignore-drag">Ver más</button></div></div></article>`;
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay"><button onclick="event.preventDefault(); event.stopPropagation(); openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto shadow-lg"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.preventDefault(); event.stopPropagation(); deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto shadow-lg"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black">Ver más</button></div></div></article>`;
     });
 
-    grid.innerHTML += `<button onclick="openEditor('course', null)" class="admin-tool min-h-[220px] border-2 border-dashed border-zinc-600 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-yellow-400 hover:text-yellow-400 cursor-pointer transition-all ignore-drag w-full h-full pointer-events-auto"><i class="fa-solid fa-plus text-3xl mb-2 pointer-events-none"></i> <span class="pointer-events-none text-xs">Añadir Curso</span></button>`;
+    if(window.isAdminMode) {
+        grid.innerHTML += `<button onclick="openEditor('course', null)" class="admin-tool min-h-[220px] border-2 border-dashed border-zinc-600 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-yellow-400 hover:text-yellow-400 cursor-pointer transition-all w-full h-full pointer-events-auto"><i class="fa-solid fa-plus text-3xl mb-2 pointer-events-none"></i> <span class="pointer-events-none text-xs">Añadir Curso</span></button>`;
+    }
 }
 
 window.cloneTextTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.card:not(.admin-tool)'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
@@ -562,38 +554,35 @@ window.applyThemeSwap = function(element, newThemeKey) {
     element.setAttribute('data-theme', newThemeKey);
 }
 
-// 🛡️ Filtro XSS Estricto
-function sanitizeLink(url) {
-    if(!url) return '';
-    const badProtocols = ['javascript:', 'data:text/html', 'vbscript:'];
-    let lowerUrl = url.toLowerCase().trim();
-    for (let p of badProtocols) { if (lowerUrl.startsWith(p)) return '#bloqueado_por_seguridad'; }
-    return url;
-}
-
 let selectedEl = null;
 
 window.addEventListener('message', async (event) => {
-    // 🛡️ BLOQUEO CRUZADO: Solo el panel padre puede enviar mensajes
-    if (event.source !== window.parent) return; 
+    
+    // 🛡️ Filtro de seguridad obligatorio
+    if (event.source !== window.parent) return;
 
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
+        window.renderProducts(); window.renderCourses();
         
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode')) return;
             
-            // 🟢 LÓGICA ANTI-AGLOMERACIÓN: Si estás moviendo tarjetas, APAGAR SELECCIÓN para no estropear el click!
-            if (document.body.classList.contains('dragging-active')) { return; }
-
+            // 🔥 Cortocircuito de seguridad: Si estamos arrastrando cosas, APAGAR el selector de diseño.
+            if (document.body.classList.contains('dragging-active')) return; 
+            
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
-            // Permitir botones naturales y de edición funcionar sin ser seleccionados
-            if(e.target.closest('button[onclick^="navigate("]') || (e.target.closest('.ignore-drag') && !e.target.closest('.builder-pointer-auto'))) return;
+            // No intervenir si se da clic a los botones administrativos (Editar/Borrar)
+            if(e.target.closest('.admin-tool') || e.target.closest('.admin-overlay button')) return;
             
-            let target = e.target.closest('[data-editable="true"], .card, section, article, a, button, p, h1, h2, h3, h4, span, img, video, i, #vm-gradient');
+            // No intervenir en los botones nativos de navegación
+            if(e.target.closest('button[onclick^="navigate("]')) return;
             
-            if (target && !target.closest('.admin-overlay')) {
+            // Selector ajustado: Ahora puede seleccionar cualquier elemento que tenga data-editable="true" (incluso en el modal)
+            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, p, h1, h2, h3, h4, span, i');
+            
+            if (target) {
                 e.preventDefault(); e.stopPropagation();
                 if(selectedEl) selectedEl.classList.remove('builder-selected-el');
                 selectedEl = target; selectedEl.classList.add('builder-selected-el');
@@ -620,6 +609,7 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'DISABLE_BUILDER') {
         window.isAdminMode = false;
         document.body.classList.remove('is-admin-session', 'builder-mode');
+        window.renderProducts(); window.renderCourses(); // Re-render sin html de botones admin
         if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
         window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
     }
@@ -628,14 +618,9 @@ window.addEventListener('message', async (event) => {
         if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); }
     }
     
-    // 🛡️ Recepción de Comandos (Blindada con InnerText en lugar de InnerHTML)
     if (event.data.type === 'UPDATE_ELEMENT' && selectedEl) {
         if(event.data.text !== undefined && selectedEl.tagName !== 'IMG' && selectedEl.tagName !== 'VIDEO') { let icon = selectedEl.querySelector('i'); selectedEl.innerText = event.data.text; if(icon) selectedEl.prepend(icon); }
-        if(event.data.href !== undefined) { 
-            let safeHref = sanitizeLink(event.data.href);
-            if(selectedEl.tagName === 'A') selectedEl.href = safeHref; 
-            if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = safeHref; 
-        }
+        if(event.data.href !== undefined) { if(selectedEl.tagName === 'A') selectedEl.href = event.data.href; if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = event.data.href; }
     }
     
     if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
@@ -667,20 +652,11 @@ window.addEventListener('message', async (event) => {
         }
     }
 
-    if (event.data.type === 'SELECT_PARENT_NODE' && selectedEl) {
-        let parent = selectedEl.parentElement.closest('[data-editable="true"], .card, section, article, div:not(.ignore-drag)');
-        if(parent && parent !== selectedEl) { selectedEl.classList.remove('builder-selected-el'); selectedEl = parent; selectedEl.classList.add('builder-selected-el'); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: selectedEl.tagName, text: selectedEl.innerText || '', href: selectedEl.href || selectedEl.src || ''}, '*'); }
-    }
-    if (event.data.type === 'SELECT_CHILD_NODE' && selectedEl) {
-        let child = selectedEl.querySelector('[data-editable="true"], a, button, p, h1, h2, h3, h4, span, img, video, i, #vm-gradient');
-        if(child && child !== selectedEl) { selectedEl.classList.remove('builder-selected-el'); selectedEl = child; selectedEl.classList.add('builder-selected-el'); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: selectedEl.tagName, text: selectedEl.innerText || '', href: selectedEl.href || selectedEl.src || ''}, '*'); }
-    }
-
     if (event.data.type === 'DELETE_SELECTED_NODE') { if(selectedEl) { selectedEl.remove(); selectedEl = null; } }
     
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
-        if (enabled) { document.body.classList.add('dragging-active'); containers.forEach(grid => { if(grid._sortable) grid._sortable.destroy(); grid._sortable = new Sortable(grid, { animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool' }); window.sortableInstances.push(grid._sortable); }); } 
+        if (enabled) { document.body.classList.add('dragging-active'); containers.forEach(grid => { if(grid._sortable) grid._sortable.destroy(); grid._sortable = new Sortable(grid, { animation: 200, ghostClass: 'sortable-ghost', filter: '.admin-tool' }); window.sortableInstances.push(grid._sortable); }); } 
         else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
 
@@ -695,8 +671,6 @@ window.addEventListener('message', async (event) => {
             
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            
-            // NO limpiamos los inline styles en este código porque contienen las valiosas reglas de posicionamiento y tamaño de los usuarios.
             
             const mapInClone = clone.querySelector('#leaflet-map'); 
             if(mapInClone) { 
@@ -719,15 +693,14 @@ window.addEventListener('message', async (event) => {
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
 
-        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true }); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); } catch(e) { window.parent.postMessage({ type: 'SAVE_ERROR', message: e.message }, '*'); }
-    }
-    
-    // 🛡️ Limpieza total para Restaurar
-    if (event.data.type === 'RESET_LAYOUT') {
-        try {
-            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: null, prodOrder: [], courseOrder: [] }, { merge: true });
-            window.parent.postMessage({ type: 'RESET_DONE' }, '*');
-        } catch(e) { console.error(e); }
+        // 🔥 CORRECCIÓN DEL GUARDADO: Ahora SÍ avisará si Firebase lo rechaza.
+        try { 
+            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true });
+            window.parent.postMessage({ type: 'SAVE_DONE' }, '*');
+        } catch(e) {
+            console.error("Fallo crítico al guardar en BD:", e);
+            window.parent.postMessage({ type: 'SAVE_ERROR', message: e.message }, '*'); 
+        }
     }
 });
 
@@ -747,9 +720,15 @@ window.openMediaSelector = async function(type) {
         try { 
             const response = await fetch(`${baseUrl}${jsonName}?v=${new Date().getTime()}`); 
             if (!response.ok) throw new Error("HTTP " + response.status); 
+            
             const rawText = await response.text();
-            try { fileNames = JSON.parse(rawText); } catch (parseError) { grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20 p-4"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold text-center">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">Revisa que no hayan comas extra al final de tu lista, o comillas simples.</p></div>`; return; }
-        } catch(e) { grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p>No se encontró el archivo.</p></div>`; return; }
+            try { fileNames = JSON.parse(rawText); } 
+            catch (parseError) {
+                grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20 p-4"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold text-center">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">Revisa que no hayan comas extra al final de tu lista, o comillas simples.</p></div>`;
+                return;
+            }
+        } 
+        catch(e) { grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p>No se encontró el archivo.</p></div>`; return; }
     }
 
     grid.innerHTML = '';
@@ -764,7 +743,15 @@ window.openMediaSelector = async function(type) {
             box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`;
             box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); };
         } else {
-            box.innerHTML = `<div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div><div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10"><img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500"></div><div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0"><p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${nombre}</p></div>`; 
+            box.innerHTML = `
+                <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div>
+                <div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10">
+                    <img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500">
+                </div>
+                <div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0">
+                    <p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${nombre}</p>
+                </div>
+            `; 
         }
         grid.appendChild(box);
     });
@@ -778,45 +765,115 @@ window.selectMedia = function(url) {
 }
 
 window.openEditor = function(type, id, btnNode) {
-    const modal = document.getElementById('editModal'); const fields = document.getElementById('em-fields'); document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
-    if(type === 'product') { const p = id ? window.appProducts.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><option value="premium" ${p.category==='premium'?'selected':''}>Premium</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option><option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><button onclick="openMediaSelector('product')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${p.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center" style="background-image: url('${p.image||''}')"></div>`; } 
-    else if (type === 'course') { const c = id ? window.appCourses.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><div class="flex gap-2 mb-2"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white"></div><button onclick="openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${c.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2" style="background-image: url('${c.image||''}')"></div><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24">${c.desc||''}</textarea>`; }
-    else if (type === 'testimonial') { if(btnNode) { const card = btnNode.closest('.video-testimonial-card'); editingCardNode = card; if(card) { const vid = card.querySelector('.vt-video') ? card.querySelector('.vt-video').src.split('#')[0] : ''; const name = card.querySelector('.vt-name') ? card.querySelector('.vt-name').innerText : ''; const role = card.querySelector('.vt-role') ? card.querySelector('.vt-role').innerText : ''; const quote = card.querySelector('.vt-quote') ? card.querySelector('.vt-quote').innerText : ''; fields.innerHTML = `<input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2"><textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2">${quote}</textarea><button onclick="openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button><input type="hidden" id="ef-img" value="${vid}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>`; } } }
-    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
+    try {
+        const modal = document.getElementById('editModal'); 
+        const fields = document.getElementById('em-fields'); 
+        document.getElementById('em-id').value = id || ''; 
+        document.getElementById('em-type').value = type;
+        
+        if(type === 'product') { 
+            const p = id ? (window.appProducts.find(x => String(x.id) === String(id)) || {}) : {}; 
+            fields.innerHTML = `
+                <input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2">
+                <select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2">
+                    <option value="premium" ${p.category==='premium'?'selected':''}>Premium</option>
+                    <option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option>
+                    <option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option>
+                </select>
+                <input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2">
+                <button onclick="event.preventDefault(); openMediaSelector('product')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button>
+                <input type="hidden" id="ef-img" value="${p.image||''}">
+                <div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center" style="background-image: url('${p.image||''}')"></div>
+            `; 
+        } 
+        else if (type === 'course') { 
+            const c = id ? (window.appCourses.find(x => String(x.id) === String(id)) || {}) : {}; 
+            fields.innerHTML = `
+                <input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2">
+                <div class="flex gap-2 mb-2">
+                    <input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white">
+                    <input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white">
+                </div>
+                <button onclick="event.preventDefault(); openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button>
+                <input type="hidden" id="ef-img" value="${c.image||''}">
+                <div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2" style="background-image: url('${c.image||''}')"></div>
+                <textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24">${c.desc||''}</textarea>
+            `; 
+        }
+        else if (type === 'testimonial') { 
+            if(btnNode) { 
+                const card = btnNode.closest('.video-testimonial-card'); 
+                editingCardNode = card; 
+                if(card) { 
+                    const vidEl = card.querySelector('.vt-video'); const vid = vidEl ? vidEl.src.split('#')[0] : ''; 
+                    const nameEl = card.querySelector('.vt-name'); const name = nameEl ? nameEl.innerText : ''; 
+                    const roleEl = card.querySelector('.vt-role'); const role = roleEl ? roleEl.innerText : ''; 
+                    const quoteEl = card.querySelector('.vt-quote'); const quote = quoteEl ? quoteEl.innerText : ''; 
+                    fields.innerHTML = `
+                        <input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2">
+                        <input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2">
+                        <textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2">${quote}</textarea>
+                        <button onclick="event.preventDefault(); openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button>
+                        <input type="hidden" id="ef-img" value="${vid}">
+                        <div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>
+                    `; 
+                } 
+            } 
+        }
+        modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
+    } catch (err) {
+        console.error(err);
+        window.parent.postMessage({ type: 'SHOW_ALERT', msg: "Error al abrir el editor: " + err.message }, '*');
+    }
 }
 
 window.closeEditModal = function() { document.getElementById('editModal').classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editModal').classList.remove('flex'); editingCardNode = null; }, 300); }
 window.saveElementEdit = async function() {
-    const type = document.getElementById('em-type').value; 
-    if (type === 'testimonial' && editingCardNode) {
-        if(editingCardNode.querySelector('.vt-video')) editingCardNode.querySelector('.vt-video').src = document.getElementById('ef-img').value;
-        if(editingCardNode.querySelector('.vt-name')) editingCardNode.querySelector('.vt-name').innerText = document.getElementById('ef-name').value;
-        if(editingCardNode.querySelector('.vt-role')) editingCardNode.querySelector('.vt-role').innerText = document.getElementById('ef-role').value;
-        if(editingCardNode.querySelector('.vt-quote')) editingCardNode.querySelector('.vt-quote').innerText = document.getElementById('ef-desc').value;
-        closeEditModal(); return;
+    try {
+        const type = document.getElementById('em-type').value; 
+        if (type === 'testimonial' && editingCardNode) {
+            if(editingCardNode.querySelector('.vt-video')) editingCardNode.querySelector('.vt-video').src = document.getElementById('ef-img').value;
+            if(editingCardNode.querySelector('.vt-name')) editingCardNode.querySelector('.vt-name').innerText = document.getElementById('ef-name').value;
+            if(editingCardNode.querySelector('.vt-role')) editingCardNode.querySelector('.vt-role').innerText = document.getElementById('ef-role').value;
+            if(editingCardNode.querySelector('.vt-quote')) editingCardNode.querySelector('.vt-quote').innerText = document.getElementById('ef-desc').value;
+            closeEditModal(); return;
+        }
+        
+        const id = document.getElementById('em-id').value || Date.now().toString(); 
+        const collectionName = type === 'product' ? 'products' : 'courses'; 
+        let data = {};
+        
+        if(type === 'product') data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, price: parseFloat(document.getElementById('ef-price').value||0), image: document.getElementById('ef-img').value };
+        else data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
+        
+        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id), data, { merge: true }); 
+        closeEditModal(); 
+        loadFirebaseData();
+        window.parent.postMessage({ type: 'SHOW_ALERT', msg: "El elemento fue guardado correctamente en Firestore." }, '*');
+    } catch (err) {
+        console.error(err);
+        window.parent.postMessage({ type: 'SHOW_ALERT', msg: "Fallo al guardar en Firestore: " + err.message }, '*');
     }
-    const id = document.getElementById('em-id').value || Date.now().toString(); const collectionName = type === 'product' ? 'products' : 'courses'; let data = {};
-    if(type === 'product') data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, price: parseFloat(document.getElementById('ef-price').value||0), image: document.getElementById('ef-img').value };
-    else data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
-    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id), data, { merge: true }); closeEditModal(); loadFirebaseData();
 }
 
 window.deleteElement = function(type, id) {
     const modal = document.getElementById('custom-confirm-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('custom-confirm-content').classList.remove('scale-95'); }, 10);
     const confirmBtn = document.getElementById('custom-confirm-btn');
-    confirmBtn.onclick = async function() { window.closeCustomConfirm(); await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', type === 'product' ? 'products' : 'courses', id)); loadFirebaseData(); };
+    confirmBtn.onclick = async function() { 
+        window.closeCustomConfirm(); 
+        try {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', type === 'product' ? 'products' : 'courses', id)); 
+            loadFirebaseData(); 
+        } catch(err) {
+            window.parent.postMessage({ type: 'SHOW_ALERT', msg: "Error al borrar: " + err.message }, '*');
+        }
+    };
 }
 window.closeCustomConfirm = function() { const modal = document.getElementById('custom-confirm-modal'); modal.classList.add('opacity-0'); document.getElementById('custom-confirm-content').classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
 
-window.closeCourseModal = function() {
-    const modal = document.getElementById('courseModal'); const content = document.getElementById('courseModalContent');
-    modal.classList.add('opacity-0'); content.classList.add('scale-95');
-    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-}
-
 window.openCourseModal = function(id) {
     if(document.body.classList.contains('builder-mode')) return;
-    const c = window.appCourses.find(x => x.id === id); if(!c) return;
+    const c = window.appCourses.find(x => String(x.id) === String(id)); if(!c) return;
     document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc;
     document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
@@ -824,76 +881,77 @@ window.openCourseModal = function(id) {
     document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
 }
 
-// 🟢 MODAL TESTIMONIAL LIBERADO PARA EDICIÓN
+// 🟢 MODAL TESTIMONIOS: 100% BLINDADO ANTE NULOS
 window.openVideoModal = function(btn) {
     if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
     
     let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4"; 
     let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."'; let themeKey = "cyan"; 
     
-    if (btn && typeof btn.closest === 'function') {
-        const card = btn.closest('.video-testimonial-card, .card');
-        if (card) {
-            themeKey = card.getAttribute('data-theme') || "cyan";
-            const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
-            const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
-            const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
-            const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
+    try {
+        if (btn && typeof btn.closest === 'function') {
+            const card = btn.closest('.video-testimonial-card, .card');
+            if (card) {
+                themeKey = card.getAttribute('data-theme') || "cyan";
+                const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
+                const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
+                const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
+                const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
+            }
         }
-    }
-    
-    const video = document.getElementById('testimonial-video'); 
-    
-    if(document.getElementById('vm-name')) document.getElementById('vm-name').innerText = name; 
-    if(document.getElementById('vm-role')) document.getElementById('vm-role').innerText = role; 
-    if(document.getElementById('vm-quote')) document.getElementById('vm-quote').innerText = quote; 
-    if(document.getElementById('vm-initial')) document.getElementById('vm-initial').innerText = name ? name.charAt(0) : 'C';
-    
-    const modalContent = document.getElementById('videoModalContent'); 
-    applyThemeSwap(modalContent, themeKey);
-    
-    const modal = document.getElementById('videoModal'); 
-    
-    // Si guardaste el modal con Opacidad 0, lo forzamos a mostrarse cuando se llama la función
-    if(modalContent.style.opacity === "0" || modalContent.style.opacity === "0%") {
-        modalContent.style.opacity = "1";
-    }
+        
+        const video = document.getElementById('testimonial-video'); 
+        
+        // Protecciones Estrictas contra Null (evita que Javascript se rompa y no abra el modal)
+        if(document.getElementById('vm-name')) document.getElementById('vm-name').innerText = name; 
+        if(document.getElementById('vm-role')) document.getElementById('vm-role').innerText = role; 
+        if(document.getElementById('vm-quote')) document.getElementById('vm-quote').innerText = quote; 
+        if(document.getElementById('vm-initial')) document.getElementById('vm-initial').innerText = name ? name.charAt(0) : 'C';
+        
+        const modalContent = document.getElementById('videoModalContent'); 
+        if(modalContent) applyThemeSwap(modalContent, themeKey);
+        
+        const modal = document.getElementById('videoModal'); 
+        modal.classList.remove('hidden'); 
+        modal.classList.add('flex'); 
+        setTimeout(() => { modal.classList.remove('opacity-0'); if(modalContent) modalContent.classList.remove('scale-95'); }, 10);
+        
+        const timeBadge = document.getElementById('vm-time');
+        if(timeBadge) timeBadge.innerText = "00:00"; 
+        
+        if(video) {
+            video.ontimeupdate = () => {
+                if(video.duration && timeBadge) {
+                    let remaining = Math.max(0, video.duration - video.currentTime);
+                    let mins = Math.floor(remaining / 60);
+                    let secs = Math.floor(remaining % 60);
+                    timeBadge.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            };
 
-    modal.classList.remove('hidden'); 
-    modal.classList.add('flex'); 
-    setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('scale-95'); }, 10);
-    
-    const timeBadge = document.getElementById('vm-time');
-    if(timeBadge) timeBadge.innerText = "00:00"; 
-    
-    video.ontimeupdate = () => {
-        if(video.duration && timeBadge) {
-            let remaining = Math.max(0, video.duration - video.currentTime);
-            let mins = Math.floor(remaining / 60);
-            let secs = Math.floor(remaining % 60);
-            timeBadge.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            video.src = videoSrc; 
+            video.load(); 
+            video.currentTime = 0; 
+            video.muted = false; 
+            
+            const playPromise = video.play(); 
+            if (playPromise !== undefined) { 
+                playPromise.catch((err) => { 
+                    video.muted = true; 
+                    video.play(); 
+                }); 
+            }
+
+            if(!window.isAdminMode) { 
+                video.loop = false; 
+                video.onended = () => closeVideoModal(); 
+            } else { 
+                video.loop = true; 
+            } 
         }
-    };
-
-    video.src = videoSrc; 
-    video.load(); 
-    video.currentTime = 0; 
-    video.muted = false; 
-    
-    const playPromise = video.play(); 
-    if (playPromise !== undefined) { 
-        playPromise.catch((err) => { 
-            video.muted = true; 
-            video.play(); 
-        }); 
+    } catch(err) {
+        console.error("Error abriendo video modal:", err);
     }
-
-    if(!window.isAdminMode) { 
-        video.loop = false; 
-        video.onended = () => closeVideoModal(); 
-    } else { 
-        video.loop = true; 
-    } 
 }
 
 window.closeVideoModal = function(e) {
@@ -902,14 +960,11 @@ window.closeVideoModal = function(e) {
     const modal = document.getElementById('videoModal'); 
     const content = document.getElementById('videoModalContent');
     
-    modal.classList.add('opacity-0'); 
-    content.classList.add('scale-95'); 
+    if(modal) modal.classList.add('opacity-0'); 
+    if(content) content.classList.add('scale-95'); 
     setTimeout(() => { 
-        modal.classList.add('hidden'); 
-        modal.classList.remove('flex'); 
-        video.pause(); 
-        video.currentTime = 0; 
-        video.src = ""; 
+        if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+        if(video) { video.pause(); video.currentTime = 0; video.src = ""; }
     }, 300); 
 }
 
