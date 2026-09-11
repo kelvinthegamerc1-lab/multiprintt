@@ -108,12 +108,6 @@
 
     <div class="workspace">
         <aside class="sidebar">
-            <div class="panel-header"><i class="fa-solid fa-hand-pointer text-cyan-400"></i> Modo de Puntero</div>
-            <div class="flex gap-2 bg-[#121215] p-1 rounded-lg border border-white/5 shadow-inner mb-4">
-                <button onclick="setPointerMode('build')" id="btn-mode-build" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all"><i class="fa-solid fa-pen-nib"></i> Diseñar</button>
-                <button onclick="setPointerMode('interact')" id="btn-mode-interact" class="flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all"><i class="fa-solid fa-share-square"></i> Navegar (Clics)</button>
-            </div>
-
             <div class="panel-header"><i class="fa-solid fa-layer-group text-cyan-400"></i> Estructura y Movimiento</div>
             <button onclick="toggleDraggable()" class="tool-btn" id="drag-btn">
                 <i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>
@@ -122,10 +116,10 @@
             <div class="divider"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Bases de Datos Vivas</div>
-            <button onclick="showAlert('Activa el [Modo Navegar] arriba, ve al Catálogo en la vista central y gestiona libremente tus botones.')" class="tool-btn group">
+            <button onclick="showAlert('Navega al Catálogo en la vista central y haz clic en (+ Añadir Nuevo) para gestionar.')" class="tool-btn group">
                 <i class="fa-solid fa-box-open w-4 text-center text-zinc-400 group-hover:text-violet-400 transition-colors"></i> Gestor de Productos
             </button>
-            <button onclick="showAlert('Activa el [Modo Navegar] arriba, ve a Academia en la vista central y gestiona libremente tus botones.')" class="tool-btn group">
+            <button onclick="showAlert('Navega a Academia en la vista central y haz clic en (+ Añadir Curso) para gestionar.')" class="tool-btn group">
                 <i class="fa-solid fa-graduation-cap w-4 text-center text-zinc-400 group-hover:text-yellow-400 transition-colors"></i> Gestor de Academia
             </button>
 
@@ -163,6 +157,7 @@
             </div>
 
             <div id="inspector-tools" class="hidden flex-col gap-3">
+                
                 <div class="bg-[#121215] border border-white/5 rounded-lg p-2.5 shadow-inner">
                     <div class="text-[9px] uppercase tracking-wider font-bold text-zinc-500 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-sitemap text-cyan-400"></i> Navegador de Capas</div>
                     <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap"></div>
@@ -180,13 +175,8 @@
                     </div>
                     
                     <div id="prop-link-group" class="hidden">
-                        <label class="inspector-label">Enlace o Archivo de Origen</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
-                            <button onclick="openMediaPicker()" class="bg-[#1a1a1e] border border-white/10 hover:border-cyan-400 text-zinc-400 hover:text-cyan-400 px-3 py-1.5 rounded-md transition-colors" title="Explorar Archivos">
-                                <i class="fa-solid fa-folder-open"></i>
-                            </button>
-                        </div>
+                        <label class="inspector-label">Enlace o URL de Origen</label>
+                        <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
                     </div>
                 </div>
 
@@ -236,7 +226,7 @@
     </div>
 </div>
 
-<div id="context-menu" class="hidden fixed z-[9999999] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
+<div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
     <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
         <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
     </div>
@@ -272,24 +262,6 @@
     </div>
 </div>
 
-<div id="mediaPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
-    <div class="w-full max-w-4xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col h-[85vh]">
-        <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
-            <h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-photo-film text-cyan-400"></i> Gestor de Recursos</h3>
-            <button onclick="closeMediaPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        
-        <div class="flex gap-2 mb-4 shrink-0">
-            <button id="tab-productos" onclick="loadMedia('productos')" class="media-tab flex-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 py-2 rounded font-bold text-xs transition-colors">Catálogo de Productos (/recursos/productos/)</button>
-            <button id="tab-academia" onclick="loadMedia('academia')" class="media-tab flex-1 bg-[#121215] text-zinc-400 border border-white/5 py-2 rounded font-bold text-xs hover:text-white transition-colors">Academia (/recursos/)</button>
-            <button id="tab-testimonios" onclick="loadMedia('testimonios')" class="media-tab flex-1 bg-[#121215] text-zinc-400 border border-white/5 py-2 rounded font-bold text-xs hover:text-white transition-colors">Testimonios (/recursos/testimonio/)</button>
-        </div>
-        
-        <div id="media-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto pr-2 pb-2 h-full content-start hide-scrollbar">
-        </div>
-    </div>
-</div>
-
 <div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0">
     <div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content">
         <i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i>
@@ -304,7 +276,6 @@
 
 <script>
     let dragEnabled = false;
-    let builderMode = 'build'; // ESTADO GLOBAL
 
     const iconDB = [
         { c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' },
@@ -380,8 +351,7 @@
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
     function reloadIframe() {
-        resetBuilderUI();
-        setPointerMode('build'); // Restablecer modo diseñar al recargar
+        resetBuilderUI(); 
         const iframe = document.getElementById('site-frame');
         iframe.src = `https://multiprintt.web.app/index.html?v=${new Date().getTime()}`;
     }
@@ -390,38 +360,6 @@
         document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + device).classList.add('active');
         document.getElementById('preview-wrapper').className = `device-${device}`;
-    }
-
-    // MODIFICADO: Inyección agresiva para forzar la liberación de botones
-    function setPointerMode(mode) {
-        builderMode = mode;
-        const iframe = document.getElementById('site-frame');
-        const btnBuild = document.getElementById('btn-mode-build');
-        const btnInteract = document.getElementById('btn-mode-interact');
-        
-        if (mode === 'interact') {
-            btnInteract.className = 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all';
-            btnBuild.className = 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
-            iframe.contentWindow.postMessage({ type: 'DISABLE_BUILDER' }, '*');
-            resetPanelSelection();
-            document.getElementById('context-menu').classList.add('hidden');
-            
-            // Bypass extremo: entramos al iframe y reactivamos manualmente los clics nativos
-            try {
-                const doc = iframe.contentWindow.document;
-                // Encontrar todos los botones que podrían estar bloqueados por el editor y liberarlos
-                const actionButtons = doc.querySelectorAll('button, a, [onclick]');
-                actionButtons.forEach(btn => {
-                    btn.style.setProperty('pointer-events', 'auto', 'important');
-                    btn.style.setProperty('z-index', '9999', 'important');
-                });
-            } catch(e) { console.warn("No se pudo inyectar bypass de clics por seguridad de navegador."); }
-            
-        } else {
-            btnBuild.className = 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all';
-            btnInteract.className = 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
-            iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
-        }
     }
 
     function toggleDraggable() {
@@ -499,11 +437,8 @@
         document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
     }
 
-    document.addEventListener('click', (e) => { 
-        if(!e.target.closest('#context-menu')) { 
-            document.getElementById('context-menu').classList.add('hidden'); 
-        } 
-    });
+    document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); } });
+    window.addEventListener('blur', () => { document.getElementById('context-menu').classList.add('hidden'); });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Delete' && document.getElementById('inspector-tools').style.display === 'flex') {
@@ -545,10 +480,7 @@
         if(e.data.type === 'LAYOUT_RESET_DONE') { showAlert("¡Plantilla restaurada con éxito!"); reloadIframe(); }
         if(e.data.type === 'OPEN_ICON_PICKER') { document.getElementById('iconPickerModal').classList.remove('hidden'); document.getElementById('iconPickerModal').classList.add('flex'); document.getElementById('icon-search').focus(); }
         
-        // RESTRICCIÓN: Ignorar si estamos en modo Navegar
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
-            if (builderMode === 'interact') return; // Bloquear menú rápido
-            
             const iframe = document.getElementById('site-frame'); const rect = iframe.getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
             let leftPos = rect.left + e.data.x; let topPos = rect.top + e.data.y;
             if (leftPos + 200 > window.innerWidth) leftPos -= 200; if (topPos + 100 > window.innerHeight) topPos -= 100;
@@ -559,8 +491,6 @@
         if (e.data.type === 'HIDE_CONTEXT_MENU') { document.getElementById('context-menu').classList.add('hidden'); }
         
         if (e.data.type === 'ELEMENT_SELECTED') {
-            if (builderMode === 'interact') return; // Bloquear completamente el panel de propiedades
-
             document.getElementById('context-menu').classList.add('hidden');
             document.getElementById('no-selection').style.display = 'none';
             document.getElementById('inspector-tools').style.display = 'flex';
@@ -586,86 +516,6 @@
             }
         }
     });
-
-    const mockMediaDB = {
-        productos: [
-            '/recursos/productos/producto1.jpg',
-            '/recursos/productos/producto2.jpg',
-            '/recursos/productos/producto3.png'
-        ],
-        academia: [
-            '/recursos/curso1.jpg',
-            '/recursos/curso2.png'
-        ],
-        testimonios: [
-            '/recursos/testimonio/video_testimonio1.mp4',
-            '/recursos/testimonio/video_testimonio2.mp4'
-        ]
-    };
-
-    function openMediaPicker() {
-        document.getElementById('mediaPickerModal').classList.remove('hidden');
-        document.getElementById('mediaPickerModal').classList.add('flex');
-        loadMedia('productos'); 
-    }
-
-    function closeMediaPicker() {
-        document.getElementById('mediaPickerModal').classList.add('hidden');
-        document.getElementById('mediaPickerModal').classList.remove('flex');
-    }
-
-    function loadMedia(category) {
-        const tabs = ['productos', 'academia', 'testimonios'];
-        tabs.forEach(tab => {
-            const btn = document.getElementById(`tab-${tab}`);
-            if (tab === category) {
-                btn.className = "media-tab flex-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 py-2 rounded font-bold text-xs transition-colors";
-            } else {
-                btn.className = "media-tab flex-1 bg-[#121215] text-zinc-400 border border-white/5 py-2 rounded font-bold text-xs hover:text-white transition-colors";
-            }
-        });
-
-        const container = document.getElementById('media-grid-container');
-        container.innerHTML = '';
-        
-        const items = mockMediaDB[category] || [];
-        
-        if (items.length === 0) {
-            container.innerHTML = `<div class="col-span-full text-center text-zinc-500 py-10 text-sm">No hay archivos registrados en esta carpeta.</div>`;
-            return;
-        }
-
-        items.forEach(url => {
-            const isVideo = url.endsWith('.mp4') || url.endsWith('.webm');
-            const div = document.createElement('div');
-            
-            div.className = 'group relative aspect-square bg-[#121215] border border-white/5 rounded-lg overflow-hidden cursor-pointer hover:border-cyan-400 transition-colors flex items-center justify-center shadow-inner';
-            div.onclick = () => selectMedia(url);
-
-            if (isVideo) {
-                div.innerHTML = `
-                    <video src="${url}" muted loop class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" onmouseover="this.play()" onmouseout="this.pause()"></video>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <i class="fa-solid fa-play text-white/40 group-hover:text-cyan-400 text-3xl drop-shadow-md transition-colors"></i>
-                    </div>
-                    <div class="absolute bottom-0 inset-x-0 bg-black/80 p-2 text-[10px] text-zinc-300 font-medium truncate text-center pointer-events-none border-t border-white/10">${url.split('/').pop()}</div>
-                `;
-            } else {
-                div.innerHTML = `
-                    <img src="${url}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
-                    <div class="absolute bottom-0 inset-x-0 bg-black/80 p-2 text-[10px] text-zinc-300 font-medium truncate text-center pointer-events-none border-t border-white/10">${url.split('/').pop()}</div>
-                `;
-            }
-            container.appendChild(div);
-        });
-    }
-
-    function selectMedia(url) {
-        const propLink = document.getElementById('prop-link');
-        propLink.value = url;
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: url }, '*');
-        closeMediaPicker();
-    }
 </script>
 </body>
 </html>
