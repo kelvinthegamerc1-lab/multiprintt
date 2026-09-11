@@ -161,7 +161,6 @@
                     <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap"></div>
                 </div>
 
-                <!-- 🟢 LAS 3 PESTAÑAS (CONTENIDO / ESTILO / POSICIÓN) -->
                 <div class="flex w-full mt-1 bg-[#0a0a0c] p-1 rounded-lg border border-white/5">
                     <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[9px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido</button>
                     <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-1.5 text-[9px] font-bold rounded text-zinc-500 hover:text-white transition-all">Estilo / Tpo.</button>
@@ -253,18 +252,19 @@
                         </div>
                     </div>
                     <div>
-                        <label class="inspector-label flex justify-between">Bordes Redondeados <span>px</span></label>
+                        <label class="inspector-label flex justify-between">Bordes Redondeados <span class="lowercase">px</span></label>
                         <input type="range" id="prop-radius" min="0" max="100" value="0" class="w-full accent-cyan-400" oninput="triggerStyleUpdate('radius', this.value)">
                     </div>
                 </div>
 
-                <!-- 🟢 NUEVA Pestaña POSICIÓN / TRANSFORMACIÓN -->
+                <!-- 🟢 NUEVA PESTAÑA: POSICIÓN Y MOVIMIENTO -->
                 <div id="panel-transform" class="hidden flex-col gap-4 bg-[#121215] p-4 rounded-lg border border-white/5 shadow-inner">
-                    <p class="text-[9px] text-zinc-400 mb-1 leading-relaxed">Usa estas herramientas para escalar, centrar o ajustar videos, sombras y textos flotantes.</p>
+                    <p class="text-[9px] text-zinc-400 mb-1 leading-relaxed">Usa estas herramientas para escalar, mover textos flotantes, centrar o ajustar áreas de video/degradados.</p>
                     
                     <div id="prop-media-fit-group" class="hidden pb-4 border-b border-white/10">
                         <label class="inspector-label text-cyan-400 flex justify-between"><i class="fa-solid fa-crop-simple mr-1"></i> Ajuste (Video/Img)</label>
-                        <select id="prop-object-fit" class="inspector-input" onchange="applyObjectFit()">
+                        <select id="prop-object-fit" class="inspector-input" onchange="triggerStyleUpdate('objectFit', this.value)">
+                            <option value="">Por Defecto</option>
                             <option value="cover">Rellenar todo (Cover)</option>
                             <option value="contain">Encajar por completo (Contain)</option>
                             <option value="fill">Estirar forzosamente (Fill)</option>
@@ -272,25 +272,25 @@
                     </div>
 
                     <div>
-                        <label class="inspector-label flex justify-between">Expansión Alto <span id="val-height" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">Auto</span></label>
-                        <input type="range" id="prop-height" min="10" max="100" step="5" value="60" class="w-full accent-cyan-400" oninput="document.getElementById('val-height').innerText=this.value+'%'; applyHeight()">
+                        <label class="inspector-label flex justify-between">Altura <span id="val-height" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">Auto</span></label>
+                        <input type="range" id="prop-height" min="10" max="200" step="5" value="60" class="w-full accent-cyan-400" oninput="document.getElementById('val-height').innerText=this.value+'%'; triggerStyleUpdate('height', this.value+'%')">
                     </div>
-
-                    <div class="divider my-0"></div>
                     
+                    <div class="divider my-0"></div>
+
                     <div>
                         <label class="inspector-label flex justify-between">Zoom / Escalado <span id="val-scale" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">1.0x</span></label>
-                        <input type="range" id="prop-scale" min="0.3" max="2" step="0.05" value="1" class="w-full accent-pink-500" oninput="document.getElementById('val-scale').innerText=this.value+'x'; applyTransform()">
+                        <input type="range" id="prop-scale" min="0.3" max="3" step="0.05" value="1" class="w-full accent-pink-500" oninput="document.getElementById('val-scale').innerText=this.value+'x'; applyTransform()">
                     </div>
 
                     <div>
                         <label class="inspector-label flex justify-between">Mover Horizontal <span id="val-tx" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">0px</span></label>
-                        <input type="range" id="prop-tx" min="-200" max="200" value="0" class="w-full accent-violet-400" oninput="document.getElementById('val-tx').innerText=this.value+'px'; applyTransform()">
+                        <input type="range" id="prop-tx" min="-500" max="500" value="0" class="w-full accent-violet-400" oninput="document.getElementById('val-tx').innerText=this.value+'px'; applyTransform()">
                     </div>
 
                     <div>
                         <label class="inspector-label flex justify-between">Mover Vertical <span id="val-ty" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">0px</span></label>
-                        <input type="range" id="prop-ty" min="-300" max="300" value="0" class="w-full accent-violet-400" oninput="document.getElementById('val-ty').innerText=this.value+'px'; applyTransform()">
+                        <input type="range" id="prop-ty" min="-500" max="500" value="0" class="w-full accent-violet-400" oninput="document.getElementById('val-ty').innerText=this.value+'px'; applyTransform()">
                     </div>
 
                     <div>
@@ -305,10 +305,10 @@
 
                 <div class="divider mt-2"></div>
                 
-                <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2" title="Selecciona la caja entera que contiene este elemento">
-                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor Padre
+                <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2" title="Sube una capa hacia el contenedor que envuelve a este elemento.">
+                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor Superior
                 </button>
-                <button onclick="triggerSelectChild()" class="tool-btn w-full justify-center mb-2" title="Si seleccionaste la caja entera, baja a editar el botón/texto interior.">
+                <button onclick="triggerSelectChild()" class="tool-btn w-full justify-center mb-2" title="Baja una capa hacia el elemento que está adentro.">
                     <i class="fa-solid fa-turn-down text-cyan-400"></i> Seleccionar Elemento Interno
                 </button>
                 <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
@@ -454,8 +454,6 @@
     function triggerVideoModal() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'TRIGGER_VIDEO_MODAL' }, '*'); }
 
     function resetPanelSelection() { document.getElementById('inspector-tools').style.display = 'none'; document.getElementById('no-selection').style.display = 'block'; }
-    
-    // 🟢 NUEVA LÓGICA DE PESTAÑAS (3 Pestañas en el Inspector)
     function switchTab(tab) {
         document.getElementById('panel-content').style.display = tab === 'content' ? 'flex' : 'none';
         document.getElementById('panel-style').style.display = tab === 'style' ? 'flex' : 'none';
@@ -481,7 +479,7 @@
         }
     }
     
-    // 🟢 FUNCIONES AVANZADAS DE TRANSFORMACIÓN Y POSICIONAMIENTO
+    // 🟢 FUNCIONES PARA LA PESTAÑA POSICIÓN
     function applyTransform() {
         const scale = document.getElementById('prop-scale').value;
         const tx = document.getElementById('prop-tx').value;
@@ -489,19 +487,18 @@
         triggerStyleUpdate('transform', `translate(${tx}px, ${ty}px) scale(${scale})`);
     }
 
-    function applyHeight() { triggerStyleUpdate('height', document.getElementById('prop-height').value + '%'); }
-    function applyObjectFit() { triggerStyleUpdate('objectFit', document.getElementById('prop-object-fit').value); }
-
     function resetTransforms() {
         document.getElementById('prop-scale').value = 1; document.getElementById('val-scale').innerText = '1.0x';
         document.getElementById('prop-tx').value = 0; document.getElementById('val-tx').innerText = '0px';
         document.getElementById('prop-ty').value = 0; document.getElementById('val-ty').innerText = '0px';
         document.getElementById('prop-opacity').value = 1; document.getElementById('val-opacity').innerText = '100%';
         document.getElementById('prop-height').value = 60; document.getElementById('val-height').innerText = 'Auto';
+        document.getElementById('prop-object-fit').value = '';
         
         triggerStyleUpdate('transform', 'none');
         triggerStyleUpdate('opacity', '1');
         triggerStyleUpdate('height', ''); 
+        triggerStyleUpdate('objectFit', '');
     }
 
     document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
@@ -534,7 +531,8 @@
 
             if(e.data.isVideoCard) document.getElementById('btn-open-video-modal').classList.remove('hidden'); else document.getElementById('btn-open-video-modal').classList.add('hidden');
             if(e.data.hasTheme) { document.getElementById('prop-theme-group').classList.remove('hidden'); document.getElementById('prop-theme').value = e.data.currentTheme || ''; } else document.getElementById('prop-theme-group').classList.add('hidden');
-
+            
+            // Mostrar ajustes de Fit/Crop solo en videos e imagenes
             if(tag === 'VIDEO' || tag === 'IMG') { document.getElementById('prop-media-fit-group').classList.remove('hidden'); } else { document.getElementById('prop-media-fit-group').classList.add('hidden'); }
 
             const textInput = document.getElementById('prop-text');
