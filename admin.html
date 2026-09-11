@@ -215,7 +215,10 @@
 
                 <div class="divider mt-2"></div>
                 
-                <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center">
+                <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2">
+                    <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor
+                </button>
+                <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
                     <i class="fa-solid fa-trash"></i> Eliminar Elemento
                 </button>
             </div>
@@ -420,10 +423,6 @@
 
     function triggerSelectParent() {
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*');
-    }
-
-    function triggerSelectNthParent(level) {
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_NTH_PARENT', level: level }, '*');
     }
 
     function resetPanelSelection() {
