@@ -169,9 +169,11 @@
 
                 <div class="divider mt-2"></div>
                 
-                <!-- 🟢 Botones de Padre Añadidos al Inspector -->
                 <button onclick="triggerSelectParent()" class="tool-btn w-full justify-center mb-2">
                     <i class="fa-solid fa-turn-up"></i> Seleccionar Contenedor
+                </button>
+                <button onclick="triggerDeleteParent()" class="tool-btn danger-btn w-full justify-center mt-2">
+                    <i class="fa-solid fa-object-ungroup"></i> Eliminar Contenedor
                 </button>
                 <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center mt-2">
                     <i class="fa-solid fa-trash"></i> Eliminar Elemento
@@ -191,7 +193,6 @@
     
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
     
-    <!-- 🟢 Opciones de Jerarquía y Contenedores -->
     <button onclick="ctxAction('selectParent')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
         <i class="fa-solid fa-turn-up w-3 text-center text-zinc-400"></i> Seleccionar Contenedor
     </button>
@@ -332,7 +333,30 @@
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
+    // 🟢 FUNCIÓN ANTI-BUGS: Limpia la interfaz del admin cuando la web guarda o recarga
+    function resetBuilderUI() {
+        // Apagar el botón de arrastrar visualmente
+        dragEnabled = false;
+        const dragBtn = document.getElementById('drag-btn');
+        if (dragBtn) {
+            dragBtn.style.background = '#121215'; 
+            dragBtn.style.borderColor = 'rgba(255,255,255,0.08)'; 
+            dragBtn.style.color = '#e5e5e5';
+            dragBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>';
+        }
+        
+        // Esconder el Inspector y limpiar textos fantasma
+        document.getElementById('inspector-tools').style.display = 'none';
+        document.getElementById('no-selection').style.display = 'block';
+        document.getElementById('prop-text').value = '';
+        document.getElementById('prop-link').value = '';
+        
+        // Esconder el menú contextual
+        document.getElementById('context-menu').classList.add('hidden');
+    }
+
     function reloadIframe() {
+        resetBuilderUI(); // Limpiamos la interfaz primero
         const iframe = document.getElementById('site-frame');
         const timestamp = new Date().getTime(); 
         iframe.src = `https://multiprintt.web.app/index.html?v=${timestamp}`;
@@ -409,12 +433,10 @@
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*');
     }
 
-    // 🟢 Evento para cerrar el menú si se clickea en el panel de control
     document.addEventListener('click', (e) => {
         if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); }
     });
 
-    // 🟢 Evento para cerrar el menú contextual si se da clic normal dentro de la web (iframe)
     window.addEventListener('blur', () => {
         document.getElementById('context-menu').classList.add('hidden');
     });
