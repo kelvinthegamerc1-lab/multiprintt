@@ -518,6 +518,10 @@
         if (e.source !== iframe.contentWindow) return; 
 
         if(e.data.type === 'APP_READY') { safePostMessage(currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER'); }
+        
+        // 🔴 Manejadores de Mensajes y Alertas devueltas por el index.html
+        if(e.data.type === 'SHOW_ALERT') { showAlert(e.data.msg); }
+
         if(e.data.type === 'SAVE_DONE') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!'; btn.classList.replace('bg-cyan-500', 'bg-green-400'); resetBuilderUI(); setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); reloadIframe(); }, 2000); }
         if(e.data.type === 'SAVE_ERROR') { showAlert("Error guardando en BD: " + e.data.message); const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Reintentar Publicación'; }
         if (e.data.type === 'RESET_DONE') { resetBuilderUI(); reloadIframe(); }
