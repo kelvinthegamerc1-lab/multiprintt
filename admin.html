@@ -22,6 +22,7 @@
     .glass-panel { background: #0e0e11; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
     .topbar { height: 54px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
+    
     .workspace { display: flex; flex: 1; overflow: hidden; }
     .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     .sidebar-right { width: 320px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
@@ -137,7 +138,7 @@
             </div>
             <div class="mt-auto pt-4 border-t border-white/5">
                 <div class="panel-header text-red-500/70"><i class="fa-solid fa-triangle-exclamation"></i> Zona de Peligro</div>
-                <button onclick="resetLayout()" class="tool-btn danger-btn w-full justify-center">Restaurar Plantilla</button>
+                <button id="btn-reset-layout" onclick="resetLayout()" class="tool-btn danger-btn w-full justify-center">Restaurar Plantilla</button>
             </div>
         </aside>
 
@@ -296,7 +297,7 @@
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300"><div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]"><div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0"><h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Biblioteca de Iconos</h3><button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="mb-4 shrink-0 relative"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i><input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono..." class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner"></div><div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div></div></div>
 <div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0"><div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content"><i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i><h3 id="custom-modal-title" class="text-lg font-bold text-white mb-2">Mensaje</h3><p id="custom-modal-text" class="text-zinc-400 text-sm mb-6 whitespace-pre-wrap"></p><div class="flex gap-3 justify-center"><button id="custom-modal-cancel" onclick="closeCustomModal()" class="hidden flex-1 bg-[#0a0a0c] border border-white/10 text-white font-medium py-2.5 rounded-lg hover:bg-white/5 transition-colors text-sm">Cancelar</button><button id="custom-modal-confirm" class="flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Aceptar</button></div></div></div>
 
-<!-- 🟢 MODAL GALERÍA ESTRUCTURADA PROFESIONALMENTE (Anti-Aglomeraciones) -->
+<!-- MODAL GALERÍA -->
 <div id="imageGalleryModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-4xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
         <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
@@ -308,7 +309,6 @@
             <button onclick="loadGalleryImages('cursos')" class="flex-1 bg-[#121215] border border-white/10 hover:border-yellow-400 hover:bg-yellow-500/10 text-white font-medium py-2 rounded-lg transition-all text-sm flex justify-center items-center gap-2"><i class="fa-solid fa-graduation-cap text-yellow-400"></i> Cursos</button>
         </div>
         <div id="gallery-path" class="text-[9px] font-mono text-zinc-500 mb-3 tracking-widest uppercase">/RECURSOS/</div>
-        <!-- Contenedor Grid con altura estricta auto-rows -->
         <div id="image-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto pr-2 pb-2 h-full min-h-[300px] auto-rows-max content-start"></div>
     </div>
 </div>
@@ -328,7 +328,7 @@
 
     function openCustomModal(msg, isConfirm, onConfirmCallback) {
         const m = document.getElementById('custom-modal'), c = document.getElementById('custom-modal-content'), btnOk = document.getElementById('custom-modal-confirm'), btnCancel = document.getElementById('custom-modal-cancel');
-        document.getElementById('custom-modal-text').innerHTML = msg; // Permite inyectar HTML para mostrar errores
+        document.getElementById('custom-modal-text').innerHTML = msg;
         if (isConfirm) { btnCancel.classList.remove('hidden'); btnOk.className = "flex-1 bg-red-500 text-white font-semibold py-2.5 rounded-lg hover:bg-red-400"; btnOk.innerText = "Sí, continuar"; document.getElementById('custom-modal-title').innerText = "ATENCIÓN"; btnOk.onclick = () => { closeCustomModal(); if(onConfirmCallback) onConfirmCallback(); }; } 
         else { btnCancel.classList.add('hidden'); btnOk.className = "flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400"; btnOk.innerText = "Entendido"; document.getElementById('custom-modal-title').innerText = "Información"; btnOk.onclick = () => closeCustomModal(); }
         m.classList.remove('hidden'); setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
@@ -360,10 +360,28 @@
     }
 
     function saveLayoutAndPositions() { const btn = document.querySelector('.fa-cloud-arrow-up').parentElement; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...'; document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*'); }
-    function resetLayout() { showConfirm("¿Restaurar diseño de fábrica?", () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*'); }); }
+    
+    // 🔥 FUNCIONALIDAD CORREGIDA: Fuerza la recarga visual del iframe después de enviar el reset.
+    function resetLayout() { 
+        showConfirm("¿Restaurar diseño de fábrica? Esto descartará todos los cambios guardados.", () => { 
+            const btn = document.getElementById('btn-reset-layout');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Restaurando...';
+            
+            // 1. Enviar el comando al iframe para que borre el storage
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*'); 
+            
+            // 2. Darle 1 segundo al iframe para borrar su memoria, y luego forzar la recarga visual desde el panel
+            setTimeout(() => {
+                reloadIframe();
+                btn.innerHTML = originalText;
+                showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
+            }, 1000);
+        }); 
+    }
+
     function resetBuilderUI() { dragEnabled = false; const btn = document.getElementById('drag-btn'); if(btn) { btn.style.background = '#121215'; btn.style.borderColor = 'rgba(255,255,255,0.08)'; btn.style.color = '#e5e5e5'; btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400"></i> <span>Activar Movimiento (Drag)</span>'; } resetPanelSelection(); document.getElementById('context-menu').classList.add('hidden'); }
 
-    // 🟢 NUEVA FUNCIÓN GALERÍA (Lógica Anti-Errores JSON y CSS Flexbox)
     function openImageGallery(tipo = 'productos') { document.getElementById('imageGalleryModal').classList.remove('hidden'); document.getElementById('imageGalleryModal').classList.add('flex'); loadGalleryImages(tipo); }
     function closeImageGallery() { document.getElementById('imageGalleryModal').classList.add('hidden'); document.getElementById('imageGalleryModal').classList.remove('flex'); }
     
@@ -388,7 +406,6 @@
             try {
                 lista = JSON.parse(rawText);
             } catch (parseError) {
-                // Captura el error clásico de sintaxis de JSON que estabas experimentando
                 console.error("Error de sintaxis en JSON:", parseError, rawText);
                 container.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">El archivo existe pero tiene un error de sintaxis.<br><br><span class="text-cyan-400">Verifica que no tengas comas (,) sobrantes al final de la última línea ni comillas simples.</span></p></div>`;
                 return;
@@ -402,7 +419,6 @@
 
             lista.forEach(n => {
                 const url = baseUrl + n; const div = document.createElement('div'); 
-                // Cajas estrictamente cuadradas con Flexbox para evitar solapamientos
                 div.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between';
                 div.innerHTML = `
                     <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div>
@@ -455,8 +471,13 @@
 
     window.addEventListener('message', (e) => {
         if(e.data.type === 'APP_READY') { document.getElementById('site-frame').contentWindow.postMessage({ type: currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER' }, '*'); }
+        
+        // Manejo exitoso de publicación
         if(e.data.type === 'SAVE_DONE') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!'; btn.classList.replace('bg-cyan-500', 'bg-green-400'); resetBuilderUI(); setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); reloadIframe(); }, 2000); }
         
+        // Manejo exitoso si el Iframe responde al reset
+        if (e.data.type === 'RESET_DONE') { resetBuilderUI(); reloadIframe(); }
+
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
             const rect = document.getElementById('site-frame').getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
             let leftPos = rect.left + e.data.x; let topPos = rect.top + e.data.y;
