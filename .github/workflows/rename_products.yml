@@ -1,0 +1,53 @@
+name: Renombrar Imágenes de Productos
+
+on:
+  workflow_dispatch: # Te permite ejecutar el workflow manualmente desde la pestaña 'Actions' en GitHub
+  push:
+    paths:
+      - 'recursos/productos/**' # Se ejecuta automáticamente si subes nuevas imágenes a esta carpeta
+
+jobs:
+  rename-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Chequear el repositorio
+        uses: actions/checkout@v4
+
+      - name: Renombrar imágenes numeradas
+        run: |
+          cd recursos/productos
+          
+          count=1
+          shopt -s nullglob
+          
+          # Renombrar a un nombre temporal para evitar sobrescribir imágenes existentes durante el bucle
+          for file in *.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP,GIF}; do
+            ext="${file##*.}"
+            mv "$file" "temp_${count}.${ext}"
+            count=$((count+1))
+          done
+
+          # Renombrar de temporales al nombre final definitivo (producto1, producto2, etc.)
+          count=1
+          for temp_file in temp_*; do
+            if [ -f "$temp_file" ]; then
+              ext="${temp_file##*.}"
+              mv "$temp_file" "producto${count}.${ext}"
+              count=$((count+1))
+            fi
+          done
+
+      - name: Confirmar y subir cambios
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add recursos/productos/
+          
+          if git diff --staged --quiet; then
+            echo "No hay imágenes para renombrar o ya están actualizadas."
+          else
+            git commit -m "chore: renombrar imágenes a producto1, producto2, etc."
+            git push
+          fi
