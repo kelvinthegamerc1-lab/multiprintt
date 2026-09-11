@@ -26,6 +26,7 @@ body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(
 
 body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
 
+/* 🟢 MAPA RESTAURADO a estilo oscuro original */
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 .leaflet-container { background: #0e0e12 !important; }
 
@@ -66,22 +67,27 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* BUILDER PRO - CORRECCIÓN DE BOTONES ADMINISTRATIVOS */
-.admin-tool { display: none !important; }
-body.is-admin-session .admin-tool { display: flex !important; pointer-events: auto !important; }
+/* 🟢 BLINDAJE DE BOTONES ADMINISTRATIVOS: Totalmente desactivados para el público */
+body:not(.is-admin-session) .admin-tool,
+body:not(.is-admin-session) .admin-overlay,
+body:not(.is-admin-session) .admin-video-edit-overlay { 
+    display: none !important; 
+    opacity: 0 !important; 
+    pointer-events: none !important; 
+}
 
+/* BUILDER PRO - ESTILOS ACTIVOS SOLO EN MODO ADMIN */
+body.is-admin-session .admin-tool { display: flex !important; }
 body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
 body.builder-mode .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; }
 body.builder-mode a:hover, body.builder-mode video:hover, body.builder-mode img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
-
-/* Hacer que los elementos de diseño desbloqueados puedan seleccionarse */
+body.builder-mode .ignore-drag { pointer-events: none !important; }
 body.builder-mode .builder-pointer-auto { pointer-events: auto !important; }
 
 body.dragging-active .sortable-zone > * { cursor: grab !important; }
 body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
 .sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
 
-/* Overlays Administrativos */
 .admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
 body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 
@@ -343,12 +349,11 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
       <a id="cm-btn" href="#" target="_blank" class="flex items-center justify-center w-full px-5 py-3.5 rounded-xl bg-white text-black text-xs md:text-sm font-extrabold hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-1 ignore-drag">Separar cupo por WhatsApp</a>
     </div>
   </div>
-</div>
-
+<!-- 🟢 NUEVO MODAL TESTIMONIAL: TOTALMENTE EDITABLE Y CONFIGURABLE -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     
-    <!-- -webkit-mask-image para recortar perfectamente las esquinas sobre el video -->
-    <div id="videoModalContent" class="relative w-[90vw] max-w-[360px] aspect-[9/16] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto ignore-drag" data-theme="cyan" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
+    <!-- Contenedor Principal Editable -->
+    <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] aspect-[9/16] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto builder-pointer-auto" data-theme="cyan" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
         
         <button onclick="closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg">
             <i class="fa-solid fa-xmark text-sm pointer-events-none"></i>
@@ -358,24 +363,25 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
             <span id="vm-time">00:00</span>
         </div>
 
-        <!-- Video y Degradados desbloqueados para el Editor -->
-        <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center ignore-drag builder-pointer-auto"></video>
+        <!-- Video 100% fondo Editable (Desplazable/Escalable) -->
+        <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center builder-pointer-auto ignore-drag"></video>
         
-        <div data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 pointer-events-none builder-pointer-auto"></div>
+        <!-- Degradado Editable (Puedes moverlo, escalarlo o cambiarle opacidad) -->
+        <div id="vm-gradient" data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 builder-pointer-auto"></div>
         
-        <!-- Contenido Texto Abajo -->
-        <div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12">
-            <i id="vm-quote-icon" data-editable="true" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1 pointer-events-none builder-pointer-auto"></i>
+        <!-- Contenido Texto Editable -->
+        <div id="vm-text-zone" data-editable="true" class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12 builder-pointer-auto">
+            <i id="vm-quote-icon" data-editable="true" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1 builder-pointer-auto"></i>
             <div class="overflow-y-auto hide-scrollbar max-h-[160px] mb-4">
-                <p id="vm-quote" data-editable="true" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1">"..."</p>
+                <p id="vm-quote" data-editable="true" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1 builder-pointer-auto">"..."</p>
             </div>
             <div class="border-t border-white/10 pt-4 shrink-0 flex items-center gap-4">
-                <div id="vm-avatar-container" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300">
-                    <span class="font-bold text-sm text-cyan-400" id="vm-initial">C</span>
+                <div id="vm-avatar-container" data-editable="true" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 builder-pointer-auto">
+                    <span class="font-bold text-sm text-cyan-400 builder-pointer-auto" id="vm-initial">C</span>
                 </div>
                 <div class="flex flex-col justify-center">
-                    <h4 id="vm-name" data-editable="true" class="text-white text-sm font-bold tracking-wide drop-shadow-sm">Carlos P.</h4>
-                    <span id="vm-role" data-editable="true" class="text-[9px] uppercase tracking-[0.2em] font-bold drop-shadow-sm mt-0.5 transition-colors duration-300 text-cyan-400">Caso de Éxito</span>
+                    <h4 id="vm-name" data-editable="true" class="text-white text-sm font-bold tracking-wide drop-shadow-sm builder-pointer-auto">Carlos P.</h4>
+                    <span id="vm-role" data-editable="true" class="text-[9px] uppercase tracking-[0.2em] font-bold drop-shadow-sm mt-0.5 transition-colors duration-300 text-cyan-400 builder-pointer-auto">Caso de Éxito</span>
                 </div>
             </div>
         </div>
@@ -561,6 +567,21 @@ window.applyThemeSwap = function(element, newThemeKey) {
     element.setAttribute('data-theme', newThemeKey);
 }
 
+// 🟢 HELPER: ENVÍA LOS DATOS DEL ELEMENTO SELECCIONADO AL PANEL
+function sendSelectionData(target) {
+    let isVideoCard = target.classList.contains('video-testimonial-card');
+    if(isVideoCard) currentVideoCardRef = target; 
+    window.parent.postMessage({ 
+        type: 'ELEMENT_SELECTED', 
+        tagName: target.tagName, 
+        text: target.innerText || '', 
+        href: target.href || target.src || '',
+        isVideoCard: isVideoCard,
+        hasTheme: target.hasAttribute('data-theme'),
+        currentTheme: target.getAttribute('data-theme') || ''
+    }, '*');
+}
+
 let selectedEl = null;
 
 window.addEventListener('message', async (event) => {
@@ -570,31 +591,23 @@ window.addEventListener('message', async (event) => {
         
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode')) return;
+            
+            // 🟢 CLAVE PARA EL DRAG & DROP: Si el modo movimiento está activo, ignorar clics de selección.
+            if (document.body.classList.contains('dragging-active')) {
+                return;
+            }
+
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
-            if(e.target.closest('button[onclick^="navigate("]') || (e.target.closest('.ignore-drag') && !e.target.closest('.pointer-events-auto') && !e.target.closest('.builder-pointer-auto'))) return;
+            if(e.target.closest('button[onclick^="navigate("]') || (e.target.closest('.ignore-drag') && !e.target.closest('.builder-pointer-auto'))) return;
             
-            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, div:not(#videoModalContent)');
+            // 🟢 CLAVE PARA SELECCIÓN EXACTA: No seleccionamos cualquier 'div', solo contenedores válidos, tarjetas y elementos editables.
+            let target = e.target.closest('[data-editable="true"], .card, section, article, a, button, p, h1, h2, h3, h4, span, img, video, i');
             
-            if (target && (!target.closest('.ignore-drag') || target.closest('.pointer-events-auto') || target.closest('.builder-pointer-auto'))) {
+            if (target && !target.closest('.admin-overlay')) {
                 e.preventDefault(); e.stopPropagation();
                 if(selectedEl) selectedEl.classList.remove('builder-selected-el');
                 selectedEl = target; selectedEl.classList.add('builder-selected-el');
-                
-                let isVideoCard = target.classList.contains('video-testimonial-card');
-                if(isVideoCard) currentVideoCardRef = target; 
-                
-                let hasTheme = target.hasAttribute('data-theme');
-                let currentTheme = target.getAttribute('data-theme') || '';
-
-                window.parent.postMessage({ 
-                    type: 'ELEMENT_SELECTED', 
-                    tagName: target.tagName, 
-                    text: target.innerText || '', 
-                    href: target.href || target.src || '',
-                    isVideoCard: isVideoCard,
-                    hasTheme: hasTheme,
-                    currentTheme: currentTheme
-                }, '*');
+                sendSelectionData(selectedEl);
             }
         }, true); 
     }
@@ -614,7 +627,7 @@ window.addEventListener('message', async (event) => {
         if(event.data.href !== undefined) { if(selectedEl.tagName === 'A') selectedEl.href = event.data.href; if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = event.data.href; }
     }
     
-    /* 🟢 AGREGADOS LOS RECEPTORES DE TRANSFORMACIÓN AVANZADA */
+    // 🟢 RECEPTOR DE TRANSFORMACIONES Y ESTILOS
     if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
         if(event.data.prop === 'color') { selectedEl.style.color = event.data.value; }
         if(event.data.prop === 'bg') { selectedEl.style.backgroundColor = event.data.value; }
@@ -629,16 +642,29 @@ window.addEventListener('message', async (event) => {
             if(event.data.value) selectedEl.classList.add(event.data.value);
         }
         if(event.data.prop === 'textSize') {
-            selectedEl.className = selectedEl.className.replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[.*?\])\b/g, '').trim();
-            if(event.data.value) selectedEl.classList.add(event.data.value);
+            if(selectedEl.id === 'videoModalContent' && currentVideoCardRef) {
+                applyThemeSwap(currentVideoCardRef, event.data.value);
+            }
         }
-        if(event.data.prop === 'fontWeight') {
-            selectedEl.className = selectedEl.className.replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '').trim();
-            if(event.data.value) selectedEl.classList.add(event.data.value);
+    }
+
+    // 🟢 NAVEGADOR DE CAPAS (Seleccionar Padre / Hijo)
+    if (event.data.type === 'SELECT_PARENT_NODE' && selectedEl) {
+        let parent = selectedEl.parentElement.closest('[data-editable="true"], .card, section, article');
+        if(parent && parent !== selectedEl) {
+            selectedEl.classList.remove('builder-selected-el');
+            selectedEl = parent;
+            selectedEl.classList.add('builder-selected-el');
+            sendSelectionData(selectedEl);
         }
-        if(event.data.prop === 'theme') {
-            applyThemeSwap(selectedEl, event.data.value);
-            if(selectedEl.id === 'videoModalContent' && currentVideoCardRef) { applyThemeSwap(currentVideoCardRef, event.data.value); }
+    }
+    if (event.data.type === 'SELECT_CHILD_NODE' && selectedEl) {
+        let child = selectedEl.querySelector('[data-editable="true"], a, button, p, h1, h2, h3, h4, span, img, video, i');
+        if(child && child !== selectedEl) {
+            selectedEl.classList.remove('builder-selected-el');
+            selectedEl = child;
+            selectedEl.classList.add('builder-selected-el');
+            sendSelectionData(selectedEl);
         }
     }
 
@@ -661,7 +687,8 @@ window.addEventListener('message', async (event) => {
             
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = ''); 
+            
+            // 🔥 CRÍTICO: Ya no borramos los 'style="transform..."' para no perder las posiciones personalizadas.
             
             const mapInClone = clone.querySelector('#leaflet-map'); 
             if(mapInClone) { 
