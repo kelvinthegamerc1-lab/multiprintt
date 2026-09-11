@@ -81,16 +81,25 @@ body.dragging-active .sortable-zone > * { cursor: grab !important; }
 body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
 .sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
 
-/* Panel administrativo optimizado (sin filtros blur pesados) */
-.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
+.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
 body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 .admin-video-edit-overlay { display: none; }
-body.is-admin-session .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.7); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
-body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.9); pointer-events: auto; }
+body.is-admin-session .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
+body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
 body.is-admin-session .video-testimonial-card .vt-quote { display: block !important; position: relative; z-index: 40; pointer-events: auto; }
 
+body.builder-mode #videoModal { pointer-events: auto !important; }
+
+/* 📱 PROTECCIÓN MÓVIL: Ignora los cambios de escala/posición hechos en PC para el Pop-up */
+@media (max-width: 767px) {
+    #videoModal:not(.opacity-0) #videoModalContent { transform: scale(1) translate(0, 0) !important; }
+    #videoModal.opacity-0 #videoModalContent { transform: scale(0.95) translate(0, 0) !important; }
+    #videoModalContent { height: auto !important; width: 90vw !important; aspect-ratio: 9/16 !important; max-width: 360px !important; }
+}
+
+/* Galería de medios */
 #media-grid::-webkit-scrollbar { width: 6px; }
 #media-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 </style>
@@ -536,7 +545,12 @@ async function loadFirebaseData() {
                 document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
                 if(data.zones['videoModalTpl']) {
                     const modalContent = document.getElementById('videoModalContent');
-                    if(modalContent) modalContent.innerHTML = data.zones['videoModalTpl'];
+                    if(modalContent) {
+                        modalContent.innerHTML = data.zones['videoModalTpl'];
+                        // 🟢 Restaurar también la escala, posición y tema personalizado guardado
+                        if(data.zones['videoModalStyle']) modalContent.setAttribute('style', data.zones['videoModalStyle']);
+                        if(data.zones['videoModalTheme']) modalContent.setAttribute('data-theme', data.zones['videoModalTheme']);
+                    }
                 }
             }
             if(data.prodOrder) window.productOrderArray = data.prodOrder;
@@ -734,9 +748,14 @@ window.addEventListener('message', async (event) => {
             layoutData[zone.id] = clone.innerHTML;
         });
         
-        const modalClone = document.getElementById('videoModalContent').cloneNode(true);
+        const modalContentEl = document.getElementById('videoModalContent');
+        const modalClone = modalContentEl.cloneNode(true);
         modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
+        
+        // 🟢 Guardar contenido interno Y estilos exteriores (escala, posición)
         layoutData['videoModalTpl'] = modalClone.innerHTML; 
+        layoutData['videoModalStyle'] = modalContentEl.getAttribute('style') || '';
+        layoutData['videoModalTheme'] = modalContentEl.getAttribute('data-theme') || 'cyan';
 
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
