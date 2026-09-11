@@ -61,6 +61,7 @@
     .inspector-label { font-size: 10px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;}
     .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 12px; transition: 0.2s;}
     .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
+    .inspector-input:disabled { background: #121215; border-color: rgba(255,255,255,0.05); color: #737373; }
 
     .color-picker { width: 100%; height: 36px; padding: 2px; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer;}
     .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
@@ -104,13 +105,13 @@
             <span class="font-semibold text-xs tracking-wider text-zinc-300">MULTIPRINTT <span class="text-cyan-400 opacity-70">BUILDER</span></span>
         </div>
         
-        <!-- SELECTORES DE MODO (CRÍTICO PARA INTERACTUAR CON BASE DE DATOS) -->
+        <!-- SELECTORES DE MODO -->
         <div class="flex items-center gap-2">
             <div class="flex items-center bg-[#121215] border border-white/5 rounded-lg p-1 shadow-inner">
                 <button onclick="setMode('edit')" class="device-btn active w-auto px-3 text-xs flex gap-2 items-center transition-all" id="btn-mode-edit" title="Diseño Visual">
                     <i class="fa-solid fa-pen-ruler"></i> <span class="hidden md:inline">Diseño</span>
                 </button>
-                <button onclick="setMode('interact')" class="device-btn w-auto px-3 text-xs flex gap-2 items-center transition-all" id="btn-mode-interact" title="Usar los botones de la web">
+                <button onclick="setMode('interact')" class="device-btn w-auto px-3 text-xs flex gap-2 items-center transition-all" id="btn-mode-interact" title="Navegar e interactuar con la Base de Datos">
                     <i class="fa-solid fa-hand-pointer"></i> <span class="hidden md:inline">Navegar / Usar</span>
                 </button>
             </div>
@@ -158,8 +159,8 @@
                 <b class="text-zinc-200 block mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-cyan-400"></i> Atajos de Teclado</b>
                 <ul class="space-y-1.5 list-disc pl-3">
                     <li><b>Clic Derecho:</b> Menú de Opciones Rápidas.</li>
-                    <li><b>Tecla Suprimir:</b> Eliminar elemento seleccionado.</li>
-                    <li><b>Tecla Esc:</b> Cerrar menús o limpiar selección.</li>
+                    <li><b>Tecla Suprimir:</b> Eliminar elemento.</li>
+                    <li><b>Tecla Esc:</b> Cerrar menús o selección.</li>
                 </ul>
             </div>
 
@@ -184,7 +185,7 @@
             <div id="no-selection" class="text-[11px] text-zinc-500 text-center mt-8 border border-dashed border-white/10 rounded-lg p-6 bg-[#121215]">
                 <i class="fa-solid fa-mouse-pointer text-2xl mb-3 opacity-30 block"></i>
                 Selecciona cualquier elemento en el lienzo para editar sus propiedades.<br><br>
-                <span class="text-cyan-500">¿Quieres editar o borrar productos de la BD? Cambia al botón superior "Navegar / Usar"</span>
+                <span class="text-cyan-500">¿Deseas gestionar Productos o Cursos? Cambia arriba al modo "Navegar / Usar"</span>
             </div>
 
             <div id="inspector-tools" class="hidden flex-col gap-3">
@@ -194,14 +195,16 @@
                 </div>
 
                 <div class="flex w-full mt-1 bg-[#0a0a0c] p-1 rounded-lg border border-white/5">
-                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido / HTML</button>
+                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido</button>
                     <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all">Estilos CSS</button>
                 </div>
 
+                <!-- Pestaña CONTENIDO -->
                 <div id="panel-content" class="flex flex-col gap-3">
                     <div id="prop-text-group">
-                        <label class="inspector-label">Texto Visible / HTML</label>
+                        <label class="inspector-label flex justify-between">Texto Visible <span id="text-warning" class="text-red-400 hidden"><i class="fa-solid fa-lock"></i> Contenedor Bloqueado</span></label>
                         <textarea id="prop-text" rows="4" class="inspector-input resize-y"></textarea>
+                        <p id="text-help" class="text-[9px] text-zinc-500 mt-1 hidden">Este elemento contiene una estructura compleja (imágenes, iconos). Usa "Seleccionar Elemento Interno" para editar el texto sin borrar el diseño.</p>
                     </div>
                     <div id="prop-link-group" class="hidden">
                         <label class="inspector-label">Enlace o URL de Origen</label>
@@ -209,6 +212,7 @@
                     </div>
                 </div>
 
+                <!-- Pestaña ESTILO -->
                 <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5">
                     <div>
                         <label class="inspector-label">Color de Texto</label>
@@ -257,6 +261,7 @@
     </div>
 </div>
 
+<!-- Menú Contextual (Clic Derecho) -->
 <div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
     <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
         <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
@@ -277,6 +282,7 @@
     </button>
 </div>
 
+<!-- Modal Iconos -->
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
         <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
@@ -291,6 +297,7 @@
     </div>
 </div>
 
+<!-- Modal Alertas Pro -->
 <div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0">
     <div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content">
         <i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i>
@@ -317,7 +324,11 @@
         { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-image', n: 'Imagen' }, { c: 'fa-solid fa-video', n: 'Video' }
     ];
 
-    // Funciones de Login y Modales Globales
+    // Constantes Estructurales A Prueba De Errores
+    const STRUCTURAL_TAGS = ['DIV', 'SECTION', 'ARTICLE', 'MAIN', 'HEADER', 'FOOTER', 'UL', 'NAV', 'FORM'];
+    const tagDictionary = { 'DIV': 'Caja / Contenedor', 'SECTION': 'Sección', 'ARTICLE': 'Tarjeta', 'P': 'Párrafo', 'SPAN': 'Texto en línea', 'H1': 'Título Principal', 'H2': 'Subtítulo', 'H3': 'Encabezado', 'H4': 'Encabezado Pequeño', 'A': 'Botón / Enlace', 'IMG': 'Imagen', 'VIDEO': 'Reproductor', 'BUTTON': 'Botón', 'I': 'Icono Vectorial', 'NAV': 'Navegación' };
+
+    // Login Simple
     function attemptLogin() {
         const u = document.getElementById('loginUser').value;
         const p = document.getElementById('loginPass').value;
@@ -334,6 +345,7 @@
     }
     document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') attemptLogin(); });
 
+    // Modales Personalizados
     function openCustomModal(msg, isConfirm, onConfirmCallback) {
         const modal = document.getElementById('custom-modal'); const content = document.getElementById('custom-modal-content');
         document.getElementById('custom-modal-text').innerText = msg;
@@ -370,8 +382,7 @@
         resetBuilderUI(); 
         setMode('edit'); 
         const iframe = document.getElementById('site-frame');
-        // Apuntamos al archivo local en lugar de la nube para poder probar los cambios en vivo.
-        // Nota: Asegúrate de que tu archivo de la web se llame exactamente "index.html" en tu carpeta.
+        // Usa el archivo index.html alojado en tu misma carpeta
         iframe.src = `./index.html?v=${new Date().getTime()}`;
     }
 
@@ -385,9 +396,9 @@
         document.getElementById('preview-wrapper').className = `device-${device}`;
     }
 
+    // Selector de Modos (Diseño vs Navegación)
     function setMode(mode) {
         currentMode = mode;
-        // Actualizamos UI de botones superiores
         document.getElementById('btn-mode-edit').classList.toggle('active', mode === 'edit');
         document.getElementById('btn-mode-interact').classList.toggle('active', mode === 'interact');
         
@@ -395,43 +406,28 @@
         if (!iframe || !iframe.contentWindow) return;
 
         if (mode === 'edit') {
-            // Activamos la capa visual protectora
             iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
-            
-            // Reactivamos el botón de Drag en la barra izquierda
             document.getElementById('drag-btn').style.opacity = '1';
             document.getElementById('drag-btn').style.pointerEvents = 'auto';
         } else {
-            // MODO NAVEGACIÓN: LIMPIEZA PROFUNDA DE LA CAPA VISUAL
-            console.log("Activando Modo Interact. Enviando comandos de limpieza al iframe...");
-            
-            // 1. Limpiamos cualquier selección activa que esté bloqueando clics
+            // MODO NAVEGACIÓN: Desactiva el constructor para probar botones y BD
             iframe.contentWindow.postMessage({ type: 'CLEAR_SELECTION' }, '*');
-            
-            // 2. Apagamos el motor del constructor dentro de la web
             iframe.contentWindow.postMessage({ type: 'DISABLE_BUILDER' }, '*');
             
-            // 3. Desactivamos el movimiento drag si estaba encendido
             if (dragEnabled) toggleDraggable();
-            
-            // 4. Apagamos el botón de Drag en la interfaz
             document.getElementById('drag-btn').style.opacity = '0.4';
             document.getElementById('drag-btn').style.pointerEvents = 'none';
-            
-            // 5. Cerramos el panel derecho y menú contextual
             resetPanelSelection();
             document.getElementById('context-menu').classList.add('hidden');
         }
     }
 
     function activateInteractMode(tipo) {
-        // Obligamos al sistema a soltar la página web por completo
         setMode('interact');
-        
         if(tipo === 'productos') {
-            showAlert('MODO NAVEGACIÓN ACTIVADO\n\nEl constructor visual se ha apagado temporalmente.\n\nNavega a la zona de Productos en la vista central; ahora podrás hacer clic libremente en "Editar" o "Borrar" para abrir los formularios reales de la Base de Datos.');
+            showAlert('MODO NAVEGACIÓN ACTIVADO\n\nEl constructor visual de CSS está apagado.\n\nAhora puedes hacer clic en "Editar" o "Borrar" en tus Tarjetas de Producto para abrir los formularios reales de la Base de Datos.');
         } else {
-            showAlert('MODO NAVEGACIÓN ACTIVADO\n\nEl constructor visual se ha apagado temporalmente.\n\nNavega a la zona de Academia en la vista central; ahora podrás hacer clic libremente en "Editar" o "Borrar" los cursos.');
+            showAlert('MODO NAVEGACIÓN ACTIVADO\n\nEl constructor visual de CSS está apagado.\n\nNavega a Academia y haz clic en los botones Editar/Borrar de tus testimonios o cursos para actualizar la BD.');
         }
     }
 
@@ -458,7 +454,7 @@
     }
 
     function resetLayout() {
-        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla guardada. NO afectará a la base de datos de productos.", () => {
+        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla visual guardada en la base de datos.", () => {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
         });
     }
@@ -474,7 +470,7 @@
         document.getElementById('context-menu').classList.add('hidden');
     }
 
-    // Iconos
+    // Renderizado de Iconos
     function renderIcons(filter = "") {
         const container = document.getElementById('icon-grid-container');
         container.innerHTML = '';
@@ -501,6 +497,7 @@
         closeIconPicker();
     }
 
+    // Menú Contextual Rápido
     function ctxAction(action) {
         document.getElementById('context-menu').classList.add('hidden');
         if (action === 'delete') { triggerDeleteFromInspector(); } 
@@ -528,7 +525,7 @@
         document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
     }
 
-    // Listeners del Teclado y Click Fuera
+    // Atajos de Teclado Globales
     document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); } });
     window.addEventListener('blur', () => { document.getElementById('context-menu').classList.add('hidden'); });
 
@@ -543,7 +540,7 @@
         }
     });
 
-    // Actualizaciones en Tiempo Real
+    // Actualizadores en Tiempo Real hacia el Iframe
     function triggerStyleUpdate(prop, value) { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_STYLE', prop: prop, value: value }, '*'); }
     
     document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
@@ -551,7 +548,7 @@
     document.getElementById('prop-radius').addEventListener('input', (e) => triggerStyleUpdate('radius', e.target.value));
     document.getElementById('prop-hover').addEventListener('change', (e) => triggerStyleUpdate('hover', e.target.value));
 
-    // AQUÍ SE USA GET_ELEMENT_BY_ID DIRECTAMENTE PARA NO PERDER LA REFERENCIA JAMÁS
+    // Input seguro
     document.getElementById('prop-text').addEventListener('input', (e) => { 
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: e.target.value }, '*'); 
     });
@@ -559,14 +556,12 @@
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: e.target.value }, '*'); 
     });
 
-    const tagDictionary = { 'DIV': 'Contenedor', 'SECTION': 'Sección Completa', 'ARTICLE': 'Tarjeta', 'P': 'Párrafo', 'SPAN': 'Texto en línea', 'H1': 'Título Principal', 'H2': 'Subtítulo', 'H3': 'Encabezado', 'H4': 'Encabezado Pequeño', 'A': 'Botón / Enlace', 'IMG': 'Imagen', 'VIDEO': 'Reproductor', 'BUTTON': 'Botón', 'I': 'Icono Vectorial', 'NAV': 'Barra de Navegación' };
-
-    // Escucha de Eventos desde el Iframe (Recibe mensajes sin crashear)
+    // ESCUCHA MAESTRA DE EVENTOS DESDE EL IFRAME (index.html)
     window.addEventListener('message', (e) => {
         if(e.data.type === 'APP_READY') {
-            // Mantiene el estado si se recarga la página interna
             document.getElementById('site-frame').contentWindow.postMessage({ type: currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER' }, '*');
         }
+        
         if(e.data.type === 'SAVE_DONE') {
             const btn = document.querySelector('.fa-spin').parentElement;
             btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!';
@@ -574,9 +569,11 @@
             resetBuilderUI();
             setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); reloadIframe(); }, 2000);
         }
+        
         if(e.data.type === 'LAYOUT_RESET_DONE') { showAlert("¡Plantilla restaurada con éxito!"); reloadIframe(); }
         if(e.data.type === 'OPEN_ICON_PICKER') { document.getElementById('iconPickerModal').classList.remove('hidden'); document.getElementById('iconPickerModal').classList.add('flex'); document.getElementById('icon-search').focus(); }
         
+        // Muestra el Menú Contextual
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
             const iframe = document.getElementById('site-frame'); const rect = iframe.getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
             let leftPos = rect.left + e.data.x; let topPos = rect.top + e.data.y;
@@ -588,6 +585,7 @@
         
         if (e.data.type === 'HIDE_CONTEXT_MENU') { document.getElementById('context-menu').classList.add('hidden'); }
         
+        // Cuando seleccionas algo en el diseño visual...
         if (e.data.type === 'ELEMENT_SELECTED') {
             document.getElementById('context-menu').classList.add('hidden');
             document.getElementById('no-selection').style.display = 'none';
@@ -597,9 +595,24 @@
             const prettyName = tagDictionary[tag] || `<${tag.toLowerCase()}>`;
             document.getElementById('prop-breadcrumb').innerHTML = `<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">${prettyName}</span>`;
 
-            // SIEMPRE MOSTRAMOS LA CAJA DE TEXTO (Para editar contenido entero de DIVs/Tarjetas)
-            document.getElementById('prop-text-group').style.display = 'block';
-            document.getElementById('prop-text').value = e.data.text || '';
+            // SISTEMA ANTI-ERRORES: Protegemos las tarjetas de borrados accidentales
+            const textInput = document.getElementById('prop-text');
+            const warningLabel = document.getElementById('text-warning');
+            const helpText = document.getElementById('text-help');
+
+            if (STRUCTURAL_TAGS.includes(tag)) {
+                // Es un contenedor. Bloqueamos la edición directa de texto para no destruir su interior HTML.
+                textInput.value = 'Contenedor Estructural de Diseño. Use el botón azul "Seleccionar Elemento Interno" abajo para editar textos precisos.';
+                textInput.disabled = true;
+                warningLabel.classList.remove('hidden');
+                helpText.classList.remove('hidden');
+            } else {
+                // Es un texto, botón o enlace seguro de editar
+                textInput.value = e.data.text || '';
+                textInput.disabled = false;
+                warningLabel.classList.add('hidden');
+                helpText.classList.add('hidden');
+            }
 
             if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO' || tag === 'IFRAME') {
                 document.getElementById('prop-link-group').style.display = 'block';
