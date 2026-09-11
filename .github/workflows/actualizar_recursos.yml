@@ -1,14 +1,13 @@
 name: Actualizar JSON y Renombrar Recursos
 
 on:
-  # Se ejecuta automáticamente cuando subes algo a la carpeta recursos
   push:
     branches:
       - main
     paths:
       - 'recursos/**'
-      - '!recursos/imagenes.json' # Evita un bucle infinito si el bot modifica el JSON
-  # Te habilita un botón en GitHub para ejecutarlo manualmente cuando quieras
+      - '!recursos/imagenes.json'  # Evita bucles infinitos si el bot modifica el JSON
+      - '!recursos/productos/**'   # Ignora completamente la carpeta productos
   workflow_dispatch: 
 
 jobs:
@@ -35,52 +34,73 @@ jobs:
           import os, json, re
 
           recursos_dir = 'recursos'
-          testimonios_dir = os.path.join(recursos_dir, 'testimonios')
+          testimonio_dir = os.path.join(recursos_dir, 'testimonio')
           json_path = os.path.join(recursos_dir, 'imagenes.json')
 
-          # Asegurar que las carpetas existan
-          if not os.path.exists(recursos_dir): os.makedirs(recursos_dir)
-          if not os.path.exists(testimonios_dir): os.makedirs(testimonios_dir)
+          # Extensiones de imagen válidas para la raíz
+          ext_img_validas = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
 
-          # 1. Procesar y renombrar archivos en 'testimonios'
-          testimonio_archivos = os.listdir(testimonios_dir)
-          # Patrón para identificar imágenes con el formato resinaX.ext
-          resina_pattern = re.compile(r'^resina(\d+)\.(jpg|jpeg|png|webp|gif)$', re.IGNORECASE)
+          # Archivos esenciales en /recursos/ que NO se deben incluir en el JSON
+          archivos_excluidos = {'favicon.png', 'logo_mejorado.png', 'imagenes.json'}
+
+          # Asegurar que existan las carpetas
+          if not os.path.exists(recursos_dir): os.makedirs(recursos_dir)
+          if not os.path.exists(testimonio_dir): os.makedirs(testimonio_dir)
+
+          # -------------------------------------------------------------
+          # 1. Renombrar únicamente los videos .mp4 en 'recursos/testimonio'
+          # -------------------------------------------------------------
+          testimonio_archivos = os.listdir(testimonio_dir)
+          testimonio_pattern = re.compile(r'^testimonio(\d+)\.mp4$', re.IGNORECASE)
 
           max_idx = -1
           archivos_para_renombrar = []
 
-          # Buscar el número más alto existente (ej. resina3.jpg) y separar los archivos nuevos
+          # Buscar el índice más alto existente (ej. testimonio1.mp4 -> max_idx = 1)
           for f in testimonio_archivos:
-              filepath = os.path.join(testimonios_dir, f)
+              filepath = os.path.join(testimonio_dir, f)
               if not os.path.isfile(filepath): continue
               
-              match = resina_pattern.match(f)
+              match = testimonio_pattern.match(f)
               if match:
                   max_idx = max(max_idx, int(match.group(1)))
-              elif f.lower().endswith(('.jpg', '.jpeg', '.png', '.webp', '.gif')):
-                  # Es una imagen que no tiene el formato "resinaX", hay que renombrarla
+              elif f.lower().endswith('.mp4'):
                   archivos_para_renombrar.append(f)
 
-          # Renombrar los archivos nuevos siguiendo la secuencia
+          # Renombrar nuevos .mp4 empezando en testimonio0.mp4 (o en la secuencia siguiente)
           for f in archivos_para_renombrar:
-              ext = f.split('.')[-1].lower()
               max_idx += 1
-              nuevo_nombre = f"resina{max_idx}.{ext}"
-              os.rename(os.path.join(testimonios_dir, f), os.path.join(testimonios_dir, nuevo_nombre))
-              print(f"Renombrado: {f} -> {nuevo_nombre}")
+              nuevo_nombre = f"testimonio{max_idx}.mp4"
+              os.rename(os.path.join(testimonio_dir, f), os.path.join(testimonio_dir, nuevo_nombre))
+              print(f"-> Renombrado video: {f} -> {nuevo_nombre}")
 
-          # 2. Volver a leer la carpeta después de los renombrados para generar el JSON simple
-          testimonio_archivos_actualizados = sorted(os.listdir(testimonios_dir))
-          
-          # Crear una lista SIMPLE de imágenes (igual que el primer YAML)
-          lista_imagenes = [f for f in testimonio_archivos_actualizados if f.lower().endswith(('.jpg', '.jpeg', '.png', '.webp', '.gif'))]
+          # -------------------------------------------------------------
+          # 2. Generar la lista limpia para imagenes.json
+          # -------------------------------------------------------------
+          lista_recursos = []
 
-          # 3. Guardar el JSON (Formato Array plano: ["resina0.jpg", "resina1.jpg"])
+          # a) Imágenes en la raíz /recursos/ (excluyendo favicon, logo e imagenes.json)
+          for f in sorted(os.listdir(recursos_dir)):
+              filepath = os.path.join(recursos_dir, f)
+              if os.path.isfile(filepath):
+                  nombre_lower = f.lower()
+                  if nombre_lower not in archivos_excluidos and nombre_lower.endswith(ext_img_validas):
+                      lista_recursos.append(f)
+
+          # b) Videos .mp4 en /recursos/testimonio/
+          for f in sorted(os.listdir(testimonio_dir)):
+              filepath = os.path.join(testimonio_dir, f)
+              if os.path.isfile(filepath) and f.lower().endswith('.mp4'):
+                  lista_recursos.append(f"testimonio/{f}")
+
+          # -------------------------------------------------------------
+          # 3. Guardar el archivo JSON
+          # -------------------------------------------------------------
           with open(json_path, 'w', encoding='utf-8') as json_file:
-              json.dump(lista_imagenes, json_file, indent=4, ensure_ascii=False)
+              json.dump(lista_recursos, json_file, indent=4, ensure_ascii=False)
 
-          print(f"JSON actualizado exitosamente con {len(lista_imagenes)} imágenes en formato lista simple.")
+          print(f"-> JSON generado exitosamente con {len(lista_recursos)} elementos:")
+          print(json.dumps(lista_recursos, indent=2))
           EOF
           python procesar_recursos.py
 
@@ -90,10 +110,9 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add recursos/
           
-          # Verificar si hay cambios en el repositorio
           if git diff-index --quiet HEAD; then
-            echo "No hay imágenes nuevas ni cambios para hacer commit."
+            echo "No hay archivos nuevos ni cambios para hacer commit."
           else
-            git commit -m "chore: renombrar imágenes nuevas y actualizar imagenes.json [skip ci]"
+            git commit -m "chore: renombrar testimonios mp4 y actualizar imagenes.json [skip ci]"
             git push
           fi
