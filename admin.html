@@ -25,7 +25,7 @@
     
     .workspace { display: flex; flex: 1; overflow: hidden; }
     .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
-    .sidebar-right { width: 320px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
+    .sidebar-right { width: 340px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
     #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
@@ -60,7 +60,6 @@
 
     .panel-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #737373; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .divider { height: 1px; background: rgba(255,255,255,0.06); width: 100%; margin: 8px 0; }
-    
     .align-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; }
 </style>
 </head>
@@ -162,15 +161,16 @@
                     <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap"></div>
                 </div>
 
+                <!-- 🟢 LAS 3 PESTAÑAS (CONTENIDO / ESTILO / POSICIÓN) -->
                 <div class="flex w-full mt-1 bg-[#0a0a0c] p-1 rounded-lg border border-white/5">
-                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido</button>
-                    <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all">Estilo y Tipografía</button>
+                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[9px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido</button>
+                    <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-1.5 text-[9px] font-bold rounded text-zinc-500 hover:text-white transition-all">Estilo / Tpo.</button>
+                    <button onclick="switchTab('transform')" id="tab-btn-transform" class="flex-1 py-1.5 text-[9px] font-bold rounded text-zinc-500 hover:text-white transition-all">Posición / Mover</button>
                 </div>
 
                 <!-- Pestaña CONTENIDO -->
                 <div id="panel-content" class="flex flex-col gap-3">
-                    
-                    <button onclick="triggerVideoModal()" id="btn-open-video-modal" class="hidden tool-btn w-full justify-center bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20 hover:border-violet-500 mb-2">
+                    <button onclick="triggerVideoModal()" id="btn-open-video-modal" class="hidden tool-btn w-full justify-center bg-violet-500/10 border-violet-500/30 text-violet-400 hover:bg-violet-500/20 hover:border-violet-500 mb-2 shadow-[0_0_15px_rgba(115,92,255,0.2)]">
                         <i class="fa-solid fa-layer-group"></i> Configurar Modal (Popup)
                     </button>
 
@@ -179,6 +179,7 @@
                         <textarea id="prop-text" rows="4" class="inspector-input resize-y"></textarea>
                         <p id="text-help" class="text-[9px] text-zinc-500 mt-1 hidden">Este elemento contiene una estructura compleja. Usa "Seleccionar Elemento Interno" para editar el texto.</p>
                     </div>
+                    
                     <div id="prop-link-group" class="hidden">
                         <label class="inspector-label flex justify-between items-center">
                             Enlace / Origen
@@ -191,8 +192,7 @@
                 </div>
 
                 <!-- Pestaña ESTILO -->
-                <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5">
-                    
+                <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5 shadow-inner">
                     <div id="prop-theme-group" class="hidden pb-3 border-b border-white/5">
                         <label class="inspector-label text-pink-400 flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles"></i> Tema Visual (1 Clic)</label>
                         <select id="prop-theme" class="inspector-input" onchange="triggerStyleUpdate('theme', this.value)">
@@ -253,9 +253,54 @@
                         </div>
                     </div>
                     <div>
-                        <label class="inspector-label">Bordes Redondeados (px)</label>
+                        <label class="inspector-label flex justify-between">Bordes Redondeados <span>px</span></label>
                         <input type="range" id="prop-radius" min="0" max="100" value="0" class="w-full accent-cyan-400" oninput="triggerStyleUpdate('radius', this.value)">
                     </div>
+                </div>
+
+                <!-- 🟢 NUEVA Pestaña POSICIÓN / TRANSFORMACIÓN -->
+                <div id="panel-transform" class="hidden flex-col gap-4 bg-[#121215] p-4 rounded-lg border border-white/5 shadow-inner">
+                    <p class="text-[9px] text-zinc-400 mb-1 leading-relaxed">Usa estas herramientas para escalar, centrar o ajustar videos, sombras y textos flotantes.</p>
+                    
+                    <div id="prop-media-fit-group" class="hidden pb-4 border-b border-white/10">
+                        <label class="inspector-label text-cyan-400 flex justify-between"><i class="fa-solid fa-crop-simple mr-1"></i> Ajuste (Video/Img)</label>
+                        <select id="prop-object-fit" class="inspector-input" onchange="applyObjectFit()">
+                            <option value="cover">Rellenar todo (Cover)</option>
+                            <option value="contain">Encajar por completo (Contain)</option>
+                            <option value="fill">Estirar forzosamente (Fill)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="inspector-label flex justify-between">Expansión Alto <span id="val-height" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">Auto</span></label>
+                        <input type="range" id="prop-height" min="10" max="100" step="5" value="60" class="w-full accent-cyan-400" oninput="document.getElementById('val-height').innerText=this.value+'%'; applyHeight()">
+                    </div>
+
+                    <div class="divider my-0"></div>
+                    
+                    <div>
+                        <label class="inspector-label flex justify-between">Zoom / Escalado <span id="val-scale" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">1.0x</span></label>
+                        <input type="range" id="prop-scale" min="0.3" max="2" step="0.05" value="1" class="w-full accent-pink-500" oninput="document.getElementById('val-scale').innerText=this.value+'x'; applyTransform()">
+                    </div>
+
+                    <div>
+                        <label class="inspector-label flex justify-between">Mover Horizontal <span id="val-tx" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">0px</span></label>
+                        <input type="range" id="prop-tx" min="-200" max="200" value="0" class="w-full accent-violet-400" oninput="document.getElementById('val-tx').innerText=this.value+'px'; applyTransform()">
+                    </div>
+
+                    <div>
+                        <label class="inspector-label flex justify-between">Mover Vertical <span id="val-ty" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">0px</span></label>
+                        <input type="range" id="prop-ty" min="-300" max="300" value="0" class="w-full accent-violet-400" oninput="document.getElementById('val-ty').innerText=this.value+'px'; applyTransform()">
+                    </div>
+
+                    <div>
+                        <label class="inspector-label flex justify-between">Opacidad <span id="val-opacity" class="text-white font-mono bg-white/10 px-1.5 py-0.5 rounded text-[8px]">100%</span></label>
+                        <input type="range" id="prop-opacity" min="0" max="1" step="0.05" value="1" class="w-full accent-zinc-400" oninput="document.getElementById('val-opacity').innerText=Math.round(this.value*100)+'%'; triggerStyleUpdate('opacity', this.value)">
+                    </div>
+
+                    <button onclick="resetTransforms()" class="text-[9px] text-zinc-400 hover:text-white mt-1 border border-white/10 hover:bg-white/10 transition-colors rounded py-1.5 px-2 flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-rotate-left"></i> Restablecer Ajustes
+                    </button>
                 </div>
 
                 <div class="divider mt-2"></div>
@@ -297,7 +342,7 @@
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300"><div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]"><div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0"><h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Biblioteca de Iconos</h3><button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="mb-4 shrink-0 relative"><i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i><input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono..." class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner"></div><div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div></div></div>
 <div id="custom-modal" class="hidden fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm p-4 flex items-center justify-center transition-opacity duration-300 opacity-0"><div class="w-full max-w-sm bg-[#121215] border border-white/10 p-6 rounded-2xl shadow-2xl text-center transform scale-95 transition-transform duration-300" id="custom-modal-content"><i id="custom-modal-icon" class="fa-solid fa-bell text-cyan-500 text-4xl mb-4"></i><h3 id="custom-modal-title" class="text-lg font-bold text-white mb-2">Mensaje</h3><p id="custom-modal-text" class="text-zinc-400 text-sm mb-6 whitespace-pre-wrap"></p><div class="flex gap-3 justify-center"><button id="custom-modal-cancel" onclick="closeCustomModal()" class="hidden flex-1 bg-[#0a0a0c] border border-white/10 text-white font-medium py-2.5 rounded-lg hover:bg-white/5 transition-colors text-sm">Cancelar</button><button id="custom-modal-confirm" class="flex-1 bg-cyan-500 text-black font-semibold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Aceptar</button></div></div></div>
 
-<!-- MODAL GALERÍA -->
+<!-- GALERÍA MULTIMEDIA ROBUSTA -->
 <div id="imageGalleryModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-4xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
         <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
@@ -361,22 +406,12 @@
 
     function saveLayoutAndPositions() { const btn = document.querySelector('.fa-cloud-arrow-up').parentElement; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...'; document.getElementById('site-frame').contentWindow.postMessage({ type: 'SAVE_FULL_LAYOUT' }, '*'); }
     
-    // 🔥 FUNCIONALIDAD CORREGIDA: Fuerza la recarga visual del iframe después de enviar el reset.
     function resetLayout() { 
         showConfirm("¿Restaurar diseño de fábrica? Esto descartará todos los cambios guardados.", () => { 
-            const btn = document.getElementById('btn-reset-layout');
-            const originalText = btn.innerHTML;
+            const btn = document.getElementById('btn-reset-layout'); const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Restaurando...';
-            
-            // 1. Enviar el comando al iframe para que borre el storage
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*'); 
-            
-            // 2. Darle 1 segundo al iframe para borrar su memoria, y luego forzar la recarga visual desde el panel
-            setTimeout(() => {
-                reloadIframe();
-                btn.innerHTML = originalText;
-                showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
-            }, 1000);
+            setTimeout(() => { reloadIframe(); btn.innerHTML = originalText; showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente."); }, 1000);
         }); 
     }
 
@@ -387,54 +422,29 @@
     
     async function loadGalleryImages(tipo) {
         const container = document.getElementById('image-grid-container'); 
-        const pathLabel = document.getElementById('gallery-path');
-        const typeLabel = document.getElementById('gallery-type-label');
-        
+        const pathLabel = document.getElementById('gallery-path'); const typeLabel = document.getElementById('gallery-type-label');
         container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Consultando Base de Datos...</div>';
         
         let baseUrl = tipo === 'productos' ? "https://multiprintt.web.app/recursos/productos/" : "https://multiprintt.web.app/recursos/";
-        pathLabel.innerText = "RUTA: " + (tipo === 'productos' ? "/recursos/productos/" : "/recursos/");
-        typeLabel.innerText = tipo;
+        pathLabel.innerText = "RUTA: " + (tipo === 'productos' ? "/recursos/productos/" : "/recursos/"); typeLabel.innerText = tipo;
 
         try {
             const resp = await fetch(`${baseUrl}imagenes.json?v=${new Date().getTime()}`); 
             if(!resp.ok) throw new Error("HTTP " + resp.status);
-            
-            const rawText = await resp.text();
-            let lista = [];
-            
-            try {
-                lista = JSON.parse(rawText);
-            } catch (parseError) {
-                console.error("Error de sintaxis en JSON:", parseError, rawText);
-                container.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">El archivo existe pero tiene un error de sintaxis.<br><br><span class="text-cyan-400">Verifica que no tengas comas (,) sobrantes al final de la última línea ni comillas simples.</span></p></div>`;
-                return;
-            }
+            const rawText = await resp.text(); let lista = [];
+            try { lista = JSON.parse(rawText); } catch (parseError) { container.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">El archivo existe pero tiene un error de sintaxis.<br><br><span class="text-cyan-400">Verifica que no tengas comas (,) sobrantes al final de la última línea ni comillas simples.</span></p></div>`; return; }
 
             container.innerHTML = '';
-            
-            if (lista.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return;
-            }
+            if (lista.length === 0) { container.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return; }
 
             lista.forEach(n => {
                 const url = baseUrl + n; const div = document.createElement('div'); 
                 div.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between';
-                div.innerHTML = `
-                    <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div>
-                    <div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10">
-                        <img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0">
-                        <p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${n}</p>
-                    </div>
-                `;
+                div.innerHTML = `<div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div><div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10"><img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500"></div><div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0"><p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${n}</p></div>`;
                 div.onclick = () => { document.getElementById('prop-link').value = url; document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: url, src: url }, '*'); closeImageGallery(); };
                 container.appendChild(div);
             });
-        } catch(e) { 
-            container.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Error de Conexión: No se encontró el archivo.</div>`; 
-        }
+        } catch(e) { container.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Error de Conexión.</div>`; }
     }
 
     function ctxAction(action) { document.getElementById('context-menu').classList.add('hidden'); if (action === 'delete') { triggerDeleteFromInspector(); } else if (action === 'selectParent') { triggerSelectParent(); } else if (action === 'selectChild') { triggerSelectChild(); } else if (action === 'edit') { switchTab('content'); document.getElementById('prop-text').focus(); } }
@@ -444,11 +454,18 @@
     function triggerVideoModal() { document.getElementById('site-frame').contentWindow.postMessage({ type: 'TRIGGER_VIDEO_MODAL' }, '*'); }
 
     function resetPanelSelection() { document.getElementById('inspector-tools').style.display = 'none'; document.getElementById('no-selection').style.display = 'block'; }
+    
+    // 🟢 NUEVA LÓGICA DE PESTAÑAS (3 Pestañas en el Inspector)
     function switchTab(tab) {
         document.getElementById('panel-content').style.display = tab === 'content' ? 'flex' : 'none';
         document.getElementById('panel-style').style.display = tab === 'style' ? 'flex' : 'none';
-        document.getElementById('tab-btn-content').className = tab === 'content' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
-        document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
+        document.getElementById('panel-transform').style.display = tab === 'transform' ? 'flex' : 'none';
+        
+        ['content', 'style', 'transform'].forEach(t => {
+            const btn = document.getElementById('tab-btn-' + t);
+            if(t === tab) { btn.className = 'flex-1 py-1.5 text-[9px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all'; } 
+            else { btn.className = 'flex-1 py-1.5 text-[9px] font-bold rounded text-zinc-500 hover:text-white transition-all'; }
+        });
     }
 
     document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) document.getElementById('context-menu').classList.add('hidden'); });
@@ -464,6 +481,29 @@
         }
     }
     
+    // 🟢 FUNCIONES AVANZADAS DE TRANSFORMACIÓN Y POSICIONAMIENTO
+    function applyTransform() {
+        const scale = document.getElementById('prop-scale').value;
+        const tx = document.getElementById('prop-tx').value;
+        const ty = document.getElementById('prop-ty').value;
+        triggerStyleUpdate('transform', `translate(${tx}px, ${ty}px) scale(${scale})`);
+    }
+
+    function applyHeight() { triggerStyleUpdate('height', document.getElementById('prop-height').value + '%'); }
+    function applyObjectFit() { triggerStyleUpdate('objectFit', document.getElementById('prop-object-fit').value); }
+
+    function resetTransforms() {
+        document.getElementById('prop-scale').value = 1; document.getElementById('val-scale').innerText = '1.0x';
+        document.getElementById('prop-tx').value = 0; document.getElementById('val-tx').innerText = '0px';
+        document.getElementById('prop-ty').value = 0; document.getElementById('val-ty').innerText = '0px';
+        document.getElementById('prop-opacity').value = 1; document.getElementById('val-opacity').innerText = '100%';
+        document.getElementById('prop-height').value = 60; document.getElementById('val-height').innerText = 'Auto';
+        
+        triggerStyleUpdate('transform', 'none');
+        triggerStyleUpdate('opacity', '1');
+        triggerStyleUpdate('height', ''); 
+    }
+
     document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
     document.getElementById('prop-bg').addEventListener('input', (e) => triggerStyleUpdate('bg', e.target.value));
     document.getElementById('prop-text').addEventListener('input', (e) => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: e.target.value }, '*'); });
@@ -471,11 +511,7 @@
 
     window.addEventListener('message', (e) => {
         if(e.data.type === 'APP_READY') { document.getElementById('site-frame').contentWindow.postMessage({ type: currentMode === 'interact' ? 'DISABLE_BUILDER' : 'ENABLE_BUILDER' }, '*'); }
-        
-        // Manejo exitoso de publicación
         if(e.data.type === 'SAVE_DONE') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!'; btn.classList.replace('bg-cyan-500', 'bg-green-400'); resetBuilderUI(); setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); reloadIframe(); }, 2000); }
-        
-        // Manejo exitoso si el Iframe responde al reset
         if (e.data.type === 'RESET_DONE') { resetBuilderUI(); reloadIframe(); }
 
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
@@ -498,6 +534,8 @@
 
             if(e.data.isVideoCard) document.getElementById('btn-open-video-modal').classList.remove('hidden'); else document.getElementById('btn-open-video-modal').classList.add('hidden');
             if(e.data.hasTheme) { document.getElementById('prop-theme-group').classList.remove('hidden'); document.getElementById('prop-theme').value = e.data.currentTheme || ''; } else document.getElementById('prop-theme-group').classList.add('hidden');
+
+            if(tag === 'VIDEO' || tag === 'IMG') { document.getElementById('prop-media-fit-group').classList.remove('hidden'); } else { document.getElementById('prop-media-fit-group').classList.add('hidden'); }
 
             const textInput = document.getElementById('prop-text');
             if (STRUCTURAL_TAGS.includes(tag)) {
