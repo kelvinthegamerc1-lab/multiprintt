@@ -32,35 +32,40 @@ body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: 
 h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 ::selection{background:var(--pink);color:white}
 
-/* Optimizaciones estrictas para el Scroll en Móviles */
-.slide-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; will-change: scroll-position; transform: translateZ(0); }
+.slide-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; will-change: scroll-position; transform: translate3d(0,0,0); }
 .slide-scroll::-webkit-scrollbar{width:6px; height: 6px;}
 .slide-scroll::-webkit-scrollbar-track{background:transparent}
 .slide-scroll::-webkit-scrollbar-thumb{background:#292930;border-radius:99px}
 .slide-scroll::-webkit-scrollbar-thumb:hover{background:var(--pink)}
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-.glass{background:rgba(7,7,9,.72);backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}
-.glass-nav-mobile{background:rgba(10,10,14,.9);backdrop-filter:blur(15px);border-top:1px solid var(--line)}
+.glass{background:rgba(10,10,14,.95);backdrop-filter:blur(20px);}
+.glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+
+.filter-btn { transition: background-color 0.3s ease, color 0.3s ease; position: relative; }
+.filter-btn.active { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); } 
+.cat-mas-vendidos.active { background: rgba(225,29,72,0.95); }
+.cat-promocionales.active { background: rgba(234,88,12,0.95); }
+.cat-textil.active { background: rgba(8,145,178,0.95); }
+.cat-jarros.active { background: rgba(219,39,119,0.95); }
+.cat-imp-general.active { background: rgba(124,58,237,0.95); }
+.cat-packs.active { background: rgba(5,150,105,0.95); }
 
 .gradient-text{ background:linear-gradient(100deg,#fff 15%,#d5d0ff 48%,#ff4bb8 90%); -webkit-background-clip:text; background-clip:text; color:transparent; line-height: 1.4 !important; padding-bottom: 0.2em; display: inline-block; position: relative; z-index: 20; }
 .gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
-.hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0; transform: translateZ(0);}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
 
-/* Animaciones de Tarjetas Optimizadas (No más repaints costosos en móvil) */
-.card{ border:1px solid var(--line); border-radius:12px; transform: translateZ(0); will-change: transform; transition: transform .3s ease, border-color .3s ease; }
-.card:hover{border-color:rgba(255,255,255,.18);transform:translateY(-3px) translateZ(0);}
+.card{ background:#101014; border:1px solid rgba(255,255,255,0.05); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; will-change: transform; }
+@media(min-width: 768px) { .card:hover{ border-color:rgba(255,255,255,.15); transform:translateY(-3px) translate3d(0,0,0); box-shadow:0 12px 40px rgba(0,0,0,.4); } }
 
-.view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99) translateZ(0); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 74px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
-@media(min-width: 768px) { .view-slide { padding-top: 80px; padding-bottom: 20px; } }
-.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1) translateZ(0); z-index: 10; }
+.view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99) translate3d(0,0,0); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 90px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
+@media(min-width: 768px) { .view-slide { padding-top: 101px; padding-bottom: 20px; } }
+.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1) translate3d(0,0,0); z-index: 10; }
 
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
-.reveal.show{opacity:1;transform:translateZ(0)}
-.btn{transition:transform .25s ease,box-shadow .25s ease,background .25s ease}
-.btn:hover{transform:translateY(-2px)}
+.reveal.show{opacity:1;transform:translate3d(0,0,0)}
 
-.nav-link { color: #aaaab3; transition: all 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 99px; font-weight: 500; }
+.nav-link { color: #aaaab3; transition: all 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.4rem 1rem; border-radius: 99px; font-weight: 500; }
 .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
 .nav-link.active { color: #000 !important; background: #fff !important; font-weight: 700 !important; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
@@ -68,38 +73,29 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
-/* BUILDER PRO */
-.admin-tool { display: none !important; }
-body.is-admin-session .admin-tool { display: flex !important; }
+/* BUILDER PRO CSS BLINDADO */
+.admin-tool, .admin-overlay, .admin-video-edit-overlay { display: none !important; pointer-events: none !important; }
+body.is-admin-session .admin-tool { display: flex !important; pointer-events: auto !important; }
 
 body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
-body.builder-mode .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; }
-body.builder-mode a:hover, body.builder-mode video:hover, body.builder-mode img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
-body.builder-mode .ignore-drag { pointer-events: auto !important; }
+body.builder-mode:not(.dragging-active) .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; }
+body.builder-mode:not(.dragging-active) a:hover, body.builder-mode:not(.dragging-active) video:hover, body.builder-mode:not(.dragging-active) img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
 
 body.dragging-active .sortable-zone > * { cursor: grab !important; }
 body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
 .sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
 
-.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
+body.is-admin-session .admin-overlay { display: flex !important; position: absolute; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(2px); flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
 body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
-
-.loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
-.admin-video-edit-overlay { display: none; }
-body.is-admin-session .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
+body.is-admin-session .admin-video-edit-overlay { display: flex !important; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
 body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
-body.is-admin-session .video-testimonial-card .vt-quote { display: block !important; position: relative; z-index: 40; pointer-events: auto; }
 
-body.builder-mode #videoModal { pointer-events: auto !important; }
-
-/* 📱 PROTECCIÓN MÓVIL: Ignora los cambios de escala/posición hechos en PC para el Pop-up */
+/* Candado Responsivo del Modal de Video (Fuerza la proporción 9:16 estilo TikTok) */
 @media (max-width: 767px) {
-    #videoModal:not(.opacity-0) #videoModalContent { transform: scale(1) translate(0, 0) !important; }
-    #videoModal.opacity-0 #videoModalContent { transform: scale(0.95) translate(0, 0) !important; }
-    #videoModalContent { height: auto !important; width: 90vw !important; aspect-ratio: 9/16 !important; max-width: 360px !important; }
+    #videoModalContent { transform: scale(1) translate(0,0) !important; width: 100% !important; max-width: 360px !important; height: auto !important; aspect-ratio: 9/16 !important; border-radius: 24px !important; }
 }
 
-/* Galería de medios */
+.loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 #media-grid::-webkit-scrollbar { width: 6px; }
 #media-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 </style>
@@ -115,50 +111,62 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
 
 <div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
 
-<header id="section-header" class="fixed top-0 left-0 right-0 z-50 glass h-[70px] md:h-[76px] transition-all editable-section">
-  <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
-    <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
-      <div class="w-9 h-9 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
-        <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
-      </div>
-      <div>
-        <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[11px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
-        <div data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
-      </div>
-    </button>
+<div class="fixed top-0 left-0 right-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
+    <header id="section-header" class="glass h-[56px] md:h-[64px] transition-all editable-section border-b border-white/5">
+      <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
+        <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
+          <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
+            <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
+          </div>
+          <div>
+            <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-[13px] m-0" id="brand-name">MULTIPRINTT</h1>
+            <div data-editable="true" class="text-[6px] md:text-[8px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
+          </div>
+        </button>
 
-    <nav id="nav-pc-zone" class="hidden md:flex items-center gap-2 text-sm bg-white/[0.03] p-1.5 rounded-full border border-white/10 sortable-zone">
-      <button onclick="navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
-      <button onclick="navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
-      <button onclick="navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
-      <button onclick="navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
-    </nav>
+        <nav id="nav-pc-zone" class="hidden md:flex items-center gap-1 text-[13px] sortable-zone">
+          <button onclick="navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
+          <button onclick="navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
+          <button onclick="navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
+          <button onclick="navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
+        </nav>
 
-    <div class="flex items-center relative">
-        <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
-            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
-            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
-            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
-        </div>
-        
-        <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
-            <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 shadow-lg px-[9px] whitespace-nowrap sortable-zone">
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
-                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
-                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
-                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
+        <div class="flex items-center relative">
+            <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
+                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
+            </div>
+            
+            <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
+                <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 px-[9px] whitespace-nowrap sortable-zone">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
+                    <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
+                    <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
+                    <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
+                </div>
             </div>
         </div>
+      </div>
+    </header>
+
+    <!-- Submenú Seamless Filtros: 34px en móvil, fuente minúscula y minimalista -->
+    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 overflow-x-auto hide-scrollbar transition-all duration-300">
+        <div class="flex items-center justify-start md:justify-center min-w-max md:min-w-0 w-full">
+            <button onclick="setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Más Vendidos</button>
+            <button onclick="setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Promocionales</button>
+            <button onclick="setFilter('textil')" id="filter-textil" class="filter-btn cat-textil h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Textil</button>
+            <button onclick="setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Jarros & Thermos</button>
+            <button onclick="setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Imp. General</button>
+            <button onclick="setFilter('packs')" id="filter-packs" class="filter-btn cat-packs h-[34px] md:h-[40px] text-[8px] md:text-[9px] uppercase tracking-wider px-6 md:px-8 text-white/50 hover:text-white shrink-0 font-semibold">Packs</button>
+        </div>
     </div>
-  </div>
-</header>
+</div>
 
 <main class="relative w-full h-[100dvh] overflow-hidden">
   
   <section id="view-catalog" class="view-slide active-slide slide-scroll">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-2 relative flex flex-col min-h-[calc(100vh-160px)]">
-        <div id="product-grid" class="w-full reveal show mt-4 mb-8 pb-24 md:pb-8 sortable-zone"></div>
+    <!-- ESPACIO DE RESPIRACIÓN APLICADO AQUÍ (pt-6 y pt-10) PARA EVITAR QUE JS LO BORRE -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex flex-col min-h-[calc(100vh-160px)] pt-6 md:pt-10 pb-24 md:pb-8">
+        <div id="product-grid" class="w-full reveal show transition-all sortable-zone"></div>
     </div>
   </section>
 
@@ -181,8 +189,8 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
             </div>
 
             <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
-                <button data-editable="true" onclick="navigate('catalog')" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl">Ver catálogo</button>
-                <button data-editable="true" onclick="navigate('courses')" class="btn w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10">Nuestra academia</button>
+                <button data-editable="true" onclick="navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-all hover:bg-zinc-200">Ver catálogo</button>
+                <button data-editable="true" onclick="navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-all">Nuestra academia</button>
             </div>
         </div>
     </div>
@@ -190,7 +198,6 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
 
   <section id="view-courses" class="view-slide slide-scroll editable-section">
     <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-8 relative z-10">
-        
         <div class="reveal text-center md:text-left shrink-0 relative z-20 mb-2">
             <div data-editable="true" class="text-[10px] tracking-[.25em] uppercase text-violet-400 font-bold mb-3">Multiprintt Academy</div>
             <h2 class="display flex flex-col gap-0 text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20">
@@ -212,7 +219,6 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
         </div>
         
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
-            
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
                 <div class="video-testimonial-card relative rounded-[20px] overflow-hidden bg-[#0e0e12] border border-cyan-400/40 shadow-[0_15px_40px_rgba(37,216,255,0.2)] group h-[280px] shrink-0 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(37,216,255,0.4)]" data-theme="cyan">
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" preload="metadata" playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-70 transition-opacity duration-500 group-hover:opacity-90"></video>
@@ -225,14 +231,11 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
                         <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-bold uppercase tracking-[.2em] mb-1 pointer-events-auto w-max drop-shadow-md">Caso de Éxito</span>
                     </div>
                     <div class="admin-video-edit-overlay">
-                        <button onclick="event.stopPropagation(); openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 mb-4 flex items-center gap-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
+                        <button onclick="openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 mb-4 flex items-center gap-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
                         <p data-editable="true" class="vt-quote hidden text-xs text-center text-white/90 p-4 border border-dashed border-white/40 rounded bg-black/50">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."</p>
                     </div>
                 </div>
-
-                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-zinc-600 rounded-[20px] flex items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag">
-                    <i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Video</span>
-                </button>
+                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-zinc-600 rounded-[20px] flex items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag"><i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Video</span></button>
             </div>
             
             <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone h-max">
@@ -247,22 +250,7 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
                         </div>
                     </div>
                 </div>
-
-                <div class="p-6 md:p-8 rounded-[20px] bg-[#101014] border border-violet-500/40 flex flex-col shadow-[0_0_15px_rgba(115,92,255,0.1)] card hover:shadow-[0_0_20px_rgba(115,92,255,0.3)] transition-all group" data-theme="violet">
-                    <i class="fa-solid fa-quote-left text-violet-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
-                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Me encantó el taller. Hice piezas hermosas desde el primer día y el acompañamiento me ha ayudado muchísimo."</p>
-                    <div class="flex items-center gap-4 pt-4 border-t border-white/5">
-                        <div class="w-10 h-10 rounded-full bg-violet-400/10 border border-violet-400 flex items-center justify-center font-bold text-sm text-violet-400 transition-colors"><span data-editable="true">A</span></div>
-                        <div>
-                            <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide">Ana P.</h4>
-                            <span data-editable="true" class="text-violet-400 text-[10px] font-medium transition-colors">Taller de Resina</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-zinc-600 rounded-[20px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag">
-                    <i class="fa-solid fa-plus text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Texto</span>
-                </button>
+                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-zinc-600 rounded-[20px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag"><i class="fa-solid fa-plus text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Texto</span></button>
             </div>
         </div>
     </div>
@@ -270,7 +258,6 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
 
   <section id="view-contact" class="view-slide flex flex-col slide-scroll editable-section">
     <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-1 sm:pt-2 pb-2 sm:pb-6 relative z-10">
-        
         <div class="flex-1 flex flex-col justify-evenly">
             <div class="reveal text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2">
                 <div data-editable="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
@@ -283,7 +270,6 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
             <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
                 <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
-                    
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
                             <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
@@ -353,33 +339,23 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
   </div>
 </div>
 
-<div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500">
-    <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] aspect-[9/16] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto" data-theme="cyan">
-        
-        <button onclick="closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all outline-none shadow-lg ignore-drag">
-            <i class="fa-solid fa-xmark text-sm pointer-events-none"></i>
-        </button>
-
-        <div class="absolute top-4 left-4 z-[310] bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-mono px-2 py-1 rounded-md shadow-lg pointer-events-none">
-            <span id="vm-time">00:00</span>
-        </div>
-
+<!-- EL MODAL PERFECTO TIKTOK 9:16 ENMASCARADO -->
+<div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
+    <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] aspect-[9/16] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto" data-theme="cyan" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
+        <button onclick="closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg"><i class="fa-solid fa-xmark text-sm pointer-events-none"></i></button>
+        <div data-editable="true" class="absolute top-4 left-4 z-[310] bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-mono px-2 py-1 rounded-md shadow-lg pointer-events-none"><span id="vm-time">00:00</span></div>
         <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
-        
-        <div id="vm-gradient" data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 pointer-events-none"></div>
-        
-        <div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12">
-            <i id="vm-quote-icon" data-editable="true" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1"></i>
-            <div class="overflow-y-auto hide-scrollbar max-h-[160px] mb-4">
-                <p id="vm-quote" data-editable="true" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1">"..."</p>
+        <div data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12 pointer-events-none">
+            <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1 pointer-events-auto"></i>
+            <div class="overflow-y-auto hide-scrollbar max-h-[160px] mb-4 pointer-events-none">
+                <p data-editable="true" id="vm-quote" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1 pointer-events-auto">"..."</p>
             </div>
-            <div class="border-t border-white/10 pt-4 shrink-0 flex items-center gap-4">
-                <div id="vm-avatar-container" data-editable="true" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300">
-                    <span class="font-bold text-sm text-cyan-400" id="vm-initial" data-editable="true">C</span>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <h4 id="vm-name" data-editable="true" class="text-white text-sm font-bold tracking-wide drop-shadow-sm">Carlos P.</h4>
-                    <span id="vm-role" data-editable="true" class="text-[9px] uppercase tracking-[0.2em] font-bold drop-shadow-sm mt-0.5 transition-colors duration-300 text-cyan-400">Caso de Éxito</span>
+            <div class="border-t border-white/10 pt-4 shrink-0 flex items-center gap-4 pointer-events-none">
+                <div data-editable="true" id="vm-avatar-container" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto"><span class="font-bold text-sm text-cyan-400" id="vm-initial">C</span></div>
+                <div class="flex flex-col justify-center pointer-events-none">
+                    <h4 data-editable="true" id="vm-name" class="text-white text-sm font-bold tracking-wide drop-shadow-sm pointer-events-auto">Carlos P.</h4>
+                    <span data-editable="true" id="vm-role" class="text-[9px] uppercase tracking-[0.2em] font-bold drop-shadow-sm mt-0.5 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
                 </div>
             </div>
         </div>
@@ -388,8 +364,7 @@ body.builder-mode #videoModal { pointer-events: auto !important; }
 
 <div id="mediaModal" class="hidden fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl p-4 sm:p-6 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-3xl bg-[#0e0e12] border border-white/10 p-6 rounded-3xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh] ignore-drag" id="mediaModalContent"><div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4 shrink-0"><h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-regular fa-images text-cyan-400"></i> Galería de Recursos</h3><button onclick="closeMediaSelector()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 font-bold" id="media-folder-label">/recursos/</div><div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div></div></div>
 <div id="editModal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative ignore-drag" id="editModalContent"><h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2 ignore-drag">Editar BD</h3><input type="hidden" id="em-id" class="ignore-drag"> <input type="hidden" id="em-type" class="ignore-drag"><div id="em-fields" class="space-y-3 mb-6 ignore-drag"></div><div class="flex gap-3 ignore-drag"><button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 ignore-drag">Guardar Cambios</button><button onclick="closeEditModal()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button></div></div></div>
-<div id="custom-confirm-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-sm bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 text-center ignore-drag" id="custom-confirm-content"><i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4 ignore-drag"></i><h3 class="text-lg font-bold text-white mb-2 ignore-drag">¿Estás seguro?</h3><p class="text-zinc-400 text-sm mb-6 ignore-drag">¿Quieres borrar este elemento permanentemente?</p>
-<div class="flex gap-3 ignore-drag"><button id="custom-confirm-btn" class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-lg hover:bg-red-600 ignore-drag">Borrar</button><button onclick="closeCustomConfirm()" class="flex-1 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button></div></div></div>
+<div id="custom-confirm-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-sm bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 text-center ignore-drag" id="custom-confirm-content"><i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4 ignore-drag"></i><h3 class="text-lg font-bold text-white mb-2 ignore-drag">¿Estás seguro?</h3><p class="text-zinc-400 text-sm mb-6 ignore-drag">¿Quieres borrar este elemento permanentemente?</p><div class="flex gap-3 ignore-drag"><button id="custom-confirm-btn" class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-lg hover:bg-red-600 ignore-drag">Borrar</button><button onclick="closeCustomConfirm()" class="flex-1 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button></div></div></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script type="module">
@@ -398,19 +373,13 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const APP_ID = "multiprintt-web";
+const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const APP_ID = "multiprintt-web";
 
-window.isAdminMode = false;
-window.sortableInstances = [];
-window.productOrderArray = []; 
-window.courseOrderArray = [];
-let editingCardNode = null; 
-let currentVideoCardRef = null;
+window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
+let editingCardNode = null; let currentVideoCardRef = null;
+const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
 
-const defaultProducts = [{id:'p1',name:'Fotocuadros',category:'premium',price:25,image:'',icon:'fa-image'}];
+const defaultProducts = [{id:'p1',name:'Fotocuadros',category:'mas-vendidos',price:25,image:'',icon:'fa-image'}];
 const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:""}];
 window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
 
@@ -426,27 +395,32 @@ window.navigate = function(targetId) {
             if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
         }
     });
+    const subnav = document.getElementById('catalog-subnav');
+    if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '40px'; subnav.style.opacity = '1'; } 
+    else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
 };
 
-/* 🟢 RENDERIZADO SIMÉTRICO OPTIMIZADO PARA MÓVILES (Catálogo) */
+window.setFilter = function(filterStr) {
+    window.currentFilter = filterStr;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active', 'font-bold'));
+    document.getElementById(`filter-${filterStr}`).classList.add('active', 'font-bold');
+    window.renderProducts();
+};
+
 window.renderProducts = function(){
-    const grid = document.getElementById('product-grid'); 
-    if(!grid) return;
+    const grid = document.getElementById('product-grid'); if(!grid) return;
     grid.innerHTML = '';
     
-    let safeProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
+    let safeProducts = (Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts]).map(p => {
+        if(p.category === 'premium' || p.category === 'tazas') p.category = 'mas-vendidos';
+        if(!p.category) p.category = 'mas-vendidos'; return p;
+    }).filter(p => p.category === window.currentFilter);
+    
     let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
     safeProducts.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     
-    grid.className = "grid gap-3 sm:gap-4 md:gap-5 mx-auto w-full sortable-zone";
-    
-    /* Regla para garantizar simetría (Minimo 2 columnas a menos que solo exista 1 producto) */
-    if (safeProducts.length === 1) { grid.classList.add("grid-cols-1", "max-w-xs"); } 
-    else if (safeProducts.length === 2) { grid.classList.add("grid-cols-2", "max-w-2xl"); } 
-    else if (safeProducts.length === 3) { grid.classList.add("grid-cols-2", "md:grid-cols-3", "max-w-4xl"); } 
-    else { grid.classList.add("grid-cols-2", "sm:grid-cols-3", "lg:grid-cols-4"); }
-    
-    if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos.</div>`; }
+    grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full sortable-zone";
+    if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`; }
     
     let phoneEl = document.getElementById('contact-phone');
     let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
@@ -454,77 +428,24 @@ window.renderProducts = function(){
 
     safeProducts.forEach((p,i)=>{
         const wa=`https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
+        const art = p.image ? `<img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 md:group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+        const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
         
-        // Optimización brutal: Se eliminó el "drop-shadow" pesado en móvil y se añadió 'will-change-transform'
-        const art = p.image ? `<img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-2 sm:p-3 z-10 group-hover:scale-105 transition-transform duration-300 drop-shadow-md md:drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] will-change-transform" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
-        
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.stopPropagation(); deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
-        
-        // Tarjeta simétrica (Altura estricta h-[34px] para el título garantiza alineación perfecta en filas)
-        grid.innerHTML += `
-        <article class="card overflow-hidden group bg-[#0b0b0e] flex flex-col h-full relative will-change-transform" data-id="${p.id}">
-            ${adminHtml}
-            <div class="aspect-square relative flex items-center justify-center overflow-hidden bg-[#070709]">
-                <div class="absolute inset-0 opacity-10 pointer-events-none" style="background: radial-gradient(circle at 50% 50%, ${['#735cff','#ff2da8','#25d8ff','#ffd84d'][i%4]} 0%, transparent 70%);"></div>
-                ${art}
-                <span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-black/60 px-2 py-1 rounded border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-star text-[#ffd84d]"></i> Premium</span>
-            </div>
-            <div class="p-3 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]">
-                <h3 class="font-bold text-[11px] md:text-xs leading-snug line-clamp-2 h-[34px]">${p.name}</h3>
-                <div class="mt-auto pt-2 flex items-center justify-between">
-                    <span class="text-[13px] md:text-sm font-extrabold text-white">$${Number(p.price).toFixed(2)}</span>
-                    <a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</a>
-                </div>
-            </div>
-        </article>`;
+        let adminHtml = `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="event.stopPropagation(); window.deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>`;
+        grid.innerHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 60%);"></div>${art}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</a></div></div></article>`;
     });
-
-    if(window.isAdminMode) {
-        grid.innerHTML += `<button onclick="openEditor('product', null)" class="admin-tool min-h-[220px] border-2 border-dashed border-zinc-600 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-cyan-400 hover:text-cyan-400 cursor-pointer transition-all w-full h-full pointer-events-auto ignore-drag"><i class="fa-solid fa-plus text-3xl mb-2 pointer-events-none"></i> <span class="pointer-events-none text-xs">Añadir Producto</span></button>`;
-    }
 }
 
-/* 🟢 RENDERIZADO SIMÉTRICO PARA CURSOS */
 window.renderCourses = function(){
-    const grid = document.getElementById('courses-grid'); 
-    if(!grid) return;
-    grid.innerHTML = '';
-    
+    const grid = document.getElementById('courses-grid'); if(!grid) return; grid.innerHTML = '';
     let safeCourses = Array.isArray(window.appCourses) && window.appCourses.length > 0 ? [...window.appCourses] : [...defaultCourses];
     let safeOrder = Array.isArray(window.courseOrderArray) ? window.courseOrderArray : [];
     safeCourses.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     
     safeCourses.forEach((c)=>{
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.stopPropagation(); deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 ignore-drag"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
-        
-        // Título forzado a h-[44px] para que la tarjeta no brinque si un curso tiene nombre de 2 líneas
-        grid.innerHTML += `
-        <article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full will-change-transform" data-id="${c.id}">
-            ${adminHtml}
-            <div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5">
-                <img src="${c.image}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'">
-            </div>
-            <div class="relative flex flex-col w-full flex-1 p-4 pt-3 bg-[#101014]">
-                <h3 class="font-extrabold text-[14px] md:text-base leading-snug h-[44px] line-clamp-2">${c.title}</h3>
-                <p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p>
-                <div class="mt-4 pt-3 border-t border-white/5">
-                    <button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black ignore-drag">Ver más</button>
-                </div>
-            </div>
-        </article>`;
+        let adminHtml = `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="event.stopPropagation(); window.deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>`;
+        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black ignore-drag">Ver más</button></div></div></article>`;
     });
-
-    if(window.isAdminMode) {
-        grid.innerHTML += `<button onclick="openEditor('course', null)" class="admin-tool min-h-[220px] border-2 border-dashed border-zinc-600 rounded-[12px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-yellow-400 hover:text-yellow-400 cursor-pointer transition-all w-full h-full pointer-events-auto ignore-drag"><i class="fa-solid fa-plus text-3xl mb-2 pointer-events-none"></i> <span class="pointer-events-none text-xs">Añadir Curso</span></button>`;
-    }
-}
-
-window.closeCourseModal = function() {
-    const m = document.getElementById('courseModal');
-    const c = document.getElementById('courseModalContent');
-    if(m) m.classList.add('opacity-0');
-    if(c) c.classList.add('scale-95');
-    setTimeout(() => { if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }, 300);
 }
 
 window.cloneTextTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.card:not(.admin-tool)'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
@@ -543,13 +464,18 @@ async function loadFirebaseData() {
             const data = layoutSnap.data();
             if(data.zones) { 
                 document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
+                
+                // PARCHE DE SEGURIDAD MODAL (Fuerza las clases TikTok incluso si la BD se guardó corrupta)
                 if(data.zones['videoModalTpl']) {
-                    const modalContent = document.getElementById('videoModalContent');
+                    const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
                     if(modalContent) {
-                        modalContent.innerHTML = data.zones['videoModalTpl'];
-                        // 🟢 Restaurar también la escala, posición y tema personalizado guardado
-                        if(data.zones['videoModalStyle']) modalContent.setAttribute('style', data.zones['videoModalStyle']);
-                        if(data.zones['videoModalTheme']) modalContent.setAttribute('data-theme', data.zones['videoModalTheme']);
+                        modalContent.outerHTML = data.zones['videoModalTpl'];
+                        const newModalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
+                        if(newModalContent) {
+                            newModalContent.id = 'videoModalContent'; // Garantiza ID para panel admin
+                            newModalContent.classList.add('relative', 'w-[90vw]', 'max-w-[360px]', 'aspect-[9/16]', 'rounded-[24px]', 'overflow-hidden', 'mx-auto');
+                            newModalContent.style.webkitMaskImage = '-webkit-radial-gradient(white, black)';
+                        }
                     }
                 }
             }
@@ -559,14 +485,13 @@ async function loadFirebaseData() {
 
         window.appProducts = prodSnap.empty ? [...defaultProducts] : prodSnap.docs.map(d => ({id: d.id, ...d.data()})); 
         window.appCourses = coursesSnap.empty ? [...defaultCourses] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-
     } catch (error) { 
         console.warn("Error Firebase, usando respaldo seguro."); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
     } 
     finally {
         window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
-        try { window.renderProducts(); window.renderCourses(); } catch(e) {}
+        try { window.setFilter('mas-vendidos'); window.renderCourses(); } catch(e) {}
         
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
@@ -576,12 +501,10 @@ async function loadFirebaseData() {
 }
 
 window.initMap = function() {
-    const mapContainer = document.getElementById('contact-map-col');
-    if(!mapContainer) return;
+    const mapContainer = document.getElementById('contact-map-col'); if(!mapContainer) return;
     let oldMap = document.getElementById('leaflet-map'); if(oldMap) { oldMap.remove(); } 
     let newMapDiv = document.createElement('div'); newMapDiv.id = 'leaflet-map'; newMapDiv.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
     mapContainer.insertBefore(newMapDiv, mapContainer.firstChild);
-
     window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
     L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
@@ -589,25 +512,17 @@ window.initMap = function() {
 window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
 
 const themeData = { cyan: { base: 'cyan', rgb: '37,216,255', hex: '#25d8ff' }, pink: { base: 'pink', rgb: '255,45,168', hex: '#ff2da8' }, violet: { base: 'violet', rgb: '115,92,255', hex: '#735cff' }, yellow: { base: 'yellow', rgb: '250,204,21', hex: '#facc15' }, emerald: { base: 'emerald', rgb: '52,211,153', hex: '#34d399' } };
-
 window.applyThemeSwap = function(element, newThemeKey) {
-    const newTheme = themeData[newThemeKey];
-    if (!newTheme) return;
-    
+    if (!element) return; 
+    const newTheme = themeData[newThemeKey]; if (!newTheme) return;
     const els = [element, ...element.querySelectorAll('*')];
     const colorNames = ['cyan', 'pink', 'violet', 'yellow', 'emerald'];
     const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '250,204,21', '52,211,153'];
     
     els.forEach(el => {
         if(!el.className || typeof el.className !== 'string') return;
-        colorNames.forEach(c => {
-            if(c === newTheme.base) return;
-            el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(`-${c}-`, 'g'), `-${newTheme.base}-`)).join(' ');
-        });
-        rgbValues.forEach(rgb => {
-            if(rgb === newTheme.rgb) return;
-            el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(rgb, 'g'), newTheme.rgb)).join(' ');
-        });
+        colorNames.forEach(c => { if(c === newTheme.base) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(`-${c}-`, 'g'), `-${newTheme.base}-`)).join(' '); });
+        rgbValues.forEach(rgb => { if(rgb === newTheme.rgb) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(rgb, 'g'), newTheme.rgb)).join(' '); });
     });
     element.setAttribute('data-theme', newThemeKey);
 }
@@ -615,18 +530,16 @@ window.applyThemeSwap = function(element, newThemeKey) {
 let selectedEl = null;
 
 window.addEventListener('message', async (event) => {
-    
     if (event.source !== window.parent) return;
 
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
-        window.renderProducts(); window.renderCourses();
         
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
-            if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag')) return;
+            if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
             
             let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, div:not(#videoModalContent)');
             
@@ -642,29 +555,20 @@ window.addEventListener('message', async (event) => {
                 let currentTheme = target.getAttribute('data-theme') || '';
 
                 window.parent.postMessage({ 
-                    type: 'ELEMENT_SELECTED', 
-                    tagName: target.tagName, 
-                    text: target.innerText || '', 
-                    href: target.href || target.src || '',
-                    isVideoCard: isVideoCard,
-                    hasTheme: hasTheme,
-                    currentTheme: currentTheme
+                    type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.href || target.src || '',
+                    isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme
                 }, '*');
             }
         }, true); 
     }
 
     if (event.data.type === 'DISABLE_BUILDER') {
-        window.isAdminMode = false;
-        document.body.classList.remove('is-admin-session', 'builder-mode');
-        window.renderProducts(); window.renderCourses();
+        document.body.classList.remove('builder-mode', 'is-admin-session');
         if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
         window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
     }
 
-    if (event.data.type === 'TRIGGER_VIDEO_MODAL') {
-        if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); }
-    }
+    if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); } }
     
     if (event.data.type === 'UPDATE_ELEMENT' && selectedEl) {
         if(event.data.text !== undefined && selectedEl.tagName !== 'IMG' && selectedEl.tagName !== 'VIDEO') { let icon = selectedEl.querySelector('i'); selectedEl.innerText = event.data.text; if(icon) selectedEl.prepend(icon); }
@@ -675,50 +579,28 @@ window.addEventListener('message', async (event) => {
         if(event.data.prop === 'color') { selectedEl.style.color = event.data.value; }
         if(event.data.prop === 'bg') { selectedEl.style.backgroundColor = event.data.value; }
         if(event.data.prop === 'radius') { selectedEl.style.borderRadius = event.data.value + 'px'; }
-        if(event.data.prop === 'transform') { selectedEl.style.transform = event.data.value !== 'none' ? event.data.value : ''; }
+        if(event.data.prop === 'transform') { selectedEl.style.transform = event.data.value; }
         if(event.data.prop === 'opacity') { selectedEl.style.opacity = event.data.value; }
-        if(event.data.prop === 'height') { selectedEl.style.height = event.data.value; }
+        if(event.data.prop === 'height') { selectedEl.style.height = event.data.value + '%'; }
         if(event.data.prop === 'objectFit') { selectedEl.style.objectFit = event.data.value; }
         
-        if(event.data.prop === 'textAlign') {
-            selectedEl.className = selectedEl.className.replace(/\btext-(left|center|right|justify)\b/g, '').trim();
-            if(event.data.value) selectedEl.classList.add(event.data.value);
-        }
-        if(event.data.prop === 'textSize') {
-            selectedEl.className = selectedEl.className.replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[.*?\])\b/g, '').trim();
-            if(event.data.value) selectedEl.classList.add(event.data.value);
-        }
-        if(event.data.prop === 'fontWeight') {
-            selectedEl.className = selectedEl.className.replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '').trim();
-            if(event.data.value) selectedEl.classList.add(event.data.value);
-        }
+        if(event.data.prop === 'textAlign') { selectedEl.className = selectedEl.className.replace(/\btext-(left|center|right|justify)\b/g, '').trim(); if(event.data.value) selectedEl.classList.add(event.data.value); }
+        if(event.data.prop === 'textSize') { selectedEl.className = selectedEl.className.replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[.*?\])\b/g, '').trim(); if(event.data.value) selectedEl.classList.add(event.data.value); }
+        if(event.data.prop === 'fontWeight') { selectedEl.className = selectedEl.className.replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '').trim(); if(event.data.value) selectedEl.classList.add(event.data.value); }
+        
         if(event.data.prop === 'theme') {
             applyThemeSwap(selectedEl, event.data.value);
-            if(selectedEl.id === 'videoModalContent' && currentVideoCardRef) {
-                applyThemeSwap(currentVideoCardRef, event.data.value);
-            }
+            if(selectedEl.id === 'videoModalContent' && currentVideoCardRef) { applyThemeSwap(currentVideoCardRef, event.data.value); }
         }
     }
 
     if (event.data.type === 'DELETE_SELECTED_NODE') { if(selectedEl) { selectedEl.remove(); selectedEl = null; } }
-    
-    /* 🟢 REPARACIÓN DE ARRASTRE EN MÓVILES (Evita congelamiento de Scroll) */
+    if (event.data.type === 'SELECT_PARENT_NODE') { if(selectedEl && selectedEl.parentElement && selectedEl.parentElement.tagName !== 'BODY') { selectedEl.classList.remove('builder-selected-el'); selectedEl = selectedEl.parentElement; selectedEl.classList.add('builder-selected-el'); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: selectedEl.tagName, text: selectedEl.innerText, href: selectedEl.href || selectedEl.src, hasTheme: selectedEl.hasAttribute('data-theme'), currentTheme: selectedEl.getAttribute('data-theme') || '' }, '*'); } }
+    if (event.data.type === 'SELECT_CHILD_NODE') { if(selectedEl && selectedEl.firstElementChild) { selectedEl.classList.remove('builder-selected-el'); selectedEl = selectedEl.firstElementChild; selectedEl.classList.add('builder-selected-el'); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: selectedEl.tagName, text: selectedEl.innerText, href: selectedEl.href || selectedEl.src, hasTheme: selectedEl.hasAttribute('data-theme'), currentTheme: selectedEl.getAttribute('data-theme') || '' }, '*'); } }
+
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
-        if (enabled) { 
-            document.body.classList.add('dragging-active'); 
-            containers.forEach(grid => { 
-                if(grid._sortable) grid._sortable.destroy(); 
-                grid._sortable = new Sortable(grid, { 
-                    animation: 200, 
-                    ghostClass: 'sortable-ghost', 
-                    filter: '.ignore-drag, .admin-tool',
-                    delay: 250, // Permite que el móvil entienda si haces scroll en vez de agarrar
-                    delayOnTouchOnly: true // En PC funciona instantáneo, en móvil espera a que sostengas el dedo
-                }); 
-                window.sortableInstances.push(grid._sortable); 
-            }); 
-        } 
+        if (enabled) { document.body.classList.add('dragging-active'); if(selectedEl) { selectedEl.classList.remove('builder-selected-el'); selectedEl = null; } containers.forEach(grid => { if(grid._sortable) grid._sortable.destroy(); grid._sortable = new Sortable(grid, { animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool', delay: 300, delayOnTouchOnly: true }); window.sortableInstances.push(grid._sortable); }); } 
         else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
 
@@ -735,37 +617,27 @@ window.addEventListener('message', async (event) => {
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
             
             const mapInClone = clone.querySelector('#leaflet-map'); 
-            if(mapInClone) { 
-                mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; 
-                mapInClone.removeAttribute('style'); mapInClone.removeAttribute('tabindex'); 
-            }
+            if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; mapInClone.removeAttribute('style'); mapInClone.removeAttribute('tabindex'); }
             
             const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
             const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
             
             clone.querySelectorAll('.admin-tool, .admin-overlay, .admin-video-edit-overlay').forEach(el => el.remove());
-
             layoutData[zone.id] = clone.innerHTML;
         });
         
-        const modalContentEl = document.getElementById('videoModalContent');
-        const modalClone = modalContentEl.cloneNode(true);
-        modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-        
-        // 🟢 Guardar contenido interno Y estilos exteriores (escala, posición)
-        layoutData['videoModalTpl'] = modalClone.innerHTML; 
-        layoutData['videoModalStyle'] = modalContentEl.getAttribute('style') || '';
-        layoutData['videoModalTheme'] = modalContentEl.getAttribute('data-theme') || 'cyan';
+        const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
+        if (modalContent) {
+            const modalClone = modalContent.cloneNode(true);
+            modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
+            layoutData['videoModalTpl'] = modalClone.outerHTML; 
+        }
 
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
 
-        try { 
-            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true });
-            window.parent.postMessage({ type: 'SAVE_DONE' }, '*');
-        } catch(e) {
-            window.parent.postMessage({ type: 'SAVE_ERROR', message: e.message }, '*'); 
-        }
+        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true }); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); } 
+        catch(e) { window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); }
     }
 });
 
@@ -785,154 +657,82 @@ window.openMediaSelector = async function(type) {
         try { 
             const response = await fetch(`${baseUrl}${jsonName}?v=${new Date().getTime()}`); 
             if (!response.ok) throw new Error("HTTP " + response.status); 
-            
-            const rawText = await response.text();
-            try { fileNames = JSON.parse(rawText); } 
-            catch (parseError) {
-                grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10 bg-red-500/10 rounded-lg border border-red-500/20 p-4"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p class="font-bold text-center">Error de Formato en imagenes.json</p><p class="text-xs text-zinc-400 mt-2 max-w-sm text-center">Revisa que no hayan comas extra al final de tu lista, o comillas simples.</p></div>`;
-                return;
-            }
-        } 
-        catch(e) { grid.innerHTML = `<div class="col-span-full flex flex-col items-center text-red-400 py-10"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2 block"></i><p>No se encontró el archivo.</p></div>`; return; }
+            const rawText = await response.text(); try { fileNames = JSON.parse(rawText); } catch (e) { grid.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Error de formato en JSON</div>`; return; }
+        } catch(e) { grid.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">No se encontró el archivo.</div>`; return; }
     }
 
-    grid.innerHTML = '';
-    if (!fileNames || fileNames.length === 0) { grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return; }
-
+    grid.innerHTML = ''; if (fileNames.length === 0) { grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return; }
     fileNames.forEach(nombre => {
         const url = baseUrl + nombre; const isVideo = url.endsWith('.mp4'); const box = document.createElement('div');
         box.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between';
         box.onclick = () => selectMedia(url);
         
-        if (isVideo) {
-            box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`;
-            box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); };
-        } else {
-            box.innerHTML = `
-                <div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div>
-                <div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10">
-                    <img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0">
-                    <p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${nombre}</p>
-                </div>
-            `; 
-        }
+        if (isVideo) { box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`; box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); }; } 
+        else { box.innerHTML = `<div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div><div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10"><img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500"></div><div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0"><p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${nombre}</p></div>`; }
         grid.appendChild(box);
     });
 }
-
 window.closeMediaSelector = function() { document.getElementById('mediaModal').classList.add('opacity-0'); document.getElementById('mediaModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('mediaModal').classList.add('hidden'); document.getElementById('mediaModal').classList.remove('flex'); }, 300); }
-window.selectMedia = function(url) {
-    document.getElementById('ef-img').value = url; const preview = document.getElementById('preview-ef-img');
-    if(preview) { if(url.endsWith('.mp4')) { preview.style.backgroundImage = 'none'; preview.innerHTML = `<video src="${url}#t=0.1" class="w-full h-full object-cover rounded-lg"></video>`; } else { preview.innerHTML = ''; preview.style.backgroundImage = `url('${url}')`; } }
-    closeMediaSelector();
-}
+window.selectMedia = function(url) { document.getElementById('ef-img').value = url; const preview = document.getElementById('preview-ef-img'); if(preview) { if(url.endsWith('.mp4')) { preview.style.backgroundImage = 'none'; preview.innerHTML = `<video src="${url}#t=0.1" class="w-full h-full object-cover rounded-lg"></video>`; } else { preview.innerHTML = ''; preview.style.backgroundImage = `url('${url}')`; } } closeMediaSelector(); }
 
 window.openEditor = function(type, id, btnNode) {
-    try {
-        const modal = document.getElementById('editModal'); 
-        const fields = document.getElementById('em-fields'); 
-        document.getElementById('em-id').value = id || ''; 
-        document.getElementById('em-type').value = type;
-        
-        if(type === 'product') { 
-            const p = id ? (window.appProducts.find(x => String(x.id) === String(id)) || {}) : {}; 
-            fields.innerHTML = `
-                <input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
-                <select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
-                    <option value="premium" ${p.category==='premium'?'selected':''}>Premium</option>
-                    <option value="textil" ${p.category==='textil'?'selected':''}>Textil & Moda</option>
-                    <option value="tazas" ${p.category==='tazas'?'selected':''}>Tazas & Promo</option>
-                </select>
-                <input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
-                <button onclick="event.preventDefault(); openMediaSelector('product')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button>
-                <input type="hidden" id="ef-img" value="${p.image||''}">
-                <div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center ignore-drag" style="background-image: url('${p.image||''}')"></div>
-            `; 
-        } 
-        else if (type === 'course') { 
-            const c = id ? (window.appCourses.find(x => String(x.id) === String(id)) || {}) : {}; 
-            fields.innerHTML = `
-                <input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
-                <div class="flex gap-2 mb-2 ignore-drag">
-                    <input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag">
-                    <input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag">
-                </div>
-                <button onclick="event.preventDefault(); openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button>
-                <input type="hidden" id="ef-img" value="${c.image||''}">
-                <div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2 ignore-drag" style="background-image: url('${c.image||''}')"></div>
-                <textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24 ignore-drag">${c.desc||''}</textarea>
-            `; 
-        }
-        else if (type === 'testimonial') { 
-            if(btnNode) { 
-                const card = btnNode.closest('.video-testimonial-card'); 
-                editingCardNode = card; 
-                if(card) { 
-                    const vidEl = card.querySelector('.vt-video'); const vid = vidEl ? vidEl.src.split('#')[0] : ''; 
-                    const nameEl = card.querySelector('.vt-name'); const name = nameEl ? nameEl.innerText : ''; 
-                    const roleEl = card.querySelector('.vt-role'); const role = roleEl ? roleEl.innerText : ''; 
-                    const quoteEl = card.querySelector('.vt-quote'); const quote = quoteEl ? quoteEl.innerText : ''; 
-                    fields.innerHTML = `
-                        <input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
-                        <input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
-                        <textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2 ignore-drag">${quote}</textarea>
-                        <button onclick="event.preventDefault(); openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button>
-                        <input type="hidden" id="ef-img" value="${vid}">
-                        <div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden ignore-drag"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>
-                    `; 
-                } 
-            } 
-        }
-        modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
-    } catch (err) {
-        window.parent.postMessage({ type: 'SHOW_ALERT', msg: "Error al abrir el editor: " + err.message }, '*');
-    }
+    if(event) event.stopPropagation();
+    const modal = document.getElementById('editModal'); const fields = document.getElementById('em-fields'); document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
+    
+    if(type === 'product') { 
+        const p = id ? window.appProducts.find(x => x.id === id) : { category: window.currentFilter }; 
+        fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><option value="mas-vendidos" ${p.category==='mas-vendidos'?'selected':''}>Más Vendidos</option><option value="promocionales" ${p.category==='promocionales'?'selected':''}>Promocionales</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil</option><option value="jarros" ${p.category==='jarros'?'selected':''}>Jarros & Thermos</option><option value="imp-general" ${p.category==='imp-general'?'selected':''}>Impresión General</option><option value="packs" ${p.category==='packs'?'selected':''}>Packs</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><button onclick="openMediaSelector('product')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${p.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center ignore-drag" style="background-image: url('${p.image||''}')"></div>`; 
+    } 
+    else if (type === 'course') { const c = id ? window.appCourses.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><div class="flex gap-2 mb-2 ignore-drag"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"></div><button onclick="openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${c.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2 ignore-drag" style="background-image: url('${c.image||''}')"></div><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24 ignore-drag">${c.desc||''}</textarea>`; }
+    else if (type === 'testimonial') { if(btnNode) { const card = btnNode.closest('.video-testimonial-card'); editingCardNode = card; if(card) { const vid = card.querySelector('.vt-video') ? card.querySelector('.vt-video').src.split('#')[0] : ''; const name = card.querySelector('.vt-name') ? card.querySelector('.vt-name').innerText : ''; const role = card.querySelector('.vt-role') ? card.querySelector('.vt-role').innerText : ''; const quote = card.querySelector('.vt-quote') ? card.querySelector('.vt-quote').innerText : ''; fields.innerHTML = `<input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2 ignore-drag">${quote}</textarea><button onclick="openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button><input type="hidden" id="ef-img" value="${vid}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden ignore-drag"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>`; } } }
+    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
 }
 
 window.closeEditModal = function() { document.getElementById('editModal').classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editModal').classList.remove('flex'); editingCardNode = null; }, 300); }
 window.saveElementEdit = async function() {
-    try {
-        const type = document.getElementById('em-type').value; 
-        if (type === 'testimonial' && editingCardNode) {
-            if(editingCardNode.querySelector('.vt-video')) editingCardNode.querySelector('.vt-video').src = document.getElementById('ef-img').value;
-            if(editingCardNode.querySelector('.vt-name')) editingCardNode.querySelector('.vt-name').innerText = document.getElementById('ef-name').value;
-            if(editingCardNode.querySelector('.vt-role')) editingCardNode.querySelector('.vt-role').innerText = document.getElementById('ef-role').value;
-            if(editingCardNode.querySelector('.vt-quote')) editingCardNode.querySelector('.vt-quote').innerText = document.getElementById('ef-desc').value;
-            closeEditModal(); return;
-        }
-        
-        const id = document.getElementById('em-id').value || Date.now().toString(); 
-        const collectionName = type === 'product' ? 'products' : 'courses'; 
-        let data = {};
-        
-        if(type === 'product') data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, price: parseFloat(document.getElementById('ef-price').value||0), image: document.getElementById('ef-img').value };
-        else data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
-        
-        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id), data, { merge: true }); 
-        closeEditModal(); 
-        loadFirebaseData();
-        window.parent.postMessage({ type: 'SHOW_ALERT', msg: "El elemento fue guardado correctamente en Firestore." }, '*');
-    } catch (err) {
-        window.parent.postMessage({ type: 'SHOW_ALERT', msg: "Fallo al guardar en Firestore: " + err.message }, '*');
+    const type = document.getElementById('em-type').value; 
+    if (type === 'testimonial' && editingCardNode) {
+        if(editingCardNode.querySelector('.vt-video')) editingCardNode.querySelector('.vt-video').src = document.getElementById('ef-img').value;
+        if(editingCardNode.querySelector('.vt-name')) editingCardNode.querySelector('.vt-name').innerText = document.getElementById('ef-name').value;
+        if(editingCardNode.querySelector('.vt-role')) editingCardNode.querySelector('.vt-role').innerText = document.getElementById('ef-role').value;
+        if(editingCardNode.querySelector('.vt-quote')) editingCardNode.querySelector('.vt-quote').innerText = document.getElementById('ef-desc').value;
+        closeEditModal(); return;
     }
+    const id = document.getElementById('em-id').value || Date.now().toString(); const collectionName = type === 'product' ? 'products' : 'courses'; let data = {};
+    if(type === 'product') data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, price: parseFloat(document.getElementById('ef-price').value||0), image: document.getElementById('ef-img').value };
+    else data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
+    
+    try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id), data, { merge: true }); closeEditModal(); loadFirebaseData(); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); }
+    catch(e) { closeEditModal(); window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); }
 }
 
 window.deleteElement = function(type, id) {
+    if(event) event.stopPropagation();
     const modal = document.getElementById('custom-confirm-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('custom-confirm-content').classList.remove('scale-95'); }, 10);
     const confirmBtn = document.getElementById('custom-confirm-btn');
-    confirmBtn.onclick = async function() { 
-        window.closeCustomConfirm(); 
-        try {
-            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', type === 'product' ? 'products' : 'courses', id)); 
-            loadFirebaseData(); 
-        } catch(err) {
-            window.parent.postMessage({ type: 'SHOW_ALERT', msg: "Error al borrar: " + err.message }, '*');
-        }
-    };
+    confirmBtn.onclick = async function() { window.closeCustomConfirm(); try { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', type === 'product' ? 'products' : 'courses', id)); loadFirebaseData(); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); } catch(e) { window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); } };
 }
 window.closeCustomConfirm = function() { const modal = document.getElementById('custom-confirm-modal'); modal.classList.add('opacity-0'); document.getElementById('custom-confirm-content').classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
+
+window.openCourseModal = function(id) {
+    if(document.body.classList.contains('builder-mode')) return;
+    const c = window.appCourses.find(x => x.id === id); if(!c) return;
+    document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc; document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
+    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    document.getElementById('cm-btn').href = `https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
+    document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
+}
+
+// 🟢 FUNCIÓN RECUPERADA PARA CERRAR EL MODAL DE CURSO (Ver más)
+window.closeCourseModal = function() {
+    const modal = document.getElementById('courseModal');
+    const content = document.getElementById('courseModalContent');
+    if (modal) {
+        modal.classList.add('opacity-0');
+        if(content) content.classList.add('scale-95');
+        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+    }
+};
 
 window.openVideoModal = function(btn) {
     if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
@@ -940,81 +740,54 @@ window.openVideoModal = function(btn) {
     let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4"; 
     let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."'; let themeKey = "cyan"; 
     
-    try {
-        if (btn && typeof btn.closest === 'function') {
-            const card = btn.closest('.video-testimonial-card, .card');
-            if (card) {
-                themeKey = card.getAttribute('data-theme') || "cyan";
-                const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
-                const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
-                const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
-                const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
-            }
+    if (btn && typeof btn.closest === 'function') {
+        const card = btn.closest('.video-testimonial-card, .card');
+        if (card) {
+            themeKey = card.getAttribute('data-theme') || "cyan";
+            const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
+            const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
+            const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
+            const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
         }
-        
-        const video = document.getElementById('testimonial-video'); 
-        
-        if(document.getElementById('vm-name')) document.getElementById('vm-name').innerText = name; 
-        if(document.getElementById('vm-role')) document.getElementById('vm-role').innerText = role; 
-        if(document.getElementById('vm-quote')) document.getElementById('vm-quote').innerText = quote; 
-        if(document.getElementById('vm-initial')) document.getElementById('vm-initial').innerText = name ? name.charAt(0) : 'C';
-        
-        const modalContent = document.getElementById('videoModalContent'); 
-        if(modalContent) applyThemeSwap(modalContent, themeKey);
-        
-        const modal = document.getElementById('videoModal'); 
-        modal.classList.remove('hidden'); 
-        modal.classList.add('flex'); 
-        setTimeout(() => { modal.classList.remove('opacity-0'); if(modalContent) modalContent.classList.remove('scale-95'); }, 10);
-        
-        const timeBadge = document.getElementById('vm-time');
-        if(timeBadge) timeBadge.innerText = "00:00"; 
-        
-        if(video) {
-            video.ontimeupdate = () => {
-                if(video.duration && timeBadge) {
-                    let remaining = Math.max(0, video.duration - video.currentTime);
-                    let mins = Math.floor(remaining / 60);
-                    let secs = Math.floor(remaining % 60);
-                    timeBadge.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                }
-            };
-
-            video.src = videoSrc; 
-            video.load(); 
-            video.currentTime = 0; 
-            video.muted = false; 
-            
-            const playPromise = video.play(); 
-            if (playPromise !== undefined) { 
-                playPromise.catch((err) => { 
-                    video.muted = true; 
-                    video.play(); 
-                }); 
+    }
+    
+    const video = document.getElementById('testimonial-video'); 
+    
+    const n = document.getElementById('vm-name'); if(n) n.innerText = name; 
+    const r = document.getElementById('vm-role'); if(r) r.innerText = role; 
+    const q = document.getElementById('vm-quote'); if(q) q.innerText = quote; 
+    const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0) : 'C';
+    
+    const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div'); 
+    if (modalContent) applyThemeSwap(modalContent, themeKey);
+    
+    const modal = document.getElementById('videoModal'); 
+    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); if(!window.isAdminMode && modalContent) modalContent.classList.remove('scale-95'); }, 10);
+    
+    const timeBadge = document.getElementById('vm-time'); if(timeBadge) timeBadge.innerText = "00:00"; 
+    
+    if(video) {
+        video.ontimeupdate = () => {
+            if(video.duration && timeBadge) {
+                let remaining = Math.max(0, video.duration - video.currentTime);
+                timeBadge.innerText = `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${Math.floor(remaining % 60).toString().padStart(2, '0')}`;
             }
+        };
 
-            if(!window.isAdminMode) { 
-                video.loop = false; 
-                video.onended = () => closeVideoModal(); 
-            } else { 
-                video.loop = true; 
-            } 
-        }
-    } catch(err) {}
+        video.src = videoSrc; video.load(); video.currentTime = 0; video.muted = false; 
+        const playPromise = video.play(); 
+        if (playPromise !== undefined) { playPromise.catch(() => { video.muted = true; video.play(); }); }
+
+        if(!window.isAdminMode) { video.loop = false; video.onended = () => closeVideoModal(); } else { video.loop = true; } 
+    }
 }
 
 window.closeVideoModal = function(e) {
     if(e) e.stopPropagation(); 
-    const video = document.getElementById('testimonial-video'); 
-    const modal = document.getElementById('videoModal'); 
-    const content = document.getElementById('videoModalContent');
-    
-    if(modal) modal.classList.add('opacity-0'); 
-    if(content) content.classList.add('scale-95'); 
-    setTimeout(() => { 
-        if(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
-        if(video) { video.pause(); video.currentTime = 0; video.src = ""; }
-    }, 300); 
+    const video = document.getElementById('testimonial-video'); const modal = document.getElementById('videoModal'); 
+    const content = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
+    modal.classList.add('opacity-0'); if(!window.isAdminMode && content) content.classList.add('scale-95'); 
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
 }
 
 document.addEventListener('DOMContentLoaded', () => { loadFirebaseData(); });
