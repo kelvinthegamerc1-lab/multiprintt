@@ -29,7 +29,7 @@ body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(
 
 body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
-.leaflet-container { background: #0e0e12 !important; } /* Fix fondo gris */
+.leaflet-container { background: #0e0e12 !important; }
 
 h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 ::selection{background:var(--pink);color:white}
@@ -82,6 +82,8 @@ body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
 .admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
 body.builder-mode .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 
+.transition-shadow { transition-property: box-shadow; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
+.transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 
 .admin-video-edit-overlay { display: none; }
@@ -274,7 +276,7 @@ body.builder-mode .video-testimonial-card .vt-quote { display: block !important;
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
                             <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
+                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza Lazarte y 090514 205</p>
                         </div>
                     </div>
                 </div>
@@ -529,21 +531,25 @@ async function loadFirebaseData() {
         window.appCourses = coursesSnap.empty ? [...defaultCourses] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
 
     } catch (error) { 
-        console.warn("Bloqueo de red o sin conexión. Usando respaldo seguro.", error); 
+        console.warn("Bloqueo de red o sin conexión. Usando respaldo seguro."); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
-    } finally {
-        // Aseguramos que siempre pase lo que pase, el sitio termine de cargar
+    } 
+    finally {
+        window.productOrderArray = window.productOrderArray || [];
+        window.courseOrderArray = window.courseOrderArray || [];
         try {
-            window.productOrderArray = window.productOrderArray || [];
-            window.courseOrderArray = window.courseOrderArray || [];
             window.renderProducts(); 
             window.renderCourses();
-            initMap(); // Inicializar el mapa después de inyectar el HTML de Firebase
-        } catch(renderErr) { console.error("Error al renderizar", renderErr); }
+        } catch(e) {}
         
         setTimeout(() => {
-            const loader = document.getElementById('global-loader'); 
-            if(loader) loader.classList.add('loader-hidden');
+            const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden');
+            if(window.multiprinttMap) { 
+                setTimeout(() => {
+                    window.multiprinttMap.invalidateSize();
+                    window.recenterMap();
+                }, 800); 
+            }
             window.navigate('catalog');
             window.parent.postMessage({ type: 'APP_READY' }, '*');
         }, 500); 
@@ -565,18 +571,18 @@ const getHoverColor = (cls) => {
 };
 
 window.addEventListener('message', async (event) => {
-    
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('builder-mode');
         
         document.addEventListener('click', function(e) {
             if (!window.isAdminMode) return;
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+            if (e.target.closest('.admin-overlay') || e.target.closest('.admin-tool')) return;
             
             const navBtn = e.target.closest('button[onclick^="navigate("]');
             if(navBtn) return;
             
-            let target = e.target.closest('[data-editable="true"], a, button, video, img');
+            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card');
             if (target && !target.closest('.ignore-drag')) {
                 e.preventDefault(); 
                 e.stopPropagation();
@@ -584,13 +590,20 @@ window.addEventListener('message', async (event) => {
                 if(selectedEl) selectedEl.classList.remove('builder-selected-el');
                 selectedEl = target;
                 selectedEl.classList.add('builder-selected-el');
-                window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.href || target.src || '' }, '*');
+                
+                let path = []; let curr = target;
+                while(curr && curr.tagName !== 'BODY' && curr.tagName !== 'MAIN' && path.length < 5) {
+                    path.push(curr.tagName); curr = curr.parentElement;
+                }
+                window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.href || target.src || '', path: path }, '*');
             }
         }, true); 
 
         document.addEventListener('contextmenu', function(e) {
             if (!window.isAdminMode) return;
-            let target = e.target.closest('[data-editable="true"], a, button, video, img');
+            if (e.target.closest('.admin-overlay') || e.target.closest('.admin-tool')) return;
+
+            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card');
             if (target && !target.closest('.ignore-drag')) {
                 e.preventDefault(); 
                 e.stopPropagation();
@@ -599,7 +612,12 @@ window.addEventListener('message', async (event) => {
                 selectedEl = target;
                 selectedEl.classList.add('builder-selected-el');
                 
+                let path = []; let curr = target;
+                while(curr && curr.tagName !== 'BODY' && curr.tagName !== 'MAIN' && path.length < 5) {
+                    path.push(curr.tagName); curr = curr.parentElement;
+                }
                 window.parent.postMessage({ type: 'SHOW_CONTEXT_MENU', x: e.clientX, y: e.clientY, tagName: target.tagName, text: target.innerText || '' }, '*');
+                window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.href || target.src || '', path: path }, '*');
             } else {
                 e.preventDefault();
                 window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
@@ -608,7 +626,33 @@ window.addEventListener('message', async (event) => {
 
         window.renderProducts(); window.renderCourses();
     }
-    
+
+    if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
+        if(event.data.prop === 'color') selectedEl.style.color = event.data.value;
+        if(event.data.prop === 'bg') selectedEl.style.backgroundColor = event.data.value;
+        if(event.data.prop === 'radius') selectedEl.style.borderRadius = event.data.value + 'px';
+        if(event.data.prop === 'hover') {
+            selectedEl.className = selectedEl.className.replace(/hover:[^\s]+/g, '').replace(/transition-[^\s]+/g, '').replace(/duration-[^\s]+/g, '').trim();
+            if(event.data.value !== "") selectedEl.className += ' ' + event.data.value;
+        }
+    }
+
+    if (event.data.type === 'SELECT_NTH_PARENT' && selectedEl) {
+        let curr = selectedEl;
+        for(let i=0; i<event.data.level; i++) {
+            if(curr.parentElement && curr.parentElement.tagName !== 'BODY') curr = curr.parentElement;
+        }
+        selectedEl.classList.remove('builder-selected-el');
+        selectedEl = curr;
+        selectedEl.classList.add('builder-selected-el');
+
+        let path = []; let temp = curr;
+        while(temp && temp.tagName !== 'BODY' && temp.tagName !== 'MAIN' && path.length < 5) {
+            path.push(temp.tagName); temp = temp.parentElement;
+        }
+        window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: curr.tagName, text: curr.innerText || '', href: curr.href || curr.src || '', path: path }, '*');
+    }
+
     if (event.data.type === 'INSERT_ICON_GLOBAL') {
         const iconClass = event.data.iconClass;
         const hoverCls = getHoverColor(iconClass);
@@ -698,12 +742,11 @@ window.addEventListener('message', async (event) => {
                 selectedEl.classList.remove('builder-selected-el');
                 selectedEl = parent;
                 selectedEl.classList.add('builder-selected-el');
-                window.parent.postMessage({ 
-                    type: 'ELEMENT_SELECTED', 
-                    tagName: parent.tagName, 
-                    text: parent.innerText || '', 
-                    href: parent.href || parent.src || '' 
-                }, '*');
+                let path = []; let temp = parent;
+                while(temp && temp.tagName !== 'BODY' && temp.tagName !== 'MAIN' && path.length < 5) {
+                    path.push(temp.tagName); temp = temp.parentElement;
+                }
+                window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: parent.tagName, text: parent.innerText || '', href: parent.href || parent.src || '', path: path }, '*');
             }
         }
     }
@@ -734,19 +777,15 @@ window.addEventListener('message', async (event) => {
         document.querySelectorAll('.editable-section').forEach(zone => {
             if(!zone.id) return;
             const clone = zone.cloneNode(true);
-            
-            // 1. Limpiar Selección
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-            
-            // 2. Limpiar rastro de Sortable
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
             clone.querySelectorAll('[style*="transform"]').forEach(e => e.style.transform = ''); 
             
-            // 3. LIMPIAR EL GPS (VITAL) para no guardar basura de Leaflet
+            // LIMPIEZA GPS ANTES DE GUARDAR
             const clonedMap = clone.querySelector('#leaflet-map');
             if (clonedMap) {
-                clonedMap.innerHTML = ''; // Elimina todo el rastro interno
-                clonedMap.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; // Resetea las clases
+                clonedMap.innerHTML = '';
+                clonedMap.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
             }
 
             layoutData[zone.id] = clone.innerHTML;
@@ -781,7 +820,6 @@ window.closeCourseModal = function() {
 
 window.openVideoModal = function(btn) {
     if(window.isAdminMode) return;
-    
     let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1";
     let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."';
     
@@ -878,42 +916,19 @@ window.closeCustomConfirm = function() {
 }
 
 function initMap() {
-    const mapEl = document.getElementById('leaflet-map'); 
-    if(!mapEl) return;
-    
-    // Destruir mapa anterior si se quedó pegado
+    const mapEl = document.getElementById('leaflet-map'); if(!mapEl) return; 
     if(window.multiprinttMap) {
         window.multiprinttMap.remove();
         window.multiprinttMap = null;
     }
-    
-    // Limpiar clases basuras que haya inyectado leaflet
-    mapEl.innerHTML = '';
-    mapEl.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
-    
-    // Coordenadas milimétricas
-    const lat = -2.185747;
-    const lng = -79.892229;
-    
-    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([lat, lng], 19);
+    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
-    
-    const customIcon = L.divIcon({ 
-        className: 'custom-pin', 
-        html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, 
-        iconSize: [32, 32], 
-        iconAnchor: [16, 16] 
-    });
-    
-    L.marker([lat, lng], {icon: customIcon}).addTo(window.multiprinttMap);
+    L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
 }
-
-window.recenterMap = function() { 
-    if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); 
-}
+window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadFirebaseData();
+    initMap(); loadFirebaseData();
     document.addEventListener('contextmenu', e => { if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') e.preventDefault(); });
 });
 </script>
