@@ -17,6 +17,7 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #555; }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
 
     #auth-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
     .glass-panel { background: #0e0e11; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
@@ -26,7 +27,7 @@
     .workspace { display: flex; flex: 1; overflow: hidden; }
     
     .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
-    .sidebar-right { width: 300px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 0; display: flex; flex-direction: column; overflow-y: auto; z-index:10; }
+    .sidebar-right { width: 320px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     
     #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
     #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
@@ -51,6 +52,10 @@
     .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 12px; transition: 0.2s;}
     .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
 
+    .color-picker { width: 100%; height: 36px; padding: 2px; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer;}
+    .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-picker::-webkit-color-swatch { border: none; border-radius: 4px; }
+
     .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; }
     .icon-box { background: #121215; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 0; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60px;}
     .icon-box i { font-size: 20px; color: #a3a3a3; transition: 0.2s;}
@@ -59,9 +64,6 @@
 
     .panel-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #737373; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
     .divider { height: 1px; background: rgba(255,255,255,0.06); width: 100%; margin: 8px 0; }
-    
-    .inspector-section { background: #0e0e11; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 16px; }
-    .inspector-section-title { font-size: 11px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 </style>
 </head>
 <body>
@@ -124,11 +126,10 @@
             <div class="divider"></div>
 
             <div class="p-3 rounded-lg border border-white/5 bg-[#121215] text-[11px] text-zinc-400 leading-relaxed shadow-inner">
-                <b class="text-zinc-200 block mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-keyboard text-cyan-400"></i> Atajos Pro</b>
+                <b class="text-zinc-200 block mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-circle-info text-cyan-400"></i> Tips Pro</b>
                 <ul class="space-y-1.5 list-disc pl-3">
-                    <li><b><kbd class="bg-white/10 px-1 rounded">Supr</kbd> :</b> Borra el elemento seleccionado al instante.</li>
-                    <li><b><kbd class="bg-white/10 px-1 rounded">Esc</kbd> :</b> Deselecciona y cierra ventanas.</li>
-                    <li><b>Clic Derecho:</b> Menú rápido en cualquier zona.</li>
+                    <li><b>Menú Contextual:</b> Clic derecho para editar, seleccionar capas u opciones rápidas.</li>
+                    <li><b>Selección Exacta:</b> Si tocas un texto y quieres seleccionar la tarjeta entera, usa el "Navegador de Capas" del panel derecho.</li>
                 </ul>
             </div>
 
@@ -146,101 +147,119 @@
             </div>
         </main>
 
-        <aside class="sidebar-right">
-            <!-- HEADER DEL INSPECTOR -->
-            <div class="p-4 border-b border-white/5 bg-[#0a0a0c] sticky top-0 z-20 flex items-center justify-between">
-                <div class="panel-header m-0"><i class="fa-solid fa-sliders text-cyan-400"></i> Inspector</div>
-            </div>
+        <aside class="sidebar-right relative">
+            <div class="panel-header"><i class="fa-solid fa-sliders text-cyan-400"></i> Propiedades Elemento</div>
             
-            <div id="no-selection" class="text-[11px] text-zinc-500 text-center m-4 border border-dashed border-white/10 rounded-lg p-6 bg-[#121215]">
+            <div id="no-selection" class="text-[11px] text-zinc-500 text-center mt-8 border border-dashed border-white/10 rounded-lg p-6 bg-[#121215]">
                 <i class="fa-solid fa-mouse-pointer text-2xl mb-3 opacity-30 block"></i>
-                Haz clic en cualquier elemento del lienzo para comenzar a editar.
+                Selecciona un elemento en el lienzo (texto, imagen, botón o tarjeta) para editar sus propiedades aquí.
             </div>
 
-            <div id="inspector-tools" class="hidden flex-col">
+            <div id="inspector-tools" class="hidden flex-col gap-3">
                 
-                <!-- SECCIÓN: IDENTIFICACIÓN DEL NODO -->
-                <div class="inspector-section bg-[#121215]">
-                    <div class="flex items-center gap-3">
-                        <div id="prop-icon-box" class="w-10 h-10 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg">
-                            <i id="prop-icon" class="fa-solid fa-font"></i>
-                        </div>
-                        <div>
-                            <h3 id="prop-friendly-name" class="text-sm font-bold text-white leading-tight">Texto</h3>
-                            <span class="text-[9px] font-mono text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded" id="prop-tag-name">SPAN</span>
-                        </div>
+                <!-- Navegador de Capas Pro -->
+                <div class="bg-[#121215] border border-white/5 rounded-lg p-2.5 shadow-inner">
+                    <div class="text-[9px] uppercase tracking-wider font-bold text-zinc-500 mb-2 flex items-center gap-1.5"><i class="fa-solid fa-sitemap text-cyan-400"></i> Navegador de Capas</div>
+                    <div id="prop-breadcrumb" class="flex items-center gap-1 overflow-x-auto hide-scrollbar whitespace-nowrap">
+                        <!-- Generado por JS -->
                     </div>
                 </div>
 
-                <!-- SECCIÓN: CONTENIDO -->
-                <div id="section-content" class="inspector-section">
-                    <div class="inspector-section-title"><i class="fa-solid fa-pen-nib text-zinc-500"></i> Contenido del Elemento</div>
-                    
-                    <div id="prop-text-group" class="mb-4">
+                <!-- Pestañas de Edición -->
+                <div class="flex w-full mt-1 bg-[#0a0a0c] p-1 rounded-lg border border-white/5">
+                    <button onclick="switchTab('content')" id="tab-btn-content" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all">Contenido</button>
+                    <button onclick="switchTab('style')" id="tab-btn-style" class="flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all">Estilos CSS</button>
+                </div>
+
+                <!-- Tab: Contenido -->
+                <div id="panel-content" class="flex flex-col gap-3">
+                    <div id="prop-text-group">
                         <label class="inspector-label">Texto Visible</label>
-                        <textarea id="prop-text" rows="4" class="inspector-input resize-none"></textarea>
+                        <textarea id="prop-text" rows="3" class="inspector-input resize-none"></textarea>
                     </div>
                     
                     <div id="prop-link-group" class="hidden">
-                        <label class="inspector-label" id="prop-link-label">Enlace o URL de Origen</label>
+                        <label class="inspector-label">Enlace o URL de Origen</label>
                         <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
                     </div>
                 </div>
 
-                <!-- SECCIÓN: ESTRUCTURA Y ACCIONES -->
-                <div class="inspector-section flex-1">
-                    <div class="inspector-section-title"><i class="fa-solid fa-cubes text-zinc-500"></i> Estructura y Jerarquía</div>
-                    
-                    <button onclick="triggerSelectParent()" class="tool-btn w-full justify-between mb-3 bg-[#18181c] border-white/5 hover:border-cyan-400/50">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-turn-up text-cyan-400"></i> Subir al Padre</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] opacity-50"></i>
-                    </button>
-                    
-                    <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-between">
-                        <span class="flex items-center gap-2"><i class="fa-solid fa-trash"></i> Eliminar Elemento</span>
-                        <kbd class="text-[9px] bg-red-500/20 px-1.5 py-0.5 rounded">Supr</kbd>
-                    </button>
+                <!-- Tab: Estilos (NUEVO) -->
+                <div id="panel-style" class="hidden flex-col gap-3 bg-[#121215] p-3 rounded-lg border border-white/5">
+                    <div>
+                        <label class="inspector-label">Color de Texto</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="color" id="prop-color" class="color-picker w-1/4" value="#ffffff">
+                            <button onclick="document.getElementById('prop-color').value=''; triggerStyleUpdate('color', '')" class="text-[9px] text-zinc-500 hover:text-white"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="inspector-label">Color de Fondo</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="color" id="prop-bg" class="color-picker w-1/4" value="#000000">
+                            <button onclick="document.getElementById('prop-bg').value=''; triggerStyleUpdate('bg', '')" class="text-[9px] text-zinc-500 hover:text-white"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="inspector-label">Bordes Redondeados (px)</label>
+                        <input type="range" id="prop-radius" min="0" max="100" value="0" class="w-full accent-cyan-400">
+                    </div>
+                    <div class="divider"></div>
+                    <div>
+                        <label class="inspector-label text-pink-400"><i class="fa-solid fa-bolt"></i> Interacción Hover (Animación)</label>
+                        <select id="prop-hover" class="inspector-input">
+                            <option value="">Ninguno</option>
+                            <option value="hover:scale-105 transition-transform duration-300">Aumento Suave (Zoom)</option>
+                            <option value="hover:-translate-y-2 transition-transform duration-300">Flotar hacia Arriba</option>
+                            <option value="hover:shadow-[0_0_30px_rgba(37,216,255,0.4)] transition-shadow">Resplandor Neón Cyan</option>
+                            <option value="hover:shadow-[0_0_30px_rgba(255,45,168,0.4)] transition-shadow">Resplandor Neón Rosa</option>
+                            <option value="hover:opacity-70 transition-opacity">Difuminar Opacidad</option>
+                        </select>
+                    </div>
                 </div>
 
+                <div class="divider mt-2"></div>
+                
+                <button onclick="triggerDeleteFromInspector()" class="tool-btn danger-btn w-full justify-center">
+                    <i class="fa-solid fa-trash"></i> Eliminar Elemento
+                </button>
             </div>
         </aside>
     </div>
 </div>
 
-<!-- MENÚ CONTEXTUAL (Click Derecho) -->
-<div id="context-menu" class="hidden fixed z-[100000] w-52 bg-[#121215]/95 border border-white/10 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] py-1.5 text-xs text-zinc-300 backdrop-blur-2xl">
-    <div class="px-3 py-2 text-[10px] font-bold text-white border-b border-white/5 mb-1 flex items-center gap-2 bg-white/5 mx-1 rounded-md">
-        <i id="ctx-icon" class="fa-solid fa-crosshairs text-cyan-400"></i> <span id="ctx-target-name">Elemento</span>
+<div id="context-menu" class="hidden fixed z-[100000] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
+    <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
+        <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
     </div>
-    <button onclick="ctxAction('edit')" class="w-full text-left px-4 py-2 hover:bg-white/5 transition-colors flex items-center gap-3 outline-none">
-        <i class="fa-solid fa-pen w-4 text-center text-zinc-400"></i> Editar Propiedades
+    <button onclick="ctxAction('edit')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
+        <i class="fa-solid fa-pen w-3 text-center text-zinc-400"></i> Editar Atributos
     </button>
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
-    <button onclick="ctxAction('selectParent')" class="w-full text-left px-4 py-2 hover:bg-white/5 transition-colors flex items-center gap-3 outline-none">
-        <i class="fa-solid fa-turn-up w-4 text-center text-cyan-400"></i> Seleccionar Contenedor
+    <button onclick="ctxAction('selectParent')" class="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center gap-2.5 outline-none">
+        <i class="fa-solid fa-turn-up w-3 text-center text-zinc-400"></i> Seleccionar Contenedor
     </button>
     <div class="h-[1px] bg-white/5 my-1 mx-2"></div>
-    <button onclick="ctxAction('delete')" class="w-full text-left px-4 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-3 text-red-500 outline-none group">
-        <i class="fa-solid fa-trash w-4 text-center"></i> 
-        <span class="flex-1">Eliminar</span>
-        <span class="text-[9px] opacity-50 group-hover:opacity-100">Supr</span>
+    <button onclick="ctxAction('delete')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
+        <i class="fa-solid fa-trash w-3 text-center"></i> Eliminar Elemento
     </button>
-    <button onclick="ctxAction('deleteParent')" class="w-full text-left px-4 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-3 text-red-500 outline-none">
-        <i class="fa-solid fa-object-ungroup w-4 text-center"></i> Borrar Contenedor
+    <button onclick="ctxAction('deleteParent')" class="w-full text-left px-3 py-2 hover:bg-red-500/10 hover:text-red-400 transition-colors flex items-center gap-2.5 text-red-500 outline-none">
+        <i class="fa-solid fa-object-ungroup w-3 text-center"></i> Eliminar Contenedor
     </button>
 </div>
 
-<!-- LIBRERÍAS DE ICONOS Y MODALES MANTENIDAS EXACTAMENTE IGUAL -->
 <div id="iconPickerModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity duration-300">
     <div class="w-full max-w-2xl bg-[#0a0a0c] border border-white/10 p-6 rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
         <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-4 shrink-0">
             <h3 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Biblioteca de Iconos</h3>
             <button onclick="closeIconPicker()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
+        
         <div class="mb-4 shrink-0 relative">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-zinc-500 text-sm"></i>
             <input type="text" id="icon-search" onkeyup="filterIcons()" placeholder="Buscar icono (ej. whatsapp, cart, user, facebook...)" class="w-full bg-[#121215] border border-white/10 p-3 pl-10 rounded-lg text-white outline-none focus:border-cyan-400 text-sm transition-colors shadow-inner">
         </div>
+        
         <div id="icon-grid-container" class="icon-grid overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div>
     </div>
 </div>
@@ -259,58 +278,13 @@
 
 <script>
     let dragEnabled = false;
-    
-    // 🟢 DICCIONARIO INTELIGENTE DE ETIQUETAS (Estilo Elementor)
-    const tagDictionary = {
-        'H1': { name: 'Título Principal', icon: 'fa-heading' },
-        'H2': { name: 'Subtítulo', icon: 'fa-heading' },
-        'H3': { name: 'Encabezado', icon: 'fa-heading' },
-        'H4': { name: 'Encabezado Pequeño', icon: 'fa-heading' },
-        'P': { name: 'Párrafo de Texto', icon: 'fa-paragraph' },
-        'SPAN': { name: 'Texto Corto', icon: 'fa-font' },
-        'A': { name: 'Enlace / Botón', icon: 'fa-link' },
-        'IMG': { name: 'Imagen', icon: 'fa-image' },
-        'VIDEO': { name: 'Reproductor de Video', icon: 'fa-video' },
-        'DIV': { name: 'Contenedor Libre', icon: 'fa-box' },
-        'SECTION': { name: 'Sección Maestra', icon: 'fa-layer-group' },
-        'BUTTON': { name: 'Botón de Acción', icon: 'fa-hand-pointer' }
-    };
-
-    function getTagData(tagName) {
-        const tag = tagName.toUpperCase();
-        return tagDictionary[tag] || { name: 'Elemento ' + tag, icon: 'fa-cube' };
-    }
-
-    // 🟢 ATAJOS DE TECLADO PRO
-    document.addEventListener('keydown', (e) => {
-        // Evitar que actúe si estamos escribiendo en los inputs del inspector
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-        if (e.key === 'Delete' || e.key === 'Backspace') {
-            const inspector = document.getElementById('inspector-tools');
-            if (!inspector.classList.contains('hidden') && inspector.style.display !== 'none') {
-                triggerDeleteFromInspector();
-            }
-        }
-        
-        if (e.key === 'Escape') {
-            resetBuilderUI();
-            closeIconPicker();
-            closeCustomModal();
-            document.getElementById('context-menu').classList.add('hidden');
-        }
-    });
 
     const iconDB = [
         { c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' },
         { c: 'fa-brands fa-tiktok', n: 'TikTok' }, { c: 'fa-brands fa-youtube', n: 'YouTube' }, { c: 'fa-brands fa-x-twitter', n: 'X Twitter' },
         { c: 'fa-brands fa-linkedin-in', n: 'LinkedIn' }, { c: 'fa-brands fa-telegram', n: 'Telegram' }, { c: 'fa-brands fa-pinterest-p', n: 'Pinterest' },
-        { c: 'fa-brands fa-snapchat', n: 'Snapchat' }, { c: 'fa-brands fa-reddit-alien', n: 'Reddit' }, { c: 'fa-brands fa-discord', n: 'Discord' },
         { c: 'fa-solid fa-globe', n: 'Web/Mundo' }, { c: 'fa-solid fa-envelope', n: 'Correo' }, { c: 'fa-solid fa-phone', n: 'Teléfono' },
-        { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-link', n: 'Enlace' }, { c: 'fa-solid fa-shop', n: 'Tienda' },
-        { c: 'fa-solid fa-cart-shopping', n: 'Carrito' }, { c: 'fa-solid fa-user', n: 'Usuario' }, { c: 'fa-solid fa-image', n: 'Imagen' },
-        { c: 'fa-solid fa-video', n: 'Video' }, { c: 'fa-solid fa-music', n: 'Música' }, { c: 'fa-solid fa-heart', n: 'Corazón' },
-        { c: 'fa-solid fa-star', n: 'Estrella' }, { c: 'fa-solid fa-check', n: 'Check' }, { c: 'fa-solid fa-xmark', n: 'Cerrar' }
+        { c: 'fa-solid fa-location-dot', n: 'Ubicación' }, { c: 'fa-solid fa-image', n: 'Imagen' }, { c: 'fa-solid fa-video', n: 'Video' }
     ];
 
     function renderIcons(filter = "") {
@@ -364,6 +338,7 @@
             document.getElementById('custom-modal-title').innerText = "Información";
             btnConfirm.onclick = () => closeCustomModal();
         }
+
         modal.classList.remove('hidden');
         setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
     }
@@ -377,32 +352,15 @@
     function showAlert(msg) { openCustomModal(msg, false); }
     function showConfirm(msg, callback) { openCustomModal(msg, true, callback); }
 
-    function resetBuilderUI() {
-        dragEnabled = false;
-        const dragBtn = document.getElementById('drag-btn');
-        if (dragBtn) {
-            dragBtn.style.background = '#121215'; dragBtn.style.borderColor = 'rgba(255,255,255,0.08)'; dragBtn.style.color = '#e5e5e5';
-            dragBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right w-4 text-center text-zinc-400 group-hover:text-cyan-400 transition-colors"></i> <span>Activar Movimiento (Drag)</span>';
-        }
-        document.getElementById('inspector-tools').style.display = 'none';
-        document.getElementById('no-selection').style.display = 'block';
-        document.getElementById('prop-text').value = '';
-        document.getElementById('prop-link').value = '';
-        document.getElementById('context-menu').classList.add('hidden');
-    }
-
     function reloadIframe() {
-        resetBuilderUI();
         const iframe = document.getElementById('site-frame');
-        const timestamp = new Date().getTime(); 
-        iframe.src = `https://multiprintt.web.app/index.html?v=${timestamp}`;
+        iframe.src = `https://multiprintt.web.app/index.html?v=${new Date().getTime()}`;
     }
 
     function setDevice(device) {
         document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + device).classList.add('active');
-        const wrapper = document.getElementById('preview-wrapper');
-        wrapper.className = `device-${device}`;
+        document.getElementById('preview-wrapper').className = `device-${device}`;
     }
 
     function toggleDraggable() {
@@ -427,7 +385,7 @@
     }
 
     function resetLayout() {
-        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla guardada y cargará el código original.", () => {
+        showConfirm("¿Restaurar diseño de fábrica? \n\nEsta acción borrará la plantilla guardada y cargará el código original. No afectará a la base de datos de productos ni cursos.", () => {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*');
         });
     }
@@ -435,7 +393,6 @@
     function closeIconPicker() {
         document.getElementById('iconPickerModal').classList.add('hidden');
         document.getElementById('iconPickerModal').classList.remove('flex');
-        document.getElementById('icon-search').value = ''; renderIcons();
     }
 
     function sendSelectedIcon(iconClass) {
@@ -444,136 +401,118 @@
     }
 
     function ctxAction(action) {
-        const ctxMenu = document.getElementById('context-menu');
-        ctxMenu.classList.add('hidden');
+        document.getElementById('context-menu').classList.add('hidden');
         if (action === 'delete') { triggerDeleteFromInspector(); } 
-        else if (action === 'deleteParent') { triggerDeleteParent(); }
+        else if (action === 'deleteParent') { document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_PARENT_NODE' }, '*'); resetPanelSelection(); }
         else if (action === 'selectParent') { triggerSelectParent(); }
-        else if (action === 'edit') { document.getElementById('prop-text').focus(); }
+        else if (action === 'edit') { switchTab('content'); document.getElementById('prop-text').focus(); }
     }
 
     function triggerDeleteFromInspector() {
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_SELECTED_NODE' }, '*');
-        document.getElementById('inspector-tools').style.display = 'none';
-        document.getElementById('no-selection').style.display = 'block';
-    }
-
-    function triggerDeleteParent() {
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'DELETE_PARENT_NODE' }, '*');
-        document.getElementById('inspector-tools').style.display = 'none';
-        document.getElementById('no-selection').style.display = 'block';
+        resetPanelSelection();
     }
 
     function triggerSelectParent() {
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_PARENT_NODE' }, '*');
     }
 
-    document.addEventListener('click', (e) => {
-        if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); }
-    });
+    function triggerSelectNthParent(level) {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'SELECT_NTH_PARENT', level: level }, '*');
+    }
 
-    window.addEventListener('blur', () => {
-        document.getElementById('context-menu').classList.add('hidden');
-    });
+    function resetPanelSelection() {
+        document.getElementById('inspector-tools').style.display = 'none';
+        document.getElementById('no-selection').style.display = 'block';
+    }
+
+    function switchTab(tab) {
+        document.getElementById('panel-content').style.display = tab === 'content' ? 'flex' : 'none';
+        document.getElementById('panel-style').style.display = tab === 'style' ? 'flex' : 'none';
+        document.getElementById('tab-btn-content').className = tab === 'content' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
+        document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
+    }
+
+    document.addEventListener('click', (e) => { if(!e.target.closest('#context-menu')) { document.getElementById('context-menu').classList.add('hidden'); } });
+    window.addEventListener('blur', () => { document.getElementById('context-menu').classList.add('hidden'); });
+
+    // 🟢 ESTILOS CSS EN TIEMPO REAL
+    function triggerStyleUpdate(prop, value) {
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_STYLE', prop: prop, value: value }, '*');
+    }
+    
+    document.getElementById('prop-color').addEventListener('input', (e) => triggerStyleUpdate('color', e.target.value));
+    document.getElementById('prop-bg').addEventListener('input', (e) => triggerStyleUpdate('bg', e.target.value));
+    document.getElementById('prop-radius').addEventListener('input', (e) => triggerStyleUpdate('radius', e.target.value));
+    document.getElementById('prop-hover').addEventListener('change', (e) => triggerStyleUpdate('hover', e.target.value));
 
     const propText = document.getElementById('prop-text');
     const propLink = document.getElementById('prop-link');
 
+    propText.addEventListener('input', () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: propText.value }, '*'); });
+    propLink.addEventListener('input', () => { document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: propLink.value }, '*'); });
+
     window.addEventListener('message', (e) => {
-        
         if(e.data.type === 'APP_READY') {
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
         }
-        
         if(e.data.type === 'SAVE_DONE') {
             const btn = document.querySelector('.fa-spin').parentElement;
             btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!';
             btn.classList.replace('bg-cyan-500', 'bg-green-400');
-            resetBuilderUI(); // Limpia panel para evitar ediciones fantasma
-            setTimeout(() => { 
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; 
-                btn.classList.replace('bg-green-400', 'bg-cyan-500');
-                reloadIframe(); 
-            }, 2000);
+            resetPanelSelection();
+            setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); reloadIframe(); }, 2000);
         }
-
-        if(e.data.type === 'LAYOUT_RESET_DONE') {
-            showAlert("¡Plantilla restaurada con éxito!");
-            reloadIframe();
-        }
-
-        if(e.data.type === 'OPEN_ICON_PICKER') {
-            document.getElementById('iconPickerModal').classList.remove('hidden');
-            document.getElementById('iconPickerModal').classList.add('flex');
-            document.getElementById('icon-search').focus();
-        }
-
+        if(e.data.type === 'LAYOUT_RESET_DONE') { showAlert("¡Plantilla restaurada con éxito!"); reloadIframe(); resetPanelSelection(); }
+        if(e.data.type === 'OPEN_ICON_PICKER') { document.getElementById('iconPickerModal').classList.remove('hidden'); document.getElementById('iconPickerModal').classList.add('flex'); document.getElementById('icon-search').focus(); }
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
-            const iframe = document.getElementById('site-frame');
-            const rect = iframe.getBoundingClientRect();
-            const ctxMenu = document.getElementById('context-menu');
-            
-            let leftPos = rect.left + e.data.x;
-            let topPos = rect.top + e.data.y;
-
-            if (leftPos + 200 > window.innerWidth) leftPos -= 200;
-            if (topPos + 100 > window.innerHeight) topPos -= 100;
-
-            ctxMenu.style.left = leftPos + 'px';
-            ctxMenu.style.top = topPos + 'px';
-            
-            // Usar traductor visual
-            const tData = getTagData(e.data.tagName);
-            document.getElementById('ctx-target-name').innerText = tData.name;
-            document.getElementById('ctx-icon').className = `fa-solid ${tData.icon} text-cyan-400`;
-            
+            const iframe = document.getElementById('site-frame'); const rect = iframe.getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
+            let leftPos = rect.left + e.data.x; let topPos = rect.top + e.data.y;
+            if (leftPos + 200 > window.innerWidth) leftPos -= 200; if (topPos + 100 > window.innerHeight) topPos -= 100;
+            ctxMenu.style.left = leftPos + 'px'; ctxMenu.style.top = topPos + 'px';
+            document.getElementById('ctx-target-name').innerText = `<${e.data.tagName.toLowerCase()}>`;
             ctxMenu.classList.remove('hidden');
         }
-
-        if (e.data.type === 'HIDE_CONTEXT_MENU') {
-            document.getElementById('context-menu').classList.add('hidden');
-        }
-
+        if (e.data.type === 'HIDE_CONTEXT_MENU') { document.getElementById('context-menu').classList.add('hidden'); }
+        
         if (e.data.type === 'ELEMENT_SELECTED') {
             document.getElementById('context-menu').classList.add('hidden');
             document.getElementById('no-selection').style.display = 'none';
             document.getElementById('inspector-tools').style.display = 'flex';
             
             const tag = e.data.tagName;
-            const tData = getTagData(tag);
-            
-            // Actualizar Cabecera Inspector
-            document.getElementById('prop-friendly-name').innerText = tData.name;
             document.getElementById('prop-tag-name').innerText = tag;
-            document.getElementById('prop-icon').className = `fa-solid ${tData.icon}`;
             
-            // Lógica de Protección de Edición
-            const contentSection = document.getElementById('section-content');
-            if (tag === 'DIV' || tag === 'SECTION') {
-                // Es solo un contenedor, no mostrar opciones de texto
-                contentSection.style.display = 'none';
+            // 🟢 Renderizar Navegador de Capas (Breadcrumbs)
+            let pathHtml = '';
+            if(e.data.path && e.data.path.length > 0) {
+                let rev = [...e.data.path].reverse();
+                rev.forEach((t, idx) => {
+                    let isLast = idx === rev.length - 1;
+                    let lvl = rev.length - 1 - idx;
+                    pathHtml += `<button onclick="triggerSelectNthParent(${lvl})" class="px-2 py-0.5 rounded text-[9px] font-bold ${isLast ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-white/5 text-zinc-400 hover:bg-white/10 border border-white/5'} transition-colors">${t}</button>`;
+                    if(!isLast) pathHtml += `<i class="fa-solid fa-chevron-right text-[7px] text-zinc-600"></i>`;
+                });
+            }
+            document.getElementById('prop-breadcrumb').innerHTML = pathHtml;
+
+            // 🟢 Lógica Inteligente de Visualización (Estilo Elementor)
+            if (tag === 'DIV' || tag === 'SECTION' || tag === 'ARTICLE' || tag === 'FORM') {
+                document.getElementById('prop-text-group').style.display = 'none';
+                document.getElementById('prop-link-group').style.display = 'none';
+                switchTab('style'); // Forzar tab de estilo si es contenedor
             } else {
-                contentSection.style.display = 'block';
+                document.getElementById('prop-text-group').style.display = 'block';
                 propText.value = e.data.text;
-                
-                // Mostrar Link si corresponde
-                if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO') {
+                if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO' || tag === 'IFRAME') {
                     document.getElementById('prop-link-group').style.display = 'block';
-                    document.getElementById('prop-link-label').innerText = tag === 'A' ? 'Enlace de Destino' : 'URL del Archivo (Imagen/Video)';
                     propLink.value = e.data.href;
                 } else {
                     document.getElementById('prop-link-group').style.display = 'none';
                 }
+                switchTab('content');
             }
         }
-    });
-
-    propText.addEventListener('input', () => {
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', text: propText.value }, '*');
-    });
-
-    propLink.addEventListener('input', () => {
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_ELEMENT', href: propLink.value }, '*');
     });
 </script>
 </body>
