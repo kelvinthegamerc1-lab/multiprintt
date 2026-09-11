@@ -108,7 +108,6 @@
 
     <div class="workspace">
         <aside class="sidebar">
-            <!-- NUEVO: Selector de Modo de Puntero -->
             <div class="panel-header"><i class="fa-solid fa-hand-pointer text-cyan-400"></i> Modo de Puntero</div>
             <div class="flex gap-2 bg-[#121215] p-1 rounded-lg border border-white/5 shadow-inner mb-4">
                 <button onclick="setPointerMode('build')" id="btn-mode-build" class="flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all"><i class="fa-solid fa-pen-nib"></i> Diseñar</button>
@@ -237,7 +236,6 @@
     </div>
 </div>
 
-<!-- CORRECCIÓN: Z-Index muy alto para asegurar que los clics no se intercepten por error -->
 <div id="context-menu" class="hidden fixed z-[9999999] w-48 bg-[#121215] border border-white/10 rounded-lg shadow-2xl py-1.5 text-xs text-zinc-300 backdrop-blur-xl">
     <div class="px-3 py-1.5 text-[9px] font-bold text-zinc-500 uppercase tracking-wider border-b border-white/5 mb-1 flex items-center gap-2">
         <i class="fa-solid fa-crosshairs text-cyan-500"></i> <span id="ctx-target-name">Elemento</span>
@@ -306,6 +304,7 @@
 
 <script>
     let dragEnabled = false;
+    let builderMode = 'build'; // ESTADO GLOBAL
 
     const iconDB = [
         { c: 'fa-brands fa-whatsapp', n: 'WhatsApp' }, { c: 'fa-brands fa-instagram', n: 'Instagram' }, { c: 'fa-brands fa-facebook-f', n: 'Facebook' },
@@ -382,6 +381,7 @@
 
     function reloadIframe() {
         resetBuilderUI();
+        setPointerMode('build'); // Restablecer modo diseñar al recargar
         const iframe = document.getElementById('site-frame');
         iframe.src = `https://multiprintt.web.app/index.html?v=${new Date().getTime()}`;
     }
@@ -392,8 +392,9 @@
         document.getElementById('preview-wrapper').className = `device-${device}`;
     }
 
-    // NUEVA FUNCIÓN: Selector de Modos para evitar que el constructor bloquee clics
+    // MODIFICADO: Inyección agresiva para forzar la liberación de botones
     function setPointerMode(mode) {
+        builderMode = mode;
         const iframe = document.getElementById('site-frame');
         const btnBuild = document.getElementById('btn-mode-build');
         const btnInteract = document.getElementById('btn-mode-interact');
@@ -404,6 +405,18 @@
             iframe.contentWindow.postMessage({ type: 'DISABLE_BUILDER' }, '*');
             resetPanelSelection();
             document.getElementById('context-menu').classList.add('hidden');
+            
+            // Bypass extremo: entramos al iframe y reactivamos manualmente los clics nativos
+            try {
+                const doc = iframe.contentWindow.document;
+                // Encontrar todos los botones que podrían estar bloqueados por el editor y liberarlos
+                const actionButtons = doc.querySelectorAll('button, a, [onclick]');
+                actionButtons.forEach(btn => {
+                    btn.style.setProperty('pointer-events', 'auto', 'important');
+                    btn.style.setProperty('z-index', '9999', 'important');
+                });
+            } catch(e) { console.warn("No se pudo inyectar bypass de clics por seguridad de navegador."); }
+            
         } else {
             btnBuild.className = 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all';
             btnInteract.className = 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
@@ -486,14 +499,11 @@
         document.getElementById('tab-btn-style').className = tab === 'style' ? 'flex-1 py-1.5 text-[10px] font-bold rounded bg-[#1a1a1e] text-cyan-400 shadow-sm transition-all' : 'flex-1 py-1.5 text-[10px] font-bold rounded text-zinc-500 hover:text-white transition-all';
     }
 
-    // CORRECCIÓN: Event Listener optimizado para no interferir con los clics en el menú contextual
     document.addEventListener('click', (e) => { 
         if(!e.target.closest('#context-menu')) { 
             document.getElementById('context-menu').classList.add('hidden'); 
         } 
     });
-
-    // Se eliminó la línea problemática de window.addEventListener('blur', ...) que cerraba los cuadros sin dejarte hacer clic
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Delete' && document.getElementById('inspector-tools').style.display === 'flex') {
@@ -534,7 +544,11 @@
         }
         if(e.data.type === 'LAYOUT_RESET_DONE') { showAlert("¡Plantilla restaurada con éxito!"); reloadIframe(); }
         if(e.data.type === 'OPEN_ICON_PICKER') { document.getElementById('iconPickerModal').classList.remove('hidden'); document.getElementById('iconPickerModal').classList.add('flex'); document.getElementById('icon-search').focus(); }
+        
+        // RESTRICCIÓN: Ignorar si estamos en modo Navegar
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
+            if (builderMode === 'interact') return; // Bloquear menú rápido
+            
             const iframe = document.getElementById('site-frame'); const rect = iframe.getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
             let leftPos = rect.left + e.data.x; let topPos = rect.top + e.data.y;
             if (leftPos + 200 > window.innerWidth) leftPos -= 200; if (topPos + 100 > window.innerHeight) topPos -= 100;
@@ -545,6 +559,8 @@
         if (e.data.type === 'HIDE_CONTEXT_MENU') { document.getElementById('context-menu').classList.add('hidden'); }
         
         if (e.data.type === 'ELEMENT_SELECTED') {
+            if (builderMode === 'interact') return; // Bloquear completamente el panel de propiedades
+
             document.getElementById('context-menu').classList.add('hidden');
             document.getElementById('no-selection').style.display = 'none';
             document.getElementById('inspector-tools').style.display = 'flex';
