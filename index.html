@@ -126,7 +126,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <header id="section-header" class="glass h-[56px] md:h-[76px] transition-all editable-section shrink-0 border-b-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
         <div class="flex items-center gap-6 md:gap-10">
-            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none">
+            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none cursor-pointer">
               <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1 cursor-pointer">
                 <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
               </div>
@@ -136,10 +136,10 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
               </div>
             </button>
             <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
-              <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
-              <button onclick="window.navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
-              <button onclick="window.navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
-              <button onclick="window.navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
+              <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active cursor-pointer" data-target="catalog">Catálogo</button>
+              <button onclick="window.navigate('courses')" data-editable="true" class="nav-link cursor-pointer" data-target="courses">Academia</button>
+              <button onclick="window.navigate('about')" data-editable="true" class="nav-link cursor-pointer" data-target="about">Nosotros</button>
+              <button onclick="window.navigate('contact')" data-editable="true" class="nav-link cursor-pointer" data-target="contact">Contacto</button>
             </nav>
         </div>
 
@@ -148,12 +148,12 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
                 <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
                 <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
             </div>
             
             <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
                 <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
                     <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none cursor-pointer">
@@ -179,12 +179,12 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
     <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden h-[34px] md:h-[45px] opacity-100 shrink-0">
         <div class="flex items-center justify-between md:justify-center w-full px-0">
-            <button onclick="window.setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap"><span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span></button>
-            <button onclick="window.setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap"><span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span></button>
-            <button onclick="window.setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap">Textil</button>
-            <button onclick="window.setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap"><span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span></button>
-            <button onclick="window.setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap"><span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span></button>
-            <button onclick="window.setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap">Packs</button>
+            <button onclick="window.setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span></button>
+            <button onclick="window.setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span></button>
+            <button onclick="window.setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer">Textil</button>
+            <button onclick="window.setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span></button>
+            <button onclick="window.setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span></button>
+            <button onclick="window.setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer">Packs</button>
         </div>
     </div>
 </div>
@@ -362,14 +362,14 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
 <nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
     <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
-    <button onclick="window.navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
-    <button onclick="window.navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
-    <button onclick="window.navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
-    <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
+    <button onclick="window.navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white cursor-pointer"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
+    <button onclick="window.navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
+    <button onclick="window.navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
+    <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
 <!-- CARRITO DE COMPRAS SIDEBAR -->
-<div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 ignore-drag" onclick="window.toggleCart()"></div>
+<div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 ignore-drag cursor-pointer" onclick="window.toggleCart()"></div>
 <div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
     <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
         <h3 class="text-white font-extrabold text-lg flex items-center"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
@@ -380,7 +380,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         <!-- Items renderizados aquí -->
     </div>
 
-    <div class="p-5 border-t border-white/10 bg-[#070709] shrink-0 flex flex-col gap-4">
+    <div class="p-5 border-t border-white/10 bg-[#070709] shrink-0 flex flex-col gap-3">
         <div class="flex items-center justify-between text-zinc-400 text-sm">
             <span>Subtotal</span>
             <span id="cart-subtotal" class="font-bold text-white">$0.00</span>
@@ -389,8 +389,11 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <span>Total</span>
             <span id="cart-total" class="text-[#25d366]">$0.00</span>
         </div>
-        <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none mt-2">
+        <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none">
             <i class="fa-brands fa-whatsapp text-xl"></i> 💰 Finalizar compra
+        </button>
+        <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-white/5 hover:bg-rose-500/10 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none">
+            <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
         </button>
     </div>
 </div>
@@ -489,6 +492,7 @@ const APP_ID = "multiprintt-web";
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
 let currentVideoCardRef = null;
 
+// Lógica de Carrito de Compras
 window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
 
 window.saveCart = function() {
@@ -508,6 +512,11 @@ window.toggleCart = function() {
         overlay.classList.add('opacity-0', 'pointer-events-none');
         sidebar.classList.add('translate-x-full');
     }
+}
+
+window.clearCart = function() {
+    window.multiprinttCart = [];
+    window.saveCart();
 }
 
 window.addToCart = function(productId, e) {
@@ -583,11 +592,12 @@ window.updateCartUI = function() {
         let imgUrl = p.image ? (p.image.split(',')[0] || '').trim() : '';
         if(Array.isArray(p.images) && p.images.length > 0) imgUrl = p.images[0];
         
-        let imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-white/5 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-white/30"></i></div>`;
+        // Imagen transparente y limpia sin fondos pesados
+        let imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-contain bg-transparent">` : `<div class="w-full h-full bg-transparent flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-white/30"></i></div>`;
 
         container.innerHTML += `
         <div class="flex items-center gap-4 bg-[#101014] p-3 rounded-xl border border-white/5">
-            <div class="w-14 h-14 bg-black rounded-lg overflow-hidden shrink-0 border border-white/5">
+            <div class="w-14 h-14 bg-transparent rounded-lg overflow-hidden shrink-0 border border-white/5 flex items-center justify-center p-1">
                 ${imgHtml}
             </div>
             <div class="flex-1 flex flex-col justify-center min-w-0">
@@ -595,9 +605,9 @@ window.updateCartUI = function() {
                 <div class="text-[#25d366] text-xs font-extrabold mt-0.5">$${finalPrice.toFixed(2)}</div>
             </div>
             <div class="flex items-center gap-2 bg-black rounded-lg p-1 border border-white/10 shrink-0">
-                <button onclick="window.updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                <button onclick="window.updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer"><i class="fa-solid fa-minus text-[10px]"></i></button>
                 <span class="text-white text-xs font-bold w-4 text-center">${item.qty}</span>
-                <button onclick="window.updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                <button onclick="window.updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></button>
             </div>
         </div>`;
     });
