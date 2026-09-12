@@ -10,18 +10,19 @@
 <title>Multiprintt | Impresión & Publicidad en Guayaquil</title>
 <meta name="description" content="Multiprintt: Impresión & Publicidad. Expertos en personalización, impresión gráfica, DTF, sublimación, resina y academia para emprendedores en Ecuador.">
 <meta name="theme-color" content="#070709">
-<meta name="color-scheme" content="dark">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="format-detection" content="telephone=no">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-<link rel="dns-prefetch" href="https://multiprintt.web.app">
 
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<script>tailwind.config = { theme: { extend: { colors: { bg: '#070709', panel: '#101014' } } } }</script>
+<!-- Tailwind CSS v4 -->
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+<style type="text/tailwindcss">
+  @theme {
+    --color-bg: #070709;
+    --color-panel: #101014;
+  }
+</style>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
@@ -31,6 +32,7 @@ html{scroll-behavior:smooth}
 body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(--bg); color:#f7f7f8; font-family:"DM Sans",sans-serif; -webkit-tap-highlight-color: transparent; }
 
 body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
+button, .cursor-pointer { cursor: pointer; }
 
 .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
 .leaflet-container { background: #0e0e12 !important; }
@@ -48,7 +50,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .glass{background:rgba(7,7,9,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
 
-.filter-btn { transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease; font-weight: 600; }
+.filter-btn { transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease; font-weight: 600; cursor: pointer; }
 .filter-btn.active { color: white; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.2); text-shadow: 0 0 1px rgba(255,255,255,0.5); } 
 .cat-mas-vendidos.active { background: rgba(225,29,72,0.95); }
 .cat-promocionales.active { background: rgba(234,88,12,0.95); }
@@ -60,7 +62,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
 .hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
 
-.card{ background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025)); border:1px solid var(--line); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; will-change: transform; }
+.card{ background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025)); border:1px solid var(--line); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; will-change: transform; cursor: pointer; }
 @media(min-width: 768px) { .card:hover{ border-color:rgba(255,255,255,.18); transform:translateY(-3px) translate3d(0,0,0); box-shadow:0 12px 40px rgba(0,0,0,.28); } }
 
 .view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99) translate3d(0,0,0); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 56px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
@@ -76,7 +78,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .nav-link::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 0%; height: 1.5px; background: #25d8ff; transition: width 0.3s ease; }
 .nav-link.active::after { width: 100%; }
 
-.bot-nav-item { transition: all 0.3s ease; }
+.bot-nav-item { transition: all 0.3s ease; cursor: pointer; }
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
 .bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
 
@@ -107,35 +109,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 .rh-nw { top: -6px; left: -6px; cursor: nwse-resize; } .rh-n { top: -6px; left: calc(50% - 5px); cursor: ns-resize; } .rh-ne { top: -6px; right: -6px; cursor: nesw-resize; }
 .rh-e { top: calc(50% - 5px); right: -6px; cursor: ew-resize; } .rh-se { bottom: -6px; right: -6px; cursor: nwse-resize; } .rh-s { bottom: -6px; left: calc(50% - 5px); cursor: ns-resize; }
 .rh-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .rh-w { top: calc(50% - 5px); left: -6px; cursor: ew-resize; }
-
-/* Multiprintt 2027 commerce layer — preserves the original visual system */
-html{color-scheme:dark;scrollbar-gutter:stable}
-body{overscroll-behavior:none}
-button,input,textarea,select{touch-action:manipulation}
-@media (pointer:fine){button:not(:disabled),a[href],[role=button],summary,select{cursor:pointer}}
-.add-cart{width:38px;height:38px;padding:0!important;border-radius:12px!important;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
-.add-cart i{margin:0!important;font-size:15px}
-.purchase-hint{font-size:8px;line-height:1;color:#777780;text-align:right;margin-top:4px}
-.desktop-copy{display:inline}.mobile-copy{display:none}
-@media (max-width:767px){.desktop-copy{display:none}.mobile-copy{display:inline}}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
-.cart-fab{position:fixed;right:16px;bottom:78px;z-index:260;width:52px;height:52px;border-radius:999px;background:#25D366;color:#071108;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(37,211,102,.28);border:1px solid rgba(255,255,255,.18);transition:transform .2s,box-shadow .2s}
-.cart-fab:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(37,211,102,.36)}
-.cart-count{position:absolute;top:-4px;right:-3px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#fff;color:#111;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #25D366}
-.cart-drawer{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
-.cart-drawer.active{opacity:1;visibility:visible}
-.cart-panel{position:absolute;top:0;right:0;width:min(430px,100vw);height:100%;background:#0d0d11;border-left:1px solid rgba(255,255,255,.08);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
-.cart-drawer.active .cart-panel{transform:translateX(0)}
-.cart-line{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.cart-thumb{width:52px;height:52px;border-radius:12px;background:#08080a;border:1px solid rgba(255,255,255,.08);object-fit:contain}
-.cart-qty{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
-.cart-qty button{width:26px;height:26px;background:transparent;color:#ddd}
-.cart-qty span{min-width:24px;text-align:center;font-size:11px}
-.hot-badge{background:linear-gradient(135deg,#ff5a36,#ef233c);color:#fff;box-shadow:0 8px 20px rgba(239,35,60,.2)}
-.add-cart{background:#25D366!important;color:#061109!important;box-shadow:0 7px 18px rgba(37,211,102,.16)}
-.add-cart:hover{background:#39e77a!important;transform:translateY(-1px)}
-.product-stock-note{font-size:8px;color:#7b7b84;margin-top:3px}
-
 </style>
 </head>
 
@@ -154,12 +127,12 @@ button,input,textarea,select{touch-action:manipulation}
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
         <div class="flex items-center gap-6 md:gap-10">
             <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none">
-              <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
+              <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1 cursor-pointer">
                 <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
               </div>
               <div>
                 <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0 text-white" id="brand-name">MULTIPRINTT</h1>
-                <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
+                <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors cursor-pointer" id="brand-slogan">Tú Imagen Viva</div>
               </div>
             </button>
             <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
@@ -172,28 +145,34 @@ button,input,textarea,select{touch-action:manipulation}
 
         <div class="flex items-center relative">
             <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
-                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
-                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
             </div>
             
             <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
                 <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none">
+                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none cursor-pointer">
                         <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none">
+                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none cursor-pointer">
                         <i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 hover:text-[#25D366] outline-none">
+                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 hover:text-[#25D366] outline-none cursor-pointer">
                         <i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i>
                     </button>
                 </div>
             </div>
+
+            <!-- Botón del Carrito -->
+            <button onclick="window.toggleCart()" class="relative ml-5 w-9 h-9 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white/90 hover:text-[#25d366] hover:bg-[#25d366]/10 hover:border-[#25d366]/30 transition-all duration-300 outline-none cursor-pointer ignore-drag">
+                <i class="fa-solid fa-cart-shopping text-sm pointer-events-none"></i>
+                <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-[#25d366] text-black text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center transition-all transform scale-0 pointer-events-none shadow-[0_0_10px_rgba(37,211,102,0.4)]">0</span>
+            </button>
         </div>
       </div>
     </header>
@@ -237,8 +216,8 @@ button,input,textarea,select{touch-action:manipulation}
             </div>
 
             <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
-                <button data-editable="true" onclick="window.navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-transform hover:-translate-y-1">Ver catálogo</button>
-                <button data-editable="true" onclick="window.navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-transform hover:-translate-y-1">Nuestra academia</button>
+                <button data-editable="true" onclick="window.navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-transform hover:-translate-y-1 cursor-pointer">Ver catálogo</button>
+                <button data-editable="true" onclick="window.navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-transform hover:-translate-y-1 cursor-pointer">Nuestra academia</button>
             </div>
         </div>
     </div>
@@ -262,7 +241,7 @@ button,input,textarea,select{touch-action:manipulation}
             <span class="flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.15)]"><i class="fa-solid fa-award text-amber-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-amber-100 font-extrabold">Práctica Garantizada</span></span>
             <span class="flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]"><i class="fa-solid fa-infinity text-cyan-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-cyan-100 font-extrabold">Acompañamiento de por vida</span></span>
             
-            <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
+            <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag cursor-pointer"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
         </div>
         
         <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal" style="transition-delay: 200ms;"></div>
@@ -273,7 +252,7 @@ button,input,textarea,select{touch-action:manipulation}
         
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
-                <div class="video-testimonial-card relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-resizable="true">
+                <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-resizable="true">
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4" autoplay muted loop playsinline crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none"></video>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
                     
@@ -282,7 +261,7 @@ button,input,textarea,select{touch-action:manipulation}
                         <p data-editable="true" class="vt-quote text-white/95 text-base italic leading-relaxed font-light">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo; fue la mejor decisión que pude tomar."</p>
                     </div>
 
-                    <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110">
+                    <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110 cursor-pointer">
                         <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
                     </button>
 
@@ -295,7 +274,7 @@ button,input,textarea,select{touch-action:manipulation}
                     </div>
 
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: 't1', itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, window.location.origin)" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: 't1', itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, '*')" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
                     </div>
                 </div>
 
@@ -305,7 +284,7 @@ button,input,textarea,select{touch-action:manipulation}
             </div>
             
             <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone h-max">
-                <div class="p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden" data-theme="pink" data-resizable="true">
+                <div class="p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer" data-theme="pink" data-resizable="true">
                     <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
                     <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
                     <div class="flex items-center gap-4 pt-4 border-t border-white/5">
@@ -317,7 +296,7 @@ button,input,textarea,select{touch-action:manipulation}
                     </div>
                     
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: 'txt1', itemData: { name: this.closest('.card').querySelector('h4').innerText, role: this.closest('.card').querySelector('span:not([class*=\'w-10\'])').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, window.location.origin)" class="bg-pink-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: 'txt1', itemData: { name: this.closest('.card').querySelector('h4').innerText, role: this.closest('.card').querySelector('span:not([class*=\'w-10\'])').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" class="bg-pink-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
                     </div>
                 </div>
                 
@@ -354,20 +333,20 @@ button,input,textarea,select{touch-action:manipulation}
                 <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
-                        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors" id="contact-phone">+593 99 759 1021</button>
+                        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer" id="contact-phone">+593 99 759 1021</button>
                     </div>
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
-                        <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors">multiprintt@yahoo.com</button>
+                        <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer">multiprintt@yahoo.com</button>
                     </div>
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone p-2 rounded-lg border border-transparent">
-                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
-                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
-                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
                             
-                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
                         </div>
                     </div>
                 </div>
@@ -381,25 +360,6 @@ button,input,textarea,select{touch-action:manipulation}
   </section>
 </main>
 
-<button type="button" class="cart-fab md:hidden" onclick="window.toggleCart(true)" aria-label="Abrir carrito">
-  <i class="fa-solid fa-cart-shopping text-[18px]"></i><span id="mobile-cart-count" class="cart-count" style="display:none"></span>
-</button>
-
-<div id="cartDrawer" class="cart-drawer" aria-hidden="true" onclick="if(event.target===this)window.toggleCart(false)">
-  <div class="cart-panel">
-    <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
-      <div><div class="text-[9px] uppercase tracking-[.25em] text-[#25D366] font-extrabold">Tu selección</div><h3 class="text-lg font-extrabold text-white">Carrito</h3></div>
-      <button type="button" onclick="window.toggleCart(false)" class="w-9 h-9 rounded-full border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div id="cartItems" class="flex-1 overflow-y-auto px-5"></div>
-    <div class="p-5 border-t border-white/10 bg-[#101014]">
-      <div class="flex items-center justify-between mb-3"><span class="text-xs text-zinc-400">Subtotal</span><strong id="cartTotal" class="text-lg text-white">$0.00</strong></div>
-      <button type="button" onclick="window.checkoutCart()" class="w-full h-12 rounded-xl bg-[#25D366] text-black font-extrabold text-sm hover:bg-[#39e77a] transition-all"><i class="fa-brands fa-whatsapp mr-2"></i><span class="desktop-copy">Finalizar compra por WhatsApp</span><span class="mobile-copy">🛒 Finalizar compra</span></button>
-      <p class="text-[9px] text-zinc-500 text-center mt-2">La solicitud se enviará con el detalle de tus productos.</p>
-    </div>
-  </div>
-</div>
-
 <nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
     <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
     <button onclick="window.navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
@@ -408,10 +368,37 @@ button,input,textarea,select{touch-action:manipulation}
     <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
+<!-- CARRITO DE COMPRAS SIDEBAR -->
+<div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 ignore-drag" onclick="window.toggleCart()"></div>
+<div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
+    <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
+        <h3 class="text-white font-extrabold text-lg flex items-center"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
+        <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div id="cart-items-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
+        <!-- Items renderizados aquí -->
+    </div>
+
+    <div class="p-5 border-t border-white/10 bg-[#070709] shrink-0 flex flex-col gap-4">
+        <div class="flex items-center justify-between text-zinc-400 text-sm">
+            <span>Subtotal</span>
+            <span id="cart-subtotal" class="font-bold text-white">$0.00</span>
+        </div>
+        <div class="flex items-center justify-between text-white text-lg font-extrabold">
+            <span>Total</span>
+            <span id="cart-total" class="text-[#25d366]">$0.00</span>
+        </div>
+        <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none mt-2">
+            <i class="fa-brands fa-whatsapp text-xl"></i> 💰 Finalizar compra
+        </button>
+    </div>
+</div>
+
 <!-- MODAL DETALLE DE CURSO -->
 <div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
   <div class="relative w-full max-w-5xl bg-[#0a0a0c] border border-white/10 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-500 ignore-drag" id="courseModalContent">
-    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none cursor-pointer"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
 
     <div class="w-full md:w-5/12 h-56 sm:h-64 md:h-auto bg-black relative overflow-hidden group">
       <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0c] z-10 hidden md:block"></div>
@@ -437,8 +424,8 @@ button,input,textarea,select{touch-action:manipulation}
         </div>
       </div>
 
-      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag outline-none">
-        <i class="fa-brands fa-whatsapp text-xl mr-2 pointer-events-none"></i> Separar mi cupo ahora
+      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag outline-none cursor-pointer">
+        <i class="fa-brands fa-whatsapp text-xl mr-2 pointer-events-none"></i> 🎓 Reserva tu cupo
       </button>
     </div>
   </div>
@@ -448,7 +435,7 @@ button,input,textarea,select{touch-action:manipulation}
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         
-        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg">
+        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer">
             <i class="fa-solid fa-xmark text-lg pointer-events-none"></i>
         </button>
 
@@ -487,16 +474,173 @@ button,input,textarea,select{touch-action:manipulation}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, increment } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, increment, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+
+// Inicialización de Firestore Offline-First (Tab Manager)
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
+
 const APP_ID = "multiprintt-web";
 
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
 let currentVideoCardRef = null;
+
+// Lógica de Carrito de Compras
+window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
+
+window.saveCart = function() {
+    localStorage.setItem('multiprintt_cart', JSON.stringify(window.multiprinttCart));
+    window.updateCartUI();
+}
+
+window.toggleCart = function() {
+    const overlay = document.getElementById('cart-overlay');
+    const sidebar = document.getElementById('cart-sidebar');
+    
+    if (overlay.classList.contains('pointer-events-none')) {
+        overlay.classList.remove('pointer-events-none', 'opacity-0');
+        sidebar.classList.remove('translate-x-full');
+        window.updateCartUI();
+    } else {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        sidebar.classList.add('translate-x-full');
+    }
+}
+
+window.addToCart = function(productId, e) {
+    if(e) e.stopPropagation();
+    if(window.isAdminMode) return;
+    
+    const existing = window.multiprinttCart.find(item => item.id === productId);
+    if(existing) {
+        existing.qty += 1;
+    } else {
+        window.multiprinttCart.push({ id: productId, qty: 1 });
+    }
+    
+    // Analytics opcional
+    try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { cartAdds: increment(1) }, { merge: true }); } catch (err) {}
+    
+    window.saveCart();
+    
+    // Pequeño feedback visual
+    const badge = document.getElementById('cart-badge');
+    badge.classList.add('scale-125');
+    setTimeout(() => badge.classList.remove('scale-125'), 200);
+}
+
+window.updateCartQty = function(productId, delta) {
+    const idx = window.multiprinttCart.findIndex(item => item.id === productId);
+    if(idx > -1) {
+        window.multiprinttCart[idx].qty += delta;
+        if(window.multiprinttCart[idx].qty <= 0) {
+            window.multiprinttCart.splice(idx, 1);
+        }
+        window.saveCart();
+    }
+}
+
+window.updateCartUI = function() {
+    const badge = document.getElementById('cart-badge');
+    const totalQty = window.multiprinttCart.reduce((sum, item) => sum + item.qty, 0);
+    
+    if(totalQty > 0) {
+        badge.innerText = totalQty;
+        badge.classList.remove('scale-0');
+        badge.classList.add('scale-100');
+    } else {
+        badge.classList.remove('scale-100');
+        badge.classList.add('scale-0');
+    }
+
+    const container = document.getElementById('cart-items-container');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const totalEl = document.getElementById('cart-total');
+    
+    if(!container) return;
+    
+    container.innerHTML = '';
+    let total = 0;
+
+    if(window.multiprinttCart.length === 0) {
+        container.innerHTML = `<div class="text-zinc-500 text-center py-10 flex flex-col items-center gap-3"><i class="fa-solid fa-basket-shopping text-3xl opacity-20"></i><span class="text-xs">Tu carrito está vacío</span></div>`;
+        subtotalEl.innerText = '$0.00';
+        totalEl.innerText = '$0.00';
+        return;
+    }
+
+    window.multiprinttCart.forEach(item => {
+        let p = window.appProducts.find(x => x.id === item.id);
+        if(!p) return; // Podría haber sido borrado
+        
+        let pPrice = Number(p.price) || 0;
+        let finalPrice = (p.isPromo && p.discount > 0) ? pPrice * (1 - p.discount/100) : pPrice;
+        let lineTotal = finalPrice * item.qty;
+        total += lineTotal;
+
+        let imgUrl = p.image ? (p.image.split(',')[0] || '').trim() : '';
+        if(Array.isArray(p.images) && p.images.length > 0) imgUrl = p.images[0];
+        
+        let imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-white/5 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-white/30"></i></div>`;
+
+        container.innerHTML += `
+        <div class="flex items-center gap-4 bg-[#101014] p-3 rounded-xl border border-white/5">
+            <div class="w-14 h-14 bg-black rounded-lg overflow-hidden shrink-0 border border-white/5">
+                ${imgHtml}
+            </div>
+            <div class="flex-1 flex flex-col justify-center min-w-0">
+                <h4 class="text-white text-[11px] font-bold truncate">${p.name}</h4>
+                <div class="text-[#25d366] text-xs font-extrabold mt-0.5">$${finalPrice.toFixed(2)}</div>
+            </div>
+            <div class="flex items-center gap-2 bg-black rounded-lg p-1 border border-white/10 shrink-0">
+                <button onclick="window.updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                <span class="text-white text-xs font-bold w-4 text-center">${item.qty}</span>
+                <button onclick="window.updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors"><i class="fa-solid fa-plus text-[10px]"></i></button>
+            </div>
+        </div>`;
+    });
+
+    subtotalEl.innerText = `$${total.toFixed(2)}`;
+    totalEl.innerText = `$${total.toFixed(2)}`;
+}
+
+window.checkoutWhatsApp = function() {
+    if(window.multiprinttCart.length === 0) return;
+    
+    let phoneEl = document.getElementById('contact-phone'); 
+    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
+
+    let msg = `👋 Hola *Multiprintt*, quiero realizar este pedido:\n\n`;
+    let total = 0;
+
+    window.multiprinttCart.forEach(item => {
+        let p = window.appProducts.find(x => x.id === item.id);
+        if(!p) return;
+        
+        let pPrice = Number(p.price) || 0;
+        let finalPrice = (p.isPromo && p.discount > 0) ? pPrice * (1 - p.discount/100) : pPrice;
+        let lineTotal = finalPrice * item.qty;
+        total += lineTotal;
+        
+        msg += `🛍️ *${p.name}*\n`;
+        if (p.isPromo && p.discount > 0) msg += `   🏷️ Descuento aplicado: ${p.discount}%\n`;
+        msg += `   Cantidad: ${item.qty}\n`;
+        msg += `   💰 $${lineTotal.toFixed(2)}\n\n`;
+        
+        try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', p.id), { checkoutIntents: increment(item.qty) }, { merge: true }); } catch (err) {}
+    });
+    
+    msg += `🧾 *Total:* $${total.toFixed(2)}\n\n¿Me ayudan a finalizar mi compra? ✅`;
+    
+    window.open(`https://wa.me/${rawPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.toggleCart();
+}
 
 const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
 const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,image:'',icon:'fa-shirt'}];
@@ -529,43 +673,17 @@ window.setFilter = function(filterStr) {
     window.currentFilter = filterStr;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`filter-${filterStr}`).classList.add('active');
-    window.renderProducts();
+    
+    // Suavizar la transición del catálogo (Fade-out antes de inyectar)
+    const grid = document.getElementById('product-grid');
+    if (grid) {
+        grid.style.opacity = '0';
+        setTimeout(() => {
+            window.renderProducts();
+            grid.style.opacity = '1';
+        }, 300);
+    }
 };
-
-window.cart = JSON.parse(localStorage.getItem('multiprintt-cart-v1') || '[]');
-window.showCommerceToast=function(msg){let t=document.getElementById('commerce-toast'); if(!t){t=document.createElement('div');t.id='commerce-toast';t.className='fixed left-1/2 -translate-x-1/2 bottom-[86px] md:bottom-6 z-[500] px-4 py-2.5 rounded-full bg-[#151519] border border-white/10 text-white text-xs font-semibold shadow-2xl opacity-0 pointer-events-none transition-all duration-300';document.body.appendChild(t);} t.textContent=msg; t.style.opacity='1'; t.style.transform='translate(-50%,0)'; clearTimeout(window.__commerceToastTimer); window.__commerceToastTimer=setTimeout(()=>{t.style.opacity='0';t.style.transform='translate(-50%,8px)'},2200);};
-window.saveCart = function(){ localStorage.setItem('multiprintt-cart-v1', JSON.stringify(window.cart)); window.renderCart(); };
-window.getProduct = function(id){ return (window.appProducts||[]).find(p=>p.id===id); };
-window.getFinalPrice = function(p){ const price=Number(p?.price)||0; const d=Math.min(100,Math.max(0,Number(p?.discount)||0)); return d>0 ? price*(1-d/100) : price; };
-window.addToCart = async function(productId){
-    const p=window.getProduct(productId); if(!p) return;
-    const row=window.cart.find(x=>x.id===productId);
-    if(row) row.qty=Math.min(99,row.qty+1); else window.cart.push({id:productId,qty:1});
-    try{ await setDoc(doc(db,'artifacts',APP_ID,'public','data','products',productId), {cartAdds: increment(1)}, {merge:true}); }catch(e){ console.warn('cart metric',e); }
-    window.saveCart(); window.toggleCart(true); window.showCommerceToast?.(window.matchMedia('(max-width: 767px)').matches ? '🛒 ¡Añadido! Puedes seguir comprando.' : 'Añadido al carrito. Puedes seguir comprando.');
-};
-window.removeCartItem=function(id){ window.cart=window.cart.filter(x=>x.id!==id); window.saveCart(); };
-window.changeCartQty=function(id,delta){ const r=window.cart.find(x=>x.id===id); if(!r)return; r.qty=Math.max(0,Math.min(99,r.qty+delta)); if(!r.qty) window.removeCartItem(id); else window.saveCart(); };
-window.renderCart=function(){
- const items=document.getElementById('cartItems'); if(!items)return;
- let total=0,count=0;
- if(!window.cart.length){ items.innerHTML='<div class="h-full flex flex-col items-center justify-center text-center px-6"><div class="w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center text-zinc-500 mb-4"><i class="fa-solid fa-cart-shopping text-xl"></i></div><h4 class="text-white font-bold">Tu carrito está vacío</h4><p class="text-xs text-zinc-500 mt-2 max-w-[260px]"><span class="desktop-copy">Agrega tus favoritos y prepara tu compra en pocos pasos.</span><span class="mobile-copy">🛒 Agrega tus favoritos y arma tu compra en segundos.</span></p></div>'; }
- else { items.innerHTML=window.cart.map(r=>{ const p=window.getProduct(r.id); if(!p)return ''; const unit=window.getFinalPrice(p); total+=unit*r.qty; count+=r.qty; const img=(Array.isArray(p.images)&&p.images[0]) || p.image || ''; return `<div class="cart-line"><img src="${img||'https://placehold.co/200x200/101014/ffffff?text=Producto'}" class="cart-thumb" alt=""><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${String(p.name||'Producto').replace(/[&<>"']/g,'')}</div><div class="text-[10px] text-zinc-500 mt-1">$${unit.toFixed(2)} c/u</div><div class="cart-qty mt-2"><button onclick="window.changeCartQty('${p.id}',-1)">−</button><span>${r.qty}</span><button onclick="window.changeCartQty('${p.id}',1)">+</button></div></div><button onclick="window.removeCartItem('${p.id}')" class="text-zinc-600 hover:text-red-400"><i class="fa-solid fa-trash"></i></button></div>`; }).join(''); }
- const fmt='$'+total.toFixed(2); const c1=document.getElementById('cartTotal'); if(c1)c1.textContent=fmt; ['header-cart-count','mobile-cart-count'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=count;el.style.display=count?'flex':'none';}});
-};
-window.toggleCart=function(open){const d=document.getElementById('cartDrawer'); if(!d)return; d.classList.toggle('active',open); d.setAttribute('aria-hidden',String(!open)); if(open)window.renderCart();};
-window.checkoutCart=async function(){
- if(!window.cart.length) return window.toggleCart(true);
- const phoneEl=document.getElementById('contact-phone'); let rawPhone=phoneEl?phoneEl.textContent.replace(/\s+/g,''):'593997591021'; if(!rawPhone.startsWith('593'))rawPhone='593997591021';
- const lines=window.cart.map(r=>{const p=window.getProduct(r.id);return p?`• ${p.name} x${r.qty} — $${(window.getFinalPrice(p)*r.qty).toFixed(2)}`:''}).filter(Boolean).join('\n');
- const total=window.cart.reduce((s,r)=>{const p=window.getProduct(r.id);return s+(p?window.getFinalPrice(p)*r.qty:0)},0);
- for(const r of window.cart){ try{await setDoc(doc(db,'artifacts',APP_ID,'public','data','products',r.id),{checkoutIntents:increment(r.qty),salesCount:increment(0)},{merge:true});}catch(e){} }
- const isMobile=window.matchMedia('(max-width: 767px)').matches; const msg=isMobile?`Hola Multiprintt 👋\n\n🛒 Quiero comprar estos productos:\n\n${lines}\n\n💰 Total estimado: $${total.toFixed(2)}\n\nGracias ✨`:`Hola Multiprintt 👋\n\nQuiero comprar estos productos:\n\n${lines}\n\nTotal estimado: $${total.toFixed(2)}\n\nDesde la tienda web. Gracias.`;
- window.open(`https://wa.me/${rawPhone}?text=${encodeURIComponent(msg)}`,'_blank');
- window.cart=[]; window.saveCart(); window.toggleCart(false);
-};
-window.handleWaClick = function(productId){ return window.addToCart(productId); };
-window.renderCart();
 
 window.sliderFrames = window.sliderFrames || {};
 window.updateSliderOpacities = function(sliderId) {
@@ -619,14 +737,14 @@ window.syncSocialNetworks = function() {
     navMobileContainer.innerHTML = '';
 
     const btnAdminPc = document.createElement('button');
-    btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)");
-    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none";
+    btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
+    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer";
     btnAdminPc.innerHTML = `<i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>`;
     navPcContainer.appendChild(btnAdminPc);
 
     const btnAdminMob = document.createElement('button');
-    btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)");
-    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none";
+    btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
+    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer";
     btnAdminMob.innerHTML = `<i class="fa-solid fa-plus text-xs pointer-events-none"></i>`;
     navMobileContainer.appendChild(btnAdminMob);
 
@@ -643,8 +761,8 @@ window.syncSocialNetworks = function() {
         btnPc.setAttribute('data-network', network);
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
         
-        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none"; } 
-        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none"; }
+        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer"; } 
+        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer"; }
         
         if(network === 'facebook') btnPc.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') btnPc.classList.add('hover:text-[#e1306c]');
@@ -663,7 +781,7 @@ window.syncSocialNetworks = function() {
         btnMob.setAttribute('data-editable', 'true');
         btnMob.setAttribute('data-network', network);
         btnMob.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none";
+        btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none cursor-pointer";
         
         if(network === 'facebook') btnMob.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') btnMob.classList.add('hover:text-[#e1306c]');
@@ -685,7 +803,7 @@ window.renderProducts = function(){
     let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
     let safeProducts = [];
     
-    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => { const sa=(Number(a.salesCount)||0)*10+(Number(a.cartAdds)||0)+(Number(a.checkoutIntents)||0); const sb=(Number(b.salesCount)||0)*10+(Number(b.cartAdds)||0)+(Number(b.checkoutIntents)||0); return sb-sa || Number(b.clicks||0)-Number(a.clicks||0); }).slice(0, 8); } 
+    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); } 
     else if (window.currentFilter === 'promocionales') { safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true || (p.discount && p.discount > 0)); } 
     else { safeProducts = allProducts.filter(p => p.category === window.currentFilter); }
 
@@ -694,22 +812,15 @@ window.renderProducts = function(){
         safeProducts.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     }
     
-    grid.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mx-auto transition-all items-start w-full sortable-zone";
+    grid.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mx-auto transition-opacity duration-300 items-start w-full sortable-zone";
     if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`; }
     
-    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
-    if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
-
     let renderHTML = '';
     safeProducts.forEach((p,i)=>{
-        const pUrl = 'https://multiprintt.web.app/';
         const basePrice = Number(p.price) || 0;
         const discountVal = Number(p.discount) || 0;
-        const finalPrice = discountVal > 0 ? basePrice * (1 - discountVal / 100) : basePrice;
+        const finalPrice = (p.isPromo && discountVal > 0) ? basePrice * (1 - discountVal / 100) : basePrice;
 
-        const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy interesado/a en:\n\n🛍️ *${p.name}*\n💲 Precio: *$${finalPrice.toFixed(2)}*\n\n🔗 ${pUrl}\n\n¡Gracias! ✨`;
-        const wa = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
-        
         let imgs = [];
         if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images;
         else if (p.image) imgs = p.image.split(',').map(s=>s.trim()).filter(s=>s);
@@ -718,43 +829,47 @@ window.renderProducts = function(){
         
         let art = '';
         if (imgs.length <= 1) {
-            art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+            art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
         } else {
             let sliderId = `slider-${p.id}`;
             let slides = imgs.map((img, idx) => {
                 const isActive = idx === 1;
                 const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
-                return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
+                return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
             }).join('');
             
-            art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', -1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', 1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>`;
+            art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', -1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', 1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>`;
             setTimeout(() => { const slider = document.getElementById(sliderId); if (slider) { const items = slider.querySelectorAll('.slider-item'); if (items[1]) { slider.scrollTo({ left: items[1].offsetLeft - (slider.offsetWidth - items[1].offsetWidth) / 2, behavior: 'instant' }); } } window.updateSliderOpacities(sliderId); }, 60);
         }
 
         const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
         
         let badgesHtml = '';
-        let isTopSeller = Boolean(p.isBestSeller) || (window.currentFilter === 'mas-vendidos' && i < 3);
+        // Combinamos la lógica de más vendido manual o por clicks (top 3)
+        let isTopSeller = p.isBestSeller || (window.currentFilter === 'mas-vendidos' && i < 3);
         if (isTopSeller) {
-            badgesHtml += `<span class="hot-badge inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] font-bold px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire-flame-curved text-[9px]"></i> Más vendido</span>`;
+            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-rose-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-300 text-[9px]"></i> Más vendido</span>`;
         }
-        if (p.isPromo) {
-            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-amber-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-200 text-[9px]"></i> Promo</span>`;
+        if (p.isPromo && discountVal > 0) {
+            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-pink-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm">-${discountVal}% OFF</span>`;
+        } else if (p.isPromo) {
+            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-amber-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-crown text-amber-200 text-[9px]"></i> Promo</span>`;
         }
-        if (discountVal > 0) {
-            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-pink-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm">-${discountVal}%</span>`;
-        }
+        
         let promoBadgeContainer = badgesHtml ? `<div class="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">${badgesHtml}</div>` : '';
 
         let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, window.location.origin)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, window.location.origin)" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let priceHtml = `<span class="text-sm md:text-base font-extrabold text-white">$${finalPrice.toFixed(2)}</span>`;
-        if (discountVal > 0) {
-            priceHtml = `<div class="flex items-center gap-2"><span class="text-sm md:text-base font-extrabold text-pink-400">$${finalPrice.toFixed(2)}</span><span class="text-xs text-zinc-500 line-through">$${basePrice.toFixed(2)}</span></div>`;
+        if (p.isPromo && discountVal > 0) {
+            priceHtml = `<div class="flex flex-col items-start"><span class="text-[9px] text-zinc-500 line-through leading-none">$${basePrice.toFixed(2)}</span><span class="text-sm md:text-base font-extrabold text-pink-400 leading-none mt-0.5">$${finalPrice.toFixed(2)}</span></div>`;
         }
 
-        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}" data-resizable="true">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-end justify-between gap-3"><div class="min-w-0">${priceHtml}<div class="purchase-hint"><span class="desktop-copy">Listo para llevar</span><span class="mobile-copy">🛍️ Listo para ti</span></div></div><button type="button" title="Agregar ${String(p.name||'producto').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ._-]/g,'')} al carrito" aria-label="Agregar ${String(p.name||'producto').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ._-]/g,'')} al carrito" onclick="window.handleWaClick('${p.id}')" class="add-cart pointer-events-auto transition-all ignore-drag"><i class="fa-solid fa-cart-shopping"></i></button></div></div></article>`;
+        // Agregar staggered delay para renderizado suave
+        let delay = (i % 8) * 50; // Delay corto para el grid
+
+        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${p.id}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button onclick="window.addToCart('${p.id}', event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
     });
     if(safeProducts.length > 0) grid.innerHTML = renderHTML;
 }
@@ -777,7 +892,7 @@ window.renderCourses = function(){
         let a = accents[i % accents.length]; 
         let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
         
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, window.location.origin)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, window.location.origin)" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let delay = 100 + (i * 100);
         let masterclassBadge = c.isMasterclass !== false ? `<div class="absolute top-5 left-5 z-20 pointer-events-none"><span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span></div>` : '';
@@ -795,7 +910,7 @@ window.renderCourses = function(){
                 <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display">${c.title}</h3>
                 <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light">${c.desc}</p>
                 <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
-                    <button onclick="window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0">
+                    <button onclick="window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
                         Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
                     </button>
                 </div>
@@ -852,11 +967,7 @@ window.loadFirebaseData = async function() {
         await auth.authStateReady();
         if (!auth.currentUser) { await signInAnonymously(auth); }
 
-        const [layoutSnap, prodSnap, coursesSnap] = await Promise.all([
-            getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')),
-            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products')),
-            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'))
-        ]);
+        const layoutSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
 
         if (layoutSnap.exists()) {
             const data = layoutSnap.data();
@@ -880,20 +991,31 @@ window.loadFirebaseData = async function() {
             if(data.courseOrder) window.courseOrderArray = data.courseOrder;
         }
 
-        window.appProducts = prodSnap.empty ? [...defaultProducts] : prodSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-        window.appCourses = coursesSnap.empty ? [...defaultCourses] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
+        // Suscripción Real-Time a Productos y Cursos
+        onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
+            window.appProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
+            window.renderProducts();
+            window.updateCartUI(); // Actualizar precios del carrito si hubo cambios en backend
+        });
+
+        onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
+            window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => ({id: d.id, ...d.data()}));
+            window.renderCourses();
+        });
+
     } catch (error) { 
         console.warn("Error Firebase, usando respaldo seguro.", error); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
+        window.renderProducts(); window.renderCourses();
     } 
     finally {
         window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
-        try { window.setFilter('mas-vendidos'); window.renderCourses(); window.syncSocialNetworks(); } catch(e) {}
+        try { window.setFilter('mas-vendidos'); window.syncSocialNetworks(); window.updateCartUI(); } catch(e) {}
         
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
             window.navigate('catalog'); 
-            if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, window.location.origin); }
+            if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, '*'); }
         }, 500); 
     }
 }
@@ -959,7 +1081,7 @@ function initVisualResizer() {
         if (currentDir.includes('n')) window.selectedEl.style.height = Math.max(30, startH - dy) + 'px';
 
         window.updateResizeBox();
-        window.parent.postMessage({ type: 'RESIZE_UPDATE', width: window.selectedEl.style.width, height: window.selectedEl.style.height }, window.location.origin);
+        window.parent.postMessage({ type: 'RESIZE_UPDATE', width: window.selectedEl.style.width, height: window.selectedEl.style.height }, '*');
     });
 
     window.addEventListener('mouseup', () => { isResizing = false; });
@@ -980,7 +1102,8 @@ window.updateResizeBox = function() {
 }
 
 window.addEventListener('message', async (event) => {
-    if (event.source !== window.parent || event.origin !== window.location.origin) return;
+    // Basic Security Check
+    if (event.source !== window.parent && event.origin !== window.location.origin) return;
 
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
@@ -988,7 +1111,7 @@ window.addEventListener('message', async (event) => {
         
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
-            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, window.location.origin);
+            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
             if(e.target.closest('button[onclick^="window.navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
             
@@ -1011,10 +1134,10 @@ window.addEventListener('message', async (event) => {
                     type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', 
                     isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme,
                     styles: { width: target.style.width || computed.width, height: target.style.height || computed.height, padding: target.style.padding || computed.padding, margin: target.style.margin || computed.margin, radius: target.style.borderRadius || computed.borderRadius, color: target.style.color || computed.color, bg: target.style.backgroundColor || computed.backgroundColor }
-                }, window.location.origin);
+                }, '*');
             } else {
                 if(window.selectedEl) window.selectedEl.classList.remove('builder-selected-el');
-                window.selectedEl = null; window.updateResizeBox(); window.parent.postMessage({ type: 'CLEAR_SELECTION' }, window.location.origin);
+                window.selectedEl = null; window.updateResizeBox(); window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
             }
         }, true); 
     }
@@ -1024,7 +1147,7 @@ window.addEventListener('message', async (event) => {
         window.renderProducts(); window.renderCourses();
         if (window.resizerOverlay) window.resizerOverlay.style.display = 'none';
         if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
-        window.parent.postMessage({ type: 'CLEAR_SELECTION' }, window.location.origin);
+        window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
     }
 
     if (event.data.type === 'ADD_SOCIAL_ICON') {
@@ -1034,7 +1157,7 @@ window.addEventListener('message', async (event) => {
         newBtn.setAttribute('data-editable', 'true');
         newBtn.setAttribute('data-network', network);
         newBtn.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none";
+        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none cursor-pointer";
         
         if(network === 'facebook') newBtn.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') newBtn.classList.add('hover:text-[#e1306c]');
@@ -1053,6 +1176,7 @@ window.addEventListener('message', async (event) => {
         window.updateResizeBox();
     }
     
+    // Note: DB_UPDATED handled mostly by onSnapshot now, keeping fallback
     if (event.data.type === 'DB_UPDATED') {
         const { itemType, id, data: newData } = event.data;
         if(itemType === 'product') {
@@ -1129,8 +1253,8 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'DELETE_SELECTED_NODE') { if(window.selectedEl) { window.selectedEl.remove(); window.selectedEl = null; window.updateResizeBox(); } }
-    if (event.data.type === 'SELECT_PARENT_NODE') { if(window.selectedEl && window.selectedEl.parentElement && window.selectedEl.parentElement.tagName !== 'BODY') { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.parentElement; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, window.location.origin); } }
-    if (event.data.type === 'SELECT_CHILD_NODE') { if(window.selectedEl && window.selectedEl.firstElementChild) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.firstElementChild; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, window.location.origin); } }
+    if (event.data.type === 'SELECT_PARENT_NODE') { if(window.selectedEl && window.selectedEl.parentElement && window.selectedEl.parentElement.tagName !== 'BODY') { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.parentElement; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, '*'); } }
+    if (event.data.type === 'SELECT_CHILD_NODE') { if(window.selectedEl && window.selectedEl.firstElementChild) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.firstElementChild; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, '*'); } }
 
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
@@ -1153,7 +1277,7 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'RESET_TEMPLATE') {
-        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, window.location.origin);
+        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*');
     }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
@@ -1190,7 +1314,7 @@ window.addEventListener('message', async (event) => {
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
 
-        window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, window.location.origin);
+        window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, '*');
     }
 });
 
@@ -1284,6 +1408,5 @@ window.closeVideoModal = function(e) {
 
 document.addEventListener('DOMContentLoaded', () => { window.loadFirebaseData(); });
 </script>
-<!-- Multiprintt 2027 Commerce Layer: cart + conversion + secure admin bridge -->
 </body>
 </html>
