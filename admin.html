@@ -185,6 +185,7 @@
                             </button>
                         </label>
                         <input type="text" id="prop-link" class="inspector-input" placeholder="https://...">
+                        <p id="gallery-help-text" class="text-[9px] text-yellow-500/80 mt-1.5 hidden"><i class="fa-solid fa-circle-info"></i> Nota: Para configurar el Carrusel y añadir más imágenes, usa el botón "Editar BD" directamente en la tarjeta del producto.</p>
                     </div>
                 </div>
 
@@ -405,16 +406,15 @@
     window.resetLayout = function() { 
         window.showConfirm("¿Restaurar diseño de fábrica? Esto descartará todos los cambios guardados.", () => { 
             const btn = document.getElementById('btn-reset-layout');
+            const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Restaurando...';
-            
-            // Timeout de respaldo por si el iframe tarda en responder
-            window.__resetTimeout = setTimeout(() => {
-                window.reloadIframe();
-                btn.innerHTML = 'Restaurar Plantilla';
-                window.showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
-            }, 3000);
-            
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'RESET_LAYOUT' }, '*'); 
+            
+            setTimeout(() => {
+                window.reloadIframe();
+                btn.innerHTML = originalText;
+                window.showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
+            }, 1000);
         }); 
     }
 
@@ -526,14 +526,7 @@
         if(e.data.type === 'SAVE_DONE') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-check text-green-900"></i> ¡Publicado!'; btn.classList.replace('bg-cyan-500', 'bg-green-400'); window.resetBuilderUI(); setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; btn.classList.replace('bg-green-400', 'bg-cyan-500'); window.reloadIframe(); }, 2000); }
         if(e.data.type === 'SAVE_ERROR') { const btn = document.querySelector('.fa-spin').parentElement; btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Cambios'; window.openCustomModal("<span class='text-red-400 font-bold'>Error al Guardar en Base de Datos:</span><br>" + e.data.msg); }
 
-        if (e.data.type === 'RESET_DONE') { 
-            if(window.__resetTimeout) clearTimeout(window.__resetTimeout);
-            const btn = document.getElementById('btn-reset-layout');
-            if(btn) btn.innerHTML = 'Restaurar Plantilla';
-            window.resetBuilderUI(); 
-            window.reloadIframe(); 
-            window.showAlert("La plantilla ha sido restaurada a su estado de fábrica exitosamente.");
-        }
+        if (e.data.type === 'RESET_DONE') { window.resetBuilderUI(); window.reloadIframe(); }
 
         if (e.data.type === 'SHOW_CONTEXT_MENU') {
             const rect = document.getElementById('site-frame').getBoundingClientRect(); const ctxMenu = document.getElementById('context-menu');
@@ -570,8 +563,11 @@
             if (tag === 'A' || tag === 'IMG' || tag === 'VIDEO' || tag === 'IFRAME') {
                 document.getElementById('prop-link-group').style.display = 'block'; document.getElementById('prop-link').value = e.data.src || e.data.href || '';
                 if(tag === 'IMG') document.getElementById('btn-open-gallery').classList.remove('hidden'); else document.getElementById('btn-open-gallery').classList.add('hidden');
+                
+                if(e.data.isGalleryImg) document.getElementById('gallery-help-text').classList.remove('hidden'); else document.getElementById('gallery-help-text').classList.add('hidden');
             } else {
                 document.getElementById('prop-link-group').style.display = 'none'; document.getElementById('btn-open-gallery').classList.add('hidden');
+                document.getElementById('gallery-help-text').classList.add('hidden');
             }
             window.switchTab('content'); document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
         }
