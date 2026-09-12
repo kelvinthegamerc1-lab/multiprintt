@@ -60,6 +60,7 @@
 </head>
 <body>
 
+<!-- Pantalla de Login -->
 <div id="auth-screen">
     <div class="glass-panel p-10 w-full max-w-sm text-center">
         <div class="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.15)]">
@@ -75,6 +76,7 @@
     </div>
 </div>
 
+<!-- Interfaz del Builder -->
 <div id="builder-ui">
     <div class="topbar">
         <div class="flex items-center gap-4">
@@ -91,7 +93,8 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <button class="tool-btn" onclick="publishChanges()"><i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios</button>
+            <button class="tool-btn" onclick="toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> Modo Arrastrar</button>
+            <button class="tool-btn" id="publish-btn" onclick="publishChanges()"><i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios</button>
             <button class="tool-btn danger-btn" onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
@@ -99,18 +102,17 @@
     <div class="workspace">
         <div class="sidebar">
             <div class="panel-header"><i class="fa-solid fa-boxes-stacked"></i> Tienda Base</div>
-            <button class="tool-btn w-full justify-start"><i class="fa-solid fa-box-open"></i> Crear Producto</button>
-            <button class="tool-btn w-full justify-start"><i class="fa-solid fa-graduation-cap"></i> Crear Curso</button>
+            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('openEditor', 'product', null, this)"><i class="fa-solid fa-box-open"></i> Crear Producto</button>
+            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('openEditor', 'course', null, this)"><i class="fa-solid fa-graduation-cap"></i> Crear Curso</button>
             <div class="divider"></div>
             <div class="panel-header"><i class="fa-solid fa-sitemap"></i> Secciones</div>
-            <button class="tool-btn w-full justify-start" onclick="navigateIframe('catalog')"><i class="fa-solid fa-store"></i> Ir a Tienda</button>
-            <button class="tool-btn w-full justify-start" onclick="navigateIframe('courses')"><i class="fa-solid fa-book"></i> Ir a Academia</button>
-            <button class="tool-btn w-full justify-start" onclick="navigateIframe('contact')"><i class="fa-regular fa-envelope"></i> Ir a Contacto</button>
+            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store"></i> Ir a Tienda</button>
+            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-book"></i> Ir a Academia</button>
+            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope"></i> Ir a Contacto</button>
         </div>
         
         <div id="preview-container">
             <div id="preview-wrapper" class="device-desktop">
-                <!-- Se enlaza directamente con el archivo index reparado -->
                 <iframe id="site-frame" src="index.html"></iframe>
             </div>
         </div>
@@ -186,16 +188,195 @@
         wrapper.className = 'device-' + type;
     };
     
-    window.navigateIframe = function(targetSection) {
+    // Función segura para invocar metodos en el iframe
+    window.callIframeFunction = function(fnName, ...args) {
         const iframe = document.getElementById('site-frame');
-        if (iframe && iframe.contentWindow && iframe.contentWindow.navigate) {
-            iframe.contentWindow.navigate(targetSection);
+        if (iframe && iframe.contentWindow && typeof iframe.contentWindow[fnName] === 'function') {
+            iframe.contentWindow[fnName](...args);
         }
     };
 
+    // Funciones del Visual Builder
+    let isDragMode = false;
+    window.toggleDragMode = function(btn) {
+        isDragMode = !isDragMode;
+        if(isDragMode) {
+            btn.classList.add('bg-pink-500/20', 'text-pink-400', 'border-pink-500/50');
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Arrastrar Activo';
+        } else {
+            btn.classList.remove('bg-pink-500/20', 'text-pink-400', 'border-pink-500/50');
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Modo Arrastrar';
+        }
+        document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
+    }
+
     window.publishChanges = function() {
-        alert("¡Todos los cambios se han guardado de forma segura en la base de datos!");
-    };
+        const btn = document.getElementById('publish-btn');
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+        document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
+    }
+
+    // Funciones de postMessage que interactúan con el iframe
+    window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
+    window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
+    window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
+    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = 'Elemento eliminado.'; }
+    window.selectParent = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*'); }
+    window.selectChild = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*'); }
+
+    // Función para resaltar el botón de alineación
+    window.highlightAlign = function(btn) {
+        document.querySelectorAll('.align-btn').forEach(b => {
+            b.classList.remove('bg-cyan-500/20', 'text-cyan-400');
+            b.classList.add('text-zinc-400');
+        });
+        btn.classList.remove('text-zinc-400');
+        btn.classList.add('bg-cyan-500/20', 'text-cyan-400');
+    }
+
+    // Escuchamos los mensajes que envía el iframe (index.html)
+    window.addEventListener('message', (event) => {
+        const data = event.data;
+        
+        // Cuando el Iframe termina de cargar y está listo
+        if (data.type === 'APP_READY') {
+            const iframe = document.getElementById('site-frame');
+            iframe.contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+        }
+        
+        // Cuando hacemos clic en un elemento dentro del Iframe
+        if (data.type === 'ELEMENT_SELECTED') {
+            renderPropertiesPanel(data);
+        }
+        
+        // Cuando se deselecciona o deshabilita el builder
+        if (data.type === 'CLEAR_SELECTION') {
+            document.getElementById('properties-panel').innerHTML = '<div class="text-zinc-500 text-xs text-center py-10 px-4 bg-black/50 border border-white/5 rounded-lg border-dashed">Haz clic en cualquier elemento con borde punteado dentro de la vista previa para editar sus propiedades.</div>';
+        }
+        
+        // Respuestas de guardado
+        if (data.type === 'SAVE_DONE') {
+            const btn = document.getElementById('publish-btn');
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios';
+            alert('¡Cambios guardados correctamente en la base de datos!');
+        }
+        if (data.type === 'SAVE_ERROR') {
+            const btn = document.getElementById('publish-btn');
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios';
+            alert('Error al guardar: ' + data.msg);
+        }
+    });
+
+    // Renderizar panel dinámico según el elemento seleccionado
+    function renderPropertiesPanel(data) {
+        const panel = document.getElementById('properties-panel');
+        let html = `<div class="mb-4 pb-4 border-b border-white/10">
+            <div class="text-cyan-400 font-bold text-xs mb-1">Elemento Seleccionado</div>
+            <div class="text-white text-sm bg-black/50 p-2 rounded border border-white/10 font-mono"><i class="fa-solid fa-code"></i> ${data.tagName}</div>
+        </div>`;
+
+        // Controles de Navegación de Nodos (Padre / Hijo)
+        html += `<div class="flex gap-2 mb-4">
+            <button onclick="selectParent()" class="flex-1 bg-[#1a1a1e] hover:bg-[#25252b] border border-white/10 py-2 rounded-lg text-[10px] text-white transition-colors shadow-sm font-semibold"><i class="fa-solid fa-arrow-up text-zinc-400"></i> Seleccionar Padre</button>
+            <button onclick="selectChild()" class="flex-1 bg-[#1a1a1e] hover:bg-[#25252b] border border-white/10 py-2 rounded-lg text-[10px] text-white transition-colors shadow-sm font-semibold"><i class="fa-solid fa-arrow-down text-zinc-400"></i> Seleccionar Hijo</button>
+        </div>`;
+
+        // Edición de Texto
+        if (!['IMG', 'VIDEO', 'SECTION', 'DIV', 'ARTICLE'].includes(data.tagName)) {
+            html += `<div class="mb-4">
+                <label class="inspector-label"><i class="fa-solid fa-font"></i> Texto</label>
+                <textarea oninput="updateText(this.value)" class="inspector-input min-h-[100px]">${data.text || ''}</textarea>
+            </div>`;
+        }
+
+        // Edición de Enlace/Media (Imágenes, Videos o Enlaces)
+        if (['IMG', 'VIDEO', 'A'].includes(data.tagName) || data.href) {
+            html += `<div class="mb-4">
+                <label class="inspector-label"><i class="fa-solid fa-link"></i> URL / Origen de Medio</label>
+                <input type="text" oninput="updateHref(this.value)" value="${data.href || ''}" class="inspector-input">
+            </div>`;
+        }
+
+        // Edición de Temas de Color (Tarjetas de testimonio)
+        if (data.hasTheme) {
+            html += `<div class="mb-4">
+                <label class="inspector-label"><i class="fa-solid fa-palette"></i> Tema de Color</label>
+                <select onchange="updateStyle('theme', this.value)" class="inspector-input">
+                    <option value="cyan" ${data.currentTheme === 'cyan' ? 'selected' : ''}>Cyan (Principal)</option>
+                    <option value="pink" ${data.currentTheme === 'pink' ? 'selected' : ''}>Rosa</option>
+                    <option value="violet" ${data.currentTheme === 'violet' ? 'selected' : ''}>Violeta</option>
+                    <option value="yellow" ${data.currentTheme === 'yellow' ? 'selected' : ''}>Amarillo</option>
+                    <option value="emerald" ${data.currentTheme === 'emerald' ? 'selected' : ''}>Esmeralda</option>
+                </select>
+            </div>`;
+        }
+
+        // Estilos Básicos (Color de texto y fondo)
+        html += `<div class="grid grid-cols-2 gap-3 mb-4">
+            <div>
+                <label class="inspector-label"><i class="fa-solid fa-fill-drip"></i> Texto Color</label>
+                <input type="color" oninput="updateStyle('color', this.value)" class="color-picker">
+            </div>
+            <div>
+                <label class="inspector-label"><i class="fa-solid fa-fill"></i> Fondo Color</label>
+                <input type="color" oninput="updateStyle('bg', this.value)" class="color-picker">
+            </div>
+        </div>`;
+
+        // Tipografía y Alineación
+        html += `<div class="mb-4">
+            <label class="inspector-label"><i class="fa-solid fa-align-left"></i> Alineación de Texto</label>
+            <div class="flex gap-1 bg-black p-1 rounded-lg border border-white/10">
+                <button onclick="updateStyle('textAlign', 'text-left'); highlightAlign(this)" class="flex-1 py-1.5 rounded text-zinc-400 hover:text-white align-btn"><i class="fa-solid fa-align-left"></i></button>
+                <button onclick="updateStyle('textAlign', 'text-center'); highlightAlign(this)" class="flex-1 py-1.5 rounded text-zinc-400 hover:text-white align-btn"><i class="fa-solid fa-align-center"></i></button>
+                <button onclick="updateStyle('textAlign', 'text-right'); highlightAlign(this)" class="flex-1 py-1.5 rounded text-zinc-400 hover:text-white align-btn"><i class="fa-solid fa-align-right"></i></button>
+            </div>
+        </div>`;
+
+        // Tamaño texto y peso
+        html += `<div class="grid grid-cols-2 gap-3 mb-4">
+            <div>
+                <label class="inspector-label"><i class="fa-solid fa-text-height"></i> Tamaño</label>
+                <select onchange="updateStyle('textSize', this.value)" class="inspector-input">
+                    <option value="">Por defecto</option>
+                    <option value="text-xs">Extra Pequeño</option>
+                    <option value="text-sm">Pequeño</option>
+                    <option value="text-base">Normal</option>
+                    <option value="text-lg">Grande</option>
+                    <option value="text-xl">XL</option>
+                    <option value="text-2xl">2XL</option>
+                    <option value="text-4xl">4XL</option>
+                </select>
+            </div>
+            <div>
+                <label class="inspector-label"><i class="fa-solid fa-bold"></i> Grosor</label>
+                <select onchange="updateStyle('fontWeight', this.value)" class="inspector-input">
+                    <option value="">Por defecto</option>
+                    <option value="font-light">Ligero</option>
+                    <option value="font-normal">Normal</option>
+                    <option value="font-medium">Medio</option>
+                    <option value="font-bold">Negrita</option>
+                    <option value="font-extrabold">Extra Negrita</option>
+                </select>
+            </div>
+        </div>`;
+
+        // Bordes Redondeados y Opacidad
+        html += `<div class="mb-4">
+            <label class="inspector-label"><i class="fa-regular fa-square"></i> Bordes Redondeados</label>
+            <input type="range" min="0" max="100" value="0" oninput="updateStyle('radius', this.value)" class="w-full accent-cyan-400">
+        </div>`;
+
+        html += `<div class="mb-6">
+            <label class="inspector-label"><i class="fa-solid fa-eye-low-vision"></i> Opacidad</label>
+            <input type="range" min="0" max="1" step="0.1" value="1" oninput="updateStyle('opacity', this.value)" class="w-full accent-cyan-400">
+        </div>`;
+
+        // Botón de Eliminar
+        html += `<button onclick="deleteElement()" class="w-full py-3 rounded-lg bg-red-500/10 text-red-500 border border-red-500/30 text-xs font-bold hover:bg-red-500/20 transition-colors shadow-sm"><i class="fa-solid fa-trash mr-2"></i> Eliminar Elemento</button>`;
+
+        panel.innerHTML = html;
+    }
 </script>
 </body>
 </html>
