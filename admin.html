@@ -82,7 +82,6 @@
 </style>
 </head>
 <body>
-
 <div id="toast-container"></div>
 
 <div id="auth-screen">
@@ -165,8 +164,9 @@
             <div class="divider my-4"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Gestión de Inventario</div>
-            <button class="tool-btn w-full justify-start border-pink-500/20 hover:border-pink-500" onclick="window.callIframeFunction('openEditor', 'product', null)"><div class="w-6 text-center"><i class="fa-solid fa-box-open text-pink-400"></i></div> Añadir Producto</button>
-            <button class="tool-btn w-full justify-start border-cyan-500/20 hover:border-cyan-500" onclick="window.callIframeFunction('openEditor', 'course', null)"><div class="w-6 text-center"><i class="fa-solid fa-laptop-file text-cyan-400"></i></div> Añadir Curso</button>
+            <!-- Conexión del DB Editor a la función del iframe a través del puente de postMessage -->
+            <button class="tool-btn w-full justify-start border-pink-500/20 hover:border-pink-500" onclick="window.openDbEditorIframe('product')"><div class="w-6 text-center"><i class="fa-solid fa-box-open text-pink-400"></i></div> Añadir Producto</button>
+            <button class="tool-btn w-full justify-start border-cyan-500/20 hover:border-cyan-500" onclick="window.openDbEditorIframe('course')"><div class="w-6 text-center"><i class="fa-solid fa-laptop-file text-cyan-400"></i></div> Añadir Curso</button>
             
             <div class="mt-auto p-4 bg-cyan-500/5 border border-cyan-500/10 rounded-xl">
                 <p class="text-[10px] text-cyan-400/80 leading-relaxed font-medium"><i class="fa-solid fa-circle-info mr-1"></i> <b>Tip:</b> Activa "Mover Elementos" arriba para arrastrar productos, cursos o redes sociales y cambiar su orden. Haz clic en cualquier elemento en la vista previa para editar su tamaño, texto o estilos.</p>
@@ -193,8 +193,7 @@
 </div>
 
 <script type="module">
-    // Control de versiones (Hard Reset Automático para forzar descarga sin caché)
-    const BUILDER_VERSION = '6.0.0'; 
+    const BUILDER_VERSION = '6.1.0'; 
     if (localStorage.getItem('admin_builder_version') !== BUILDER_VERSION) {
         localStorage.clear(); sessionStorage.clear();
         localStorage.setItem('admin_builder_version', BUILDER_VERSION);
@@ -223,7 +222,6 @@
     }
 
     onAuthStateChanged(auth, (user) => {
-        // Validación estricta para evitar que visitantes anónimos de la tienda entren al panel
         if (user && !user.isAnonymous) {
             document.getElementById('auth-screen').style.opacity = '0';
             setTimeout(() => {
@@ -270,6 +268,15 @@
         if (iframe && iframe.contentWindow && typeof iframe.contentWindow[fnName] === 'function') iframe.contentWindow[fnName](...args);
     };
 
+    // Función puente para mandar a abrir el Editor de Base de datos en el iframe
+    window.openDbEditorIframe = function(type) {
+        document.getElementById('site-frame').contentWindow.postMessage({
+            type: 'CALL_IFRAME_FUNCTION', 
+            fnName: 'openEditor', 
+            args: [type, null]
+        }, '*');
+    }
+
     let isDragMode = false;
     window.toggleDragMode = function(btn) {
         isDragMode = !isDragMode;
@@ -296,7 +303,6 @@
         }
     }
 
-    // Modal de Iconos Sociales
     let selectedSocialNetwork = ''; let selectedSocialIconClass = '';
     window.selectSocialIcon = function(iconClass, network, btnNode) {
         document.querySelectorAll('.social-opt').forEach(b => {
@@ -326,7 +332,6 @@
         setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
     }
 
-    // Enviar comandos al Iframe
     window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
     window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
     window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
@@ -334,7 +339,6 @@
     window.selectParent = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*'); }
     window.selectChild = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*'); }
 
-    // Toggle Accordion UI
     window.toggleAccordion = function(headerEl) {
         const item = headerEl.parentElement;
         const isActive = item.classList.contains('active');
@@ -359,10 +363,13 @@
             const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
             window.showToast(data.msg || '¡Cambios publicados con éxito!'); 
             
-            // Recargar Forzado del Iframe para Evitar Caché
-            const iframe = document.getElementById('site-frame');
-            let baseSrc = iframe.src.split('?')[0];
-            iframe.src = baseSrc + '?v=' + new Date().getTime();
+            if(data.msg && data.msg.includes("Base de datos")) {
+                // No forzar recarga si es guardado de DB (para que se quede en el editor sin saltos)
+            } else {
+                const iframe = document.getElementById('site-frame');
+                let baseSrc = iframe.src.split('?')[0];
+                iframe.src = baseSrc + '?v=' + new Date().getTime();
+            }
         }
         if (data.type === 'SAVE_ERROR') { 
             const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
@@ -386,7 +393,6 @@
             </div>
         </div>`;
 
-        // ACORDEÓN 1: CONTENIDO
         html += `<div class="acc-item active">
             <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib w-4"></i> Contenido</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">`;
@@ -399,7 +405,6 @@
             }
         html += `</div></div>`;
 
-        // ACORDEÓN 2: TIPOGRAFÍA
         html += `<div class="acc-item">
             <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-font w-4"></i> Tipografía</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">
@@ -439,7 +444,6 @@
             </div>
         </div>`;
 
-        // ACORDEÓN 3: DISEÑO (DIMENSIONES Y ESPACIADO)
         html += `<div class="acc-item">
             <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined w-4"></i> Dimensiones</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">
@@ -454,7 +458,6 @@
             </div>
         </div>`;
 
-        // ACORDEÓN 4: ESTILOS VISUALES
         let rgbToHex = (rgbStr) => { 
             if(!rgbStr || !rgbStr.includes('rgb')) return '#ffffff';
             let a = rgbStr.split("(")[1].split(")")[0].split(","); 
