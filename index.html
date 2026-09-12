@@ -42,7 +42,7 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .glass{background:rgba(7,7,9,.72);backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}
 .glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
 
-.filter-btn { transition: background-color 0.3s ease, color 0.3s ease; font-weight: 600; }
+.filter-btn { transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease; font-weight: 600; }
 .filter-btn.active { color: white; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.2); text-shadow: 0 0 1px rgba(255,255,255,0.5); } 
 .cat-mas-vendidos.active { background: rgba(225,29,72,0.95); }
 .cat-promocionales.active { background: rgba(234,88,12,0.95); }
@@ -356,8 +356,6 @@ body.is-admin-session .video-testimonial-card .vt-quote { display: block !import
 </div>
 
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
-    <!-- El candado responsivo (Media Query) fuerza a que esto no reciba estilos de PC en Móvil -->
-    <!-- Añadido aspect-ratio inline forzado para evitar bugs de CSS en Safari/Windows -->
     <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto" data-theme="cyan" style="aspect-ratio: 9/16;">
         <button onclick="closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg">
             <i class="fa-solid fa-xmark text-sm pointer-events-none"></i>
@@ -438,6 +436,7 @@ window.setFilter = function(filterStr) {
 };
 
 window.handleWaClick = async function(productId, waUrl) {
+    // Analytics en tiempo real
     if (!window.isAdminMode) {
         try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { clicks: increment(1) }, { merge: true }); } catch (e) { console.warn("Analytics no registrado"); }
     }
@@ -471,8 +470,10 @@ window.renderProducts = function(){
     if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
 
     safeProducts.forEach((p,i)=>{
-        const msg = `¡Hola, equipo de *Multiprintt*! 👋%0A%0AEstoy muy interesado/a en este producto:%0A📦 *${p.name}*%0A💵 Precio: *$${Number(p.price).toFixed(2)}*%0A%0AAquí tienes la referencia visual: 📸 ${p.image||'N/A'}%0A%0A¿Me podrían dar más información, por favor? ✨`;
-        const wa = `https://wa.me/${rawPhone}?text=${msg}`;
+        // COPY DE WHATSAPP MEJORADO (CON ENCODEURICOMPONENT PARA EVITAR ERRORES DE EMOJIS)
+        const pUrl = p.image || 'https://multiprintt.web.app';
+        const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy súper interesado/a en este producto:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 *Vengo desde la tienda online:*\n${pUrl}\n\n¿Me podrían dar más detalles? ¡Gracias! ✨`;
+        const wa = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
         
         const art = p.image ? `<img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
         const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
@@ -779,9 +780,13 @@ window.openCourseModal = function(id) {
     const c = window.appCourses.find(x => x.id === id); if(!c) return;
     document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc; document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
     
+    // Configuración de botón de WhatsApp
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
-    const msg = `¡Hola *Multiprintt Academy*! 🎓%0A%0AQuiero información detallada y separar mi cupo para:%0A📘 *${c.title}*%0A%0AReferencia del curso: 📸 ${c.image||'N/A'}%0A%0A¿Me ayudan con los requisitos? 🚀`;
-    const waUrl = `https://wa.me/${rawPhone}?text=${msg}`;
+    
+    // ENCODEURICOMPONENT APLICADO PARA EMOJIS SEGUROS
+    const cUrl = c.image || 'https://multiprintt.web.app';
+    const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}*\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
+    const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
     
     document.getElementById('cm-btn').onclick = () => window.open(waUrl, '_blank');
     
@@ -819,7 +824,7 @@ window.openVideoModal = function(btn) {
     const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0) : 'C';
     
     let modalContent = document.getElementById('videoModalContent');
-    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); 
+    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); // Fallback
     
     if (modalContent) applyThemeSwap(modalContent, themeKey);
     
@@ -838,11 +843,12 @@ window.openVideoModal = function(btn) {
 
         video.src = videoSrc; video.load(); video.currentTime = 0; 
         
+        // Anti-Black Screen Safari/Chrome: Start muted to guarantee playback, then unmute
         video.muted = true;
         const playPromise = video.play(); 
         if (playPromise !== undefined) { 
             playPromise.then(() => {
-                video.muted = false; 
+                video.muted = false; // Unmute safely once playing
             }).catch(() => { 
                 video.muted = true; video.play(); 
             }); 
