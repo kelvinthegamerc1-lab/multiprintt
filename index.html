@@ -10,12 +10,18 @@
 <title>Multiprintt | Impresión & Publicidad en Guayaquil</title>
 <meta name="description" content="Multiprintt: Impresión & Publicidad. Expertos en personalización, impresión gráfica, DTF, sublimación, resina y academia para emprendedores en Ecuador.">
 <meta name="theme-color" content="#070709">
+<meta name="color-scheme" content="dark">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="format-detection" content="telephone=no">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="dns-prefetch" href="https://multiprintt.web.app">
 
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <script>tailwind.config = { theme: { extend: { colors: { bg: '#070709', panel: '#101014' } } } }</script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
@@ -101,6 +107,35 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 .rh-nw { top: -6px; left: -6px; cursor: nwse-resize; } .rh-n { top: -6px; left: calc(50% - 5px); cursor: ns-resize; } .rh-ne { top: -6px; right: -6px; cursor: nesw-resize; }
 .rh-e { top: calc(50% - 5px); right: -6px; cursor: ew-resize; } .rh-se { bottom: -6px; right: -6px; cursor: nwse-resize; } .rh-s { bottom: -6px; left: calc(50% - 5px); cursor: ns-resize; }
 .rh-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .rh-w { top: calc(50% - 5px); left: -6px; cursor: ew-resize; }
+
+/* Multiprintt 2027 commerce layer — preserves the original visual system */
+html{color-scheme:dark;scrollbar-gutter:stable}
+body{overscroll-behavior:none}
+button,input,textarea,select{touch-action:manipulation}
+@media (pointer:fine){button:not(:disabled),a[href],[role=button],summary,select{cursor:pointer}}
+.add-cart{width:38px;height:38px;padding:0!important;border-radius:12px!important;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.add-cart i{margin:0!important;font-size:15px}
+.purchase-hint{font-size:8px;line-height:1;color:#777780;text-align:right;margin-top:4px}
+.desktop-copy{display:inline}.mobile-copy{display:none}
+@media (max-width:767px){.desktop-copy{display:none}.mobile-copy{display:inline}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+.cart-fab{position:fixed;right:16px;bottom:78px;z-index:260;width:52px;height:52px;border-radius:999px;background:#25D366;color:#071108;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(37,211,102,.28);border:1px solid rgba(255,255,255,.18);transition:transform .2s,box-shadow .2s}
+.cart-fab:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(37,211,102,.36)}
+.cart-count{position:absolute;top:-4px;right:-3px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#fff;color:#111;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #25D366}
+.cart-drawer{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.cart-drawer.active{opacity:1;visibility:visible}
+.cart-panel{position:absolute;top:0;right:0;width:min(430px,100vw);height:100%;background:#0d0d11;border-left:1px solid rgba(255,255,255,.08);transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.cart-drawer.active .cart-panel{transform:translateX(0)}
+.cart-line{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cart-thumb{width:52px;height:52px;border-radius:12px;background:#08080a;border:1px solid rgba(255,255,255,.08);object-fit:contain}
+.cart-qty{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.cart-qty button{width:26px;height:26px;background:transparent;color:#ddd}
+.cart-qty span{min-width:24px;text-align:center;font-size:11px}
+.hot-badge{background:linear-gradient(135deg,#ff5a36,#ef233c);color:#fff;box-shadow:0 8px 20px rgba(239,35,60,.2)}
+.add-cart{background:#25D366!important;color:#061109!important;box-shadow:0 7px 18px rgba(37,211,102,.16)}
+.add-cart:hover{background:#39e77a!important;transform:translateY(-1px)}
+.product-stock-note{font-size:8px;color:#7b7b84;margin-top:3px}
+
 </style>
 </head>
 
@@ -140,12 +175,12 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
                 <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
                 <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
             </div>
             
             <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
                 <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
                     <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none">
@@ -260,7 +295,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
 
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: 't1', itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, '*')" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: 't1', itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, window.location.origin)" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
                     </div>
                 </div>
 
@@ -282,7 +317,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
                     
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: 'txt1', itemData: { name: this.closest('.card').querySelector('h4').innerText, role: this.closest('.card').querySelector('span:not([class*=\'w-10\'])').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" class="bg-pink-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: 'txt1', itemData: { name: this.closest('.card').querySelector('h4').innerText, role: this.closest('.card').querySelector('span:not([class*=\'w-10\'])').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, window.location.origin)" class="bg-pink-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
                     </div>
                 </div>
                 
@@ -332,7 +367,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                             <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
                             <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
                             
-                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
                         </div>
                     </div>
                 </div>
@@ -345,6 +380,25 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
   </section>
 </main>
+
+<button type="button" class="cart-fab md:hidden" onclick="window.toggleCart(true)" aria-label="Abrir carrito">
+  <i class="fa-solid fa-cart-shopping text-[18px]"></i><span id="mobile-cart-count" class="cart-count" style="display:none"></span>
+</button>
+
+<div id="cartDrawer" class="cart-drawer" aria-hidden="true" onclick="if(event.target===this)window.toggleCart(false)">
+  <div class="cart-panel">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-white/10">
+      <div><div class="text-[9px] uppercase tracking-[.25em] text-[#25D366] font-extrabold">Tu selección</div><h3 class="text-lg font-extrabold text-white">Carrito</h3></div>
+      <button type="button" onclick="window.toggleCart(false)" class="w-9 h-9 rounded-full border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto px-5"></div>
+    <div class="p-5 border-t border-white/10 bg-[#101014]">
+      <div class="flex items-center justify-between mb-3"><span class="text-xs text-zinc-400">Subtotal</span><strong id="cartTotal" class="text-lg text-white">$0.00</strong></div>
+      <button type="button" onclick="window.checkoutCart()" class="w-full h-12 rounded-xl bg-[#25D366] text-black font-extrabold text-sm hover:bg-[#39e77a] transition-all"><i class="fa-brands fa-whatsapp mr-2"></i><span class="desktop-copy">Finalizar compra por WhatsApp</span><span class="mobile-copy">🛒 Finalizar compra</span></button>
+      <p class="text-[9px] text-zinc-500 text-center mt-2">La solicitud se enviará con el detalle de tus productos.</p>
+    </div>
+  </div>
+</div>
 
 <nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
     <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
@@ -431,9 +485,9 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, increment } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
 const app = initializeApp(firebaseConfig);
@@ -478,12 +532,40 @@ window.setFilter = function(filterStr) {
     window.renderProducts();
 };
 
-window.handleWaClick = async function(productId, waUrl) {
-    if (!window.isAdminMode) {
-        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { clicks: increment(1) }, { merge: true }); } catch (e) { console.warn("Analytics no registrado"); }
-    }
-    window.open(waUrl, '_blank');
-}
+window.cart = JSON.parse(localStorage.getItem('multiprintt-cart-v1') || '[]');
+window.showCommerceToast=function(msg){let t=document.getElementById('commerce-toast'); if(!t){t=document.createElement('div');t.id='commerce-toast';t.className='fixed left-1/2 -translate-x-1/2 bottom-[86px] md:bottom-6 z-[500] px-4 py-2.5 rounded-full bg-[#151519] border border-white/10 text-white text-xs font-semibold shadow-2xl opacity-0 pointer-events-none transition-all duration-300';document.body.appendChild(t);} t.textContent=msg; t.style.opacity='1'; t.style.transform='translate(-50%,0)'; clearTimeout(window.__commerceToastTimer); window.__commerceToastTimer=setTimeout(()=>{t.style.opacity='0';t.style.transform='translate(-50%,8px)'},2200);};
+window.saveCart = function(){ localStorage.setItem('multiprintt-cart-v1', JSON.stringify(window.cart)); window.renderCart(); };
+window.getProduct = function(id){ return (window.appProducts||[]).find(p=>p.id===id); };
+window.getFinalPrice = function(p){ const price=Number(p?.price)||0; const d=Math.min(100,Math.max(0,Number(p?.discount)||0)); return d>0 ? price*(1-d/100) : price; };
+window.addToCart = async function(productId){
+    const p=window.getProduct(productId); if(!p) return;
+    const row=window.cart.find(x=>x.id===productId);
+    if(row) row.qty=Math.min(99,row.qty+1); else window.cart.push({id:productId,qty:1});
+    try{ await setDoc(doc(db,'artifacts',APP_ID,'public','data','products',productId), {cartAdds: increment(1)}, {merge:true}); }catch(e){ console.warn('cart metric',e); }
+    window.saveCart(); window.toggleCart(true); window.showCommerceToast?.(window.matchMedia('(max-width: 767px)').matches ? '🛒 ¡Añadido! Puedes seguir comprando.' : 'Añadido al carrito. Puedes seguir comprando.');
+};
+window.removeCartItem=function(id){ window.cart=window.cart.filter(x=>x.id!==id); window.saveCart(); };
+window.changeCartQty=function(id,delta){ const r=window.cart.find(x=>x.id===id); if(!r)return; r.qty=Math.max(0,Math.min(99,r.qty+delta)); if(!r.qty) window.removeCartItem(id); else window.saveCart(); };
+window.renderCart=function(){
+ const items=document.getElementById('cartItems'); if(!items)return;
+ let total=0,count=0;
+ if(!window.cart.length){ items.innerHTML='<div class="h-full flex flex-col items-center justify-center text-center px-6"><div class="w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center text-zinc-500 mb-4"><i class="fa-solid fa-cart-shopping text-xl"></i></div><h4 class="text-white font-bold">Tu carrito está vacío</h4><p class="text-xs text-zinc-500 mt-2 max-w-[260px]"><span class="desktop-copy">Agrega tus favoritos y prepara tu compra en pocos pasos.</span><span class="mobile-copy">🛒 Agrega tus favoritos y arma tu compra en segundos.</span></p></div>'; }
+ else { items.innerHTML=window.cart.map(r=>{ const p=window.getProduct(r.id); if(!p)return ''; const unit=window.getFinalPrice(p); total+=unit*r.qty; count+=r.qty; const img=(Array.isArray(p.images)&&p.images[0]) || p.image || ''; return `<div class="cart-line"><img src="${img||'https://placehold.co/200x200/101014/ffffff?text=Producto'}" class="cart-thumb" alt=""><div class="min-w-0"><div class="text-xs font-bold text-white truncate">${String(p.name||'Producto').replace(/[&<>"']/g,'')}</div><div class="text-[10px] text-zinc-500 mt-1">$${unit.toFixed(2)} c/u</div><div class="cart-qty mt-2"><button onclick="window.changeCartQty('${p.id}',-1)">−</button><span>${r.qty}</span><button onclick="window.changeCartQty('${p.id}',1)">+</button></div></div><button onclick="window.removeCartItem('${p.id}')" class="text-zinc-600 hover:text-red-400"><i class="fa-solid fa-trash"></i></button></div>`; }).join(''); }
+ const fmt='$'+total.toFixed(2); const c1=document.getElementById('cartTotal'); if(c1)c1.textContent=fmt; ['header-cart-count','mobile-cart-count'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=count;el.style.display=count?'flex':'none';}});
+};
+window.toggleCart=function(open){const d=document.getElementById('cartDrawer'); if(!d)return; d.classList.toggle('active',open); d.setAttribute('aria-hidden',String(!open)); if(open)window.renderCart();};
+window.checkoutCart=async function(){
+ if(!window.cart.length) return window.toggleCart(true);
+ const phoneEl=document.getElementById('contact-phone'); let rawPhone=phoneEl?phoneEl.textContent.replace(/\s+/g,''):'593997591021'; if(!rawPhone.startsWith('593'))rawPhone='593997591021';
+ const lines=window.cart.map(r=>{const p=window.getProduct(r.id);return p?`• ${p.name} x${r.qty} — $${(window.getFinalPrice(p)*r.qty).toFixed(2)}`:''}).filter(Boolean).join('\n');
+ const total=window.cart.reduce((s,r)=>{const p=window.getProduct(r.id);return s+(p?window.getFinalPrice(p)*r.qty:0)},0);
+ for(const r of window.cart){ try{await setDoc(doc(db,'artifacts',APP_ID,'public','data','products',r.id),{checkoutIntents:increment(r.qty),salesCount:increment(0)},{merge:true});}catch(e){} }
+ const isMobile=window.matchMedia('(max-width: 767px)').matches; const msg=isMobile?`Hola Multiprintt 👋\n\n🛒 Quiero comprar estos productos:\n\n${lines}\n\n💰 Total estimado: $${total.toFixed(2)}\n\nGracias ✨`:`Hola Multiprintt 👋\n\nQuiero comprar estos productos:\n\n${lines}\n\nTotal estimado: $${total.toFixed(2)}\n\nDesde la tienda web. Gracias.`;
+ window.open(`https://wa.me/${rawPhone}?text=${encodeURIComponent(msg)}`,'_blank');
+ window.cart=[]; window.saveCart(); window.toggleCart(false);
+};
+window.handleWaClick = function(productId){ return window.addToCart(productId); };
+window.renderCart();
 
 window.sliderFrames = window.sliderFrames || {};
 window.updateSliderOpacities = function(sliderId) {
@@ -537,13 +619,13 @@ window.syncSocialNetworks = function() {
     navMobileContainer.innerHTML = '';
 
     const btnAdminPc = document.createElement('button');
-    btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
+    btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)");
     btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none";
     btnAdminPc.innerHTML = `<i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>`;
     navPcContainer.appendChild(btnAdminPc);
 
     const btnAdminMob = document.createElement('button');
-    btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
+    btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, window.location.origin)");
     btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none";
     btnAdminMob.innerHTML = `<i class="fa-solid fa-plus text-xs pointer-events-none"></i>`;
     navMobileContainer.appendChild(btnAdminMob);
@@ -603,7 +685,7 @@ window.renderProducts = function(){
     let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
     let safeProducts = [];
     
-    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); } 
+    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => { const sa=(Number(a.salesCount)||0)*10+(Number(a.cartAdds)||0)+(Number(a.checkoutIntents)||0); const sb=(Number(b.salesCount)||0)*10+(Number(b.cartAdds)||0)+(Number(b.checkoutIntents)||0); return sb-sa || Number(b.clicks||0)-Number(a.clicks||0); }).slice(0, 8); } 
     else if (window.currentFilter === 'promocionales') { safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true || (p.discount && p.discount > 0)); } 
     else { safeProducts = allProducts.filter(p => p.category === window.currentFilter); }
 
@@ -636,13 +718,13 @@ window.renderProducts = function(){
         
         let art = '';
         if (imgs.length <= 1) {
-            art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+            art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
         } else {
             let sliderId = `slider-${p.id}`;
             let slides = imgs.map((img, idx) => {
                 const isActive = idx === 1;
                 const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
-                return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
+                return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
             }).join('');
             
             art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', -1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', 1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>`;
@@ -652,9 +734,9 @@ window.renderProducts = function(){
         const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
         
         let badgesHtml = '';
-        let isTopSeller = (window.currentFilter === 'mas-vendidos' && i < 3);
+        let isTopSeller = Boolean(p.isBestSeller) || (window.currentFilter === 'mas-vendidos' && i < 3);
         if (isTopSeller) {
-            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-rose-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-crown text-amber-300 text-[9px]"></i> Top ${i+1}</span>`;
+            badgesHtml += `<span class="hot-badge inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] font-bold px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire-flame-curved text-[9px]"></i> Más vendido</span>`;
         }
         if (p.isPromo) {
             badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-amber-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-200 text-[9px]"></i> Promo</span>`;
@@ -665,14 +747,14 @@ window.renderProducts = function(){
         let promoBadgeContainer = badgesHtml ? `<div class="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">${badgesHtml}</div>` : '';
 
         let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, window.location.origin)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, window.location.origin)" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let priceHtml = `<span class="text-sm md:text-base font-extrabold text-white">$${finalPrice.toFixed(2)}</span>`;
         if (discountVal > 0) {
             priceHtml = `<div class="flex items-center gap-2"><span class="text-sm md:text-base font-extrabold text-pink-400">$${finalPrice.toFixed(2)}</span><span class="text-xs text-zinc-500 line-through">$${basePrice.toFixed(2)}</span></div>`;
         }
 
-        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}" data-resizable="true">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button onclick="window.handleWaClick('${p.id}', '${wa}')" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</button></div></div></article>`;
+        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}" data-resizable="true">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-end justify-between gap-3"><div class="min-w-0">${priceHtml}<div class="purchase-hint"><span class="desktop-copy">Listo para llevar</span><span class="mobile-copy">🛍️ Listo para ti</span></div></div><button type="button" title="Agregar ${String(p.name||'producto').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ._-]/g,'')} al carrito" aria-label="Agregar ${String(p.name||'producto').replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ ._-]/g,'')} al carrito" onclick="window.handleWaClick('${p.id}')" class="add-cart pointer-events-auto transition-all ignore-drag"><i class="fa-solid fa-cart-shopping"></i></button></div></div></article>`;
     });
     if(safeProducts.length > 0) grid.innerHTML = renderHTML;
 }
@@ -695,7 +777,7 @@ window.renderCourses = function(){
         let a = accents[i % accents.length]; 
         let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
         
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, window.location.origin)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, window.location.origin)" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let delay = 100 + (i * 100);
         let masterclassBadge = c.isMasterclass !== false ? `<div class="absolute top-5 left-5 z-20 pointer-events-none"><span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span></div>` : '';
@@ -811,7 +893,7 @@ window.loadFirebaseData = async function() {
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
             window.navigate('catalog'); 
-            if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, '*'); }
+            if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, window.location.origin); }
         }, 500); 
     }
 }
@@ -877,7 +959,7 @@ function initVisualResizer() {
         if (currentDir.includes('n')) window.selectedEl.style.height = Math.max(30, startH - dy) + 'px';
 
         window.updateResizeBox();
-        window.parent.postMessage({ type: 'RESIZE_UPDATE', width: window.selectedEl.style.width, height: window.selectedEl.style.height }, '*');
+        window.parent.postMessage({ type: 'RESIZE_UPDATE', width: window.selectedEl.style.width, height: window.selectedEl.style.height }, window.location.origin);
     });
 
     window.addEventListener('mouseup', () => { isResizing = false; });
@@ -898,7 +980,7 @@ window.updateResizeBox = function() {
 }
 
 window.addEventListener('message', async (event) => {
-    if (event.source !== window.parent) return;
+    if (event.source !== window.parent || event.origin !== window.location.origin) return;
 
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
@@ -906,7 +988,7 @@ window.addEventListener('message', async (event) => {
         
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
-            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, window.location.origin);
             
             if(e.target.closest('button[onclick^="window.navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
             
@@ -929,10 +1011,10 @@ window.addEventListener('message', async (event) => {
                     type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', 
                     isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme,
                     styles: { width: target.style.width || computed.width, height: target.style.height || computed.height, padding: target.style.padding || computed.padding, margin: target.style.margin || computed.margin, radius: target.style.borderRadius || computed.borderRadius, color: target.style.color || computed.color, bg: target.style.backgroundColor || computed.backgroundColor }
-                }, '*');
+                }, window.location.origin);
             } else {
                 if(window.selectedEl) window.selectedEl.classList.remove('builder-selected-el');
-                window.selectedEl = null; window.updateResizeBox(); window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
+                window.selectedEl = null; window.updateResizeBox(); window.parent.postMessage({ type: 'CLEAR_SELECTION' }, window.location.origin);
             }
         }, true); 
     }
@@ -942,7 +1024,7 @@ window.addEventListener('message', async (event) => {
         window.renderProducts(); window.renderCourses();
         if (window.resizerOverlay) window.resizerOverlay.style.display = 'none';
         if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
-        window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
+        window.parent.postMessage({ type: 'CLEAR_SELECTION' }, window.location.origin);
     }
 
     if (event.data.type === 'ADD_SOCIAL_ICON') {
@@ -1047,8 +1129,8 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'DELETE_SELECTED_NODE') { if(window.selectedEl) { window.selectedEl.remove(); window.selectedEl = null; window.updateResizeBox(); } }
-    if (event.data.type === 'SELECT_PARENT_NODE') { if(window.selectedEl && window.selectedEl.parentElement && window.selectedEl.parentElement.tagName !== 'BODY') { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.parentElement; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, '*'); } }
-    if (event.data.type === 'SELECT_CHILD_NODE') { if(window.selectedEl && window.selectedEl.firstElementChild) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.firstElementChild; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, '*'); } }
+    if (event.data.type === 'SELECT_PARENT_NODE') { if(window.selectedEl && window.selectedEl.parentElement && window.selectedEl.parentElement.tagName !== 'BODY') { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.parentElement; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, window.location.origin); } }
+    if (event.data.type === 'SELECT_CHILD_NODE') { if(window.selectedEl && window.selectedEl.firstElementChild) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.firstElementChild; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, window.location.origin); } }
 
     if (event.data.type === 'TOGGLE_DRAG') {
         const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
@@ -1071,7 +1153,7 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'RESET_TEMPLATE') {
-        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*');
+        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, window.location.origin);
     }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
@@ -1108,7 +1190,7 @@ window.addEventListener('message', async (event) => {
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
 
-        window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, '*');
+        window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, window.location.origin);
     }
 });
 
@@ -1202,5 +1284,6 @@ window.closeVideoModal = function(e) {
 
 document.addEventListener('DOMContentLoaded', () => { window.loadFirebaseData(); });
 </script>
+<!-- Multiprintt 2027 Commerce Layer: cart + conversion + secure admin bridge -->
 </body>
 </html>
