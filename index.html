@@ -152,7 +152,7 @@ body.is-admin-session .video-testimonial-card .vt-quote { display: block !import
       </div>
     </header>
 
-    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl transition-all duration-300 overflow-hidden h-[34px] md:h-[45px] opacity-100 shrink-0 border-b border-white/5">
+    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden h-[34px] md:h-[45px] opacity-100 shrink-0">
         <div class="flex items-center justify-between md:justify-center w-full px-0">
             <button onclick="setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap">
                 <span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span>
@@ -382,7 +382,7 @@ body.is-admin-session .video-testimonial-card .vt-quote { display: block !import
 </div>
 
 <div id="mediaModal" class="hidden fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl p-4 sm:p-6 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-3xl bg-[#0e0e12] border border-white/10 p-6 rounded-3xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh] ignore-drag" id="mediaModalContent"><div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4 shrink-0"><h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-regular fa-images text-cyan-400"></i> Galería de Recursos</h3><button onclick="closeMediaSelector()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 font-bold" id="media-folder-label">/recursos/</div><div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div></div></div>
-<div id="editModal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative ignore-drag max-h-[90vh] overflow-y-auto hide-scrollbar" id="editModalContent"><h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2 ignore-drag">Editar BD</h3><input type="hidden" id="em-id" class="ignore-drag"> <input type="hidden" id="em-type" class="ignore-drag"><div id="em-fields" class="space-y-3 mb-6 ignore-drag"></div><div class="flex gap-3 ignore-drag"><button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(37,216,255,0.2)] ignore-drag">Guardar Cambios</button><button onclick="closeEditModal()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 transition-colors ignore-drag">Cancelar</button></div></div></div>
+<div id="editModal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative ignore-drag" id="editModalContent"><h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2 ignore-drag">Editar BD</h3><input type="hidden" id="em-id" class="ignore-drag"> <input type="hidden" id="em-type" class="ignore-drag"><div id="em-fields" class="space-y-3 mb-6 ignore-drag"></div><div class="flex gap-3 ignore-drag"><button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors ignore-drag">Guardar Cambios</button><button onclick="closeEditModal()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 transition-colors ignore-drag">Cancelar</button></div></div></div>
 <div id="custom-confirm-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-sm bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 text-center ignore-drag" id="custom-confirm-content"><i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4 ignore-drag"></i><h3 class="text-lg font-bold text-white mb-2 ignore-drag">¿Estás seguro?</h3><p class="text-zinc-400 text-sm mb-6 ignore-drag">¿Quieres borrar este elemento permanentemente?</p><div class="flex gap-3 ignore-drag"><button id="custom-confirm-btn" class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-lg hover:bg-red-600 transition-colors ignore-drag">Borrar</button><button onclick="closeCustomConfirm()" class="flex-1 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 transition-colors ignore-drag">Cancelar</button></div></div></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -398,22 +398,12 @@ const db = getFirestore(app);
 const APP_ID = "multiprintt-web";
 
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
-window.currentEditingImages = []; window._isSelectingForGallery = false;
 let editingCardNode = null; let currentVideoCardRef = null;
 
 const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
-const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,images:[],icon:'fa-shirt'}];
+const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,image:'',icon:'fa-shirt'}];
 const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:""}];
 window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
-
-window.scrollSlider = function(id, dir) {
-    if(event) { event.stopPropagation(); event.preventDefault(); }
-    const slider = document.getElementById(id);
-    if(slider) {
-        const scrollAmount = slider.clientWidth;
-        slider.scrollBy({ left: dir * scrollAmount, behavior: 'smooth' });
-    }
-}
 
 window.navigate = function(targetId) {
     const subnav = document.getElementById('catalog-subnav');
@@ -430,15 +420,8 @@ window.navigate = function(targetId) {
     });
     
     if (subnav) {
-        if (targetId === 'catalog') { 
-            subnav.style.height = window.innerWidth < 768 ? '34px' : '45px'; 
-            subnav.style.opacity = '1'; 
-            subnav.classList.add('border-b');
-        } else { 
-            subnav.style.height = '0px'; 
-            subnav.style.opacity = '0'; 
-            subnav.classList.remove('border-b');
-        }
+        if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '45px'; subnav.style.opacity = '1'; } 
+        else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
     }
 };
 
@@ -452,10 +435,45 @@ window.setFilter = function(filterStr) {
 
 window.handleWaClick = async function(productId, waUrl) {
     if (!window.isAdminMode) {
-        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { clicks: increment(1) }, { merge: true }); } catch (e) {}
+        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { clicks: increment(1) }, { merge: true }); } catch (e) { console.warn("Analytics no registrado"); }
     }
     window.open(waUrl, '_blank');
 }
+
+window.updateSliderOpacities = function(sliderId) {
+    const slider = document.getElementById(sliderId);
+    if (!slider) return;
+    const slides = slider.querySelectorAll('.slider-item');
+    if (slides.length === 0) return;
+    const sliderRect = slider.getBoundingClientRect();
+    const sliderCenter = sliderRect.left + (sliderRect.width / 2);
+    let closestSlide = null;
+    let minDistance = Infinity;
+    
+    slides.forEach(slide => {
+        const slideRect = slide.getBoundingClientRect();
+        const slideCenter = slideRect.left + (slideRect.width / 2);
+        const distance = Math.abs(sliderCenter - slideCenter);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestSlide = slide;
+        }
+        slide.classList.remove('opacity-100', 'scale-100', 'z-20');
+        slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
+    });
+    
+    if (closestSlide) {
+        closestSlide.classList.remove('opacity-40', 'scale-[0.70]', 'z-10');
+        closestSlide.classList.add('opacity-100', 'scale-100', 'z-20');
+    }
+};
+
+window.scrollSlider = function(id, dir) {
+    const slider = document.getElementById(id);
+    if(!slider) return;
+    const width = slider.querySelector('.slider-item').offsetWidth;
+    slider.scrollBy({ left: dir * width, behavior: 'smooth' });
+};
 
 window.renderProducts = function(){
     const grid = document.getElementById('product-grid'); if(!grid) return; grid.innerHTML = '';
@@ -463,9 +481,13 @@ window.renderProducts = function(){
     let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
     
     let safeProducts = [];
-    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); } 
-    else if (window.currentFilter === 'promocionales') { safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true); } 
-    else { safeProducts = allProducts.filter(p => p.category === window.currentFilter); }
+    if (window.currentFilter === 'mas-vendidos') {
+        safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); 
+    } else if (window.currentFilter === 'promocionales') {
+        safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true);
+    } else {
+        safeProducts = allProducts.filter(p => p.category === window.currentFilter);
+    }
 
     if (window.currentFilter !== 'mas-vendidos') {
         let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
@@ -480,44 +502,67 @@ window.renderProducts = function(){
     if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
 
     safeProducts.forEach((p,i)=>{
-        const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy súper interesado/a en este producto:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 *Vengo desde la tienda online:*\nhttps://multiprintt.web.app/\n\n¿Me podrían dar más detalles? ¡Gracias! ✨`;
+        const pUrl = 'https://multiprintt.web.app/';
+        const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy súper interesado/a en este producto:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 *Vengo desde la tienda online:*\n${pUrl}\n\n¿Me podrían dar más detalles? ¡Gracias! ✨`;
         const wa = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
         
-        let imgs = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+        let imgs = [];
+        if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images;
+        else if (p.image) imgs = p.image.split(',').map(s=>s.trim()).filter(s=>s);
+        
+        if (imgs.length === 2) {
+            imgs = [imgs[0], imgs[1], imgs[0], imgs[1]];
+        }
+        
         let art = '';
-        if (imgs.length === 0) {
-            art = `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
-        } else if (imgs.length === 1) {
-            art = `<img src="${imgs[0]}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">`;
+        if (imgs.length <= 1) {
+            art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
         } else {
             let sliderId = `slider-${p.id}`;
-            let slides = imgs.map(img => `<img src="${img}" loading="lazy" class="min-w-full h-full object-contain p-4 snap-center shrink-0 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">`).join('');
+            let slides = imgs.map((img, idx) => {
+                const isActive = idx === 1;
+                const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
+                return `
+                    <div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}">
+                        <img src="${img}" loading="lazy" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">
+                    </div>
+                `;
+            }).join('');
+            
             art = `
-                <div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider" id="${sliderId}">
+                <div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="updateSliderOpacities('${sliderId}')">
                     ${slides}
                 </div>
-                <div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                <div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none">
                     <button onclick="scrollSlider('${sliderId}', -1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button>
                 </div>
-                <div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+                <div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none">
                     <button onclick="scrollSlider('${sliderId}', 1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button>
                 </div>
             `;
+            setTimeout(() => {
+                const slider = document.getElementById(sliderId);
+                if (slider) {
+                    const items = slider.querySelectorAll('.slider-item');
+                    if (items[1]) {
+                        slider.scrollTo({
+                            left: items[1].offsetLeft - (slider.offsetWidth - items[1].offsetWidth) / 2,
+                            behavior: 'instant'
+                        });
+                    }
+                }
+                updateSliderOpacities(sliderId);
+            }, 60);
         }
 
         const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
-        
-        let promoBadge = p.isPromo ? `<span class="absolute top-2 left-2 z-30 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-[#ea580c]/80 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-fire text-[#ffd84d]"></i> Promo</span>` : '';
-        if (window.currentFilter === 'mas-vendidos' && i < 3) promoBadge = `<span class="absolute top-2 left-2 z-30 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-[#e11d48]/80 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-crown text-[#ffd84d]"></i> Top ${i+1}</span>`;
+        let promoBadge = p.isPromo ? `<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-[#ea580c]/80 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-fire text-[#ffd84d]"></i> Promo</span>` : '';
+        if (window.currentFilter === 'mas-vendidos' && i < 3) promoBadge = `<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-[#e11d48]/80 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-crown text-[#ffd84d]"></i> Top ${i+1}</span>`;
 
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag z-40"><button onclick="event.stopPropagation(); window.openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.stopPropagation(); window.deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.stopPropagation(); window.deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
         
-        grid.innerHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30 z-0" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadge}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95 relative"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><button onclick="handleWaClick('${p.id}', '${wa}')" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</button></div></div></article>`;
+        grid.innerHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadge}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><button onclick="handleWaClick('${p.id}', '${wa}')" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</button></div></div></article>`;
     });
-
-    if (window.isAdminMode) {
-        grid.innerHTML += `<article class="card flex flex-col justify-center min-h-[250px] border-2 border-dashed border-zinc-600 bg-transparent shadow-none hover:border-cyan-400 group"><button onclick="window.openEditor('product', null)" class="admin-tool w-full h-full flex flex-col items-center justify-center text-zinc-500 font-bold group-hover:text-cyan-400 transition-all ignore-drag"><i class="fa-solid fa-plus text-3xl mb-3 pointer-events-none"></i> <span class="pointer-events-none text-sm">Nuevo Producto</span></button></article>`;
-    }
 }
 
 window.renderCourses = function(){
@@ -530,10 +575,6 @@ window.renderCourses = function(){
         let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button onclick="event.stopPropagation(); window.deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>` : '';
         grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black ignore-drag">Ver más</button></div></div></article>`;
     });
-
-    if (window.isAdminMode) {
-        grid.innerHTML += `<article class="card flex flex-col justify-center min-h-[250px] border-2 border-dashed border-zinc-600 bg-transparent shadow-none hover:border-yellow-400 group"><button onclick="window.openEditor('course', null)" class="admin-tool w-full h-full flex flex-col items-center justify-center text-zinc-500 font-bold group-hover:text-yellow-400 transition-all ignore-drag"><i class="fa-solid fa-plus text-3xl mb-3 pointer-events-none"></i> <span class="pointer-events-none text-sm">Nuevo Curso</span></button></article>`;
-    }
 }
 
 window.cloneTextTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.card:not(.admin-tool)'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
@@ -621,52 +662,36 @@ window.addEventListener('message', async (event) => {
     if (event.source !== window.parent) return;
 
     if (event.data.type === 'ENABLE_BUILDER') {
-        window.isAdminMode = true; 
-        document.body.classList.add('is-admin-session', 'builder-mode');
-        window.renderProducts(); window.renderCourses(); 
+        window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
         
-        if (!window.builderListenersAdded) {
-            window.builderListenersAdded = true;
-            document.addEventListener('click', function(e) {
-                if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
-                window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+        document.addEventListener('click', function(e) {
+            if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
+            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+            
+            if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
+            
+            let target = e.target.closest('[data-editable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
+            
+            if (target && !target.closest('.ignore-drag')) {
+                e.preventDefault(); e.stopPropagation();
+                if(selectedEl) selectedEl.classList.remove('builder-selected-el');
+                selectedEl = target; selectedEl.classList.add('builder-selected-el');
                 
-                if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
+                let isVideoCard = target.classList.contains('video-testimonial-card');
+                if(isVideoCard) currentVideoCardRef = target; 
                 
-                let target = e.target.closest('[data-editable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
-                
-                if (target && !target.closest('.ignore-drag')) {
-                    e.preventDefault(); e.stopPropagation();
-                    if(selectedEl) selectedEl.classList.remove('builder-selected-el');
-                    selectedEl = target; selectedEl.classList.add('builder-selected-el');
-                    
-                    let isVideoCard = target.classList.contains('video-testimonial-card');
-                    let isGalleryImg = !!target.closest('.group\\/slider');
-                    if(isVideoCard) currentVideoCardRef = target; 
-                    
-                    let hasTheme = target.hasAttribute('data-theme');
-                    let currentTheme = target.getAttribute('data-theme') || '';
+                let hasTheme = target.hasAttribute('data-theme');
+                let currentTheme = target.getAttribute('data-theme') || '';
 
-                    window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', isVideoCard: isVideoCard, isGalleryImg: isGalleryImg, hasTheme: hasTheme, currentTheme: currentTheme }, '*');
-                }
-            }, true); 
-        }
-    }
-    
-    if (event.data.type === 'ENABLE_INTERACT') {
-        window.isAdminMode = true; 
-        document.body.classList.add('is-admin-session');
-        document.body.classList.remove('builder-mode', 'dragging-active');
-        window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
-        window.renderProducts(); window.renderCourses(); 
+                window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme }, '*');
+            }
+        }, true); 
     }
 
     if (event.data.type === 'DISABLE_BUILDER') {
-        window.isAdminMode = false;
-        document.body.classList.remove('builder-mode', 'is-admin-session', 'dragging-active');
-        window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; 
+        document.body.classList.remove('builder-mode', 'is-admin-session');
+        if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
         window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
-        window.renderProducts(); window.renderCourses();
     }
 
     if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); } }
@@ -738,29 +763,7 @@ window.addEventListener('message', async (event) => {
     }
 });
 
-window.renderEditorImages = function() {
-    const container = document.getElementById('editor-images-list');
-    if(!container) return;
-    container.innerHTML = '';
-    window.currentEditingImages.forEach((img, idx) => {
-        container.innerHTML += `
-            <div class="relative w-14 h-14 rounded-md bg-black/50 border border-white/10 group ignore-drag">
-                <img src="${img}" class="w-full h-full object-contain p-1 rounded-md">
-                <button onclick="window.removeEditorImage(${idx})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-md text-[10px] ignore-drag"><i class="fa-solid fa-times pointer-events-none"></i></button>
-            </div>
-        `;
-    });
-}
-
-window.removeEditorImage = function(idx) {
-    if(event) { event.preventDefault(); event.stopPropagation(); }
-    window.currentEditingImages.splice(idx, 1);
-    window.renderEditorImages();
-}
-
-window.openMediaSelector = async function(type, isForGallery = false) {
-    if(event) { event.preventDefault(); event.stopPropagation(); }
-    window._isSelectingForGallery = isForGallery;
+window.openMediaSelector = async function(type) {
     const modal = document.getElementById('mediaModal'); const grid = document.getElementById('media-grid'); const label = document.getElementById('media-folder-label');
     modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('mediaModalContent').classList.remove('scale-95'); }, 10);
     grid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Consultando Base de Datos...</div>';
@@ -783,7 +786,7 @@ window.openMediaSelector = async function(type, isForGallery = false) {
     grid.innerHTML = ''; if (fileNames.length === 0) { grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return; }
     fileNames.forEach(nombre => {
         const url = baseUrl + nombre; const isVideo = url.endsWith('.mp4'); const box = document.createElement('div');
-        box.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between ignore-drag';
+        box.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between';
         box.onclick = () => selectMedia(url);
         
         if (isVideo) { box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`; box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); }; } 
@@ -792,16 +795,40 @@ window.openMediaSelector = async function(type, isForGallery = false) {
     });
 }
 window.closeMediaSelector = function() { document.getElementById('mediaModal').classList.add('opacity-0'); document.getElementById('mediaModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('mediaModal').classList.add('hidden'); document.getElementById('mediaModal').classList.remove('flex'); }, 300); }
+window.selectMedia = function(url) {
+    const hiddenInput = document.getElementById('ef-img');
+    let currentVal = hiddenInput.value ? hiddenInput.value.split(',').map(s=>s.trim()).filter(s=>s) : [];
+    if (!currentVal.includes(url)) currentVal.push(url);
+    hiddenInput.value = currentVal.join(', ');
+    renderGalleryThumbnails(currentVal);
+    closeMediaSelector();
+}
 
-window.selectMedia = function(url) { 
-    if (window._isSelectingForGallery) {
-        window.currentEditingImages.push(url);
-        window.renderEditorImages();
-    } else {
-        document.getElementById('ef-img').value = url; const preview = document.getElementById('preview-ef-img'); 
-        if(preview) { if(url.endsWith('.mp4')) { preview.style.backgroundImage = 'none'; preview.innerHTML = `<video src="${url}#t=0.1" class="w-full h-full object-cover rounded-lg"></video>`; } else { preview.innerHTML = ''; preview.style.backgroundImage = `url('${url}')`; } } 
+window.removeGalleryImg = function(urlToRemove) {
+    const hiddenInput = document.getElementById('ef-img');
+    let currentVal = hiddenInput.value ? hiddenInput.value.split(',').map(s=>s.trim()).filter(s=>s) : [];
+    currentVal = currentVal.filter(u => u !== urlToRemove);
+    hiddenInput.value = currentVal.join(', ');
+    renderGalleryThumbnails(currentVal);
+}
+
+window.renderGalleryThumbnails = function(urls) {
+    const previewContainer = document.getElementById('preview-ef-gallery');
+    if (!previewContainer) return;
+    previewContainer.innerHTML = '';
+    if (urls.length === 0) {
+        previewContainer.innerHTML = `<span class="text-xs text-zinc-500 italic">No hay imágenes en la galería. Añade al menos una.</span>`;
+        return;
     }
-    closeMediaSelector(); 
+    urls.forEach(url => {
+        const thumb = document.createElement('div');
+        thumb.className = 'relative w-16 h-16 rounded-lg bg-black border border-white/10 overflow-hidden shrink-0 group';
+        thumb.innerHTML = `
+            <img src="${url}" class="w-full h-full object-cover">
+            <button type="button" onclick="window.removeGalleryImg('${url}')" class="absolute inset-0 bg-red-600/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xs"><i class="fa-solid fa-trash"></i></button>
+        `;
+        previewContainer.appendChild(thumb);
+    });
 }
 
 window.openEditor = function(type, id, btnNode) {
@@ -811,29 +838,36 @@ window.openEditor = function(type, id, btnNode) {
     if(type === 'product') { 
         const p = id ? window.appProducts.find(x => x.id === id) : { category: window.currentFilter === 'mas-vendidos' || window.currentFilter === 'promocionales' ? 'textil' : window.currentFilter }; 
         const isPromoChecked = p.isPromo ? 'checked' : '';
-        window.currentEditingImages = p.images ? [...p.images] : (p.image ? [p.image] : []);
         
+        let initialImgs = [];
+        if (Array.isArray(p.images) && p.images.length > 0) initialImgs = p.images;
+        else if (p.image) initialImgs = p.image.split(',').map(s=>s.trim()).filter(s=>s);
+        let initialImgStr = initialImgs.join(', ');
+
         fields.innerHTML = `
-            <input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
+            <input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre del Producto" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
             <select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag">
                 <option value="textil" ${p.category==='textil'?'selected':''}>Textil</option>
                 <option value="jarros" ${p.category==='jarros'?'selected':''}>Jarros & Thermos</option>
                 <option value="imp-general" ${p.category==='imp-general'?'selected':''}>Impresión General</option>
                 <option value="packs" ${p.category==='packs'?'selected':''}>Packs</option>
             </select>
-            <label class="flex items-center gap-2 bg-[#ea580c]/10 border border-[#ea580c]/30 p-3 rounded-lg mb-2 cursor-pointer hover:bg-[#ea580c]/20 transition-colors ignore-drag">
+            <label class="flex items-center gap-2 bg-[#ea580c]/10 border border-[#ea580c]/30 p-3 rounded-lg mb-2 cursor-pointer hover:bg-[#ea580c]/20 transition-colors">
                 <input type="checkbox" id="ef-promo" ${isPromoChecked} class="accent-[#ea580c] w-4 h-4 cursor-pointer ignore-drag">
                 <span class="text-[11px] font-bold text-white uppercase tracking-wide flex items-center gap-2"><i class="fa-solid fa-fire text-[#ffd84d]"></i> Marcar también como Promocional</span>
             </label>
-            <input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-3 ignore-drag">
+            <input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio ($)" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-3 ignore-drag">
             
-            <div class="mb-2 p-3 bg-white/5 border border-white/10 rounded-lg ignore-drag">
-                <label class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ignore-drag"><i class="fa-solid fa-images text-cyan-400"></i> Galería del Producto</label>
-                <div id="editor-images-list" class="flex flex-wrap gap-2 mb-3 ignore-drag"></div>
-                <button onclick="openMediaSelector('product', true)" class="w-full bg-[#1a1a1e] border border-dashed border-white/20 p-2.5 rounded-lg text-cyan-400 text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Foto al Carrusel</button>
+            <div class="border border-white/10 bg-black/40 p-3 rounded-xl mb-2">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-bold text-zinc-300">Galería de Imágenes (Slideshow)</span>
+                    <button type="button" onclick="openMediaSelector('product')" class="bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/40 px-3 py-1 rounded text-xs font-bold transition-colors"><i class="fa-solid fa-plus mr-1"></i> Añadir Foto</button>
+                </div>
+                <input type="hidden" id="ef-img" value="${initialImgStr}">
+                <div id="preview-ef-gallery" class="flex gap-2 overflow-x-auto p-1 min-h-[72px] items-center hide-scrollbar"></div>
             </div>
         `; 
-        setTimeout(window.renderEditorImages, 50);
+        setTimeout(() => renderGalleryThumbnails(initialImgs), 50);
     } 
     else if (type === 'course') { const c = id ? window.appCourses.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><div class="flex gap-2 mb-2 ignore-drag"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"></div><button onclick="openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${c.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2 ignore-drag" style="background-image: url('${c.image||''}')"></div><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24 ignore-drag">${c.desc||''}</textarea>`; }
     else if (type === 'testimonial') { if(btnNode) { const card = btnNode.closest('.video-testimonial-card'); editingCardNode = card; if(card) { const vid = card.querySelector('.vt-video') ? card.querySelector('.vt-video').src.split('#')[0] : ''; const name = card.querySelector('.vt-name') ? card.querySelector('.vt-name').innerText : ''; const role = card.querySelector('.vt-role') ? card.querySelector('.vt-role').innerText : ''; const quote = card.querySelector('.vt-quote') ? card.querySelector('.vt-quote').innerText : ''; fields.innerHTML = `<input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2 ignore-drag">${quote}</textarea><button onclick="openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button><input type="hidden" id="ef-img" value="${vid}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden ignore-drag"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>`; } } }
@@ -841,7 +875,6 @@ window.openEditor = function(type, id, btnNode) {
 }
 
 window.closeEditModal = function() { document.getElementById('editModal').classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editModal').classList.remove('flex'); editingCardNode = null; }, 300); }
-
 window.saveElementEdit = async function() {
     const type = document.getElementById('em-type').value; 
     if (type === 'testimonial' && editingCardNode) {
@@ -852,8 +885,18 @@ window.saveElementEdit = async function() {
         closeEditModal(); return;
     }
     const id = document.getElementById('em-id').value || Date.now().toString(); const collectionName = type === 'product' ? 'products' : 'courses'; let data = {};
+    
     if(type === 'product') {
-        data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, isPromo: document.getElementById('ef-promo').checked, price: parseFloat(document.getElementById('ef-price').value||0), images: window.currentEditingImages, image: window.currentEditingImages.length > 0 ? window.currentEditingImages[0] : '' };
+        let rawImgStr = document.getElementById('ef-img').value;
+        let imgList = rawImgStr ? rawImgStr.split(',').map(s=>s.trim()).filter(s=>s) : [];
+        data = { 
+            name: document.getElementById('ef-name').value, 
+            category: document.getElementById('ef-cat').value, 
+            isPromo: document.getElementById('ef-promo').checked, 
+            price: parseFloat(document.getElementById('ef-price').value||0), 
+            image: imgList[0] || '',
+            images: imgList
+        };
     } else {
         data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
     }
@@ -877,7 +920,8 @@ window.openCourseModal = function(id) {
     
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
     
-    const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}*\n\n🔗 *Vengo desde la tienda online:*\nhttps://multiprintt.web.app/\n\n¿Me ayudan con los requisitos? 🚀`;
+    const cUrl = 'https://multiprintt.web.app/';
+    const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}*\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
     const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
     
     document.getElementById('cm-btn').onclick = () => window.open(waUrl, '_blank');
@@ -916,7 +960,7 @@ window.openVideoModal = function(btn) {
     const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0) : 'C';
     
     let modalContent = document.getElementById('videoModalContent');
-    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); // Fallback
+    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); 
     
     if (modalContent) applyThemeSwap(modalContent, themeKey);
     
