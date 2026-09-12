@@ -4,244 +4,212 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<title>Multiprintt | Visual Builder Pro</title>
+<title>Multiprintt | Visual Builder Premium</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-    body { background-color: #030303; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+    body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(37,216,255,0.5); }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-    /* AUTH SCREEN */
-    #auth-screen { position: fixed; inset: 0; background: #030303; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
-    .glass-panel { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; box-shadow: 0 40px 80px -20px rgba(0,0,0,1); }
+    #auth-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
+    .glass-panel { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; box-shadow: 0 40px 80px -20px rgba(0,0,0,1); }
     
-    /* HUD QUIRÚRGICO */
-    #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; background: #030303;}
-    
-    /* TOPBAR COMPACTA */
-    .topbar { height: 50px; background: rgba(10,10,12,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
+    #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
+    .topbar { height: 56px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
     
     .workspace { display: flex; flex: 1; overflow: hidden; }
+    .sidebar { width: 220px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.04); padding: 16px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; z-index:10; }
+    .sidebar-right { width: 280px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; overflow-y: auto; z-index:10; }
     
-    /* SIDEBAR IZQUIERDA MINIMALISTA */
-    .sidebar { width: 220px; background: #070709; border-right: 1px solid rgba(255,255,255,0.04); padding: 16px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; z-index:10; }
+    #preview-container { flex: 1; background: #020202; display: flex; align-items: center; justify-content: center; position: relative; padding: 24px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+    #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 30px 60px rgba(0,0,0,0.9); display: flex; flex-direction: column;}
     
-    /* SIDEBAR DERECHA (PROPIEDADES) */
-    .sidebar-right { width: 280px; background: #070709; border-left: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; overflow-y: auto; z-index:10; }
-    
-    /* IFRAME CANVAS (EFECTO LIENZO FLOTANTE) */
-    #preview-container { flex: 1; background: #030303; display: flex; align-items: center; justify-content: center; position: relative; padding: 24px; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 20px 20px; }
-    #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 30px 80px rgba(0,0,0,0.8); display: flex; flex-direction: column; transform-origin: top center;}
-    .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 12px; }
-    .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 20px; margin: auto; border: 8px solid #141414 !important;}
-    .device-mobile { width: 390px !important; height: 844px !important; border-radius: 32px; margin: auto; border: 10px solid #141414 !important;}
+    .device-desktop { width: 100% !important; min-width: 900px; height: 100% !important; border-radius: 16px !important; }
+    .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 24px; margin: auto; border: 12px solid #1a1a1a !important;}
+    .device-mobile { width: 390px !important; height: 844px !important; border-radius: 40px; margin: auto; border: 14px solid #1a1a1a !important;}
     #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit;}
     
-    /* BOTONES HUD */
-    .device-btn { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #555; transition: all 0.2s; cursor: pointer; font-size: 13px;}
+    .device-btn { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #737373; transition: all 0.2s; cursor: pointer; font-size: 14px;}
     .device-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; box-shadow: inset 0 0 0 1px rgba(37,216,255,0.2);}
     .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
 
-    .tool-btn { background: transparent; border: 1px solid rgba(255,255,255,0.04); padding: 10px 14px; border-radius: 8px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; }
-    .tool-btn:hover { background: #121215; border-color: rgba(255,255,255,0.1); color: white;}
-    .btn-action { background: #121215; border: 1px solid rgba(255,255,255,0.06); font-weight: 600; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .btn-action:hover { background: #1a1a1e; border-color: rgba(37,216,255,0.4); color: #25d8ff; }
+    .tool-btn { background: #121215; border: 1px solid rgba(255,255,255,0.04); padding: 10px 14px; border-radius: 8px; color: #d4d4d8; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500;}
+    .tool-btn:hover { background: #1a1a1e; border-color: rgba(37,216,255,0.3); color: white; transform: translateY(-1px);}
     
-    .panel-header { font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; color: #555; font-weight: 800; margin: 12px 0 6px 4px; display: flex; align-items: center; gap: 6px; }
-    .divider { height: 1px; background: rgba(255,255,255,0.03); width: 100%; margin: 8px 0; }
+    .panel-header { font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: #737373; font-weight: 800; margin-bottom: 8px; margin-top: 12px; display: flex; align-items: center; gap: 8px; }
     
-    /* ACORDEÓN PROPIEDADES */
+    .inspector-label { font-size: 9px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;}
+    .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 11px; transition: all 0.2s; font-family: 'Inter', sans-serif;}
+    .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.15);}
+    
     .acc-item { border-bottom: 1px solid rgba(255,255,255,0.03); }
-    .acc-header { padding: 14px 16px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #888; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; transition: all 0.2s;}
-    .acc-header:hover { color: #fff; }
-    .acc-item.active .acc-header { color: #25d8ff; background: rgba(37,216,255,0.02);}
-    .acc-content { padding: 16px; display: none; background: #070709; flex-direction: column; gap: 14px; }
+    .acc-header { padding: 14px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #a1a1aa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #0d0d11; transition: all 0.2s; border-left: 2px solid transparent;}
+    .acc-header:hover { background: #141419; color: #fff; }
+    .acc-item.active .acc-header { color: #25d8ff; border-left-color: #25d8ff; background: rgba(37,216,255,0.02);}
+    .acc-content { padding: 16px; display: none; background: #0a0a0c; flex-direction: column; gap: 12px; }
     .acc-item.active .acc-content { display: flex; }
-    .acc-item.active .acc-header i.fa-chevron-down { transform: rotate(180deg); color: #25d8ff; }
-    
-    .inspector-label { font-size: 9px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;}
-    .inspector-input { width: 100%; background: #030303; border: 1px solid rgba(255,255,255,0.05); padding: 8px 10px; border-radius: 6px; color: #e5e5e5; outline: none; font-size: 11px; transition: all 0.2s; font-family: 'Inter', sans-serif;}
-    .inspector-input:focus { border-color: #25d8ff; background: #000; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
-    
-    .input-group { display: flex; background: #030303; border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; transition: all 0.2s;}
-    .input-group:focus-within { border-color: #25d8ff; box-shadow: 0 0 0 2px rgba(37,216,255,0.1); }
-    .input-group input { width: 100%; background: transparent; border: none; padding: 8px 10px; color: #e5e5e5; outline: none; font-size: 11px; font-family: monospace;}
-    
-    .color-picker { width: 100%; height: 32px; padding: 2px; background: #030303; border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; cursor: pointer; transition: 0.2s;}
-    .color-picker:hover { border-color: rgba(255,255,255,0.2); }
-    .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
-    .color-picker::-webkit-color-swatch { border: none; border-radius: 4px; }
-    
-    .align-btn { flex: 1; padding: 6px; border-radius: 4px; color: #666; transition: all 0.2s; border: 1px solid transparent; display: flex; justify-content: center; align-items: center;}
-    .align-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
-    .align-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; border-color: rgba(37,216,255,0.2); box-shadow: 0 2px 10px rgba(37,216,255,0.1);}
-
-    /* MODALES HUD */
-    .hud-modal { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; transition: opacity 0.3s; opacity: 0; }
-    .hud-modal.show { display: flex; opacity: 1; }
-    .hud-modal-content { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.9); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .hud-modal.show .hud-modal-content { transform: scale(1); }
-
-    .db-input { width: 100%; background: #030303; border: 1px solid rgba(255,255,255,0.06); padding: 10px 14px; border-radius: 10px; color: white; outline: none; font-size: 12px; transition: all 0.2s; }
-    .db-input:focus { border-color: #25d8ff; box-shadow: 0 0 0 2px rgba(37,216,255,0.15); }
-    .db-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: bold; color: #777; margin-bottom: 4px; display: block; }
 
     #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-    .custom-toast { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.06); border-left: 3px solid #25d8ff; color: #e5e5e5; padding: 14px 20px; border-radius: 10px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 500; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
+    .custom-toast { background: #121215; border: 1px solid rgba(255,255,255,0.08); border-left: 3px solid #25d8ff; color: white; padding: 14px 20px; border-radius: 10px; box-shadow: 0 15px 30px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 500; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
     .custom-toast.show { transform: translateX(0); opacity: 1; }
     .custom-toast.error { border-left-color: #ef4444; }
-    .custom-toast.warning { border-left-color: #f59e0b; }
 </style>
 </head>
 <body>
 
 <div id="toast-container"></div>
 
-<!-- PANTALLA AUTH -->
 <div id="auth-screen">
-    <div class="glass-panel p-10 w-full max-w-sm text-center">
-        <div class="w-16 h-16 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.15)]">
-            <i class="fa-solid fa-bolt text-2xl text-cyan-400"></i>
+    <div class="glass-panel p-8 w-full max-w-sm text-center">
+        <div class="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-[16px] flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.15)]">
+            <i class="fa-solid fa-fingerprint text-2xl text-cyan-400"></i>
         </div>
-        <h1 class="text-xl font-extrabold mb-1 tracking-tight">System <span class="text-cyan-400 font-light">HUD</span></h1>
-        <p class="text-zinc-600 text-[10px] uppercase tracking-widest mb-8 font-bold">Autenticación Requerida</p>
+        <h1 class="text-xl font-extrabold mb-1 tracking-tight">Acceso Restringido <span class="text-cyan-400 text-[8px] bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded ml-1 align-top uppercase tracking-widest">Admin</span></h1>
+        <p class="text-zinc-500 text-[11px] mb-6">Persistencia de sesión segura.</p>
         <div class="space-y-3">
-            <input type="email" id="loginUser" placeholder="Admin Email" class="w-full bg-[#030303] border border-white/5 p-3 rounded-xl text-xs text-white outline-none focus:border-cyan-400 transition-colors">
-            <input type="password" id="loginPass" placeholder="Password" class="w-full bg-[#030303] border border-white/5 p-3 rounded-xl text-xs text-white outline-none focus:border-cyan-400 transition-colors">
-            <button onclick="window.attemptLogin()" id="btn-login" class="w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-zinc-200 transition-colors text-xs mt-2 shadow-[0_0_15px_rgba(255,255,255,0.1)]">Inicializar Enlace</button>
+            <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-400 transition-colors">
+            <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3 rounded-lg text-xs text-white outline-none focus:border-cyan-400 transition-colors">
+            <button onclick="window.attemptLogin()" id="btn-login" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-zinc-200 transition-colors text-xs mt-2">Iniciar Sesión</button>
         </div>
     </div>
 </div>
 
-<!-- INTERFAZ PRINCIPAL HUD -->
+<div id="db-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md items-center justify-center opacity-0 transition-opacity duration-300">
+    <div id="db-content" class="bg-[#0a0a0c] border border-white/10 w-full max-w-lg rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform duration-300 flex flex-col">
+        <h3 id="db-modal-title" class="text-white font-bold text-lg mb-5 flex items-center gap-2 border-b border-white/5 pb-4"><i class="fa-solid fa-database text-cyan-400"></i> Editar Registro</h3>
+        
+        <div class="space-y-4 overflow-y-auto max-h-[60vh] pr-2 hide-scrollbar">
+            <div id="db-title-container">
+                <label id="db-title-label" class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block">Nombre / Título</label>
+                <input type="text" id="db-title" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white text-xs outline-none focus:border-cyan-400">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div id="db-price-container">
+                    <label id="db-price-label" class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block">Precio / Valor</label>
+                    <input type="text" id="db-price" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white text-xs outline-none focus:border-cyan-400">
+                </div>
+                <div id="db-cat-container">
+                    <label class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block">Categoría</label>
+                    <select id="db-category" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white text-xs outline-none focus:border-cyan-400">
+                        <option value="mas-vendidos">Más Vendidos</option>
+                        <option value="promocionales">Promocionales</option>
+                        <option value="textil">Textil</option>
+                        <option value="jarros">Jarros & Thermos</option>
+                        <option value="imp-general">Imp. General</option>
+                        <option value="packs">Packs</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="db-desc-container">
+                <label id="db-desc-label" class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block">Descripción</label>
+                <textarea id="db-desc" rows="3" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white text-xs outline-none focus:border-cyan-400 resize-none"></textarea>
+            </div>
+            
+            <div id="db-img-container">
+                <label class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5 block">URL Multimedia (Imagen / Video)</label>
+                <div class="flex gap-2">
+                    <input type="text" id="db-img" class="flex-1 bg-black border border-white/10 p-3 rounded-lg text-white text-xs outline-none focus:border-cyan-400 font-mono">
+                    <button onclick="window.openGallery()" class="px-4 bg-white/5 border border-white/10 rounded-lg hover:bg-cyan-500/20 hover:text-cyan-400 hover:border-cyan-500/30 transition-all text-xs font-bold text-zinc-300 whitespace-nowrap"><i class="fa-solid fa-image mr-1"></i> Galería</button>
+                </div>
+            </div>
+
+            <div id="db-check-container" class="flex items-center gap-3 bg-white/5 p-3 rounded-lg border border-white/5">
+                <input type="checkbox" id="db-checkbox" class="w-4 h-4 accent-cyan-400 cursor-pointer">
+                <label id="db-check-label" class="text-xs text-white font-medium cursor-pointer select-none" for="db-checkbox">Opción Especial</label>
+            </div>
+        </div>
+
+        <div class="flex gap-3 mt-6 pt-4 border-t border-white/5">
+            <button onclick="window.saveDbItem()" class="flex-1 bg-cyan-500 text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition-colors text-xs shadow-[0_0_15px_rgba(37,216,255,0.2)]">Guardar en Base de Datos</button>
+            <button onclick="window.closeDbModal()" class="px-6 bg-transparent border border-white/10 text-zinc-400 font-bold py-3 rounded-xl hover:text-white transition-colors text-xs">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<div id="gallery-modal" class="hidden fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl items-center justify-center opacity-0 transition-opacity duration-300">
+    <div class="bg-[#0a0a0c] border border-white/10 w-full max-w-2xl rounded-2xl p-6 flex flex-col h-[70vh]">
+        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-3">
+            <h3 class="text-white font-bold"><i class="fa-solid fa-folder-open text-amber-400 mr-2"></i> Explorador de Recursos</h3>
+            <button onclick="window.closeGallery()" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <div id="gallery-grid" class="flex-1 overflow-y-auto grid grid-cols-3 sm:grid-cols-4 gap-3 hide-scrollbar pr-2">
+            <!-- Rellenado dinámicamente -->
+        </div>
+    </div>
+</div>
+
 <div id="builder-ui">
     <div class="topbar">
         <div class="flex items-center gap-3">
-            <div class="w-7 h-7 bg-white text-black rounded-lg flex items-center justify-center shadow-md">
-                <i class="fa-solid fa-code text-[11px]"></i>
+            <div class="w-7 h-7 bg-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_10px_rgba(37,216,255,0.4)]">
+                <i class="fa-solid fa-bolt text-black text-[12px]"></i>
             </div>
-            <span class="font-bold text-xs tracking-wide">Multiprintt <span class="text-zinc-500 font-normal">Core</span></span>
+            <span class="font-bold text-[13px] tracking-wide text-white">Visual <span class="text-cyan-400">Builder</span></span>
         </div>
         
-        <div class="flex items-center gap-1 bg-[#030303] p-1 border border-white/5 rounded-lg">
-            <button class="device-btn active" onclick="window.setDevice('desktop', this)" title="Escritorio"><i class="fa-solid fa-desktop"></i></button>
-            <button class="device-btn" onclick="window.setDevice('tablet', this)" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button class="device-btn" onclick="window.setDevice('mobile', this)" title="Móvil"><i class="fa-solid fa-mobile-screen-button"></i></button>
+        <div class="flex items-center gap-1 bg-[#121215] p-1 border border-white/5 rounded-lg shadow-inner">
+            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
+            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
         </div>
 
-        <div class="flex items-center gap-2.5">
-            <button class="tool-btn hover:bg-pink-500/10 hover:text-pink-400 hover:border-pink-500/30" id="btn-drag" onclick="window.toggleDragMode(this)">
-                <i class="fa-solid fa-arrows-up-down-left-right"></i> <span>Mover Elementos</span>
+        <div class="flex items-center gap-2">
+            <button class="tool-btn bg-pink-500/10 border-pink-500/20 text-pink-400 hover:bg-pink-500 hover:text-white" onclick="window.toggleDragMode(this)">
+                <i class="fa-solid fa-up-down-left-right"></i> <span class="hidden sm:inline">Mover / Ordenar</span>
             </button>
-            <button class="tool-btn hover:bg-amber-500/10 hover:text-amber-400 hover:border-amber-500/30" onclick="window.resetTemplateConfirm()" title="Restaura la web a sus valores de fábrica">
-                <i class="fa-solid fa-rotate-left"></i>
-            </button>
-            <button class="tool-btn btn-action" id="publish-btn" onclick="window.publishChanges()">
-                <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span>Desplegar Cambios</span>
+            <button class="tool-btn" id="publish-btn" onclick="window.publishChanges()">
+                <i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span class="hidden sm:inline">Guardar Web</span>
             </button>
             <button class="tool-btn hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30 px-3" onclick="window.logout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
     
     <div class="workspace">
-        <!-- SIDEBAR IZQUIERDA -->
-        <div class="sidebar hide-scrollbar">
-            <div class="panel-header"><i class="fa-solid fa-route"></i> Navegación</div>
-            <button class="tool-btn w-full" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 text-center text-zinc-500"></i> Tienda</button>
-            <button class="tool-btn w-full" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4 text-center text-zinc-500"></i> Academia</button>
-            <button class="tool-btn w-full" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 text-center text-zinc-500"></i> Nosotros</button>
-            <button class="tool-btn w-full" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 text-center text-zinc-500"></i> Contacto</button>
+        <div class="sidebar">
+            <div class="panel-header"><i class="fa-solid fa-compass"></i> Páginas</div>
+            <button class="tool-btn w-full justify-start border-none bg-transparent hover:bg-white/5" onclick="window.callIframeFunction('navigate', 'catalog')"><div class="w-5 text-center"><i class="fa-solid fa-store text-zinc-500"></i></div> Catálogo</button>
+            <button class="tool-btn w-full justify-start border-none bg-transparent hover:bg-white/5" onclick="window.callIframeFunction('navigate', 'courses')"><div class="w-5 text-center"><i class="fa-solid fa-graduation-cap text-zinc-500"></i></div> Academia</button>
+            <button class="tool-btn w-full justify-start border-none bg-transparent hover:bg-white/5" onclick="window.callIframeFunction('navigate', 'about')"><div class="w-5 text-center"><i class="fa-solid fa-circle-info text-zinc-500"></i></div> Nosotros</button>
+            <button class="tool-btn w-full justify-start border-none bg-transparent hover:bg-white/5" onclick="window.callIframeFunction('navigate', 'contact')"><div class="w-5 text-center"><i class="fa-regular fa-envelope text-zinc-500"></i></div> Contacto</button>
             
-            <div class="divider my-2"></div>
+            <div class="h-[1px] bg-white/5 w-full my-2"></div>
             
-            <div class="panel-header"><i class="fa-solid fa-database text-cyan-500"></i> Base de Datos</div>
-            <button class="tool-btn w-full hover:border-cyan-500/30 hover:bg-cyan-500/5 hover:text-cyan-400" onclick="window.openEditorHUD('product')"><i class="fa-solid fa-box-open w-4 text-center"></i> Añadir Producto</button>
-            <button class="tool-btn w-full hover:border-violet-500/30 hover:bg-violet-500/5 hover:text-violet-400" onclick="window.openEditorHUD('course')"><i class="fa-solid fa-laptop-file w-4 text-center"></i> Añadir Curso</button>
+            <div class="panel-header"><i class="fa-solid fa-server text-violet-400"></i> Inventario DB</div>
+            <button class="tool-btn w-full justify-start border-pink-500/20 hover:border-pink-500" onclick="window.openDbModal({}, 'product')"><div class="w-5 text-center"><i class="fa-solid fa-box-open text-pink-400"></i></div> Nuevo Producto</button>
+            <button class="tool-btn w-full justify-start border-cyan-500/20 hover:border-cyan-500" onclick="window.openDbModal({}, 'course')"><div class="w-5 text-center"><i class="fa-solid fa-laptop-file text-cyan-400"></i></div> Nuevo Curso</button>
             
-            <div class="mt-auto bg-[#0a0a0c] border border-white/5 p-3 rounded-lg text-[9px] text-zinc-500 leading-relaxed">
-                <span class="block text-white font-bold mb-1"><i class="fa-solid fa-terminal text-cyan-400 mr-1"></i> HUD Tips</span>
-                Haz clic en cualquier elemento del lienzo para inspeccionarlo. Activa "Mover" para reorganizar etiquetas y redes sociales.
+            <div class="mt-auto p-3 bg-zinc-900/50 border border-white/5 rounded-lg text-[9px] text-zinc-500 leading-relaxed font-medium">
+                Haz clic en cualquier texto o tarjeta en la vista previa para editar su contenido.
             </div>
+            <button class="mt-2 text-[9px] text-red-400/50 hover:text-red-400 text-center uppercase tracking-widest py-2 transition-colors" onclick="window.resetTemplateConfirm()">Reset de Fábrica</button>
         </div>
         
-        <!-- LIENZO CENTRAL -->
         <div id="preview-container">
             <div id="preview-wrapper" class="device-desktop">
                 <iframe id="site-frame" src=""></iframe>
             </div>
         </div>
         
-        <!-- SIDEBAR DERECHA -->
         <div class="sidebar-right hide-scrollbar">
-            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-600 text-[10px] text-center p-6 bg-[#070709]">
-                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/5">
-                    <i class="fa-solid fa-crosshairs text-lg text-zinc-500"></i>
-                </div>
-                <p class="font-medium text-zinc-400">Selecciona un nodo<br>en el lienzo.</p>
+            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-600 text-xs text-center p-6 bg-[#0a0a0c] m-auto">
+                <i class="fa-solid fa-pen-nib text-3xl mb-3 text-white/5"></i>
+                <p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento<br>para inspeccionarlo.</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL EDITOR DE BASE DE DATOS (HUD) -->
-<div id="db-editor-modal" class="hud-modal">
-    <div class="hud-modal-content w-full max-w-[420px] p-6 max-h-[85vh] overflow-y-auto hide-scrollbar flex flex-col relative">
-        <button onclick="window.closeEditorHUD()" class="absolute top-4 right-4 text-zinc-500 hover:text-white w-8 h-8 flex items-center justify-center rounded-full bg-black border border-white/5 transition-colors"><i class="fa-solid fa-xmark"></i></button>
-        <h3 id="db-modal-title" class="text-white font-bold text-sm mb-5 tracking-wide flex items-center gap-2 uppercase"></h3>
-        
-        <div id="db-form-container" class="flex flex-col gap-3.5">
-            <!-- Inyectado via JS -->
-        </div>
-        
-        <div class="flex gap-2 mt-6 pt-4 border-t border-white/5">
-            <button onclick="window.saveDbItem()" id="db-save-btn" class="flex-1 bg-white text-black font-bold py-2.5 rounded-lg hover:bg-zinc-200 transition-colors text-xs shadow-[0_0_15px_rgba(255,255,255,0.1)]">Guardar en Nube</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL EXPLORADOR DE GALERÍA -->
-<div id="gallery-modal" class="hud-modal z-[10000]">
-    <div class="hud-modal-content w-full max-w-3xl p-6 h-[75vh] flex flex-col">
-        <div class="flex justify-between items-center mb-4 shrink-0">
-            <h3 class="text-white font-bold text-sm uppercase tracking-wider"><i class="fa-solid fa-images text-cyan-400 mr-2"></i> Repositorio Visual</h3>
-            <button onclick="window.closeGallery()" class="text-zinc-500 hover:text-white w-7 h-7 bg-[#030303] border border-white/5 rounded-md flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-xs"></i></button>
-        </div>
-        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 overflow-y-auto hide-scrollbar flex-1 p-3 rounded-xl border border-white/5 bg-[#030303]">
-            <!-- Inyectado via JS -->
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE ICONOS SOCIALES -->
-<div id="icon-picker-modal" class="hud-modal">
-    <div class="hud-modal-content w-full max-w-[340px] p-6">
-        <h3 class="text-white font-bold text-xs mb-4 uppercase tracking-wider"><i class="fa-solid fa-icons text-cyan-400 mr-2"></i> Añadir Red Social</h3>
-        <div class="grid grid-cols-4 gap-2.5 mb-5" id="social-grid">
-            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-[#1877f2] hover:text-[#1877f2] transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(24,119,242,0.2)]"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-[#e1306c] hover:text-[#e1306c] transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(225,48,108,0.2)]"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-[#25d366] hover:text-[#25d366] transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(37,211,102,0.2)]"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-tiktok', 'tiktok', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-white hover:text-white transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]"><i class="fa-brands fa-tiktok text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-youtube', 'youtube', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-[#ff0000] hover:text-[#ff0000] transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(255,0,0,0.2)]"><i class="fa-brands fa-youtube text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-x-twitter', 'twitter', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-white hover:text-white transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]"><i class="fa-brands fa-x-twitter text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-linkedin-in', 'linkedin', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-[#0a66c2] hover:text-[#0a66c2] transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(10,102,194,0.2)]"><i class="fa-brands fa-linkedin-in text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-telegram', 'telegram', this)" class="social-opt p-3 bg-[#030303] border border-white/5 rounded-lg hover:border-[#0088cc] hover:text-[#0088cc] transition-all text-zinc-500 hover:shadow-[0_0_10px_rgba(0,136,204,0.2)]"><i class="fa-brands fa-telegram text-lg pointer-events-none"></i></button>
-        </div>
-        <label class="text-[9px] text-zinc-500 font-bold mb-1.5 block uppercase tracking-wider">URL de Enlace</label>
-        <input type="text" id="social-url-input" placeholder="Ej: https://..." class="w-full bg-[#030303] border border-white/5 p-2.5 rounded-lg text-white mb-5 outline-none focus:border-cyan-400 text-xs font-mono">
-        <button onclick="window.confirmAddSocial()" class="w-full bg-white text-black font-bold py-2.5 rounded-lg hover:bg-zinc-200 transition-colors text-xs shadow-md">Acoplar al HUD</button>
-    </div>
-</div>
-
 <script type="module">
-    // Control de versiones (Hard Reset Automático)
-    const BUILDER_VERSION = '7.1.0'; 
+    const BUILDER_VERSION = '7.0.0'; 
     if (localStorage.getItem('admin_builder_version') !== BUILDER_VERSION) {
         localStorage.clear(); sessionStorage.clear();
         localStorage.setItem('admin_builder_version', BUILDER_VERSION);
@@ -249,7 +217,7 @@
     }
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
@@ -258,21 +226,19 @@
     const db = getFirestore(app);
     const APP_ID = "multiprintt-web";
 
-    // Variables Estado DB Editor
-    window.currentEditorState = { type: null, id: null, data: null };
-    window.targetGalleryInput = null;
+    let currentEditorType = '';
+    let currentItemId = '';
 
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        let icon = '<i class="fa-solid fa-check text-cyan-400 text-sm"></i>';
+        let icon = '<i class="fa-solid fa-check-circle text-cyan-400 text-base"></i>';
         toast.className = 'custom-toast';
-        if (type === 'error') { toast.classList.add('error'); icon = '<i class="fa-solid fa-xmark text-red-500 text-sm"></i>'; } 
-        else if (type === 'warning') { toast.classList.add('warning'); icon = '<i class="fa-solid fa-exclamation text-amber-500 text-sm"></i>'; }
+        if (type === 'error') { toast.classList.add('error'); icon = '<i class="fa-solid fa-triangle-exclamation text-red-500 text-base"></i>'; } 
         toast.innerHTML = `${icon} <span>${msg}</span>`;
         container.appendChild(toast);
         setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -285,7 +251,7 @@
                 if (!iframe.src || iframe.src === window.location.href || iframe.src.includes('about:blank')) {
                     iframe.src = 'index.html?nocache=' + new Date().getTime();
                 }
-            }, 400);
+            }, 300);
         } else {
             document.getElementById('auth-screen').style.display = 'flex';
             document.getElementById('auth-screen').style.opacity = '1';
@@ -295,15 +261,12 @@
 
     window.attemptLogin = async function() {
         const email = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value; const btn = document.getElementById('btn-login');
-        if (!email || !pass) { window.showToast("Credenciales inválidas.", "error"); return; }
+        if (!email || !pass) return window.showToast("Datos inválidos.", "error");
         try { 
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Conectando...'; btn.disabled = true; 
-            await setPersistence(auth, browserSessionPersistence); // Sesión Temporal (Solo Pestaña)
-            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await signInWithCustomToken(auth, __initial_auth_token); } 
-            else { await signInWithEmailAndPassword(auth, email, pass); }
-            window.showToast("Enlace HUD Establecido.");
-        } 
-        catch (error) { window.showToast("Error de acceso.", "error"); btn.textContent = "Inicializar Enlace"; btn.disabled = false; }
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true; 
+            await setPersistence(auth, browserSessionPersistence); // Seguridad Sesión
+            await signInWithEmailAndPassword(auth, email, pass); 
+        } catch (error) { window.showToast("Acceso denegado.", "error"); btn.textContent = "Iniciar Sesión"; btn.disabled = false; }
     };
 
     window.logout = async function() { await signOut(auth); location.reload(); };
@@ -321,395 +284,195 @@
     let isDragMode = false;
     window.toggleDragMode = function(btn) {
         isDragMode = !isDragMode;
-        if(isDragMode) { 
-            btn.classList.add('bg-pink-500/20', 'text-pink-400', 'border-pink-500/50'); 
-            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right animate-pulse"></i> <span>Mover Activo</span>'; 
-        } else { 
-            btn.classList.remove('bg-pink-500/20', 'text-pink-400', 'border-pink-500/50');
-            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> <span>Mover Elementos</span>'; 
-        }
+        if(isDragMode) { btn.classList.add('bg-pink-500', 'text-white', 'border-pink-400'); btn.classList.remove('bg-pink-500/10', 'text-pink-400'); } 
+        else { btn.classList.remove('bg-pink-500', 'text-white', 'border-pink-400'); btn.classList.add('bg-pink-500/10', 'text-pink-400'); }
         document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
     }
 
     window.publishChanges = function() {
-        const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-cyan-400"></i> <span>Desplegando...</span>';
+        const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-cyan-400"></i> <span class="hidden sm:inline">Guardando...</span>';
         document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
     }
 
     window.resetTemplateConfirm = function() {
-        if(confirm("⚠️ ¿Estás seguro que deseas restablecer la interfaz de la web a valores de fábrica?")) {
-            window.showToast("Purga de interfaz iniciada...", "warning");
-            document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*');
-        }
+        if(confirm("⚠️ ¿Restablecer toda la web visual a valores de fábrica?")) { document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*'); }
     }
 
-    /* REDES SOCIALES ICON PICKER */
-    let selectedSocialNetwork = ''; let selectedSocialIconClass = '';
-    window.selectSocialIcon = function(iconClass, network, btnNode) {
-        document.querySelectorAll('.social-opt').forEach(b => {
-            b.classList.remove('border-white', 'text-white', 'scale-105');
-            b.style.color = ''; b.style.borderColor = ''; b.style.boxShadow = '';
-        });
-        btnNode.classList.add('scale-105', 'border-white', 'text-white');
-        if(network === 'facebook') { btnNode.style.borderColor = '#1877f2'; btnNode.style.color = '#1877f2'; btnNode.style.boxShadow = '0 0 15px rgba(24,119,242,0.3)'; }
-        if(network === 'instagram') { btnNode.style.borderColor = '#e1306c'; btnNode.style.color = '#e1306c'; btnNode.style.boxShadow = '0 0 15px rgba(225,48,108,0.3)'; }
-        if(network === 'whatsapp') { btnNode.style.borderColor = '#25d366'; btnNode.style.color = '#25d366'; btnNode.style.boxShadow = '0 0 15px rgba(37,211,102,0.3)'; }
-        if(network === 'youtube') { btnNode.style.borderColor = '#ff0000'; btnNode.style.color = '#ff0000'; btnNode.style.boxShadow = '0 0 15px rgba(255,0,0,0.3)'; }
-        selectedSocialIconClass = iconClass; selectedSocialNetwork = network;
-    }
-    window.confirmAddSocial = function() {
-        const url = document.getElementById('social-url-input').value;
-        if(!url || !selectedSocialNetwork) { window.showToast("Datos incompletos.", "error"); return; }
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url: url, iconClass: selectedSocialIconClass, network: selectedSocialNetwork }, '*');
-        const m = document.getElementById('icon-picker-modal'); m.classList.remove('show');
-        document.getElementById('social-url-input').value = '';
-    }
+    window.openDbModal = function(data = {}, type = 'product', id = '') {
+        currentEditorType = type; currentItemId = id || ('id_' + Date.now());
+        
+        const titleEl = document.getElementById('db-modal-title');
+        const catContainer = document.getElementById('db-cat-container');
+        const priceLabel = document.getElementById('db-price-label');
+        const titleLabel = document.getElementById('db-title-label');
+        const descLabel = document.getElementById('db-desc-label');
+        const checkLabel = document.getElementById('db-check-label');
+        
+        document.getElementById('db-title').value = data.name || data.title || '';
+        document.getElementById('db-desc').value = data.desc || data.quote || '';
+        document.getElementById('db-price').value = data.price || data.role || '';
+        document.getElementById('db-img').value = data.image || data.src || '';
+        document.getElementById('db-category').value = data.category || 'mas-vendidos';
+        document.getElementById('db-checkbox').checked = false;
+        
+        document.getElementById('db-price-container').style.display = 'block';
+        document.getElementById('db-check-container').style.display = 'flex';
 
-    /* DB EDITOR HUD Y LOGICA FIRESTORE */
-    window.openEditorHUD = function(type, id = null, data = null) {
-        window.currentEditorState = { type, id, data };
-        const modal = document.getElementById('db-editor-modal');
-        const title = document.getElementById('db-modal-title');
-        const container = document.getElementById('db-form-container');
-        
-        container.innerHTML = '';
-        
         if (type === 'product') {
-            title.innerHTML = id ? '<i class="fa-solid fa-box-open text-cyan-400"></i> Modificar Entidad Producto' : '<i class="fa-solid fa-plus text-cyan-400"></i> Nueva Entidad Producto';
-            let p = data || {name:'', category:'mas-vendidos', price:0, images:[], image:'', isPromo:false};
-            let imgVal = Array.isArray(p.images) && p.images.length > 0 ? p.images.join(', ') : (p.image || '');
-            
-            container.innerHTML = `
-                <div><span class="db-label">Designación</span><input type="text" id="db-p-name" placeholder="Ej: Camiseta..." value="${p.name}" class="db-input"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <span class="db-label">Categoría</span>
-                        <select id="db-p-cat" class="db-input py-[9px]">
-                            <option value="mas-vendidos">Top Vendidos</option>
-                            <option value="promocionales">Promocionales</option>
-                            <option value="textil">Textil</option>
-                            <option value="jarros">Jarros</option>
-                            <option value="imp-general">Imp. General</option>
-                            <option value="packs">Packs</option>
-                        </select>
-                    </div>
-                    <div><span class="db-label">Precio (USD)</span><input type="number" id="db-p-price" placeholder="0.00" value="${p.price}" class="db-input"></div>
-                </div>
-                <div>
-                    <span class="db-label">Archivos Visuales (URLs)</span>
-                    <div class="flex gap-2">
-                        <input type="text" id="db-p-img" placeholder="https://..." value="${imgVal}" class="db-input flex-1">
-                        <button onclick="window.openGallery('db-p-img')" class="bg-[#121215] border border-white/5 hover:border-cyan-500/50 text-white px-3 rounded-lg text-xs transition-colors shrink-0 flex items-center justify-center"><i class="fa-solid fa-image text-cyan-400 mr-1.5"></i> Galería</button>
-                    </div>
-                </div>
-                <label class="flex items-center justify-between bg-[#070709] p-3 rounded-lg border border-white/5 cursor-pointer mt-1 hover:bg-[#0a0a0c] transition-colors">
-                    <span class="text-[11px] text-white font-medium flex items-center gap-2"><i class="fa-solid fa-fire text-amber-500"></i> Etiqueta Promocional</span>
-                    <input type="checkbox" id="db-p-promo" class="w-4 h-4 accent-cyan-400" ${p.isPromo ? 'checked' : ''}>
-                </label>
-            `;
-            if(id) document.getElementById('db-p-cat').value = p.category;
-        } 
-        else if (type === 'course') {
-            title.innerHTML = id ? '<i class="fa-solid fa-laptop-file text-violet-400"></i> Modificar Entidad Curso' : '<i class="fa-solid fa-plus text-violet-400"></i> Nueva Entidad Curso';
-            let c = data || {title:'', desc:'', schedule:'', price:'', image:'', isMasterclass:true};
-            
-            container.innerHTML = `
-                <div><span class="db-label">Título Académico</span><input type="text" id="db-c-title" placeholder="Ej: Master en..." value="${c.title}" class="db-input"></div>
-                <div><span class="db-label">Resumen</span><textarea id="db-c-desc" placeholder="Detalles..." class="db-input min-h-[70px] resize-y">${c.desc}</textarea></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><span class="db-label">Horarios</span><input type="text" id="db-c-schedule" placeholder="Lun-Vie..." value="${c.schedule||''}" class="db-input"></div>
-                    <div><span class="db-label">Valor (USD)</span><input type="text" id="db-c-price" placeholder="$150.00" value="${c.price||''}" class="db-input"></div>
-                </div>
-                <div>
-                    <span class="db-label">Archivo Visual (URL)</span>
-                    <div class="flex gap-2">
-                        <input type="text" id="db-c-img" placeholder="https://..." value="${c.image}" class="db-input flex-1">
-                        <button onclick="window.openGallery('db-c-img')" class="bg-[#121215] border border-white/5 hover:border-violet-500/50 text-white px-3 rounded-lg text-xs transition-colors shrink-0 flex items-center justify-center"><i class="fa-solid fa-image text-violet-400 mr-1.5"></i> Galería</button>
-                    </div>
-                </div>
-                <label class="flex items-center justify-between bg-[#070709] p-3 rounded-lg border border-white/5 cursor-pointer mt-1 hover:bg-[#0a0a0c] transition-colors">
-                    <span class="text-[11px] text-white font-medium flex items-center gap-2"><i class="fa-solid fa-gem text-cyan-400"></i> Distintivo Masterclass</span>
-                    <input type="checkbox" id="db-c-master" class="w-4 h-4 accent-violet-400" ${c.isMasterclass !== false ? 'checked' : ''}>
-                </label>
-            `;
-        } 
-        else if (type === 'testimonial') {
-            title.innerHTML = '<i class="fa-solid fa-video text-pink-400"></i> Modificar Nodo Video';
-            let t = data || { src:'', name:'', role:'', quote:'' };
-            
-            container.innerHTML = `
-                <div><span class="db-label">Archivo de Video (.mp4)</span><input type="text" id="db-t-vid" placeholder="https://..." value="${t.src}" class="db-input"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><span class="db-label">Nombre Alumno</span><input type="text" id="db-t-name" placeholder="Ej: Juan P." value="${t.name}" class="db-input"></div>
-                    <div><span class="db-label">Subtítulo / Rol</span><input type="text" id="db-t-role" placeholder="Ej: Caso de Éxito" value="${t.role}" class="db-input"></div>
-                </div>
-                <div><span class="db-label">Transcripción (Cita)</span><textarea id="db-t-quote" placeholder="Testimonio..." class="db-input min-h-[70px] resize-y">${t.quote}</textarea></div>
-                <div class="bg-white/5 border border-white/10 p-2.5 rounded-lg mt-1 text-[9px] text-zinc-400 leading-tight">
-                    <i class="fa-solid fa-info-circle mr-1 text-cyan-400"></i> Estas modificaciones alteran el layout visual del DOM al instante.
-                </div>
-            `;
+            titleEl.innerHTML = '<i class="fa-solid fa-box-open text-pink-400"></i> Editor de Producto';
+            catContainer.style.display = 'block';
+            priceLabel.innerText = 'Precio ($)';
+            titleLabel.innerText = 'Nombre';
+            descLabel.innerText = 'Descripción';
+            checkLabel.innerText = 'Marcar como Promoción';
+            document.getElementById('db-checkbox').checked = !!data.isPromo;
+        } else if (type === 'course') {
+            titleEl.innerHTML = '<i class="fa-solid fa-graduation-cap text-cyan-400"></i> Editor de Curso';
+            catContainer.style.display = 'none';
+            document.getElementById('db-price-container').style.display = 'none'; // Sin precio en DB Curso
+            titleLabel.innerText = 'Título';
+            descLabel.innerText = 'Descripción Corta';
+            checkLabel.innerText = 'Etiqueta Masterclass';
+            document.getElementById('db-checkbox').checked = data.isMasterclass !== false;
+        } else if (type === 'testimonial') {
+            titleEl.innerHTML = '<i class="fa-solid fa-video text-violet-400"></i> Editor de Testimonio';
+            catContainer.style.display = 'none';
+            document.getElementById('db-check-container').style.display = 'none';
+            priceLabel.innerText = 'Rol (Ej: Caso de Éxito)';
+            titleLabel.innerText = 'Nombre del Alumno';
+            descLabel.innerText = 'Frase Destacada';
+            document.getElementById('db-title').value = data.name || '';
         }
-        
-        modal.classList.add('show');
-    }
 
-    window.closeEditorHUD = function() { 
-        document.getElementById('db-editor-modal').classList.remove('show'); 
-    }
+        const m = document.getElementById('db-modal'); m.classList.remove('hidden'); m.classList.add('flex');
+        setTimeout(() => { m.classList.add('opacity-100'); document.getElementById('db-content').classList.remove('scale-95'); }, 10);
+    };
+
+    window.closeDbModal = function() {
+        const m = document.getElementById('db-modal'); m.classList.remove('opacity-100'); document.getElementById('db-content').classList.add('scale-95');
+        setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+    };
 
     window.saveDbItem = async function() {
-        const { type, id } = window.currentEditorState;
-        const btn = document.getElementById('db-save-btn');
-        let originalText = btn.innerText;
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Operando...';
-        
-        if (type === 'testimonial') {
-            let newData = {
-                src: document.getElementById('db-t-vid').value,
-                name: document.getElementById('db-t-name').value,
-                role: document.getElementById('db-t-role').value,
-                quote: document.getElementById('db-t-quote').value
-            };
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: newData }, '*');
-            window.closeEditorHUD();
-            btn.innerText = originalText;
-            window.showToast('Nodo Testimonio Inyectado en Layout.');
-            return;
+        let payload = {};
+        if (currentEditorType === 'product') {
+            payload = { name: document.getElementById('db-title').value, price: parseFloat(document.getElementById('db-price').value)||0, category: document.getElementById('db-category').value, image: document.getElementById('db-img').value, isPromo: document.getElementById('db-checkbox').checked };
+        } else if (currentEditorType === 'course') {
+            payload = { title: document.getElementById('db-title').value, desc: document.getElementById('db-desc').value, image: document.getElementById('db-img').value, isMasterclass: document.getElementById('db-checkbox').checked };
+        } else if (currentEditorType === 'testimonial') {
+            payload = { src: document.getElementById('db-img').value, name: document.getElementById('db-title').value, role: document.getElementById('db-price').value, quote: document.getElementById('db-desc').value };
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
+            window.closeDbModal(); window.showToast('Testimonio Actualizado en UI'); return;
         }
 
+        const colName = currentEditorType === 'product' ? 'products' : 'courses';
         try {
-            let docId = id || 'item_' + Date.now();
-            let dataToSave = {};
-            
-            if (type === 'product') {
-                dataToSave = {
-                    name: document.getElementById('db-p-name').value,
-                    category: document.getElementById('db-p-cat').value,
-                    price: parseFloat(document.getElementById('db-p-price').value) || 0,
-                    image: document.getElementById('db-p-img').value,
-                    images: document.getElementById('db-p-img').value.split(',').map(s=>s.trim()).filter(s=>s),
-                    isPromo: document.getElementById('db-p-promo').checked
-                };
-            } else if (type === 'course') {
-                dataToSave = {
-                    title: document.getElementById('db-c-title').value,
-                    desc: document.getElementById('db-c-desc').value,
-                    schedule: document.getElementById('db-c-schedule').value,
-                    price: document.getElementById('db-c-price').value,
-                    image: document.getElementById('db-c-img').value,
-                    isMasterclass: document.getElementById('db-c-master').checked
-                };
-            }
-            
-            const collectionName = type === 'product' ? 'products' : 'courses';
-            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, docId), dataToSave, { merge: true });
-            
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: type, id: docId, data: dataToSave }, '*');
-            
-            window.showToast(`Entidad ${type.toUpperCase()} sincronizada en Nube.`);
-            window.closeEditorHUD();
-        } catch (error) {
-            window.showToast('Error de DB: ' + error.message, 'error');
-        }
-        btn.innerText = originalText;
-    }
+            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', colName, currentItemId), payload, { merge: true });
+            document.getElementById('site-frame').contentWindow.postMessage({type: 'DB_UPDATED', itemType: currentEditorType, id: currentItemId, data: payload}, '*');
+            window.closeDbModal(); window.showToast('Registro guardado');
+        } catch(e) { window.showToast(e.message, 'error'); }
+    };
 
-    /* EXPLORADOR DE GALERÍA (Desde Admin) */
-    window.openGallery = async function(inputId) {
-        window.targetGalleryInput = inputId;
-        const m = document.getElementById('gallery-modal');
-        const grid = document.getElementById('gallery-grid');
-        m.classList.add('show');
-        grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 flex flex-col items-center justify-center"><i class="fa-solid fa-circle-notch fa-spin text-xl mb-2 text-cyan-400"></i><span>Leyendo Repositorio...</span></div>';
+    window.deleteDbItem = async function(type, id) {
+        const colName = type === 'product' ? 'products' : 'courses';
+        try {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', colName, id));
+            document.getElementById('site-frame').contentWindow.postMessage({type: 'DB_DELETED_SUCCESS', itemType: type, id: id}, '*');
+            window.showToast('Eliminado de la DB');
+        } catch(e) { window.showToast(e.message, 'error'); }
+    };
+
+    window.openGallery = async function() {
+        const m = document.getElementById('gallery-modal'); m.classList.remove('hidden'); m.classList.add('flex');
+        setTimeout(() => m.classList.add('opacity-100'), 10);
+        const grid = document.getElementById('gallery-grid'); grid.innerHTML = '<div class="col-span-full text-center py-10 text-zinc-500"><i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i><br>Cargando...</div>';
         
         try {
-            let res = await fetch('/recursos/imagenes.json');
-            if(!res.ok) throw new Error('Not found');
-            let data = await res.json();
-            grid.innerHTML = '';
-            if(data && data.length > 0) {
-                data.forEach(url => {
-                    grid.innerHTML += `<div onclick="window.selectGalleryImage('${url}')" class="aspect-square bg-[#070709] rounded-lg overflow-hidden cursor-pointer border border-transparent hover:border-cyan-500/50 transition-all group relative"><img src="${url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform"><div class="absolute inset-0 bg-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><i class="fa-solid fa-plus text-white text-lg"></i></div></div>`;
-                });
-            } else { grid.innerHTML = '<div class="col-span-full text-center text-zinc-600 text-xs py-10">Repositorio vacío.</div>'; }
-        } catch (e) {
-            grid.innerHTML = '<div class="col-span-full text-center text-zinc-600 text-[10px] py-10 flex flex-col items-center justify-center"><i class="fa-solid fa-link text-2xl mb-2 opacity-50"></i><span>No se localizó /recursos/imagenes.json<br>Pega la URL de tu imagen directamente en el input.</span></div>';
+            const res = await fetch('/recursos/imagenes.json');
+            if(!res.ok) throw new Error();
+            const data = await res.json();
+            grid.innerHTML = data.map(img => `<img src="${img.url||img}" onclick="window.selectGalleryImage('${img.url||img}')" class="w-full h-24 object-cover rounded-lg cursor-pointer hover:border-2 hover:border-cyan-400 hover:scale-105 transition-all">`).join('');
+        } catch(e) {
+            grid.innerHTML = `<div class="col-span-full text-center text-[10px] text-zinc-500 mb-2">Imágenes por defecto (Fallback):</div>` + [1,2,3,4].map(i => `<img src="https://placehold.co/400x400/101014/ffffff?text=Muestra+${i}" onclick="window.selectGalleryImage('https://placehold.co/400x400/101014/ffffff?text=Muestra+${i}')" class="w-full h-24 object-cover rounded-lg cursor-pointer border border-white/5 hover:border-cyan-400 transition-all">`).join('');
         }
-    }
-    window.closeGallery = function() { document.getElementById('gallery-modal').classList.remove('show'); }
-    window.selectGalleryImage = function(url) {
-        if(window.targetGalleryInput) {
-            const input = document.getElementById(window.targetGalleryInput);
-            if(input) { input.value = url; }
-        }
-        window.closeGallery();
-    }
+    };
+    window.selectGalleryImage = function(url) { document.getElementById('db-img').value = url; window.closeGallery(); };
+    window.closeGallery = function() { const m = document.getElementById('gallery-modal'); m.classList.remove('opacity-100'); setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300); };
 
-    // COMANDOS DE IFRAME A PROPIEDADES (DOM)
-    window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
-    window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
-    window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
-    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<div class="text-zinc-600 text-[10px] p-6 text-center"><i class="fa-solid fa-trash text-xl mb-2 block text-red-500/50"></i>Nodo purgado.</div>'; }
-    window.selectParent = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*'); }
-    window.selectChild = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*'); }
-    window.toggleAccordion = function(headerEl) {
-        const item = headerEl.parentElement;
-        const isActive = item.classList.contains('active');
-        document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active'));
-        if(!isActive) item.classList.add('active');
-    }
-
-    window.addEventListener('message', async (event) => {
+    window.addEventListener('message', (event) => {
         const data = event.data;
-        if (data.type === 'APP_READY') { document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); }
-        if (data.type === 'ELEMENT_SELECTED') { renderPropertiesPanel(data); }
-        if (data.type === 'CLEAR_SELECTION') { document.getElementById('properties-panel').innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-zinc-600 text-[10px] text-center p-6 bg-[#070709]"><div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/5"><i class="fa-solid fa-crosshairs text-lg text-zinc-500"></i></div><p class="font-medium text-zinc-400">Selecciona un nodo<br>en el lienzo.</p></div>'; }
+        if (data.type === 'APP_READY') document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*');
+        if (data.type === 'ELEMENT_SELECTED') renderPropertiesPanel(data);
+        if (data.type === 'CLEAR_SELECTION') document.getElementById('properties-panel').innerHTML = '<i class="fa-solid fa-pen-nib text-3xl mb-3 text-white/5"></i><p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento<br>para inspeccionarlo.</p>';
         
-        if (data.type === 'OPEN_ICON_PICKER') { document.getElementById('icon-picker-modal').classList.add('show'); }
-        if (data.type === 'OPEN_EDITOR') { window.openEditorHUD(data.editorType, data.itemId, data.itemData); }
+        if (data.type === 'OPEN_EDITOR') window.openDbModal(data.itemData, data.editorType, data.itemId);
+        if (data.type === 'DELETE_DB_ITEM') { if(confirm('¿Borrar definitivamente de la Base de Datos?')) window.deleteDbItem(data.itemType, data.itemId); }
         
-        if (data.type === 'DELETE_DB_ITEM') {
-            if(!confirm('⚠️ PURGA DE DATOS: ¿Eliminar entidad permanentemente de la nube?')) return;
-            try {
-                const collectionName = data.itemType === 'product' ? 'products' : 'courses';
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, data.itemId));
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
-                window.showToast(`Entidad eliminada de DB.`);
-            } catch (e) { window.showToast('Error DB: ' + e.message, 'error'); }
-        }
-
         if (data.type === 'RESIZE_UPDATE') {
             const wInput = document.getElementById('inp-width'); if(wInput) wInput.value = data.width;
             const hInput = document.getElementById('inp-height'); if(hInput) hInput.value = data.height;
         }
         if (data.type === 'SAVE_DONE') { 
-            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span>Desplegar Cambios</span>'; 
-            window.showToast(data.msg || 'Despliegue estructural exitoso.'); 
-            const iframe = document.getElementById('site-frame');
-            let baseSrc = iframe.src.split('?')[0];
-            iframe.src = baseSrc + '?v=' + new Date().getTime();
+            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span class="hidden sm:inline">Guardar Web</span>'; 
+            window.showToast(data.msg || '¡Cambios publicados!'); 
+            document.getElementById('site-frame').src = document.getElementById('site-frame').src.split('?')[0] + '?v=' + new Date().getTime();
         }
         if (data.type === 'SAVE_ERROR') { 
-            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span>Desplegar Cambios</span>'; 
-            window.showToast('Fallo en despliegue: ' + data.msg, 'error'); 
-        }
-
-        // GUARDADO PROXY LAYOUT
-        if (data.type === 'SAVE_FULL_LAYOUT') {
-            try { 
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder, courseOrder: data.courseOrder }, { merge: true }); 
-                const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span>Desplegar Cambios</span>'; 
-                window.showToast('Layout Desplegado Exitosamente.'); 
-            } 
-            catch(e) { window.showToast('Fallo escritura Layout: ' + e.message, 'error'); }
-        }
-        // RESET PROXY LAYOUT
-        if (data.type === 'RESET_TEMPLATE') {
-            try { 
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')); 
-                window.showToast('Layout Purgado a Default. Reiniciando Iframe...'); 
-                document.getElementById('site-frame').contentWindow.location.reload();
-            } 
-            catch(e) { window.showToast('Fallo Purga: ' + e.message, 'error'); }
+            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> <span class="hidden sm:inline">Guardar Web</span>'; 
+            window.showToast('Error: ' + data.msg, 'error'); 
         }
     });
+
+    window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
+    window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
+    window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
+    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<i class="fa-solid fa-trash text-3xl mb-3 text-red-500/50"></i><p class="text-[11px] text-zinc-500">Eliminado</p>'; }
+    window.selectParent = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*'); }
+    window.selectChild = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*'); }
+    window.toggleAccordion = function(el) { const item = el.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(x => x.classList.remove('active')); if(!isActive) item.classList.add('active'); }
 
     function renderPropertiesPanel(data) {
         const panel = document.getElementById('properties-panel');
         let initialStyles = data.styles || {};
         
         let html = `
-        <div class="w-full bg-[#0a0a0c] border-b border-white/5 p-4 flex items-center justify-between sticky top-0 z-20">
-            <div>
-                <span class="text-zinc-500 font-extrabold text-[8px] uppercase tracking-[0.2em] block mb-0.5">Nodo Activo</span>
-                <span class="text-cyan-400 text-xs font-mono font-bold bg-[#030303] px-2 py-0.5 rounded border border-white/5">${data.tagName}</span>
+        <div class="w-full bg-[#0a0a0c] border-b border-white/5 p-4 flex items-center justify-between sticky top-0 z-20 shadow-md">
+            <div class="text-left">
+                <span class="text-cyan-400 font-bold text-[9px] uppercase tracking-widest block mb-0.5">Editando Nodo</span>
+                <span class="text-white text-[11px] font-mono bg-white/5 px-2 py-0.5 rounded border border-white/10"><i class="fa-solid fa-code text-zinc-500 text-[10px] mr-1"></i> ${data.tagName}</span>
             </div>
-            <div class="flex gap-1 bg-[#030303] p-1 rounded-md border border-white/5">
-                <button onclick="window.selectParent()" class="w-6 h-6 rounded hover:bg-white/10 text-zinc-500 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-level-up-alt text-[10px]"></i></button>
-                <button onclick="window.selectChild()" class="w-6 h-6 rounded hover:bg-white/10 text-zinc-500 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-level-down-alt text-[10px]"></i></button>
+            <div class="flex gap-1 bg-white/5 p-1 rounded-md">
+                <button onclick="window.selectParent()" class="w-6 h-6 rounded bg-transparent hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-level-up-alt text-[10px]"></i></button>
+                <button onclick="window.selectChild()" class="w-6 h-6 rounded bg-transparent hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors"><i class="fa-solid fa-level-down-alt text-[10px]"></i></button>
             </div>
         </div>`;
 
-        html += `<div class="acc-item active">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span><i class="fa-solid fa-pen-nib w-4 text-center mr-1 text-zinc-600"></i> DOM / Texto</span> <i class="fa-solid fa-chevron-down"></i></div>
-            <div class="acc-content">`;
-            if (!['IMG', 'VIDEO', 'SECTION', 'DIV', 'ARTICLE'].includes(data.tagName)) {
-                html += `<div><label class="inspector-label">Valor Textual</label><textarea oninput="window.updateText(this.value)" class="inspector-input min-h-[70px] leading-relaxed resize-y">${data.text || ''}</textarea></div>`;
-            }
-            if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
-                html += `<div><label class="inspector-label">Origen (URL)</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inspector-input font-mono"></div>`;
-            }
+        html += `<div class="acc-item active"><div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib w-3"></i> Contenido</span> <i class="fa-solid fa-chevron-down text-[9px]"></i></div><div class="acc-content">`;
+        if (!['IMG', 'VIDEO', 'SECTION', 'DIV', 'ARTICLE'].includes(data.tagName)) html += `<div><label class="inspector-label">Texto Visible</label><textarea oninput="window.updateText(this.value)" class="inspector-input min-h-[60px] resize-y">${data.text || ''}</textarea></div>`;
+        if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) html += `<div><label class="inspector-label">URL / Enlace</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inspector-input font-mono"></div>`;
         html += `</div></div>`;
 
-        html += `<div class="acc-item">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span><i class="fa-solid fa-font w-4 text-center mr-1 text-zinc-600"></i> Tipografía</span> <i class="fa-solid fa-chevron-down"></i></div>
-            <div class="acc-content">
-                <div>
-                    <label class="inspector-label">Tamaño</label>
-                    <select onchange="window.updateStyle('textSize', this.value)" class="inspector-input">
-                        <option value="">Heredado</option><option value="text-xs">Extra Pequeño</option><option value="text-sm">Pequeño</option><option value="text-base">Normal</option><option value="text-lg">Grande</option><option value="text-xl">XL</option><option value="text-2xl">2XL</option><option value="text-4xl">4XL</option><option value="text-6xl">6XL</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="inspector-label">Grosor</label>
-                    <select onchange="window.updateStyle('fontWeight', this.value)" class="inspector-input">
-                        <option value="">Heredado</option><option value="font-light">Ligero</option><option value="font-normal">Normal</option><option value="font-medium">Medio</option><option value="font-bold">Negrita</option><option value="font-extrabold">Extra Negrita</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="inspector-label">Alineación</label>
-                    <div class="flex bg-[#030303] p-1 rounded-md border border-white/5 gap-0.5">
-                        <button onclick="window.updateStyle('textAlign', 'text-left'); this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="align-btn active"><i class="fa-solid fa-align-left text-[10px]"></i></button>
-                        <button onclick="window.updateStyle('textAlign', 'text-center'); this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="align-btn"><i class="fa-solid fa-align-center text-[10px]"></i></button>
-                        <button onclick="window.updateStyle('textAlign', 'text-right'); this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="align-btn"><i class="fa-solid fa-align-right text-[10px]"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-
-        html += `<div class="acc-item">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span><i class="fa-solid fa-ruler-combined w-4 text-center mr-1 text-zinc-600"></i> Caja / Layout</span> <i class="fa-solid fa-chevron-down"></i></div>
-            <div class="acc-content">
+        html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined w-3"></i> Geometría</span> <i class="fa-solid fa-chevron-down text-[9px]"></i></div><div class="acc-content">
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="inspector-label">Ancho (W)</label><div class="input-group"><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="auto"></div></div>
-                    <div><label class="inspector-label">Alto (H)</label><div class="input-group"><input type="text" id="inp-height" oninput="window.updateStyle('height', this.value)" value="${initialStyles.height || ''}" placeholder="auto"></div></div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="inspector-label">Padding</label><div class="input-group"><input type="text" oninput="window.updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="0px"></div></div>
-                    <div><label class="inspector-label">Margen</label><div class="input-group"><input type="text" oninput="window.updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="0 auto"></div></div>
-                </div>
-            </div>
-        </div>`;
+                    <div><label class="inspector-label">W (Ancho)</label><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" class="inspector-input text-center"></div>
+                    <div><label class="inspector-label">H (Alto)</label><input type="text" id="inp-height" oninput="window.updateStyle('height', this.value)" value="${initialStyles.height || ''}" class="inspector-input text-center"></div>
+                </div></div></div>`;
 
-        let rgbToHex = (rgbStr) => { if(!rgbStr || !rgbStr.includes('rgb')) return '#ffffff'; let a = rgbStr.split("(")[1].split(")")[0].split(","); return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length==1) ? "0"+x : x; }).join("").slice(0,6); };
-        let initColor = rgbToHex(initialStyles.color); let initBg = initialStyles.bg && initialStyles.bg.includes('rgb') ? rgbToHex(initialStyles.bg) : '#000000';
+        let rgbToHex = (r) => { if(!r || !r.includes('rgb')) return '#ffffff'; let a = r.split("(")[1].split(")")[0].split(","); return "#" + a.map(x=>{x=parseInt(x).toString(16);return (x.length==1)?"0"+x:x;}).join("").slice(0,6); };
+        let initColor = rgbToHex(initialStyles.color); let initBg = (initialStyles.bg && initialStyles.bg.includes('rgb')) ? rgbToHex(initialStyles.bg) : '#000000';
 
-        html += `<div class="acc-item">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span><i class="fa-solid fa-palette w-4 text-center mr-1 text-zinc-600"></i> Diseño Visual</span> <i class="fa-solid fa-chevron-down"></i></div>
-            <div class="acc-content">
+        html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-palette w-3"></i> Estética</span> <i class="fa-solid fa-chevron-down text-[9px]"></i></div><div class="acc-content">
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="inspector-label">Color Text</label><input type="color" value="${initColor}" oninput="window.updateStyle('color', this.value)" class="color-picker"></div>
-                    <div><label class="inspector-label">Fondo (Bg)</label><input type="color" value="${initBg}" oninput="window.updateStyle('bg', this.value)" class="color-picker"></div>
+                    <div><label class="inspector-label">Texto</label><input type="color" value="${initColor}" oninput="window.updateStyle('color', this.value)" class="w-full h-8 bg-black border border-white/10 rounded cursor-pointer p-0"></div>
+                    <div><label class="inspector-label">Fondo</label><input type="color" value="${initBg}" oninput="window.updateStyle('bg', this.value)" class="w-full h-8 bg-black border border-white/10 rounded cursor-pointer p-0"></div>
                 </div>`;
                 
         if (data.hasTheme) {
-            html += `<div><label class="inspector-label">Color Glow (Tema)</label>
-                <select onchange="window.updateStyle('theme', this.value)" class="inspector-input font-bold" style="color: ${data.currentTheme === 'pink' ? '#ff2da8' : data.currentTheme === 'violet' ? '#735cff' : data.currentTheme === 'amber' ? '#f59e0b' : '#25d8ff'}">
-                    <option value="cyan" ${data.currentTheme === 'cyan' ? 'selected' : ''}>Cyan</option>
-                    <option value="pink" ${data.currentTheme === 'pink' ? 'selected' : ''}>Rosa</option>
-                    <option value="violet" ${data.currentTheme === 'violet' ? 'selected' : ''}>Violeta</option>
-                    <option value="amber" ${data.currentTheme === 'amber' ? 'selected' : ''}>Ámbar</option>
-                    <option value="emerald" ${data.currentTheme === 'emerald' ? 'selected' : ''}>Esmeralda</option>
-                </select>
-            </div>`;
+            html += `<div class="mt-2"><label class="inspector-label">Tema Visual</label><select onchange="window.updateStyle('theme', this.value)" class="inspector-input"><option value="cyan" ${data.currentTheme==='cyan'?'selected':''}>Cyan Luminoso</option><option value="pink" ${data.currentTheme==='pink'?'selected':''}>Rosa Neón</option><option value="violet" ${data.currentTheme==='violet'?'selected':''}>Violeta</option><option value="amber" ${data.currentTheme==='amber'?'selected':''}>Ámbar</option><option value="emerald" ${data.currentTheme==='emerald'?'selected':''}>Esmeralda</option></select></div>`;
         }
-        html += `<div><label class="inspector-label">Radio de Borde (px)</label><div class="input-group"><input type="text" oninput="window.updateStyle('radius', this.value)" value="${initialStyles.radius || ''}" placeholder="0px"></div></div>
-            </div>
-        </div>`;
-        html += `<div class="p-4 mt-2"><button onclick="window.deleteElement()" class="w-full py-2.5 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-[10px] font-bold hover:bg-red-500 hover:text-white transition-all flex items-center justify-center gap-1.5"><i class="fa-solid fa-trash-can"></i> Purgar Nodo</button></div>`;
+        html += `</div></div><div class="p-4 mt-auto"><button onclick="window.deleteElement()" class="w-full py-2.5 rounded-lg bg-red-500/10 text-red-500 border border-red-500/20 text-[10px] font-bold hover:bg-red-500 hover:text-white transition-all"><i class="fa-solid fa-trash-can mr-1"></i> Eliminar Nodo</button></div>`;
 
-        panel.innerHTML = html;
-        panel.className = "w-full flex-1 overflow-y-auto hide-scrollbar bg-transparent rounded-none border-none max-h-none p-0";
+        panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-transparent rounded-none border-none max-h-none p-0";
     }
 </script>
 </body>
