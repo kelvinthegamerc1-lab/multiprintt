@@ -7,89 +7,94 @@
 <title>Multiprintt | Visual Builder Pro</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-    :root { --bg-dark: #050505; --panel: #0a0a0c; --border: rgba(255,255,255,0.06); --accent: #25d8ff; }
-    body { background-color: var(--bg-dark); color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+    /* Estilo Ultra Minimalista (Vercel/Linear Vibes) */
+    :root { --bg-dark: #000000; --panel: #09090b; --border: rgba(255,255,255,0.05); --accent: #ffffff; --accent-hover: #e5e5e5; }
+    body { background-color: var(--bg-dark); color: #a1a1aa; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
+    
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(37,216,255,0.5); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
 
     #auth-screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
-    .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 24px; box-shadow: 0 40px 80px -20px rgba(0,0,0,1); }
+    .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,1); }
     
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
     
-    /* Layout Estricto Flexbox para no sobreponer paneles */
-    .topbar { height: 56px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; z-index: 50; }
+    /* Layout */
+    .topbar { height: 50px; background: var(--bg-dark); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; z-index: 50; }
     .workspace { display: flex; flex: 1; min-height: 0; width: 100%; overflow: hidden; }
-    .sidebar-left { width: 220px; background: var(--panel); border-right: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex-shrink: 0; z-index: 20;}
+    .sidebar-left { width: 220px; background: var(--panel); border-right: 1px solid var(--border); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex-shrink: 0; z-index: 20;}
     .sidebar-right { width: 280px; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; z-index: 20;}
     
-    .canvas-area { flex: 1; min-width: 0; background: #000; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 20px 20px; }
+    /* Subtle dot pattern for canvas */
+    .canvas-area { flex: 1; min-width: 0; background-color: #050505; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
     
-    #preview-wrapper { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; display: flex; flex-direction: column; background: var(--bg-dark); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.8); }
+    #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; display: flex; flex-direction: column; background: var(--bg-dark); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.6); }
     .device-desktop { width: 100%; height: 100%; max-width: 100%; border-radius: 0; border: none; box-shadow: none !important;}
-    .device-tablet { width: 820px; height: 1180px; border-radius: 20px; margin: 40px auto; border: 10px solid #1a1a1a; flex-shrink: 0;}
-    .device-mobile { width: 390px; height: 844px; border-radius: 36px; margin: 40px auto; border: 12px solid #1a1a1a; flex-shrink: 0;}
+    .device-tablet { width: 820px; height: 1180px; border-radius: 12px; margin: 40px auto; flex-shrink: 0;}
+    .device-mobile { width: 390px; height: 844px; border-radius: 24px; margin: 40px auto; flex-shrink: 0;}
     #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit; }
     
-    /* UI Elementos Quirúrgicos */
-    .device-btn { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #737373; transition: all 0.2s; cursor: pointer; font-size: 13px;}
-    .device-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); box-shadow: inset 0 0 0 1px rgba(37,216,255,0.2);}
-    .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
+    /* Buttons */
+    .device-btn { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #52525b; transition: all 0.2s; cursor: pointer; font-size: 12px;}
+    .device-btn.active { background: rgba(255,255,255,0.1); color: #fff;}
+    .device-btn:hover:not(.active) { color: #fff; }
 
-    .tool-btn { background: transparent; border: 1px solid transparent; padding: 8px 12px; border-radius: 8px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
-    .tool-btn:hover { background: rgba(255,255,255,0.03); color: #fff; border-color: rgba(255,255,255,0.05); }
-    .tool-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); border-color: rgba(37,216,255,0.2); }
+    .tool-btn { background: transparent; border: 1px solid transparent; padding: 8px 12px; border-radius: 6px; color: #71717a; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
+    .tool-btn:hover { background: rgba(255,255,255,0.03); color: #e5e5e5; }
+    .tool-btn.active { background: rgba(255,255,255,0.05); color: #fff; }
     
-    .btn-primary { background: var(--accent); color: #000; font-weight: 700; border-radius: 8px; padding: 8px 16px; font-size: 11px; transition: opacity 0.2s; border: none; box-shadow: 0 0 15px rgba(37,216,255,0.2); cursor: pointer; }
-    .btn-primary:hover { opacity: 0.8; }
-    .btn-warning { background: transparent; border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; font-weight: 600; border-radius: 8px; padding: 8px 16px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-warning:hover { background: rgba(245, 158, 11, 0.1); border-color: #f59e0b; }
-    .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; font-weight: 600; border-radius: 8px; padding: 8px 16px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
+    .btn-primary { background: var(--accent); color: #000; font-weight: 600; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; border: none; cursor: pointer; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    
+    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #e5e5e5; font-weight: 500; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+
+    .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; font-weight: 500; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
     .btn-danger:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
     
-    .panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; color: #52525b; font-weight: 800; margin: 12px 4px 4px 4px; display: flex; align-items: center; gap: 6px; }
+    .panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; font-weight: 700; margin: 16px 6px 6px 6px; display: flex; align-items: center; gap: 6px; }
     .divider { height: 1px; background: var(--border); width: 100%; margin: 8px 0; }
     
-    .inp-field { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 8px; color: white; outline: none; font-size: 11px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-    .inp-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,216,255,0.1); }
-    .lbl { font-size: 9px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: block; }
+    /* Inputs */
+    .inp-field { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: #fff; outline: none; font-size: 11px; transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 400;}
+    .inp-field:focus { border-color: #fff; }
+    .lbl { font-size: 9px; font-weight: 500; color: #71717a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
     
+    /* Accordion Inspector */
     .acc-item { border-bottom: 1px solid var(--border); }
-    .acc-header { padding: 12px 16px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #71717a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #0d0d11; transition: all 0.2s; border-left: 2px solid transparent;}
-    .acc-header:hover { background: #141419; color: #fff; }
-    .acc-item.active .acc-header { color: var(--accent); border-left-color: var(--accent); background: rgba(37,216,255,0.02);}
-    .acc-content { padding: 16px; display: none; background: var(--panel); flex-direction: column; gap: 12px; }
+    .acc-header { padding: 12px 16px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; transition: all 0.2s;}
+    .acc-header:hover { color: #fff; }
+    .acc-item.active .acc-header { color: #fff; }
+    .acc-content { padding: 16px; display: none; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.2); }
     .acc-item.active .acc-content { display: flex; }
     
-    .input-group { display: flex; background: #000; border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; overflow: hidden; }
-    .input-group:focus-within { border-color: var(--accent); }
-    .input-group input { width: 100%; background: transparent; border: none; padding: 8px; color: white; outline: none; font-size: 11px; font-family: monospace;}
+    .input-group { display: flex; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+    .input-group:focus-within { border-color: #fff; }
+    .input-group input { width: 100%; background: transparent; border: none; padding: 6px 8px; color: #fff; outline: none; font-size: 11px; font-family: monospace;}
     
-    .align-btn { flex: 1; padding: 6px; border-radius: 4px; color: #737373; transition: all 0.2s; border: 1px solid transparent; display: flex; justify-content: center; align-items: center;}
-    .align-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
-    .align-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); border-color: rgba(37,216,255,0.2); }
+    .align-btn { flex: 1; padding: 6px; border-radius: 4px; color: #52525b; transition: all 0.2s; border: 1px solid transparent; display: flex; justify-content: center; align-items: center;}
+    .align-btn:hover { color: #fff; }
+    .align-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
 
-    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .custom-toast { background: #121215; border: 1px solid rgba(255,255,255,0.08); border-left: 3px solid var(--accent); color: white; padding: 12px 16px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 500; transform: translateX(120%); opacity: 0; transition: all 0.3s ease; pointer-events: auto; }
-    .custom-toast.show { transform: translateX(0); opacity: 1; }
-    
-    /* Toggle Checkbox */
-    .toggle-checkbox:checked { right: 0; border-color: #10B981; }
-    .toggle-checkbox:checked + .toggle-label { background-color: #10B981; }
-    .toggle-checkbox:checked + .toggle-label:after { transform: translateX(100%); border-color: white; }
-    
-    /* Modales Quirúrgicos */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.2s; }
+    /* Modals Minimalistas */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-content { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: all 0.2s; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-    .modal-overlay.active .modal-content { transform: scale(1); }
+    .modal-content { background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; width: 100%; max-width: 450px; max-height: 90vh; overflow-y: auto; transform: translateY(10px) scale(0.98); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+
+    /* Toast Minimalista */
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+    .custom-toast { background: #fff; color: #000; padding: 12px 16px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; transform: translateY(20px); opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
+    .custom-toast.error { background: #ef4444; color: #fff; }
+    .custom-toast.warning { background: #f59e0b; color: #fff; }
+    .custom-toast.show { transform: translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
@@ -97,69 +102,27 @@
 <div id="toast-container"></div>
 
 <div id="auth-screen">
-    <div class="glass-panel p-8 w-full max-w-sm text-center">
-        <div class="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(37,216,255,0.15)]">
-            <i class="fa-solid fa-wand-magic-sparkles text-2xl text-cyan-400"></i>
-        </div>
-        <h1 class="text-xl font-extrabold mb-1 tracking-tight">Visual Builder <span class="text-cyan-400 text-[9px] bg-cyan-500/10 border border-cyan-500/20 px-1.5 py-0.5 rounded ml-1 align-top uppercase tracking-widest">Pro</span></h1>
-        <p class="text-zinc-500 text-[10px] mb-6">Autenticación Segura (Sesión Volátil)</p>
+    <div class="glass-panel p-8 w-full max-w-sm text-center bg-[#09090b]">
+        <h1 class="text-xl font-bold mb-1 text-white tracking-tight">Multiprintt</h1>
+        <p class="text-zinc-500 text-[10px] mb-6">Portal Administrativo</p>
         <div class="space-y-3">
             <input type="email" id="loginUser" placeholder="Correo Administrativo" class="inp-field">
             <input type="password" id="loginPass" placeholder="Contraseña" class="inp-field">
-            <button onclick="window.attemptLogin()" id="btn-login" class="w-full btn-primary mt-2 py-3">Acceder al Panel</button>
+            <button onclick="window.attemptLogin()" id="btn-login" class="w-full btn-primary mt-4 py-2.5">Ingresar</button>
         </div>
     </div>
 </div>
 
-<!-- Modal Selector de Iconos Redes -->
-<div id="icon-picker-modal" class="modal-overlay">
-    <div class="modal-content p-6">
-        <h3 class="text-white font-bold text-sm mb-4 flex items-center gap-2"><i class="fa-solid fa-icons text-cyan-400"></i> Nueva Red Social</h3>
-        <div class="grid grid-cols-4 gap-2 mb-4">
-            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-3 bg-black border border-white/5 rounded-lg hover:border-[#1877f2] hover:text-[#1877f2] transition-colors text-zinc-500"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-3 bg-black border border-white/5 rounded-lg hover:border-[#e1306c] hover:text-[#e1306c] transition-colors text-zinc-500"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-3 bg-black border border-white/5 rounded-lg hover:border-[#25d366] hover:text-[#25d366] transition-colors text-zinc-500"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-tiktok', 'tiktok', this)" class="social-opt p-3 bg-black border border-white/5 rounded-lg hover:border-white hover:text-white transition-colors text-zinc-500"><i class="fa-brands fa-tiktok text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-youtube', 'youtube', this)" class="social-opt p-3 bg-black border border-white/5 rounded-lg hover:border-[#ff0000] hover:text-[#ff0000] transition-colors text-zinc-500"><i class="fa-brands fa-youtube text-lg pointer-events-none"></i></button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-x-twitter', 'twitter', this)" class="social-opt p-3 bg-black border border-white/5 rounded-lg hover:border-white hover:text-white transition-colors text-zinc-500"><i class="fa-brands fa-x-twitter text-lg pointer-events-none"></i></button>
-        </div>
-        <label class="lbl">URL de Destino</label>
-        <input type="text" id="social-url-input" placeholder="https://..." class="inp-field mb-4">
-        <div class="flex gap-2">
-            <button onclick="window.confirmAddSocial()" class="flex-1 btn-primary py-2.5">Añadir Red</button>
-            <button onclick="document.getElementById('icon-picker-modal').classList.remove('active')" class="px-4 btn-danger border-none bg-white/5 text-white hover:bg-white/10">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Base de Datos Dinámico (Sirve para todo) -->
+<!-- Modal Base de Datos -->
 <div id="db-modal" class="modal-overlay">
     <div class="modal-content p-6">
-        <h3 id="db-modal-title" class="text-white font-bold text-sm mb-4 flex items-center gap-2"><i class="fa-solid fa-database text-violet-400"></i> Editor de BD</h3>
-        <div id="db-modal-body" class="flex flex-col gap-3 mb-4">
+        <h3 id="db-modal-title" class="text-white font-medium text-sm mb-5 flex items-center gap-2">Editor</h3>
+        <div id="db-modal-body" class="flex flex-col gap-4 mb-6">
             <!-- Formulario Inyectado Dinámicamente -->
         </div>
-        <div class="flex gap-2 pt-2 border-t border-white/5">
+        <div class="flex gap-2 pt-4 border-t border-white/5">
             <button onclick="window.saveDbItem()" class="flex-1 btn-primary py-2.5">Guardar Cambios</button>
-            <button onclick="document.getElementById('db-modal').classList.remove('active')" class="px-4 btn-danger border-none bg-white/5 text-white hover:bg-white/10">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Galería (Medios) -->
-<div id="gallery-modal" class="modal-overlay z-[10000]">
-    <div class="modal-content p-6" style="max-width: 700px;">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-white font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-images text-pink-400"></i> Seleccionar Medio</h3>
-            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="flex gap-2 mb-4">
-            <button onclick="window.filterGallery('all')" class="tool-btn flex-1 justify-center active" id="gal-filt-all">Todos</button>
-            <button onclick="window.filterGallery('image')" class="tool-btn flex-1 justify-center" id="gal-filt-img">Imágenes</button>
-            <button onclick="window.filterGallery('video')" class="tool-btn flex-1 justify-center" id="gal-filt-vid">Videos</button>
-        </div>
-        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto pr-1">
-            <div class="text-center text-xs text-zinc-500 col-span-full py-10"><i class="fa-solid fa-circle-notch fa-spin text-lg mb-2"></i><br>Cargando medios...</div>
+            <button onclick="document.getElementById('db-modal').classList.remove('active')" class="px-4 btn-secondary">Cancelar</button>
         </div>
     </div>
 </div>
@@ -167,51 +130,47 @@
 <div id="builder-ui">
     <div class="topbar">
         <div class="flex items-center gap-3">
-            <div class="w-7 h-7 bg-gradient-to-br from-cyan-500 to-violet-500 rounded-lg flex items-center justify-center">
-                <i class="fa-solid fa-layer-group text-white text-[11px]"></i>
-            </div>
             <div class="flex flex-col">
-                <span class="font-bold text-[11px] tracking-wide leading-tight">Multiprintt <span class="text-cyan-400 font-normal">Core</span></span>
-                <span class="text-[7px] text-zinc-500 uppercase tracking-widest font-bold">Admin Panel</span>
+                <span class="font-bold text-[12px] text-white tracking-tight">Multiprintt <span class="font-normal text-zinc-400">Core</span></span>
             </div>
         </div>
         
-        <div class="flex items-center gap-1 bg-black p-1 border border-white/5 rounded-lg">
+        <div class="flex items-center gap-1 bg-[#09090b] p-1 border border-white/5 rounded-lg">
             <button class="device-btn active" onclick="window.setDevice('desktop', this)" title="Escritorio"><i class="fa-solid fa-desktop"></i></button>
             <button class="device-btn" onclick="window.setDevice('tablet', this)" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
             <button class="device-btn" onclick="window.setDevice('mobile', this)" title="Móvil"><i class="fa-solid fa-mobile-screen-button"></i></button>
         </div>
 
         <div class="flex items-center gap-2">
-            <button class="tool-btn active w-auto" id="btn-drag" onclick="window.toggleDragMode(this)">
+            <button class="btn-secondary w-auto gap-2 flex items-center" id="btn-drag" onclick="window.toggleDragMode(this)">
                 <i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="hidden sm:inline">Mover</span>
             </button>
-            <button class="btn-warning w-auto" onclick="window.resetTemplateConfirm()" title="Restaura la web a sus valores de fábrica">
-                <i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset UI</span>
+            <button class="btn-secondary text-amber-500 border-amber-500/20 hover:bg-amber-500/10 w-auto" onclick="window.resetTemplateConfirm()">
+                <i class="fa-solid fa-rotate-left"></i> Restablecer UI
             </button>
             <button class="btn-primary w-auto flex items-center gap-2" id="publish-btn" onclick="window.publishChanges()">
                 <i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>
             </button>
-            <button class="btn-danger w-auto px-3" onclick="window.logout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
+            <button class="btn-secondary w-auto px-3 border-none hover:bg-white/5" onclick="window.logout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
     
     <div class="workspace">
         <div class="sidebar-left hide-scrollbar">
-            <div class="panel-title"><i class="fa-solid fa-sitemap"></i> Navegación Web</div>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 text-center"></i> Tienda</button>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4 text-center"></i> Academia</button>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 text-center"></i> Nosotros</button>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 text-center"></i> Contacto</button>
+            <div class="panel-title">Navegación</div>
+            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'catalog')">Tienda</button>
+            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'courses')">Academia</button>
+            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'about')">Nosotros</button>
+            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'contact')">Contacto</button>
             
             <div class="divider"></div>
             
-            <div class="panel-title"><i class="fa-solid fa-database"></i> Gestión de Base Datos</div>
-            <button class="tool-btn border-pink-500/20 hover:border-pink-500" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4 text-center text-pink-400"></i> Añadir Producto</button>
-            <button class="tool-btn border-cyan-500/20 hover:border-cyan-500" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4 text-center text-cyan-400"></i> Añadir Curso</button>
+            <div class="panel-title">Base Datos</div>
+            <button class="tool-btn" onclick="window.openDbEditor('product', null)">+ Añadir Producto</button>
+            <button class="tool-btn" onclick="window.openDbEditor('course', null)">+ Añadir Curso</button>
             
-            <div class="mt-auto p-3 bg-cyan-500/5 border border-cyan-500/10 rounded-lg">
-                <p class="text-[9px] text-cyan-400/80 leading-relaxed font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Selecciona elementos en el lienzo. Usa "Mover" para reorganizar tarjetas.</p>
+            <div class="mt-auto p-3 bg-white/5 rounded-lg border border-white/5 text-center">
+                <p class="text-[9px] text-zinc-400 leading-relaxed font-medium">Usa "Mover" para reorganizar o haz clic en textos para editarlos en vivo.</p>
             </div>
         </div>
         
@@ -222,12 +181,8 @@
         </div>
         
         <div class="sidebar-right hide-scrollbar">
-            <!-- Inspector Dinámico -->
-            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 p-6 text-center">
-                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-3">
-                    <i class="fa-solid fa-wand-magic-sparkles text-lg text-cyan-400/60"></i>
-                </div>
-                <p class="font-medium text-[11px] text-zinc-400 leading-snug">Selecciona un elemento<br>en el lienzo.</p>
+            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 p-6 text-center bg-[#09090b]">
+                <p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento en el lienzo para editar sus propiedades.</p>
             </div>
         </div>
     </div>
@@ -236,17 +191,23 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig); 
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const APP_ID = "multiprintt-web";
 
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        let icon = '<i class="fa-solid fa-check-circle text-cyan-400"></i>';
-        toast.className = 'custom-toast';
-        if (type === 'error') { toast.classList.add('error'); icon = '<i class="fa-solid fa-triangle-exclamation text-red-500"></i>'; } 
-        else if (type === 'warning') { toast.classList.add('warning'); icon = '<i class="fa-solid fa-rotate-left text-amber-500"></i>'; }
+        toast.className = `custom-toast ${type}`;
+        
+        let icon = type === 'success' ? '<i class="fa-solid fa-check"></i>' : 
+                   type === 'error' ? '<i class="fa-solid fa-xmark"></i>' : 
+                   '<i class="fa-solid fa-info"></i>';
+                   
         toast.innerHTML = `${icon} <span>${msg}</span>`;
         container.appendChild(toast);
         setTimeout(() => toast.classList.add('show'), 10);
@@ -273,17 +234,13 @@
 
     window.attemptLogin = async function() {
         const email = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value; const btn = document.getElementById('btn-login');
-        if (!email || !pass) return window.showToast("Datos inválidos.", "error");
+        if (!email || !pass) return window.showToast("Datos incompletos.", "error");
         try { 
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Entrando...'; btn.disabled = true; 
+            btn.innerHTML = 'Ingresando...'; btn.disabled = true; 
             await setPersistence(auth, browserSessionPersistence);
-            
-            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInWithEmailAndPassword(auth, email, pass); 
-            }
-        } catch (error) { window.showToast("Fallo de acceso.", "error"); btn.textContent = "Acceder al Panel"; btn.disabled = false; }
+            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await signInWithCustomToken(auth, __initial_auth_token); } 
+            else { await signInWithEmailAndPassword(auth, email, pass); }
+        } catch (error) { window.showToast("Acceso denegado.", "error"); btn.textContent = "Ingresar"; btn.disabled = false; }
     };
 
     window.logout = async function() { await signOut(auth); location.reload(); };
@@ -298,15 +255,15 @@
         if (iframe && iframe.contentWindow && typeof iframe.contentWindow[fnName] === 'function') iframe.contentWindow[fnName](...args);
     };
 
-    let isDragMode = true; // Por defecto activo para la mejor experiencia
+    let isDragMode = true; 
     window.toggleDragMode = function(btn) {
         isDragMode = !isDragMode;
         if(isDragMode) { 
-            btn.classList.add('active'); 
+            btn.classList.add('bg-white/10', 'text-white'); 
             btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="hidden sm:inline">Mover</span>'; 
         } else { 
-            btn.classList.remove('active'); 
-            btn.innerHTML = '<i class="fa-solid fa-lock text-zinc-500"></i> <span class="hidden sm:inline text-zinc-500">Bloqueado</span>'; 
+            btn.classList.remove('bg-white/10', 'text-white'); 
+            btn.innerHTML = '<i class="fa-solid fa-lock text-zinc-500"></i> <span class="hidden sm:inline text-zinc-500">Fijo</span>'; 
         }
         document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
     }
@@ -317,83 +274,55 @@
     }
 
     window.resetTemplateConfirm = function() {
-        if(confirm("⚠️ ¿Restablecer diseño web a fábrica? No borrará la BD.")) {
+        if(confirm("¿Restaurar diseño base? Los productos no se borrarán.")) {
             window.showToast("Restaurando UI...", "warning");
             document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*');
         }
     }
 
     let currentDbItem = {};
-    let galleryDataCache = [];
-    let activeMediaInput = null;
 
     window.openDbEditor = function(type, itemId, itemData = null) {
         currentDbItem = { type: type, id: itemId || 'new_' + Date.now() };
-        let title = "Añadir Item"; let icon = "fa-database";
+        let title = type.includes('testimonial') ? "Editar Testimonio" : itemId ? "Editar" : "Nuevo"; 
         let d = itemData || {};
         
         let formHtml = '';
         if (type === 'product') {
-            title = itemId ? "Editar Producto" : "Nuevo Producto"; icon = "fa-box-open text-pink-400";
             formHtml = `
                 <div><label class="lbl">Nombre del Producto</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="lbl">Categoría</label>
                         <select id="db-cat" class="inp-field">
                             <option value="textil" ${d.category==='textil'?'selected':''}>Textil</option>
-                            <option value="jarros" ${d.category==='jarros'?'selected':''}>Jarros & Thermos</option>
-                            <option value="imp-general" ${d.category==='imp-general'?'selected':''}>Imp. General</option>
+                            <option value="jarros" ${d.category==='jarros'?'selected':''}>Jarros</option>
+                            <option value="imp-general" ${d.category==='imp-general'?'selected':''}>General</option>
                             <option value="packs" ${d.category==='packs'?'selected':''}>Packs</option>
                         </select>
                     </div>
-                    <div><label class="lbl">Precio Base ($)</label><input type="number" step="0.01" id="db-price" value="${d.price||'0.00'}" class="inp-field"></div>
+                    <div><label class="lbl">Precio ($)</label><input type="number" step="0.01" id="db-price" value="${d.price||'0.00'}" class="inp-field"></div>
                 </div>
-                <div>
-                    <label class="lbl">URL de Imagen <button onclick="window.openGallery('db-img')" class="ml-2 text-cyan-400 hover:text-white"><i class="fa-solid fa-folder-open"></i> Explorar</button></label>
-                    <input type="text" id="db-img" value="${d.image||''}" class="inp-field">
-                </div>
-                <label class="flex items-center gap-2 mt-2 cursor-pointer">
-                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
-                        <input type="checkbox" id="db-promo" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" ${d.isPromo?'checked':''}/>
-                        <label class="toggle-label block overflow-hidden h-4 rounded-full bg-zinc-600 cursor-pointer"></label>
-                    </div>
-                    <span class="text-[11px] font-bold text-white">Destacar como PROMOCIÓN</span>
-                </label>
+                <div><label class="lbl">URL de Imagen</label><input type="text" id="db-img" value="${d.image||''}" class="inp-field"></div>
             `;
         } 
         else if (type === 'course') {
-            title = itemId ? "Editar Curso" : "Nuevo Curso"; icon = "fa-laptop-file text-cyan-400";
             formHtml = `
-                <div><label class="lbl">Título del Curso</label><input type="text" id="db-title" value="${d.title||''}" class="inp-field"></div>
-                <div><label class="lbl">Descripción Corta</label><textarea id="db-desc" class="inp-field h-16 resize-none">${d.desc||''}</textarea></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Horario (Ej: Lunes a Viernes)</label><input type="text" id="db-schedule" value="${d.schedule||''}" class="inp-field"></div>
-                    <div><label class="lbl">Precio / Inversión</label><input type="text" id="db-price" value="${d.price||''}" class="inp-field"></div>
+                <div><label class="lbl">Título</label><input type="text" id="db-title" value="${d.title||''}" class="inp-field"></div>
+                <div><label class="lbl">Descripción</label><textarea id="db-desc" class="inp-field h-16 resize-none">${d.desc||''}</textarea></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="lbl">Horario</label><input type="text" id="db-schedule" value="${d.schedule||''}" class="inp-field"></div>
+                    <div><label class="lbl">Precio</label><input type="text" id="db-price" value="${d.price||''}" class="inp-field"></div>
                 </div>
-                <div>
-                    <label class="lbl">URL de Portada <button onclick="window.openGallery('db-img')" class="ml-2 text-cyan-400 hover:text-white"><i class="fa-solid fa-folder-open"></i> Explorar</button></label>
-                    <input type="text" id="db-img" value="${d.image||''}" class="inp-field">
-                </div>
-                <label class="flex items-center gap-2 mt-2 cursor-pointer">
-                    <div class="relative inline-block w-8 mr-2 align-middle select-none transition duration-200 ease-in">
-                        <input type="checkbox" id="db-master" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer" ${(d.isMasterclass!==false)?'checked':''}/>
-                        <label class="toggle-label block overflow-hidden h-4 rounded-full bg-zinc-600 cursor-pointer"></label>
-                    </div>
-                    <span class="text-[11px] font-bold text-white">Etiqueta de MASTERCLASS Premium</span>
-                </label>
+                <div><label class="lbl">Imagen Portada</label><input type="text" id="db-img" value="${d.image||''}" class="inp-field"></div>
             `;
         }
         else if (type === 'testimonial_video') {
-            title = "Editar Testimonio (Video)"; icon = "fa-video text-violet-400";
             formHtml = `
-                <div><label class="lbl">Nombre del Alumno</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div><label class="lbl">Rol / Curso (Ej: Caso de Éxito)</label><input type="text" id="db-role" value="${d.role||''}" class="inp-field"></div>
-                <div><label class="lbl">Cita / Frase Destacada</label><textarea id="db-quote" class="inp-field h-16 resize-none">${d.quote||''}</textarea></div>
-                <div>
-                    <label class="lbl">Archivo de Video (.mp4) <button onclick="window.openGallery('db-vid', 'video')" class="ml-2 text-cyan-400 hover:text-white"><i class="fa-solid fa-folder-open"></i> Explorar</button></label>
-                    <input type="text" id="db-vid" value="${d.src||''}" class="inp-field">
-                </div>
+                <div><label class="lbl">Nombre</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
+                <div><label class="lbl">Rol / Subtítulo</label><input type="text" id="db-role" value="${d.role||''}" class="inp-field"></div>
+                <div><label class="lbl">Cita</label><textarea id="db-quote" class="inp-field h-16 resize-none">${d.quote||''}</textarea></div>
+                <div><label class="lbl">Video (.mp4)</label><input type="text" id="db-vid" value="${d.src||''}" class="inp-field"></div>
                 <div>
                     <label class="lbl">Color del Componente</label>
                     <select id="db-theme" class="inp-field">
@@ -406,11 +335,10 @@
             `;
         }
         else if (type === 'testimonial_text') {
-            title = "Editar Testimonio (Texto)"; icon = "fa-comment-dots text-pink-400";
             formHtml = `
-                <div><label class="lbl">Nombre del Alumno</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div><label class="lbl">Rol / Curso</label><input type="text" id="db-role" value="${d.role||''}" class="inp-field"></div>
-                <div><label class="lbl">Comentario Completo</label><textarea id="db-quote" class="inp-field h-24 resize-none">${d.quote||''}</textarea></div>
+                <div><label class="lbl">Nombre</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
+                <div><label class="lbl">Rol / Subtítulo</label><input type="text" id="db-role" value="${d.role||''}" class="inp-field"></div>
+                <div><label class="lbl">Comentario</label><textarea id="db-quote" class="inp-field h-24 resize-none">${d.quote||''}</textarea></div>
                 <div>
                     <label class="lbl">Color del Componente</label>
                     <select id="db-theme" class="inp-field">
@@ -423,7 +351,7 @@
             `;
         }
 
-        document.getElementById('db-modal-title').innerHTML = `<i class="fa-solid ${icon}"></i> ${title}`;
+        document.getElementById('db-modal-title').innerHTML = title;
         document.getElementById('db-modal-body').innerHTML = formHtml;
         document.getElementById('db-modal').classList.add('active');
     }
@@ -431,114 +359,104 @@
     window.saveDbItem = function() {
         let t = currentDbItem.type; let payload = {};
         
-        if(t === 'product') { payload = { name: document.getElementById('db-name').value, category: document.getElementById('db-cat').value, price: parseFloat(document.getElementById('db-price').value)||0, image: document.getElementById('db-img').value, isPromo: document.getElementById('db-promo').checked }; }
-        else if(t === 'course') { payload = { title: document.getElementById('db-title').value, desc: document.getElementById('db-desc').value, schedule: document.getElementById('db-schedule').value, price: document.getElementById('db-price').value, image: document.getElementById('db-img').value, isMasterclass: document.getElementById('db-master').checked }; }
+        if(t === 'product') { payload = { name: document.getElementById('db-name').value, category: document.getElementById('db-cat').value, price: parseFloat(document.getElementById('db-price').value)||0, image: document.getElementById('db-img').value }; }
+        else if(t === 'course') { payload = { title: document.getElementById('db-title').value, desc: document.getElementById('db-desc').value, schedule: document.getElementById('db-schedule').value, price: document.getElementById('db-price').value, image: document.getElementById('db-img').value }; }
         else if(t === 'testimonial_video') { payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, src: document.getElementById('db-vid').value, theme: document.getElementById('db-theme').value }; }
         else if(t === 'testimonial_text') { payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, theme: document.getElementById('db-theme').value }; }
 
-        // Envía la orden al Iframe para que guarde en Firebase y renderice en vivo
+        // Envía la orden al iframe para que renderice y nosotros procesamos Firebase aquí si es producto/curso
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_SAVE_REQUEST', itemType: t, id: currentDbItem.id, data: payload }, '*');
+        
+        // Lo mandamos a nosotros mismos para guardar directo en DB (productos/cursos)
+        window.postMessage({ type: 'DB_SAVE_REQUEST', itemType: t, id: currentDbItem.id, data: payload }, '*');
+        
         document.getElementById('db-modal').classList.remove('active');
-        window.showToast('Guardando en Base de Datos...');
     }
 
-    window.openGallery = async function(inputId, forceFilter = null) {
-        activeMediaInput = inputId;
-        const grid = document.getElementById('gallery-grid');
-        document.getElementById('gallery-modal').classList.add('active');
-        
-        if (galleryDataCache.length === 0) {
-            try {
-                const res = await fetch('https://multiprintt.web.app/recursos/imagenes.json');
-                if(res.ok) galleryDataCache = await res.json();
-                else throw new Error("Fallback");
-            } catch(e) {
-                galleryDataCache = [
-                    { type: 'image', url: 'https://placehold.co/400x400/101014/25d8ff?text=Placeholder', title: 'Ejemplo Imagen' },
-                    { type: 'video', url: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', title: 'Video Testimonio Base' }
-                ];
-            }
-        }
-        window.filterGallery(forceFilter || 'all');
-    }
-
-    window.filterGallery = function(type) {
-        document.querySelectorAll('#gallery-modal .tool-btn').forEach(b => b.classList.remove('active'));
-        if(type === 'all') document.getElementById('gal-filt-all').classList.add('active');
-        if(type === 'image') document.getElementById('gal-filt-img').classList.add('active');
-        if(type === 'video') document.getElementById('gal-filt-vid').classList.add('active');
-
-        const grid = document.getElementById('gallery-grid');
-        let html = '';
-        const filtered = galleryDataCache.filter(item => type === 'all' || item.type === type);
-        
-        filtered.forEach(item => {
-            if(item.type === 'image') {
-                html += `<div onclick="window.selectMedia('${item.url}')" class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-cyan-400 transition-colors relative group"><img src="${item.url}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100"><span class="absolute bottom-1 left-1 right-1 bg-black/80 text-white text-[8px] p-1 truncate rounded backdrop-blur">${item.title||'Imagen'}</span></div>`;
-            } else {
-                html += `<div onclick="window.selectMedia('${item.url}')" class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-violet-400 transition-colors relative group flex items-center justify-center"><i class="fa-solid fa-video text-2xl text-white/30 group-hover:text-violet-400"></i><span class="absolute bottom-1 left-1 right-1 bg-black/80 text-white text-[8px] p-1 truncate rounded backdrop-blur">${item.title||'Video'}</span></div>`;
-            }
-        });
-        grid.innerHTML = html || '<div class="col-span-full py-10 text-center text-xs text-zinc-500">No se encontraron medios.</div>';
-    }
-
-    window.selectMedia = function(url) {
-        if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            document.getElementById(activeMediaInput).value = url;
-        }
-        document.getElementById('gallery-modal').classList.remove('active');
-    }
-
-    // Modal de Iconos Sociales
-    let selSocialNetwork = ''; let selSocialIconClass = '';
-    window.selectSocialIcon = function(iconClass, network, btnNode) {
-        document.querySelectorAll('.social-opt').forEach(b => { b.classList.remove('border-white'); b.style.color = ''; b.style.borderColor = ''; });
-        btnNode.classList.add('border-white', 'text-white');
-        if(network === 'facebook') { btnNode.style.borderColor = '#1877f2'; btnNode.style.color = '#1877f2'; }
-        if(network === 'instagram') { btnNode.style.borderColor = '#e1306c'; btnNode.style.color = '#e1306c'; }
-        if(network === 'whatsapp') { btnNode.style.borderColor = '#25d366'; btnNode.style.color = '#25d366'; }
-        if(network === 'youtube') { btnNode.style.borderColor = '#ff0000'; btnNode.style.color = '#ff0000'; }
-        selSocialIconClass = iconClass; selSocialNetwork = network;
-    }
-    window.confirmAddSocial = function() {
-        const url = document.getElementById('social-url-input').value;
-        if(!url || !selSocialNetwork) return window.showToast("Selecciona ícono y escribe URL.", "error");
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url: url, iconClass: selSocialIconClass, network: selSocialNetwork }, '*');
-        document.getElementById('icon-picker-modal').classList.remove('active'); document.getElementById('social-url-input').value = '';
-    }
-
-    // Funciones del Inspector (Comunicación con Iframe)
+    // Interacciones con Iframe
     window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
     window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
     window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
-    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<div class="text-zinc-500 text-[11px] p-6 text-center"><i class="fa-solid fa-trash text-2xl mb-2 block text-red-500/50"></i>Nodo Eliminado.</div>'; }
+    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<div class="text-zinc-500 text-[11px] p-6 text-center">Nodo Eliminado.</div>'; }
     window.toggleAccordion = function(headerEl) { const item = headerEl.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
 
-    // Escuchador de Mensajes del Iframe
-    window.addEventListener('message', (event) => {
+    // EVENT LISTENER CENTRAL (COMUNICACIÓN Y BASE DE DATOS)
+    window.addEventListener('message', async (event) => {
         const data = event.data;
+        
+        // 1. Despliegue de Plantilla (Guarda HTML en DB)
+        if (data.type === 'SAVE_FULL_LAYOUT') {
+            if (data.layoutData) {
+                try {
+                    window.showToast("Guardando diseño...", "warning");
+                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), {
+                        zones: data.layoutData,
+                        prodOrder: data.prodOrder || [],
+                        courseOrder: data.courseOrder || []
+                    }, { merge: true });
+                    
+                    const btn = document.getElementById('publish-btn');
+                    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
+                    window.showToast('¡Plantilla desplegada con éxito!', 'success');
+                } catch (error) {
+                    console.error(error);
+                    const btn = document.getElementById('publish-btn');
+                    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
+                    window.showToast('Error al guardar: ' + error.message, 'error');
+                }
+            }
+        }
+        
+        // 2. Guardar Item en BD (Productos, Cursos)
+        if (data.type === 'DB_SAVE_REQUEST') {
+            try {
+                if (data.itemType === 'product' || data.itemType === 'course') {
+                    const colName = data.itemType === 'product' ? 'products' : 'courses';
+                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', colName, data.id), data.data, { merge: true });
+                    document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: data.itemType, id: data.id, data: data.data }, '*');
+                    window.showToast(`Item guardado correctamente.`);
+                } else {
+                    // Testimonios no van a colecciones de DB, sino directo al HTML iframe
+                    document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: data.data }, '*');
+                    window.showToast('Actualizado. Haz clic en "Desplegar" para guardar el diseño.');
+                }
+            } catch (error) { window.showToast("Error guardando datos.", "error"); }
+        }
+
+        // 3. Eliminar de BD
+        if (data.type === 'DELETE_DB_ITEM') {
+            if (!confirm(`¿Eliminar permanentemente de la Base de Datos?`)) return;
+            try {
+                const colName = data.itemType === 'product' ? 'products' : 'courses';
+                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', colName, data.itemId));
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
+                window.showToast("Elemento eliminado.", "success");
+            } catch(e) { window.showToast("Error al eliminar.", "error"); }
+        }
+
+        // 4. Reset Template
+        if (data.type === 'RESET_TEMPLATE') {
+            try {
+                window.showToast("Limpiando plantilla...", "warning");
+                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
+                window.showToast("Plantilla restaurada.", "success");
+                const iframe = document.getElementById('site-frame');
+                setTimeout(() => { iframe.src = iframe.src.split('?')[0] + '?t=' + Date.now(); }, 800);
+            } catch(e) { window.showToast("Error al restablecer.", "error"); }
+        }
+
+        // 5. Interfaz Builder 
         if (data.type === 'APP_READY') { 
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); 
-            // Fuerza DragMode on load
             setTimeout(() => { if(!isDragMode) window.toggleDragMode(document.getElementById('btn-drag')); else document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: true}, '*'); }, 1000);
         }
+        
         if (data.type === 'ELEMENT_SELECTED') { renderPropertiesPanel(data); }
-        if (data.type === 'CLEAR_SELECTION') { document.getElementById('properties-panel').innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-zinc-500 text-[11px] text-center p-6"><div class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center mb-3"><i class="fa-solid fa-wand-magic-sparkles text-cyan-400/60"></i></div><p class="font-medium text-zinc-400">Selecciona un elemento<br>en el lienzo.</p></div>'; }
-        if (data.type === 'OPEN_ICON_PICKER') { document.getElementById('icon-picker-modal').classList.add('active'); }
+        if (data.type === 'CLEAR_SELECTION') { document.getElementById('properties-panel').innerHTML = '<p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento en el lienzo para editar sus propiedades.</p>'; }
         
-        // INTERCEPTOR PARA ABRIR EDITOR BD
+        // Interceptor para abrir editor desde iframe
         if (data.type === 'OPEN_EDITOR') { window.openDbEditor(data.editorType, data.itemId, data.itemData); }
-
         if (data.type === 'RESIZE_UPDATE') { const w = document.getElementById('inp-width'); if(w) w.value = data.width; const h = document.getElementById('inp-height'); if(h) h.value = data.height; }
-        
-        if (data.type === 'SAVE_DONE') { 
-            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>'; 
-            window.showToast(data.msg || '¡Cambios desplegados con éxito!'); 
-        }
-        if (data.type === 'SAVE_ERROR') { 
-            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>'; 
-            window.showToast('Error: ' + data.msg, 'error'); 
-        }
     });
 
     function renderPropertiesPanel(data) {
@@ -546,34 +464,34 @@
         let initialStyles = data.styles || {};
         
         let html = `
-        <div class="w-full bg-[#121215] border-b border-white/10 p-3 flex flex-col gap-2 sticky top-0 z-20 shadow-md">
-            <span class="text-cyan-400 font-extrabold text-[9px] uppercase tracking-widest block">Nodo Activo</span>
+        <div class="w-full bg-[#09090b] border-b border-white/5 p-4 flex flex-col gap-2 sticky top-0 z-20">
+            <span class="text-white font-semibold text-[10px] tracking-wider block">Elemento Seleccionado</span>
             <div class="flex items-center justify-between">
-                <span class="text-white text-xs font-mono font-bold bg-black px-2 py-1 rounded border border-white/10"><i class="fa-solid fa-code text-zinc-500 text-[10px] mr-1"></i> ${data.tagName}</span>
+                <span class="text-zinc-400 text-[10px] font-mono bg-black px-2 py-1 rounded border border-white/10">${data.tagName}</span>
                 <div class="flex gap-1">
-                    <button onclick="document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*')" class="w-6 h-6 rounded bg-black border border-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors" title="Padre"><i class="fa-solid fa-level-up-alt text-[10px]"></i></button>
-                    <button onclick="document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*')" class="w-6 h-6 rounded bg-black border border-white/5 hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors" title="Hijo"><i class="fa-solid fa-level-down-alt text-[10px]"></i></button>
+                    <button onclick="document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*')" class="w-7 h-7 rounded border border-white/5 hover:bg-white/5 text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-level-up-alt text-[10px]"></i></button>
+                    <button onclick="document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*')" class="w-7 h-7 rounded border border-white/5 hover:bg-white/5 text-zinc-400 hover:text-white transition-colors"><i class="fa-solid fa-level-down-alt text-[10px]"></i></button>
                 </div>
             </div>
         </div>`;
 
-        html += `<div class="acc-item active"><div class="acc-header" onclick="window.toggleAccordion(this)">Contenido HTML</div><div class="acc-content">`;
+        html += `<div class="acc-item active"><div class="acc-header" onclick="window.toggleAccordion(this)">Contenido</div><div class="acc-content">`;
         if (!['IMG', 'VIDEO', 'SECTION', 'DIV', 'ARTICLE'].includes(data.tagName)) {
-            html += `<div><label class="lbl">Texto Visible</label><textarea oninput="window.updateText(this.value)" class="inp-field min-h-[80px] leading-relaxed resize-y">${data.text || ''}</textarea></div>`;
+            html += `<div><label class="lbl">Texto</label><textarea oninput="window.updateText(this.value)" class="inp-field min-h-[80px] resize-y">${data.text || ''}</textarea></div>`;
         }
         if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
-            html += `<div><label class="lbl">URL Origen (Media o Link)</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inp-field font-mono text-[9px]"></div>`;
+            html += `<div><label class="lbl">URL / Link</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inp-field font-mono text-[10px]"></div>`;
         }
         html += `</div></div>`;
 
         html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Tipografía</div><div class="acc-content">
-            <div><label class="lbl">Tamaño / Grosor</label>
+            <div><label class="lbl">Tamaño y Grosor</label>
             <div class="flex gap-2">
-                <select onchange="window.updateStyle('textSize', this.value)" class="inp-field p-1 flex-1">
-                    <option value="">Default</option><option value="text-xs">XS</option><option value="text-sm">SM</option><option value="text-base">Base</option><option value="text-lg">LG</option><option value="text-xl">XL</option><option value="text-3xl">3XL</option><option value="text-5xl">5XL</option>
+                <select onchange="window.updateStyle('textSize', this.value)" class="inp-field p-1.5 flex-1">
+                    <option value="">Auto</option><option value="text-xs">XS</option><option value="text-sm">SM</option><option value="text-base">Base</option><option value="text-lg">LG</option><option value="text-xl">XL</option><option value="text-3xl">3XL</option>
                 </select>
-                <select onchange="window.updateStyle('fontWeight', this.value)" class="inp-field p-1 flex-1">
-                    <option value="">Default</option><option value="font-light">Ligero</option><option value="font-normal">Normal</option><option value="font-bold">Bold</option><option value="font-extrabold">ExtraBold</option>
+                <select onchange="window.updateStyle('fontWeight', this.value)" class="inp-field p-1.5 flex-1">
+                    <option value="">Auto</option><option value="font-light">Ligero</option><option value="font-normal">Normal</option><option value="font-bold">Bold</option><option value="font-extrabold">ExtraBold</option>
                 </select>
             </div></div>
             <div><label class="lbl">Alineación</label>
@@ -584,31 +502,31 @@
                 </div>
             </div></div></div>`;
 
-        html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Dimensiones</div><div class="acc-content">
+        html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Diseño y Espacio</div><div class="acc-content">
             <div class="grid grid-cols-2 gap-3">
-                <div><label class="lbl">Ancho</label><div class="input-group"><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="100%"></div></div>
+                <div><label class="lbl">Ancho</label><div class="input-group"><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="auto"></div></div>
                 <div><label class="lbl">Alto</label><div class="input-group"><input type="text" id="inp-height" oninput="window.updateStyle('height', this.value)" value="${initialStyles.height || ''}" placeholder="auto"></div></div>
-                <div><label class="lbl">Padding</label><div class="input-group"><input type="text" oninput="window.updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="10px"></div></div>
-                <div><label class="lbl">Margen</label><div class="input-group"><input type="text" oninput="window.updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="0 auto"></div></div>
+                <div><label class="lbl">Padding</label><div class="input-group"><input type="text" oninput="window.updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="0px"></div></div>
+                <div><label class="lbl">Margen</label><div class="input-group"><input type="text" oninput="window.updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="0px"></div></div>
             </div></div></div>`;
 
         let rgbToHex = (rgbStr) => { if(!rgbStr || !rgbStr.includes('rgb')) return '#ffffff'; let a = rgbStr.split("(")[1].split(")")[0].split(","); return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length==1) ? "0"+x : x; }).join("").slice(0,6); };
         
-        html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Estilo Visual</div><div class="acc-content">
+        html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Colores</div><div class="acc-content">
             <div class="grid grid-cols-2 gap-3 mb-2">
                 <div><label class="lbl">Texto</label><input type="color" value="${rgbToHex(initialStyles.color)}" oninput="window.updateStyle('color', this.value)" class="w-full h-8 bg-transparent border border-white/10 rounded cursor-pointer p-0"></div>
                 <div><label class="lbl">Fondo</label><input type="color" value="${initialStyles.bg&&initialStyles.bg.includes('rgb')?rgbToHex(initialStyles.bg):'#000000'}" oninput="window.updateStyle('bg', this.value)" class="w-full h-8 bg-transparent border border-white/10 rounded cursor-pointer p-0"></div>
             </div>`;
         if (data.hasTheme) {
-            html += `<div><label class="lbl">Color Premium (Badge/Borde)</label>
-                <select onchange="window.updateStyle('theme', this.value)" class="inp-field font-bold" style="color: ${data.currentTheme === 'pink' ? '#ff2da8' : data.currentTheme === 'violet' ? '#735cff' : data.currentTheme === 'amber' ? '#f59e0b' : '#25d8ff'}">
-                    <option value="cyan" ${data.currentTheme === 'cyan' ? 'selected' : ''}>Cyan Lumninoso</option><option value="pink" ${data.currentTheme === 'pink' ? 'selected' : ''}>Rosa Neón</option><option value="violet" ${data.currentTheme === 'violet' ? 'selected' : ''}>Violeta</option><option value="amber" ${data.currentTheme === 'amber' ? 'selected' : ''}>Ámbar Oro</option><option value="emerald" ${data.currentTheme === 'emerald' ? 'selected' : ''}>Esmeralda</option>
+            html += `<div><label class="lbl">Tema de Tarjeta</label>
+                <select onchange="window.updateStyle('theme', this.value)" class="inp-field" style="color: ${data.currentTheme === 'pink' ? '#ff2da8' : data.currentTheme === 'violet' ? '#735cff' : data.currentTheme === 'amber' ? '#f59e0b' : '#25d8ff'}">
+                    <option value="cyan" ${data.currentTheme === 'cyan' ? 'selected' : ''}>Cyan Lumninoso</option><option value="pink" ${data.currentTheme === 'pink' ? 'selected' : ''}>Rosa Neón</option><option value="violet" ${data.currentTheme === 'violet' ? 'selected' : ''}>Violeta</option><option value="amber" ${data.currentTheme === 'amber' ? 'selected' : ''}>Ámbar Oro</option>
                 </select></div>`;
         }
         html += `</div></div>`;
 
-        html += `<div class="p-4 mt-auto"><button onclick="window.deleteElement()" class="w-full btn-danger py-2 flex items-center justify-center gap-2"><i class="fa-solid fa-trash-can"></i> Purgar Nodo</button></div>`;
-        panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-[#0a0a0c] p-0 text-left";
+        html += `<div class="p-4 mt-auto"><button onclick="window.deleteElement()" class="w-full btn-danger py-2.5 flex items-center justify-center gap-2"><i class="fa-solid fa-trash"></i> Eliminar Nodo</button></div>`;
+        panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-[#09090b] p-0 text-left";
     }
 </script>
 </body>
