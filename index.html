@@ -1,813 +1,629 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-
-<title>Multiprintt | Impresión & Publicidad en Guayaquil</title>
-<meta name="description" content="Multiprintt: Impresión & Publicidad. Expertos en personalización, impresión gráfica, DTF, sublimación, resina y academia para emprendedores en Ecuador.">
-<meta name="theme-color" content="#070709">
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config = { theme: { extend: { colors: { bg: '#070709', panel: '#101014' } } } }</script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-
-<style>
-:root{ --bg:#070709;--panel:#101014;--line:rgba(255,255,255,.09); --pink:#ff2da8;--violet:#735cff;--cyan:#25d8ff; }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(--bg); color:#f7f7f8; font-family:"DM Sans",sans-serif; -webkit-tap-highlight-color: transparent; }
-
-body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
-
-.leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
-.leaflet-container { background: #0e0e12 !important; }
-
-h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
-::selection{background:var(--pink);color:white}
-
-.slide-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; will-change: scroll-position; transform: translate3d(0,0,0); }
-.slide-scroll::-webkit-scrollbar{width:6px; height: 6px;}
-.slide-scroll::-webkit-scrollbar-track{background:transparent}
-.slide-scroll::-webkit-scrollbar-thumb{background:#292930;border-radius:99px}
-.slide-scroll::-webkit-scrollbar-thumb:hover{background:var(--pink)}
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-
-.glass{background:rgba(10,10,14,.95);backdrop-filter:blur(20px);}
-.glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
-
-.filter-btn { transition: background-color 0.3s ease, color 0.3s ease; position: relative; }
-.filter-btn.active { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); } 
-.cat-mas-vendidos.active { background: rgba(225,29,72,0.95); }
-.cat-promocionales.active { background: rgba(234,88,12,0.95); }
-.cat-textil.active { background: rgba(8,145,178,0.95); }
-.cat-jarros.active { background: rgba(219,39,119,0.95); }
-.cat-imp-general.active { background: rgba(124,58,237,0.95); }
-.cat-packs.active { background: rgba(5,150,105,0.95); }
-
-.gradient-text{ background:linear-gradient(100deg,#fff 15%,#d5d0ff 48%,#ff4bb8 90%); -webkit-background-clip:text; background-clip:text; color:transparent; line-height: 1.4 !important; padding-bottom: 0.2em; display: inline-block; position: relative; z-index: 20; }
-.gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
-.hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
-
-.card{ background:#101014; border:1px solid rgba(255,255,255,0.05); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; will-change: transform; }
-@media(min-width: 768px) { .card:hover{ border-color:rgba(255,255,255,.15); transform:translateY(-3px) translate3d(0,0,0); box-shadow:0 12px 40px rgba(0,0,0,.4); } }
-
-.view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99) translate3d(0,0,0); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 90px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
-@media(min-width: 768px) { .view-slide { padding-top: 101px; padding-bottom: 20px; } }
-.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1) translate3d(0,0,0); z-index: 10; }
-
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
-.reveal.show{opacity:1;transform:translate3d(0,0,0)}
-
-.nav-link { color: #aaaab3; transition: all 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.4rem 1rem; border-radius: 99px; font-weight: 500; }
-.nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.nav-link.active { color: #000 !important; background: #fff !important; font-weight: 700 !important; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
-
-.bot-nav-item { transition: all 0.3s ease; }
-.bot-nav-item.active { color: #fff; transform: translateY(-2px); }
-.bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
-
-/* BUILDER PRO CSS BLINDADO */
-.admin-tool, .admin-overlay, .admin-video-edit-overlay { display: none !important; pointer-events: none !important; }
-body.is-admin-session .admin-tool { display: flex !important; pointer-events: auto !important; }
-
-body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
-body.builder-mode:not(.dragging-active) .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; }
-body.builder-mode:not(.dragging-active) a:hover, body.builder-mode:not(.dragging-active) video:hover, body.builder-mode:not(.dragging-active) img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
-
-body.dragging-active .sortable-zone > * { cursor: grab !important; }
-body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
-.sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
-
-body.is-admin-session .admin-overlay { display: flex !important; position: absolute; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(2px); flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
-body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
-body.is-admin-session .admin-video-edit-overlay { display: flex !important; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; }
-body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
-
-/* Candado Responsivo del Modal de Video (Fuerza la proporción 9:16 estilo TikTok) */
-@media (max-width: 767px) {
-    #videoModalContent { transform: scale(1) translate(0,0) !important; width: 100% !important; max-width: 360px !important; height: auto !important; aspect-ratio: 9/16 !important; border-radius: 24px !important; }
-}
-
-.loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
-#media-grid::-webkit-scrollbar { width: 6px; }
-#media-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Multiprintt | Tú Imagen Viva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 0px; height: 0px; }
+        
+        .view-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); transform: translateY(15px); overflow-y: auto; overflow-x: hidden; }
+        .view-slide.active-slide { opacity: 1; pointer-events: auto; transform: translateY(0); z-index: 10; }
+        
+        .builder-active .editable-node { outline: 1px dashed rgba(37,216,255,0.4); cursor: pointer; transition: all 0.2s; position: relative; }
+        .builder-active .editable-node:hover { outline: 2px solid #25d8ff; background: rgba(37,216,255,0.05); z-index: 50; }
+        .builder-active .selected-node { outline: 2px solid #f59e0b !important; background: rgba(245,158,11,0.1) !important; z-index: 60; box-shadow: 0 0 20px rgba(245,158,11,0.2); }
+        .drag-active .editable-node { cursor: grab !important; }
+        .drag-active .editable-node:active { cursor: grabbing !important; }
+        
+        .glass-nav { background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Filtros Seamless Minimalistas */
+        .filter-btn { position: relative; font-weight: 500; }
+        .filter-btn.active { color: white; font-weight: 700; }
+        .filter-btn::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: var(--hover-color); opacity: 0; transition: 0.3s; z-index: -1; }
+        .filter-btn.active::after { opacity: 0.15; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.5); }
+        .filter-btn.active::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--hover-color); box-shadow: 0 0 10px var(--hover-color); }
+        
+        .tiktok-mask { -webkit-mask-image: -webkit-radial-gradient(white, black); }
+    </style>
 </head>
+<body class="antialiased selection:bg-cyan-500/30 selection:text-cyan-100">
 
-<body>
-<div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
-    <div class="relative flex items-center justify-center">
-        <div class="absolute w-16 h-16 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-[25px] opacity-30 animate-pulse"></div>
-        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));"><i class="fa-solid fa-circle-notch animate-spin text-4xl block"></i></div>
-    </div>
-</div>
+    <header class="fixed top-0 w-full z-[100] flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.3)]" id="main-header">
+        <div class="h-1 w-full bg-gradient-to-r from-cyan-500 via-pink-500 to-yellow-500"></div>
+        
+        <nav class="glass-nav h-[56px] px-4 md:px-8 flex items-center justify-between">
+            <button class="flex items-center gap-3 editable-node transition-transform hover:scale-105" id="nav-brand" onclick="window.navigate('catalog')">
+                <div class="w-8 h-8 rounded-full bg-black border border-white/10 flex items-center justify-center p-0.5 shadow-lg relative overflow-hidden">
+                    <img src="https://multiprintt.web.app/recursos/imagenes/logo.png" alt="Logo" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'">
+                </div>
+                <div class="flex flex-col items-start">
+                    <span class="text-white font-bold text-[13px] tracking-wide leading-none">MULTIPRINTT</span>
+                    <span class="text-[9px] text-zinc-500 tracking-widest font-medium uppercase mt-0.5">Tú Imagen Viva</span>
+                </div>
+            </button>
 
-<div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
+            <div class="hidden md:flex items-center bg-[#050507]/80 rounded-full border border-white/5 p-1">
+                <button onclick="window.navigate('catalog')" id="nav-btn-catalog" class="px-5 py-1.5 rounded-full text-xs font-semibold text-white bg-white/10 transition-all nav-item">Catálogo</button>
+                <button onclick="window.navigate('academia')" id="nav-btn-academia" class="px-5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-all nav-item">Academia</button>
+                <button onclick="window.navigate('about')" id="nav-btn-about" class="px-5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-all nav-item">Nosotros</button>
+            </div>
 
-<div class="fixed top-0 left-0 right-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.3)]">
-    <!-- El Header original (Este sí se sobrescribe si Firebase tiene un backup viejo) -->
-    <header id="section-header" class="glass h-[56px] md:h-[64px] transition-all editable-section border-b border-white/5">
-      <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
-        <button onclick="navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
-          <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
-            <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
-          </div>
-          <div>
-            <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-[13px] m-0" id="brand-name">MULTIPRINTT</h1>
-            <div data-editable="true" class="text-[6px] md:text-[8px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
-          </div>
-        </button>
-
-        <nav id="nav-pc-zone" class="hidden md:flex items-center gap-1 text-[13px] sortable-zone">
-          <button onclick="navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
-          <button onclick="navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
-          <button onclick="navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
-          <button onclick="navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
+            <!-- Botón Modo Proxy (WhatsApp General sin URL) -->
+            <button onclick="openWhatsAppGral()" class="w-8 h-8 bg-zinc-900 border border-white/10 rounded-full flex items-center justify-center text-zinc-400 hover:text-[#25D366] hover:border-[#25D366]/30 transition-all shadow-lg editable-node group">
+                <i class="fa-brands fa-whatsapp text-sm group-hover:scale-110 transition-transform"></i>
+            </button>
         </nav>
 
-        <div class="flex items-center relative">
-        <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></a>
-            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></a>
-            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></a>
-            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+        <!-- Submenú de Filtros Minimalista -->
+        <div id="catalog-subnav" class="w-full bg-[#0a0a0c]/95 backdrop-blur-xl border-b border-white/5 flex transition-all duration-300 transform origin-top h-[34px] md:h-[45px] overflow-hidden md:justify-center">
+            <button onclick="setFilter('Top')" id="filter-Top" class="filter-btn active flex-1 md:flex-none flex justify-center items-center md:px-8 text-[8px] md:text-xs text-white transition-all" style="--hover-color: #e11d48;">
+                <span class="block md:hidden uppercase tracking-wider">Top</span><span class="hidden md:block">Más Vendidos</span>
+            </button>
+            <button onclick="setFilter('Promocionales')" id="filter-Promocionales" class="filter-btn flex-1 md:flex-none flex justify-center items-center md:px-8 text-[8px] md:text-xs text-zinc-400 hover:text-white transition-all" style="--hover-color: #f97316;">
+                <span class="block md:hidden uppercase tracking-wider">Promos</span><span class="hidden md:block">Promocionales</span>
+            </button>
+            <button onclick="setFilter('Textil')" id="filter-Textil" class="filter-btn flex-1 md:flex-none flex justify-center items-center md:px-8 text-[8px] md:text-xs text-zinc-400 hover:text-white transition-all" style="--hover-color: #06b6d4;">
+                <span class="block md:hidden uppercase tracking-wider">Textil</span><span class="hidden md:block">Textil y Moda</span>
+            </button>
+            <button onclick="setFilter('Jarros')" id="filter-Jarros" class="filter-btn flex-1 md:flex-none flex justify-center items-center md:px-8 text-[8px] md:text-xs text-zinc-400 hover:text-white transition-all" style="--hover-color: #ec4899;">
+                <span class="block md:hidden uppercase tracking-wider">Jarros</span><span class="hidden md:block">Jarros & Thermos</span>
+            </button>
+            <button onclick="setFilter('General')" id="filter-General" class="filter-btn flex-1 md:flex-none flex justify-center items-center md:px-8 text-[8px] md:text-xs text-zinc-400 hover:text-white transition-all" style="--hover-color: #8b5cf6;">
+                <span class="block md:hidden uppercase tracking-wider">General</span><span class="hidden md:block">Imp. General</span>
+            </button>
+            <button onclick="setFilter('Packs')" id="filter-Packs" class="filter-btn flex-1 md:flex-none flex justify-center items-center md:px-8 text-[8px] md:text-xs text-zinc-400 hover:text-white transition-all" style="--hover-color: #10b981;">
+                <span class="block md:hidden uppercase tracking-wider">Packs</span><span class="hidden md:block">Packs Especiales</span>
+            </button>
         </div>
-        
-        <div class="hidden md:flex relative items-center z-[110] group h-10 w-10 ml-4">
-            <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end gap-3.5 h-9 w-max max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden border border-white/5 hover:border-white/10 shadow-lg px-[9px] whitespace-nowrap sortable-zone">
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-5 h-5 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 opacity-0 group-hover:opacity-100"><i class="fa-solid fa-plus text-[10px] pointer-events-none"></i></button>
-                <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#1877F2] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i></a>
-                <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-500 hover:text-[#E1306C] transition-colors shrink-0 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center"><i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i></a>
-                <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors shrink-0 flex items-center justify-center"><i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i></a>
-            </div>
-        </div>
-      </div>
-      </div>
     </header>
 
-    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden">
-      <div class="flex items-center justify-between md:justify-center w-full px-1 md:px-0">
-          <button onclick="setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
-              <span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span>
-          </button>
-          <button onclick="setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
-              <span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span>
-          </button>
-          <button onclick="setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
-              Textil
-          </button>
-          <button onclick="setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
-              <span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span>
-          </button>
-          <button onclick="setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
-              <span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span>
-          </button>
-          <button onclick="setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[40px] text-[7.5px] md:text-[9px] uppercase tracking-tight md:tracking-wider px-0 md:px-8 text-white/50 hover:text-white font-semibold transition-all whitespace-nowrap">
-              Packs
-          </button>
-      </div>
-    </div>
-</div>
-
-<main class="relative w-full h-[100dvh] overflow-hidden">
-  
-  <section id="view-catalog" class="view-slide active-slide slide-scroll">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative flex flex-col min-h-[calc(100vh-160px)] pt-6 md:pt-10 pb-24 md:pb-8">
-        <div id="product-grid" class="w-full reveal show transition-all sortable-zone"></div>
-    </div>
-  </section>
-
-  <section id="view-about" class="view-slide slide-scroll editable-section">
-    <div class="hero-glow w-[350px] h-[350px] bg-violet-600/20 right-0 md:right-20 top-20"></div>
-    <div class="hero-glow w-[300px] h-[300px] bg-pink-500/15 left-[-50px] bottom-10"></div>
-    
-    <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
-        <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20">
-            <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
-                <span data-editable="true" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
-                <span data-editable="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
-            </h2>
-            <p data-editable="true" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
-            
-            <div class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sortable-zone">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400 pointer-events-none"></i> <span data-editable="true">Envíos Nacionales</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-award text-violet-400 pointer-events-none"></i> <span data-editable="true">Calidad Premium</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-cyan-400 pointer-events-none"></i> <span data-editable="true">Atención Única</span></span>
-            </div>
-
-            <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
-                <button data-editable="true" onclick="navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-all hover:bg-zinc-200">Ver catálogo</button>
-                <button data-editable="true" onclick="navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-all">Nuestra academia</button>
-            </div>
-        </div>
-    </div>
-  </section>
-
-  <section id="view-courses" class="view-slide slide-scroll editable-section">
-    <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-8 relative z-10">
-        <div class="reveal text-center md:text-left shrink-0 relative z-20 mb-2">
-            <div data-editable="true" class="text-[10px] tracking-[.25em] uppercase text-violet-400 font-bold mb-3">Multiprintt Academy</div>
-            <h2 class="display flex flex-col gap-0 text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20">
-                <span data-editable="true" class="block">No solo vendemos.</span>
-                <span data-editable="true" class="relative z-10 block gradient-text">Te enseñamos a crear.</span>
-            </h2>
-            <p data-editable="true" class="text-[13px] md:text-sm text-zinc-500 leading-relaxed max-w-2xl mt-1 mx-auto md:mx-0">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
-        </div>
-
-        <div class="reveal mt-3 flex flex-wrap justify-center md:justify-start gap-3 text-[9px] md:text-[10px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-6">
-            <span class="flex items-center gap-1.5 bg-gradient-to-r from-pink-500/10 to-transparent border border-pink-500/20 px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-hands-holding-circle text-pink-400 pointer-events-none"></i> <span data-editable="true">Práctica Garantizada</span></span>
-            <span class="flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/20 px-4 py-2 rounded-full shadow-sm"><i class="fa-solid fa-infinity text-cyan-400 pointer-events-none"></i> <span data-editable="true">Acompañamiento de por vida</span></span>
-        </div>
+    <main class="relative w-full h-[100dvh] overflow-hidden">
         
-        <div id="courses-grid" class="w-full pb-8 mb-8 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-7xl mx-auto sortable-zone"></div>
+        <section id="view-catalog" class="view-slide active-slide pb-24 md:pb-8">
+            <!-- Espaciado perfecto y protegido: pt-[58px] móvil / pt-[85px] desktop -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[58px] md:pt-[85px] relative flex flex-col min-h-[calc(100vh-160px)]">
+                <div id="product-grid" class="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-6 md:mt-10 transition-all sortable-zone">
+                    <!-- Se inyecta dinámicamente por JS -->
+                </div>
+            </div>
+        </section>
 
-        <div class="reveal mt-4 mb-6 text-center md:text-left">
-            <h3 data-editable="true" class="display text-2xl md:text-4xl font-extrabold tracking-tight mb-2">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
-        </div>
-        
-        <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
-            <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
-                <div class="video-testimonial-card relative rounded-[20px] overflow-hidden bg-[#0e0e12] border border-cyan-400/40 shadow-[0_15px_40px_rgba(37,216,255,0.2)] group h-[280px] shrink-0 transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(37,216,255,0.4)]" data-theme="cyan">
-                    <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4#t=0.1" preload="metadata" playsinline class="vt-video absolute inset-0 w-full h-full object-cover opacity-70 transition-opacity duration-500 group-hover:opacity-90"></video>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/20 to-transparent pointer-events-none"></div>
-                    <button onclick="openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-md border border-cyan-400/30 flex items-center justify-center text-cyan-400 text-xl z-20 pointer-events-auto cursor-pointer hover:bg-cyan-400 hover:text-black hover:scale-105 transition-all shadow-[0_0_15px_rgba(37,216,255,0.2)] ignore-drag outline-none">
-                        <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
+        <section id="view-academia" class="view-slide pb-24 md:pb-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[80px] md:pt-[100px] relative flex flex-col min-h-[calc(100vh-160px)]">
+                <div class="text-center mb-8 editable-node">
+                    <h1 class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-500 inline-block">ACADEMIA MULTIPRINTT</h1>
+                    <p class="text-zinc-400 text-sm mt-2 max-w-lg mx-auto">Domina el arte de la impresión y el diseño.</p>
+                </div>
+                <div id="course-grid" class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 sortable-zone"></div>
+            </div>
+        </section>
+
+        <section id="view-about" class="view-slide pb-24 md:pb-8">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-[80px] md:pt-[100px] relative flex flex-col min-h-[calc(100vh-160px)] editable-section">
+                <div class="text-center mb-10 editable-node">
+                    <h1 class="text-3xl md:text-5xl font-extrabold text-white">Nuestra Esencia</h1>
+                    <div class="w-16 h-1 bg-cyan-500 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center editable-node">
+                    <div class="space-y-4 text-zinc-300 text-sm md:text-base leading-relaxed">
+                        <p>En Multiprintt, no solo imprimimos, damos vida a tus ideas. Líderes en calidad visual.</p>
+                    </div>
+                    <button class="relative group cursor-pointer text-left w-full" onclick="openVideoModal()">
+                        <div class="absolute inset-0 bg-cyan-500/20 blur-xl rounded-full group-hover:bg-cyan-500/40 transition-all"></div>
+                        <div class="aspect-video bg-zinc-900 rounded-2xl border border-white/10 overflow-hidden relative flex items-center justify-center">
+                            <img src="https://placehold.co/600x400/111/444?text=Ver+Testimonio" alt="Video" class="w-full h-full object-cover opacity-60">
+                            <div class="absolute w-14 h-14 bg-cyan-500 rounded-full flex items-center justify-center text-black text-xl shadow-[0_0_30px_rgba(37,216,255,0.6)] group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </div>
+                        </div>
                     </button>
-                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20 flex flex-col pointer-events-none">
-                        <h4 data-editable="true" class="vt-name text-white text-lg font-semibold pointer-events-auto w-max drop-shadow-md">Carlos P.</h4>
-                        <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-bold uppercase tracking-[.2em] mb-1 pointer-events-auto w-max drop-shadow-md">Caso de Éxito</span>
-                    </div>
-                    <div class="admin-video-edit-overlay">
-                        <button onclick="openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 mb-4 flex items-center gap-2 ignore-drag"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Testimonio</button>
-                        <p data-editable="true" class="vt-quote hidden text-xs text-center text-white/90 p-4 border border-dashed border-white/40 rounded bg-black/50">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo y de mi trabajo; fue la mejor decisión que pude tomar."</p>
-                    </div>
-                </div>
-                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-zinc-600 rounded-[20px] flex items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag"><i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Video</span></button>
-            </div>
-            
-            <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone h-max">
-                <div class="p-6 md:p-8 rounded-[20px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card hover:shadow-[0_0_20px_rgba(255,45,168,0.3)] transition-all group" data-theme="pink">
-                    <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
-                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
-                    <div class="flex items-center gap-4 pt-4 border-t border-white/5">
-                        <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors"><span data-editable="true">M</span></div>
-                        <div>
-                            <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide">María F.</h4>
-                            <span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors">Curso de Sublimación</span>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-zinc-600 rounded-[20px] flex flex-col items-center justify-center text-zinc-500 font-bold hover:bg-white/5 hover:text-white hover:border-white/50 cursor-pointer transition-all ignore-drag"><i class="fa-solid fa-plus text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Texto</span></button>
-            </div>
-        </div>
-    </div>
-  </section>
-
-  <section id="view-contact" class="view-slide flex flex-col slide-scroll editable-section">
-    <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-1 sm:pt-2 pb-2 sm:pb-6 relative z-10">
-        <div class="flex-1 flex flex-col justify-evenly">
-            <div class="reveal text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2">
-                <div data-editable="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
-                <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20 leading-[1.1]">
-                    <span data-editable="true" class="block">Tu próxima idea</span>
-                    <span data-editable="true" class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
-                </h2>
-            </div>
-
-            <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
-                <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0">
-                    <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
-                    <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
-                        <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
-                            <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
-                    <div class="group">
-                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
-                        <a data-editable="true" href="https://wa.me/593997591021" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors" id="contact-phone">+593 99 759 1021</a>
-                    </div>
-                    <div class="group">
-                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
-                        <a data-editable="true" href="mailto:multiprintt@yahoo.com" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors">multiprintt@yahoo.com</a>
-                    </div>
-                    <div class="group">
-                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
-                        <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone">
-                            <a data-editable="true" href="https://facebook.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></a>
-                            <a data-editable="true" href="https://instagram.com/multiprintt" target="_blank" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></a>
-                            <a data-editable="true" href="https://wa.me/593997591021" target="_blank" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-whatsapp pointer-events-none"></i></a>
-                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
-
-        <footer class="mt-2 sm:mt-8 pt-2 sm:pt-4 text-center text-[8px] sm:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-1 sm:gap-2 relative z-20 pb-2 sm:pb-4">
-            <span data-editable="true">© 2026 Multiprintt. Tú Imagen Viva.</span>
-        </footer>
-    </div>
-  </section>
-</main>
-
-<nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
-    <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
-    <button onclick="navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
-    <button onclick="navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
-    <button onclick="navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
-    <button onclick="navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
-</nav>
-
-<div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/80 backdrop-blur-sm p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag">
-  <div class="relative w-full max-w-4xl bg-[#0e0e12] border border-white/10 rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-300 ignore-drag" id="courseModalContent">
-    <button onclick="closeCourseModal()" class="absolute top-4 right-4 z-[310] w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors shadow-lg ignore-drag"><i class="fa-solid fa-xmark pointer-events-none"></i></button>
-    <div class="w-full md:w-1/2 h-48 sm:h-56 md:h-auto bg-[#101014] relative">
-      <img id="cm-image" src="" alt="Curso" class="w-full h-full object-cover relative z-0 ignore-drag" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Curso'">
-    </div>
-    <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col relative z-20 justify-center">
-      <h3 id="cm-title" class="display text-xl md:text-3xl font-extrabold tracking-tight mb-2 text-white ignore-drag"></h3>
-      <p id="cm-desc" class="text-xs md:text-sm text-zinc-400 leading-relaxed mb-5 flex-1 ignore-drag"></p>
-      <div class="space-y-4 mb-6 ignore-drag">
-        <div class="flex items-center text-zinc-300">
-            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-cyan-400"><i class="fa-regular fa-calendar"></i></div>
-            <div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Horarios</span><span id="cm-schedule" class="font-medium text-white text-xs md:text-sm"></span></div>
-        </div>
-        <div class="flex items-center text-zinc-300">
-            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center mr-3 md:mr-4 text-pink-400"><i class="fa-solid fa-tag"></i></div>
-            <div><span class="block text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-zinc-500 font-bold">Inversión</span><span id="cm-price" class="font-bold text-white text-xs md:text-sm"></span></div>
-        </div>
-      </div>
-      <a id="cm-btn" href="#" target="_blank" class="flex items-center justify-center w-full px-5 py-3.5 rounded-xl bg-white text-black text-xs md:text-sm font-extrabold hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:-translate-y-1 ignore-drag">Separar cupo por WhatsApp</a>
-    </div>
-  </div>
-</div>
-
-<!-- EL MODAL PERFECTO TIKTOK 9:16 ENMASCARADO -->
-<div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
-    <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] aspect-[9/16] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto" data-theme="cyan" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
-        <button onclick="closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg"><i class="fa-solid fa-xmark text-sm pointer-events-none"></i></button>
-        <div data-editable="true" class="absolute top-4 left-4 z-[310] bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-mono px-2 py-1 rounded-md shadow-lg pointer-events-none"><span id="vm-time">00:00</span></div>
-        <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
-        <div data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 pointer-events-none"></div>
-        <div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12 pointer-events-none">
-            <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1 pointer-events-auto"></i>
-            <div class="overflow-y-auto hide-scrollbar max-h-[160px] mb-4 pointer-events-none">
-                <p data-editable="true" id="vm-quote" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1 pointer-events-auto">"..."</p>
-            </div>
-            <div class="border-t border-white/10 pt-4 shrink-0 flex items-center gap-4 pointer-events-none">
-                <div data-editable="true" id="vm-avatar-container" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto"><span class="font-bold text-sm text-cyan-400" id="vm-initial">C</span></div>
-                <div class="flex flex-col justify-center pointer-events-none">
-                    <h4 data-editable="true" id="vm-name" class="text-white text-sm font-bold tracking-wide drop-shadow-sm pointer-events-auto">Carlos P.</h4>
-                    <span data-editable="true" id="vm-role" class="text-[9px] uppercase tracking-[0.2em] font-bold drop-shadow-sm mt-0.5 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="mediaModal" class="hidden fixed inset-0 z-[10000] bg-black/95 backdrop-blur-xl p-4 sm:p-6 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-3xl bg-[#0e0e12] border border-white/10 p-6 rounded-3xl shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[85vh] ignore-drag" id="mediaModalContent"><div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4 shrink-0"><h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-regular fa-images text-cyan-400"></i> Galería de Recursos</h3><button onclick="closeMediaSelector()" class="text-zinc-500 hover:text-white w-8 h-8 rounded-md hover:bg-white/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button></div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-3 font-bold" id="media-folder-label">/recursos/</div><div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 overflow-y-auto pr-2 pb-2 h-full min-h-[300px]"></div></div></div>
-<div id="editModal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-md bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 relative ignore-drag" id="editModalContent"><h3 id="em-title" class="text-lg font-bold text-white mb-4 border-b border-white/10 pb-2 ignore-drag">Editar BD</h3><input type="hidden" id="em-id" class="ignore-drag"> <input type="hidden" id="em-type" class="ignore-drag"><div id="em-fields" class="space-y-3 mb-6 ignore-drag"></div><div class="flex gap-3 ignore-drag"><button onclick="saveElementEdit()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 ignore-drag">Guardar Cambios</button><button onclick="closeEditModal()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button></div></div></div>
-<div id="custom-confirm-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-opacity duration-300 ignore-drag"><div class="w-full max-w-sm bg-[#101014] border border-white/10 p-6 rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300 text-center ignore-drag" id="custom-confirm-content"><i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-4 ignore-drag"></i><h3 class="text-lg font-bold text-white mb-2 ignore-drag">¿Estás seguro?</h3><p class="text-zinc-400 text-sm mb-6 ignore-drag">¿Quieres borrar este elemento permanentemente?</p><div class="flex gap-3 ignore-drag"><button id="custom-confirm-btn" class="flex-1 bg-red-500 text-white font-bold py-2.5 rounded-lg hover:bg-red-600 ignore-drag">Borrar</button><button onclick="closeCustomConfirm()" class="flex-1 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 ignore-drag">Cancelar</button></div></div></div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const APP_ID = "multiprintt-web";
-
-window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
-let editingCardNode = null; let currentVideoCardRef = null;
-
-const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
-const defaultProducts = [{id:'p1',name:'Fotocuadros',category:'mas-vendidos',price:25,image:'',icon:'fa-image'}];
-const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:""}];
-window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
-
-window.navigate = function(targetId) {
-    ['catalog', 'about', 'courses', 'contact'].forEach(id => {
-        const section = document.getElementById(`view-${id}`); const btns = document.querySelectorAll(`[data-target="${id}"]`); const botBtn = document.getElementById(`bot-${id}`);
-        if (id === targetId) {
-            if (section) { section.classList.add('active-slide'); setTimeout(() => section.scrollTop = 0, 10); }
-            btns.forEach(b => b.classList.add('active')); if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
-            setTimeout(() => { if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); if(id === 'contact') { if(!window.multiprinttMap) { initMap(); } else { window.multiprinttMap.invalidateSize(); window.recenterMap(); } } }, 500); 
-        } else {
-            if (section) section.classList.remove('active-slide'); btns.forEach(b => b.classList.remove('active')); if(botBtn) { botBtn.classList.remove('active', 'text-white'); botBtn.classList.add('text-zinc-500'); }
-            if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
-        }
-    });
-    
-    const subnav = document.getElementById('catalog-subnav');
-    if (subnav) {
-        if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '40px'; subnav.style.opacity = '1'; } 
-        else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
-    }
-};
-
-window.setFilter = function(filterStr) {
-    window.currentFilter = filterStr;
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active', 'font-bold'));
-    let activeBtn = document.getElementById(`filter-${filterStr}`);
-    if(activeBtn) activeBtn.classList.add('active', 'font-bold');
-    window.renderProducts();
-};
-
-window.renderProducts = function(){
-    const grid = document.getElementById('product-grid'); if(!grid) return;
-    grid.innerHTML = '';
-    
-    let safeProducts = (Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts]).map(p => {
-        if(p.category === 'premium' || p.category === 'tazas') p.category = 'mas-vendidos';
-        if(!p.category) p.category = 'mas-vendidos'; return p;
-    }).filter(p => p.category === window.currentFilter);
-    
-    let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
-    safeProducts.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
-    
-    grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5 mx-auto transition-all items-start w-full sortable-zone";
-    if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`; }
-    
-    let phoneEl = document.getElementById('contact-phone');
-    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
-    if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
-
-    safeProducts.forEach((p,i)=>{
-        const wa=`https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola Multiprintt, deseo solicitar información sobre: '+p.name+'.')}`;
-        const art = p.image ? `<img src="${p.image}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 md:group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
-        const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
+        </section>
         
-        let adminHtml = `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('product', '${p.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="event.stopPropagation(); window.deleteElement('product', '${p.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>`;
-        grid.innerHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-20 pointer-events-none" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 60%);"></div>${art}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><a href="${wa}" target="_blank" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</a></div></div></article>`;
-    });
-}
+        <!-- Navbar Móvil Inferior -->
+        <div class="md:hidden fixed bottom-0 left-0 w-full glass-nav border-t border-white/5 pb-safe z-50">
+            <div class="flex justify-around items-center h-[65px] px-2">
+                <button onclick="window.navigate('catalog')" class="flex flex-col items-center justify-center w-16 gap-1 text-white transition-colors" id="mob-nav-catalog">
+                    <i class="fa-solid fa-store text-lg"></i><span class="text-[9px] font-medium">Tienda</span>
+                </button>
+                <button onclick="window.navigate('academia')" class="flex flex-col items-center justify-center w-16 gap-1 text-zinc-500 hover:text-yellow-400 transition-colors" id="mob-nav-academia">
+                    <i class="fa-solid fa-graduation-cap text-lg"></i><span class="text-[9px] font-medium">Academia</span>
+                </button>
+                <button onclick="window.navigate('about')" class="flex flex-col items-center justify-center w-16 gap-1 text-zinc-500 hover:text-pink-400 transition-colors" id="mob-nav-about">
+                    <i class="fa-solid fa-users text-lg"></i><span class="text-[9px] font-medium">Nosotros</span>
+                </button>
+            </div>
+        </div>
+    </main>
 
-window.renderCourses = function(){
-    const grid = document.getElementById('courses-grid'); if(!grid) return; grid.innerHTML = '';
-    let safeCourses = Array.isArray(window.appCourses) && window.appCourses.length > 0 ? [...window.appCourses] : [...defaultCourses];
-    let safeOrder = Array.isArray(window.courseOrderArray) ? window.courseOrderArray : [];
-    safeCourses.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
-    
-    safeCourses.forEach((c)=>{
-        let adminHtml = `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('course', '${c.id}')" class="bg-cyan-500 text-black px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 mb-2 pointer-events-auto"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button onclick="event.stopPropagation(); window.deleteElement('course', '${c.id}')" class="bg-red-500 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold w-24 pointer-events-auto"><i class="fa-solid fa-trash pointer-events-none"></i> Borrar</button></div>`;
-        grid.innerHTML += `<article class="card relative overflow-hidden group bg-[#101014] flex flex-col w-full h-full" data-id="${c.id}">${adminHtml}<div class="w-full h-36 relative overflow-hidden bg-black/40 border-b border-white/5"><img src="${c.image}" loading="lazy" class="w-full h-full object-cover md:group-hover:scale-110 transition-transform duration-700" draggable="false" onerror="this.src='https://placehold.co/400x200/101014/ffffff?text=Curso'"></div><div class="relative flex flex-col w-full flex-1 p-4 pt-3"><h3 class="font-extrabold text-[14px] md:text-base">${c.title}</h3><p class="text-[10px] md:text-[11px] text-zinc-400 line-clamp-3">${c.desc}</p><div class="mt-4 pt-3 border-t border-white/5"><button onclick="openCourseModal('${c.id}')" class="w-full py-2.5 rounded-lg border border-white/10 bg-white/5 text-[9px] font-extrabold pointer-events-auto transition-colors hover:bg-white hover:text-black ignore-drag">Ver más</button></div></div></article>`;
-    });
-}
+    <div id="videoModal" class="hidden fixed inset-0 z-[99999] bg-black/95 backdrop-blur-lg flex items-center justify-center transition-opacity duration-300 opacity-0">
+        <button onclick="closeVideoModal()" class="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-all z-50 shadow-lg">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <!-- Forzado 9:16 Tiktok -->
+        <div id="videoModalContent" style="aspect-ratio: 9/16;" class="w-[90vw] max-w-[360px] bg-black rounded-[2rem] overflow-hidden relative shadow-2xl flex flex-col editable-node tiktok-mask border border-white/10">
+            <video id="testimonialVideo" src="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" playsinline loop class="w-full h-full object-cover"></video>
+            <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10 pointer-events-none">
+                <h3 class="text-white font-bold text-lg mb-1 editable-node pointer-events-auto">Cliente Satisfecho</h3>
+                <p class="text-zinc-300 text-xs editable-node pointer-events-auto">"El trabajo de estampado quedó increíble. 100% recomendados."</p>
+                <button onclick="toggleVideoSound(this)" class="mt-4 bg-white/20 backdrop-blur px-3 py-1.5 rounded-full text-[10px] text-white flex items-center gap-2 hover:bg-white/30 pointer-events-auto shadow-lg">
+                    <i class="fa-solid fa-volume-xmark"></i> Activar Audio
+                </button>
+            </div>
+        </div>
+    </div>
 
-window.cloneTextTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.card:not(.admin-tool)'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
-window.cloneVideoTestimonial = function(btnNode) { if(!window.isAdminMode) return; const grid = btnNode.parentElement; const cards = grid.querySelectorAll('.video-testimonial-card'); if(cards.length > 0) { const clone = cards[0].cloneNode(true); grid.insertBefore(clone, btnNode); } }
+    <div id="courseModal" class="hidden fixed inset-0 z-[99999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div class="w-full max-w-lg bg-[#121215] border border-white/10 rounded-2xl overflow-hidden shadow-2xl transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="courseModalContent">
+            <div class="relative h-48 sm:h-56 shrink-0 bg-black">
+                <img id="cm-img" src="" alt="Curso" class="w-full h-full object-cover opacity-80">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121215] to-transparent"></div>
+                <button onclick="closeCourseModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/50 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-black/80"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 id="cm-title" class="text-xl font-bold text-white leading-tight"></h3>
+                    <span id="cm-price" class="bg-yellow-500/10 text-yellow-400 font-bold px-3 py-1 rounded-lg border border-yellow-500/20 text-sm"></span>
+                </div>
+                <p id="cm-desc" class="text-zinc-400 text-sm leading-relaxed mb-6"></p>
+                <button id="cm-btn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-cyan-500/25 transition-all flex justify-center items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Inscribirme Ahora
+                </button>
+            </div>
+        </div>
+    </div>
 
-async function loadFirebaseData() {
-    try {
-        await signInAnonymously(auth);
-        const [layoutSnap, prodSnap, coursesSnap] = await Promise.all([
-            getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')),
-            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products')),
-            getDocs(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'))
-        ]);
-
-        if (layoutSnap.exists()) {
-            const data = layoutSnap.data();
-            if(data.zones) { 
-                document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
+    <div id="adminDBModal" class="hidden fixed inset-0 z-[100000] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-[#0a0a0c] border border-white/10 rounded-2xl shadow-2xl p-6">
+            <div class="flex justify-between items-center mb-5 border-b border-white/10 pb-3">
+                <h3 class="text-white font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-database text-cyan-400"></i> Editor Base de Datos</h3>
+                <button onclick="document.getElementById('adminDBModal').classList.add('hidden')" class="text-zinc-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="db-error-msg" class="hidden mb-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-2 rounded-lg text-center"></div>
+            <div class="space-y-4">
+                <input type="hidden" id="db-id">
+                <input type="hidden" id="db-type">
                 
-                // PARCHE DE SEGURIDAD MODAL (Fuerza las clases TikTok incluso si la BD se guardó corrupta)
-                if(data.zones['videoModalTpl']) {
-                    const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-                    if(modalContent) {
-                        modalContent.outerHTML = data.zones['videoModalTpl'];
-                        const newModalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-                        if(newModalContent) {
-                            newModalContent.id = 'videoModalContent'; // Garantiza ID para panel admin
-                            newModalContent.classList.add('relative', 'w-[90vw]', 'max-w-[360px]', 'aspect-[9/16]', 'rounded-[24px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col');
-                            newModalContent.style.webkitMaskImage = '-webkit-radial-gradient(white, black)';
-                        }
-                    }
-                }
+                <div id="db-cat-group">
+                    <label class="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Categoría Principal</label>
+                    <select id="db-category" class="w-full bg-[#121215] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:border-cyan-400 outline-none">
+                        <option value="Top">Más Vendidos (Automático)</option>
+                        <option value="Promocionales">Promocionales</option>
+                        <option value="Textil">Textil y Moda</option>
+                        <option value="Jarros">Jarros & Thermos</option>
+                        <option value="General">Imp. General</option>
+                        <option value="Packs">Packs Especiales</option>
+                    </select>
+                </div>
+                
+                <div id="db-promo-group" class="flex items-center gap-2 bg-orange-500/10 p-3 rounded-lg border border-orange-500/20 cursor-pointer" onclick="const cb = document.getElementById('db-ispromo'); cb.checked = !cb.checked;">
+                    <input type="checkbox" id="db-ispromo" class="w-4 h-4 accent-orange-500 cursor-pointer pointer-events-none">
+                    <label class="text-xs text-orange-400 font-medium cursor-pointer pointer-events-none">🔥 Marcar también como Promocional</label>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Nombre Corto</label>
+                    <input type="text" id="db-name" class="w-full bg-[#121215] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:border-cyan-400 outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Precio ($)</label>
+                    <input type="number" id="db-price" step="0.01" class="w-full bg-[#121215] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:border-cyan-400 outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-zinc-500 uppercase font-bold mb-1">URL Imagen</label>
+                    <input type="text" id="db-img" class="w-full bg-[#121215] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:border-cyan-400 outline-none">
+                </div>
+                <div id="db-desc-group" class="hidden">
+                    <label class="block text-[10px] text-zinc-500 uppercase font-bold mb-1">Descripción (Cursos)</label>
+                    <textarea id="db-desc" rows="3" class="w-full bg-[#121215] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:border-cyan-400 outline-none"></textarea>
+                </div>
+                
+                <div class="flex gap-3 pt-2">
+                    <button id="db-btn-delete" onclick="dbAskDelete()" class="hidden bg-red-500/10 border border-red-500/20 text-red-500 p-2.5 rounded-lg hover:bg-red-500 hover:text-white transition-colors" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    <button id="db-btn-confirm-delete" onclick="dbDeleteRecord()" class="hidden bg-red-600 text-white font-bold p-2.5 rounded-lg flex-1 text-sm">¿Borrar Definitivamente?</button>
+                    <button onclick="dbSaveRecord()" id="db-btn-save" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, query, orderBy, limit, increment, updateDoc, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentCategory = 'Top';
+        let isAdminMode = false;
+        const WASA_NUMBER = "593988358485";
+
+        // Protección AuthState para asegurar carga perfecta
+        auth.authStateReady().then(async () => {
+            if (!auth.currentUser) {
+                try { await signInAnonymously(auth); } catch (e) { console.warn("Anon Auth Warning:", e); }
             }
-            if(data.prodOrder) window.productOrderArray = data.prodOrder;
-            if(data.courseOrder) window.courseOrderArray = data.courseOrder;
-        }
-
-        window.appProducts = prodSnap.empty ? [...defaultProducts] : prodSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-        window.appCourses = coursesSnap.empty ? [...defaultCourses] : coursesSnap.docs.map(d => ({id: d.id, ...d.data()})); 
-    } catch (error) { 
-        console.warn("Error Firebase, usando respaldo seguro."); 
-        window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
-    } 
-    finally {
-        window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
-        try { window.setFilter('mas-vendidos'); window.renderCourses(); } catch(e) { console.error("Ignorando error de interfaz:", e); }
-        
-        setTimeout(() => { 
-            const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
-            window.navigate('catalog'); initMap(); window.parent.postMessage({ type: 'APP_READY' }, '*'); 
-        }, 500); 
-    }
-}
-
-window.initMap = function() {
-    const mapContainer = document.getElementById('contact-map-col'); if(!mapContainer) return;
-    let oldMap = document.getElementById('leaflet-map'); if(oldMap) { oldMap.remove(); } 
-    let newMapDiv = document.createElement('div'); newMapDiv.id = 'leaflet-map'; newMapDiv.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
-    mapContainer.insertBefore(newMapDiv, mapContainer.firstChild);
-    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
-    L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
-}
-window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
-
-const themeData = { cyan: { base: 'cyan', rgb: '37,216,255', hex: '#25d8ff' }, pink: { base: 'pink', rgb: '255,45,168', hex: '#ff2da8' }, violet: { base: 'violet', rgb: '115,92,255', hex: '#735cff' }, yellow: { base: 'yellow', rgb: '250,204,21', hex: '#facc15' }, emerald: { base: 'emerald', rgb: '52,211,153', hex: '#34d399' } };
-window.applyThemeSwap = function(element, newThemeKey) {
-    if (!element) return; 
-    const newTheme = themeData[newThemeKey]; if (!newTheme) return;
-    const els = [element, ...element.querySelectorAll('*')];
-    const colorNames = ['cyan', 'pink', 'violet', 'yellow', 'emerald'];
-    const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '250,204,21', '52,211,153'];
-    
-    els.forEach(el => {
-        if(!el.className || typeof el.className !== 'string') return;
-        colorNames.forEach(c => { if(c === newTheme.base) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(`-${c}-`, 'g'), `-${newTheme.base}-`)).join(' '); });
-        rgbValues.forEach(rgb => { if(rgb === newTheme.rgb) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(rgb, 'g'), newTheme.rgb)).join(' '); });
-    });
-    element.setAttribute('data-theme', newThemeKey);
-}
-
-let selectedEl = null;
-
-window.addEventListener('message', async (event) => {
-    if (event.source !== window.parent) return;
-
-    if (event.data.type === 'ENABLE_BUILDER') {
-        window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
-        
-        document.addEventListener('click', function(e) {
-            if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
-            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
-            
-            if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
-            
-            let target = e.target.closest('[data-editable="true"], a, button, video, img, .card, section, div:not(#videoModalContent)');
-            
-            if (target && !target.closest('.ignore-drag')) {
-                e.preventDefault(); e.stopPropagation();
-                if(selectedEl) selectedEl.classList.remove('builder-selected-el');
-                selectedEl = target; selectedEl.classList.add('builder-selected-el');
-                
-                let isVideoCard = target.classList.contains('video-testimonial-card');
-                if(isVideoCard) currentVideoCardRef = target; 
-                
-                let hasTheme = target.hasAttribute('data-theme');
-                let currentTheme = target.getAttribute('data-theme') || '';
-
-                window.parent.postMessage({ 
-                    type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.href || target.src || '',
-                    isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme
-                }, '*');
-            }
-        }, true); 
-    }
-
-    if (event.data.type === 'DISABLE_BUILDER') {
-        document.body.classList.remove('builder-mode', 'is-admin-session');
-        if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
-        window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
-    }
-
-    if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); } }
-    
-    if (event.data.type === 'UPDATE_ELEMENT' && selectedEl) {
-        if(event.data.text !== undefined && selectedEl.tagName !== 'IMG' && selectedEl.tagName !== 'VIDEO') { let icon = selectedEl.querySelector('i'); selectedEl.innerText = event.data.text; if(icon) selectedEl.prepend(icon); }
-        if(event.data.href !== undefined) { if(selectedEl.tagName === 'A') selectedEl.href = event.data.href; if(selectedEl.tagName === 'IMG' || selectedEl.tagName === 'VIDEO') selectedEl.src = event.data.href; }
-    }
-    
-    if (event.data.type === 'UPDATE_STYLE' && selectedEl) {
-        if(event.data.prop === 'color') { selectedEl.style.color = event.data.value; }
-        if(event.data.prop === 'bg') { selectedEl.style.backgroundColor = event.data.value; }
-        if(event.data.prop === 'radius') { selectedEl.style.borderRadius = event.data.value + 'px'; }
-        if(event.data.prop === 'transform') { selectedEl.style.transform = event.data.value; }
-        if(event.data.prop === 'opacity') { selectedEl.style.opacity = event.data.value; }
-        if(event.data.prop === 'height') { selectedEl.style.height = event.data.value + '%'; }
-        if(event.data.prop === 'objectFit') { selectedEl.style.objectFit = event.data.value; }
-        
-        if(event.data.prop === 'textAlign') { selectedEl.className = selectedEl.className.replace(/\btext-(left|center|right|justify)\b/g, '').trim(); if(event.data.value) selectedEl.classList.add(event.data.value); }
-        if(event.data.prop === 'textSize') { selectedEl.className = selectedEl.className.replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[.*?\])\b/g, '').trim(); if(event.data.value) selectedEl.classList.add(event.data.value); }
-        if(event.data.prop === 'fontWeight') { selectedEl.className = selectedEl.className.replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '').trim(); if(event.data.value) selectedEl.classList.add(event.data.value); }
-        
-        if(event.data.prop === 'theme') {
-            applyThemeSwap(selectedEl, event.data.value);
-            if(selectedEl.id === 'videoModalContent' && currentVideoCardRef) { applyThemeSwap(currentVideoCardRef, event.data.value); }
-        }
-    }
-
-    if (event.data.type === 'DELETE_SELECTED_NODE') { if(selectedEl) { selectedEl.remove(); selectedEl = null; } }
-    if (event.data.type === 'SELECT_PARENT_NODE') { if(selectedEl && selectedEl.parentElement && selectedEl.parentElement.tagName !== 'BODY') { selectedEl.classList.remove('builder-selected-el'); selectedEl = selectedEl.parentElement; selectedEl.classList.add('builder-selected-el'); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: selectedEl.tagName, text: selectedEl.innerText, href: selectedEl.href || selectedEl.src, hasTheme: selectedEl.hasAttribute('data-theme'), currentTheme: selectedEl.getAttribute('data-theme') || '' }, '*'); } }
-    if (event.data.type === 'SELECT_CHILD_NODE') { if(selectedEl && selectedEl.firstElementChild) { selectedEl.classList.remove('builder-selected-el'); selectedEl = selectedEl.firstElementChild; selectedEl.classList.add('builder-selected-el'); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: selectedEl.tagName, text: selectedEl.innerText, href: selectedEl.href || selectedEl.src, hasTheme: selectedEl.hasAttribute('data-theme'), currentTheme: selectedEl.getAttribute('data-theme') || '' }, '*'); } }
-
-    if (event.data.type === 'TOGGLE_DRAG') {
-        const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
-        if (enabled) { document.body.classList.add('dragging-active'); if(selectedEl) { selectedEl.classList.remove('builder-selected-el'); selectedEl = null; } containers.forEach(grid => { if(grid._sortable) grid._sortable.destroy(); grid._sortable = new Sortable(grid, { animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool', delay: 300, delayOnTouchOnly: true }); window.sortableInstances.push(grid._sortable); }); } 
-        else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
-    }
-
-    if (event.data.type === 'SAVE_FULL_LAYOUT') {
-        if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
-        
-        const layoutData = {};
-        
-        document.querySelectorAll('.editable-section').forEach(zone => {
-            if(!zone.id) return;
-            const clone = zone.cloneNode(true);
-            
-            clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-            clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            
-            const mapInClone = clone.querySelector('#leaflet-map'); 
-            if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; mapInClone.removeAttribute('style'); mapInClone.removeAttribute('tabindex'); }
-            
-            const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
-            const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
-            
-            clone.querySelectorAll('.admin-tool, .admin-overlay, .admin-video-edit-overlay').forEach(el => el.remove());
-            layoutData[zone.id] = clone.innerHTML;
+            window.setFilter('Top');
+            window.loadCourses();
+            if(window.parent !== window) window.parent.postMessage({ type: 'APP_READY' }, '*');
         });
-        
-        const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-        if (modalContent) {
-            const modalClone = modalContent.cloneNode(true);
-            modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-            layoutData['videoModalTpl'] = modalClone.outerHTML; 
+
+        // Modo Proxy - Marketing Rich Text
+        window.openWhatsAppGral = () => {
+            let text = "¡Hola! 👋 Vengo de su página web y necesito ayuda general o contactarme con un asesor.";
+            window.open(`https://wa.me/${WASA_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
-        const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
-
-        try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true }); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); } 
-        catch(e) { window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); }
-    }
-});
-
-window.openMediaSelector = async function(type) {
-    const modal = document.getElementById('mediaModal'); const grid = document.getElementById('media-grid'); const label = document.getElementById('media-folder-label');
-    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('mediaModalContent').classList.remove('scale-95'); }, 10);
-    grid.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center text-zinc-500 py-16"><i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-3xl mb-3 block"></i>Consultando Base de Datos...</div>';
-    
-    let baseUrl = ""; let jsonName = "imagenes.json";
-    if (type === 'product') { baseUrl = "https://multiprintt.web.app/recursos/productos/"; label.innerText = "RUTA: /recursos/productos/"; } 
-    else if (type === 'course') { baseUrl = "https://multiprintt.web.app/recursos/"; label.innerText = "RUTA: /recursos/"; } 
-    else if (type === 'testimonial') { baseUrl = "https://multiprintt.web.app/recursos/testimonio/"; label.innerText = "RUTA: /recursos/testimonio/"; }
-
-    let fileNames = [];
-    if (type === 'testimonial') { fileNames = ['testimonio0.mp4']; } 
-    else {
-        try { 
-            const response = await fetch(`${baseUrl}${jsonName}?v=${new Date().getTime()}`); 
-            if (!response.ok) throw new Error("HTTP " + response.status); 
-            const rawText = await response.text(); try { fileNames = JSON.parse(rawText); } catch (e) { grid.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">Error de formato en JSON</div>`; return; }
-        } catch(e) { grid.innerHTML = `<div class="col-span-full text-center text-red-400 py-10">No se encontró el archivo.</div>`; return; }
-    }
-
-    grid.innerHTML = ''; if (fileNames.length === 0) { grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 py-10 text-sm">El archivo JSON está vacío.</div>'; return; }
-    fileNames.forEach(nombre => {
-        const url = baseUrl + nombre; const isVideo = url.endsWith('.mp4'); const box = document.createElement('div');
-        box.className = 'relative aspect-square rounded-xl bg-[#0a0a0c] border border-white/10 overflow-hidden group cursor-pointer hover:border-cyan-400 transition-all shadow-lg flex flex-col justify-between';
-        box.onclick = () => selectMedia(url);
-        
-        if (isVideo) { box.innerHTML = `<video src="${url}#t=0.1" preload="metadata" muted playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 bg-black/40 group-hover:bg-black/10 flex items-center justify-center transition-colors"><i class="fa-solid fa-play text-white/50 text-3xl group-hover:scale-110 group-hover:text-white transition-all"></i></div>`; box.onmouseenter = () => { const v = box.querySelector('video'); v.play().catch(()=>{}); }; box.onmouseleave = () => { const v = box.querySelector('video'); v.pause(); }; } 
-        else { box.innerHTML = `<div class="absolute inset-0 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAG9JREFUeNpi/P//PwM1ARMDLcDAwEgzM1gZGRn/k2nQn3//gR4wYhgFoyAYBaOAhAEzMwM/AwMDBwMDAz8DgwIDAwODAgMDAwODAj2D4T8QMzIAAwMDEwMDAwMDAwMDEwMDAwMDAwMDEwMDGAABBgA1bRDxN0t4gAAAAABJRU5ErkJggg==')] opacity-10 pointer-events-none"></div><div class="flex-1 w-full h-[calc(100%-28px)] p-3 flex items-center justify-center relative z-10"><img src="${url}" class="max-w-full max-h-full object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-500"></div><div class="h-[28px] px-2 flex items-center justify-center border-t border-white/10 bg-[#050507] relative z-20 w-full shrink-0"><p class="text-[9px] text-zinc-400 truncate w-full text-center group-hover:text-cyan-400 font-medium">${nombre}</p></div>`; }
-        grid.appendChild(box);
-    });
-}
-window.closeMediaSelector = function() { document.getElementById('mediaModal').classList.add('opacity-0'); document.getElementById('mediaModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('mediaModal').classList.add('hidden'); document.getElementById('mediaModal').classList.remove('flex'); }, 300); }
-window.selectMedia = function(url) { document.getElementById('ef-img').value = url; const preview = document.getElementById('preview-ef-img'); if(preview) { if(url.endsWith('.mp4')) { preview.style.backgroundImage = 'none'; preview.innerHTML = `<video src="${url}#t=0.1" class="w-full h-full object-cover rounded-lg"></video>`; } else { preview.innerHTML = ''; preview.style.backgroundImage = `url('${url}')`; } } closeMediaSelector(); }
-
-window.openEditor = function(type, id, btnNode) {
-    if(event) event.stopPropagation();
-    const modal = document.getElementById('editModal'); const fields = document.getElementById('em-fields'); document.getElementById('em-id').value = id || ''; document.getElementById('em-type').value = type;
-    
-    if(type === 'product') { 
-        const p = id ? window.appProducts.find(x => x.id === id) : { category: window.currentFilter }; 
-        fields.innerHTML = `<input type="text" id="ef-name" value="${p.name||''}" placeholder="Nombre" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><select id="ef-cat" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><option value="mas-vendidos" ${p.category==='mas-vendidos'?'selected':''}>Más Vendidos</option><option value="promocionales" ${p.category==='promocionales'?'selected':''}>Promocionales</option><option value="textil" ${p.category==='textil'?'selected':''}>Textil</option><option value="jarros" ${p.category==='jarros'?'selected':''}>Jarros & Thermos</option><option value="imp-general" ${p.category==='imp-general'?'selected':''}>Impresión General</option><option value="packs" ${p.category==='packs'?'selected':''}>Packs</option></select><input type="number" id="ef-price" value="${p.price||''}" placeholder="Precio" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><button onclick="openMediaSelector('product')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${p.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center ignore-drag" style="background-image: url('${p.image||''}')"></div>`; 
-    } 
-    else if (type === 'course') { const c = id ? window.appCourses.find(x => x.id === id) : {}; fields.innerHTML = `<input type="text" id="ef-title" value="${c.title||''}" placeholder="Título Curso" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><div class="flex gap-2 mb-2 ignore-drag"><input type="text" id="ef-price" value="${c.price||''}" placeholder="Precio" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"><input type="text" id="ef-sch" value="${c.schedule||''}" placeholder="Horarios" class="w-1/2 bg-black border border-white/10 p-3 rounded-lg text-white ignore-drag"></div><button onclick="openMediaSelector('course')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-regular fa-image pointer-events-none"></i> Elegir Imagen</button><input type="hidden" id="ef-img" value="${c.image||''}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center mb-2 ignore-drag" style="background-image: url('${c.image||''}')"></div><textarea id="ef-desc" placeholder="Descripción" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-24 ignore-drag">${c.desc||''}</textarea>`; }
-    else if (type === 'testimonial') { if(btnNode) { const card = btnNode.closest('.video-testimonial-card'); editingCardNode = card; if(card) { const vid = card.querySelector('.vt-video') ? card.querySelector('.vt-video').src.split('#')[0] : ''; const name = card.querySelector('.vt-name') ? card.querySelector('.vt-name').innerText : ''; const role = card.querySelector('.vt-role') ? card.querySelector('.vt-role').innerText : ''; const quote = card.querySelector('.vt-quote') ? card.querySelector('.vt-quote').innerText : ''; fields.innerHTML = `<input type="text" id="ef-name" value="${name}" placeholder="Nombre Alumno" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><input type="text" id="ef-role" value="${role}" placeholder="Rol" class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-2 ignore-drag"><textarea id="ef-desc" placeholder="Testimonio escrito..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white h-20 mb-2 ignore-drag">${quote}</textarea><button onclick="openMediaSelector('testimonial')" class="w-full bg-[#1a1a1e] border border-white/10 p-3 rounded-lg text-cyan-400 text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#25252b] transition-colors ignore-drag"><i class="fa-solid fa-video pointer-events-none"></i> Cambiar Video</button><input type="hidden" id="ef-img" value="${vid}"><div id="preview-ef-img" class="mt-2 h-24 rounded-lg bg-black/50 border border-white/10 bg-cover bg-center overflow-hidden ignore-drag"><video src="${vid}#t=0.1" class="w-full h-full object-cover"></video></div>`; } } }
-    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('editModalContent').classList.remove('scale-95'); }, 10);
-}
-
-window.closeEditModal = function() { document.getElementById('editModal').classList.add('opacity-0'); document.getElementById('editModalContent').classList.add('scale-95'); setTimeout(() => { document.getElementById('editModal').classList.add('hidden'); document.getElementById('editModal').classList.remove('flex'); editingCardNode = null; }, 300); }
-window.saveElementEdit = async function() {
-    const type = document.getElementById('em-type').value; 
-    if (type === 'testimonial' && editingCardNode) {
-        if(editingCardNode.querySelector('.vt-video')) editingCardNode.querySelector('.vt-video').src = document.getElementById('ef-img').value;
-        if(editingCardNode.querySelector('.vt-name')) editingCardNode.querySelector('.vt-name').innerText = document.getElementById('ef-name').value;
-        if(editingCardNode.querySelector('.vt-role')) editingCardNode.querySelector('.vt-role').innerText = document.getElementById('ef-role').value;
-        if(editingCardNode.querySelector('.vt-quote')) editingCardNode.querySelector('.vt-quote').innerText = document.getElementById('ef-desc').value;
-        closeEditModal(); return;
-    }
-    const id = document.getElementById('em-id').value || Date.now().toString(); const collectionName = type === 'product' ? 'products' : 'courses'; let data = {};
-    if(type === 'product') data = { name: document.getElementById('ef-name').value, category: document.getElementById('ef-cat').value, price: parseFloat(document.getElementById('ef-price').value||0), image: document.getElementById('ef-img').value };
-    else data = { title: document.getElementById('ef-title').value, modality: "N/A", price: document.getElementById('ef-price').value, schedule: document.getElementById('ef-sch').value, image: document.getElementById('ef-img').value, desc: document.getElementById('ef-desc').value };
-    
-    try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, id), data, { merge: true }); closeEditModal(); loadFirebaseData(); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); }
-    catch(e) { closeEditModal(); window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); }
-}
-
-window.deleteElement = function(type, id) {
-    if(event) event.stopPropagation();
-    const modal = document.getElementById('custom-confirm-modal'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('custom-confirm-content').classList.remove('scale-95'); }, 10);
-    const confirmBtn = document.getElementById('custom-confirm-btn');
-    confirmBtn.onclick = async function() { window.closeCustomConfirm(); try { await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', type === 'product' ? 'products' : 'courses', id)); loadFirebaseData(); window.parent.postMessage({ type: 'SAVE_DONE' }, '*'); } catch(e) { window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); } };
-}
-window.closeCustomConfirm = function() { const modal = document.getElementById('custom-confirm-modal'); modal.classList.add('opacity-0'); document.getElementById('custom-confirm-content').classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
-
-window.openCourseModal = function(id) {
-    if(document.body.classList.contains('builder-mode')) return;
-    const c = window.appCourses.find(x => x.id === id); if(!c) return;
-    document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc; document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
-    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
-    document.getElementById('cm-btn').href = `https://wa.me/${rawPhone}?text=${encodeURIComponent('Hola, deseo separar un cupo para el ' + c.title + '.')}`;
-    document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
-}
-
-window.closeCourseModal = function() {
-    const modal = document.getElementById('courseModal');
-    const content = document.getElementById('courseModalContent');
-    if (modal) {
-        modal.classList.add('opacity-0');
-        if(content) content.classList.add('scale-95');
-        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
-    }
-};
-
-window.openVideoModal = function(btn) {
-    if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
-    
-    let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4"; 
-    let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."'; let themeKey = "cyan"; 
-    
-    if (btn && typeof btn.closest === 'function') {
-        const card = btn.closest('.video-testimonial-card, .card');
-        if (card) {
-            themeKey = card.getAttribute('data-theme') || "cyan";
-            const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
-            const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
-            const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
-            const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
+        window.incrementAndOrder = async (id, name, price, img, isCourse) => {
+            if(!isAdminMode) {
+                try {
+                    const ref = doc(db, isCourse ? 'cursos' : 'productos', id);
+                    await updateDoc(ref, { clicks: increment(1) });
+                } catch(e) { console.warn("Contador analítico silencioso falló.", e); }
+            }
+            
+            let text = "";
+            if(isCourse) {
+                text = `¡Hola! 👋 Estoy muy interesado en potenciar mis habilidades y me gustaría inscribirme en este curso:%0A%0A📚 *${name}*%0A💵 *${price}*%0A%0A📸 *Referencia Visual:* ${img}%0A%0A¿Me podrían ayudar con los métodos de pago disponibles?`;
+            } else {
+                text = `¡Hola! 👋 Me encantó su catálogo y me interesa hacer un pedido de este producto:%0A%0A🛍️ *${name}*%0A💵 *${price}*%0A%0A📸 *Referencia Visual:* ${img}%0A%0A¿Me podrían ayudar con más información, disponibilidad y formas de pago?`;
+            }
+            window.open(`https://wa.me/${WASA_NUMBER}?text=${text}`, '_blank');
         }
-    }
-    
-    const video = document.getElementById('testimonial-video'); 
-    
-    const n = document.getElementById('vm-name'); if(n) n.innerText = name; 
-    const r = document.getElementById('vm-role'); if(r) r.innerText = role; 
-    const q = document.getElementById('vm-quote'); if(q) q.innerText = quote; 
-    const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0) : 'C';
-    
-    const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div'); 
-    if (modalContent) applyThemeSwap(modalContent, themeKey);
-    
-    const modal = document.getElementById('videoModal'); 
-    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); if(!window.isAdminMode && modalContent) modalContent.classList.remove('scale-95'); }, 10);
-    
-    const timeBadge = document.getElementById('vm-time'); if(timeBadge) timeBadge.innerText = "00:00"; 
-    
-    if(video) {
-        video.ontimeupdate = () => {
-            if(video.duration && timeBadge) {
-                let remaining = Math.max(0, video.duration - video.currentTime);
-                timeBadge.innerText = `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${Math.floor(remaining % 60).toString().padStart(2, '0')}`;
+
+        // Navegación Segura
+        window.navigate = function(viewId) {
+            document.querySelectorAll('.view-slide').forEach(el => el.classList.remove('active-slide'));
+            const targetView = document.getElementById('view-' + viewId);
+            if(targetView) targetView.classList.add('active-slide');
+            
+            document.querySelectorAll('.nav-item').forEach(el => { el.className = 'px-5 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white transition-all nav-item'; });
+            const pBtn = document.getElementById('nav-btn-' + viewId);
+            if(pBtn) pBtn.className = 'px-5 py-1.5 rounded-full text-xs font-semibold text-white bg-white/10 transition-all nav-item';
+            
+            ['catalog', 'academia', 'about'].forEach(v => {
+                const b = document.getElementById('mob-nav-' + v);
+                if(b) b.className = `flex flex-col items-center justify-center w-16 gap-1 transition-colors ${v === viewId ? 'text-white' : 'text-zinc-500 hover:text-zinc-300'}`;
+            });
+
+            const subnav = document.getElementById('catalog-subnav');
+            if (subnav) {
+                if (viewId === 'catalog') {
+                    subnav.style.height = window.innerWidth < 768 ? '34px' : '45px';
+                    subnav.style.opacity = '1'; subnav.style.pointerEvents = 'auto';
+                } else {
+                    subnav.style.height = '0px';
+                    subnav.style.opacity = '0';
+                    subnav.style.pointerEvents = 'none';
+                }
             }
         };
 
-        video.src = videoSrc; video.load(); video.currentTime = 0; video.muted = false; 
-        const playPromise = video.play(); 
-        if (playPromise !== undefined) { playPromise.catch(() => { video.muted = true; video.play(); }); }
+        const colorMap = { 'Top': '#e11d48', 'Promocionales': '#f97316', 'Textil': '#06b6d4', 'Jarros': '#ec4899', 'General': '#8b5cf6', 'Packs': '#10b981' };
 
-        if(!window.isAdminMode) { video.loop = false; video.onended = () => closeVideoModal(); } else { video.loop = true; } 
-    }
-}
+        window.setFilter = function(category) {
+            currentCategory = category;
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.id === 'filter-' + category) {
+                    btn.classList.add('active');
+                    if(!isAdminMode) loadProducts(category);
+                }
+            });
+        };
 
-window.closeVideoModal = function(e) {
-    if(e) e.stopPropagation(); 
-    const video = document.getElementById('testimonial-video'); const modal = document.getElementById('videoModal'); 
-    const content = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-    modal.classList.add('opacity-0'); if(!window.isAdminMode && content) content.classList.add('scale-95'); 
-    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
-}
+        async function loadProducts(cat) {
+            const grid = document.getElementById('product-grid');
+            if(!grid) return;
+            
+            const btnColor = colorMap[cat] || '#25d8ff';
+            grid.innerHTML = '<div class="col-span-full flex justify-center py-12"><i class="fa-solid fa-circle-notch fa-spin text-3xl" style="color:'+btnColor+'"></i></div>';
+            
+            try {
+                let q;
+                const colRef = collection(db, "productos");
+                
+                if (cat === 'Top') {
+                    q = query(colRef, orderBy("clicks", "desc"), limit(8));
+                } else if (cat === 'Promocionales') {
+                    const q1 = await getDocs(query(colRef, where("category", "==", "Promocionales")));
+                    const q2 = await getDocs(query(colRef, where("isPromo", "==", true)));
+                    
+                    let map = new Map();
+                    q1.forEach(d => map.set(d.id, d));
+                    q2.forEach(d => map.set(d.id, d));
+                    
+                    renderProductGrid(Array.from(map.values()), btnColor);
+                    return;
+                } else {
+                    q = query(colRef, where("category", "==", cat));
+                }
+                
+                const snap = await getDocs(q);
+                renderProductGrid(snap.docs, btnColor);
 
-document.addEventListener('DOMContentLoaded', () => { loadFirebaseData(); });
-</script>
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                if (error.code === 'permission-denied' || error.message.includes('permission')) {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center text-red-500 text-xs py-10 bg-red-500/10 border border-red-500/20 rounded-xl">
+                            <i class="fa-solid fa-lock text-3xl mb-3"></i><br>
+                            <b class="font-bold text-sm">Bloqueo de Seguridad Firebase</b><br>
+                            <span class="text-zinc-400 mt-2 block px-4">
+                                Firebase está bloqueando la base de datos.<br>Ve a Firestore Database -> Reglas y pega:<br>
+                                <code class="bg-black/50 text-red-300 p-2 mt-2 rounded block mx-auto text-left w-fit text-[10px]">allow read: if true;<br>allow write: if request.auth != null;</code>
+                            </span>
+                        </div>`;
+                } else {
+                    grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 text-xs py-8">No hay productos aquí.</div>';
+                }
+                if(isAdminMode) grid.innerHTML += `<button onclick="dbOpenModal('productos', null)" class="mt-4 bg-[#121215] border border-white/10 px-4 py-2 rounded-lg text-white hover:border-cyan-400 text-xs mx-auto block"><i class="fa-solid fa-plus"></i> Añadir Producto</button>`;
+            }
+        }
+
+        function renderProductGrid(docs, color) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            
+            if(docs.length === 0) grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 text-xs py-8">Aún no hay productos en esta categoría.</div>';
+
+            docs.forEach(doc => {
+                const p = doc.data ? doc.data() : doc; // Soporta map.values() o docSnapshot
+                const id = doc.id || p.id || Date.now().toString(); // Fallback id
+                
+                const div = document.createElement('div');
+                div.className = `group relative bg-[#0a0a0c] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all shadow-lg flex flex-col justify-between`;
+                div.style.setProperty('--hover-glow', color);
+                
+                let adminHtml = isAdminMode ? `<div class="absolute top-2 right-2 z-20 flex gap-1"><button onclick="dbOpenModal('productos', '${id}')" class="w-7 h-7 bg-black/80 backdrop-blur rounded-md border border-white/20 text-cyan-400 flex items-center justify-center hover:bg-cyan-500 hover:text-black transition-colors"><i class="fa-solid fa-pen text-[10px]"></i></button></div>` : '';
+                let promoBadge = p.isPromo && currentCategory !== 'Promocionales' ? `<span class="absolute top-2 left-2 z-20 bg-orange-500 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-lg uppercase tracking-wider">Promo</span>` : '';
+
+                div.innerHTML = `
+                    ${adminHtml}
+                    ${promoBadge}
+                    <div class="aspect-square bg-[#050507] relative overflow-hidden flex items-center justify-center p-4">
+                        <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500" style="background: radial-gradient(circle, var(--hover-glow) 0%, transparent 70%);"></div>
+                        <img src="${p.img || 'https://placehold.co/400x400/111/444?text=Foto'}" alt="${p.name}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 drop-shadow-xl relative z-10" onerror="this.src='https://placehold.co/400x400/111/444?text=Error'">
+                    </div>
+                    <div class="p-3.5 flex flex-col flex-grow border-t border-white/5">
+                        <h3 class="text-zinc-200 font-semibold text-xs md:text-sm line-clamp-2 leading-tight">${p.name || 'Sin Nombre'}</h3>
+                        <div class="flex justify-between items-center mt-auto pt-3">
+                            <span class="text-white font-bold text-sm">$${parseFloat(p.price||0).toFixed(2)}</span>
+                            <button onclick="incrementAndOrder('${id}', '${p.name}', '$${parseFloat(p.price||0).toFixed(2)}', '${p.img}', false)" class="bg-[#121215] border border-white/10 hover:bg-white/10 text-white px-3 py-1.5 rounded-lg text-[10px] font-medium transition-colors shadow-sm cursor-pointer">Pedir</button>
+                        </div>
+                    </div>
+                `;
+                
+                div.addEventListener('mouseenter', () => div.style.borderColor = color);
+                div.addEventListener('mouseleave', () => div.style.borderColor = 'rgba(255,255,255,0.05)');
+                
+                grid.appendChild(div);
+            });
+
+            if(isAdminMode) {
+                grid.innerHTML += `<div onclick="dbOpenModal('productos', null)" class="group relative bg-[#0a0a0c]/50 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center min-h-[220px] cursor-pointer hover:border-cyan-400 hover:bg-cyan-500/5 transition-all text-zinc-500 hover:text-cyan-400"><i class="fa-solid fa-circle-plus text-3xl mb-2"></i><span class="text-xs font-medium">Añadir Producto</span></div>`;
+            }
+        }
+
+        window.loadCourses = async function() {
+            const grid = document.getElementById('course-grid');
+            if(!grid) return;
+            
+            grid.innerHTML = '<div class="col-span-full flex justify-center py-12"><i class="fa-solid fa-circle-notch fa-spin text-3xl text-yellow-400"></i></div>';
+            try {
+                const snap = await getDocs(collection(db, "cursos"));
+                grid.innerHTML = '';
+                
+                if(snap.empty) grid.innerHTML = '<div class="col-span-full text-center text-zinc-500 text-xs py-8">No hay cursos disponibles.</div>';
+
+                snap.forEach(doc => {
+                    const c = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'bg-[#0a0a0c] border border-white/10 rounded-2xl overflow-hidden flex flex-col md:flex-row group hover:border-yellow-500/30 transition-all shadow-xl relative';
+                    
+                    let adminHtml = isAdminMode ? `<div class="absolute top-2 right-2 z-20 flex gap-1"><button onclick="dbOpenModal('cursos', '${doc.id}')" class="w-8 h-8 bg-black/80 backdrop-blur rounded-md border border-white/20 text-yellow-400 flex items-center justify-center hover:bg-yellow-500 hover:text-black transition-colors cursor-pointer"><i class="fa-solid fa-pen"></i></button></div>` : '';
+
+                    div.innerHTML = `
+                        ${adminHtml}
+                        <div class="w-full md:w-2/5 aspect-video md:aspect-square bg-[#050507] overflow-hidden relative border-b md:border-b-0 md:border-r border-white/5">
+                            <img src="${c.img || 'https://placehold.co/400x400/111/444?text=Curso'}" alt="Curso" class="w-full h-full object-cover opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500">
+                        </div>
+                        <div class="w-full md:w-3/5 p-5 flex flex-col justify-center">
+                            <span class="text-[9px] font-bold text-yellow-400 uppercase tracking-widest mb-1">Academia</span>
+                            <h3 class="text-white font-bold text-base md:text-lg mb-2 leading-tight">${c.name || 'Curso'}</h3>
+                            <p class="text-zinc-400 text-xs line-clamp-2 mb-4 leading-relaxed">${c.desc || ''}</p>
+                            <div class="flex items-center justify-between mt-auto">
+                                <span class="bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 text-white font-semibold text-sm">$${parseFloat(c.price||0).toFixed(2)}</span>
+                                <button onclick="openCourseDetails('${doc.id}', \`${c.name}\`, \`${c.desc}\`, '$${parseFloat(c.price||0).toFixed(2)}', \`${c.img}\`)" class="bg-gradient-to-r from-yellow-500 to-pink-500 text-black font-bold px-4 py-1.5 rounded-lg text-xs shadow-lg hover:shadow-yellow-500/25 transition-all cursor-pointer">Ver más</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(div);
+                });
+                if(isAdminMode) {
+                    grid.innerHTML += `<button onclick="dbOpenModal('cursos', null)" class="bg-[#0a0a0c]/50 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center min-h-[150px] cursor-pointer hover:border-yellow-400 hover:bg-yellow-500/5 transition-all text-zinc-500 hover:text-yellow-400 w-full"><i class="fa-solid fa-graduation-cap text-3xl mb-2"></i><span class="text-xs font-medium">Añadir Curso</span></button>`;
+                }
+            } catch (error) { 
+                grid.innerHTML = '<div class="col-span-full text-center text-red-500 text-xs py-8">Error cargando cursos. Revisa Firebase.</div>'; 
+            }
+        }
+
+        // Modales Secundarios
+        window.openCourseDetails = function(id, name, desc, price, img) {
+            document.getElementById('cm-title').innerText = name;
+            document.getElementById('cm-desc').innerText = desc;
+            document.getElementById('cm-price').innerText = price;
+            document.getElementById('cm-img').src = img;
+            document.getElementById('cm-btn').onclick = () => window.incrementAndOrder(id, name, price, img, true);
+            
+            const m = document.getElementById('courseModal');
+            const c = document.getElementById('courseModalContent');
+            m.classList.remove('hidden');
+            setTimeout(() => { m.classList.remove('opacity-0'); c.classList.remove('scale-95'); }, 10);
+        }
+        window.closeCourseModal = function() {
+            const m = document.getElementById('courseModal');
+            const c = document.getElementById('courseModalContent');
+            m.classList.add('opacity-0');
+            c.classList.add('scale-95');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+
+        window.openVideoModal = function() {
+            const m = document.getElementById('videoModal');
+            const v = document.getElementById('testimonialVideo');
+            
+            v.muted = true; // Auto-play seguro
+            m.classList.remove('hidden');
+            setTimeout(() => m.classList.remove('opacity-0'), 10);
+            v.play().catch(e => console.warn("Auto-play requirió mute.", e));
+        }
+        
+        window.closeVideoModal = function() {
+            const m = document.getElementById('videoModal');
+            const v = document.getElementById('testimonialVideo');
+            v.pause(); v.muted = true;
+            m.classList.add('opacity-0');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+
+        window.toggleVideoSound = function(btn) {
+            const v = document.getElementById('testimonialVideo');
+            const icon = btn.querySelector('i');
+            if(v.muted) {
+                v.muted = false;
+                icon.classList.replace('fa-volume-xmark', 'fa-volume-high');
+                btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Silenciar';
+            } else {
+                v.muted = true;
+                icon.classList.replace('fa-volume-high', 'fa-volume-xmark');
+                btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Activar Audio';
+            }
+        }
+
+        // --- SISTEMA ADMIN SEGURO (SIN ALERTS) ---
+        window.dbOpenModal = async function(type, id) {
+            if(!isAdminMode) return;
+            document.getElementById('db-type').value = type;
+            document.getElementById('db-id').value = id || '';
+            document.getElementById('db-promo-group').style.display = type === 'productos' ? 'flex' : 'none';
+            document.getElementById('db-cat-group').style.display = type === 'productos' ? 'block' : 'none';
+            document.getElementById('db-desc-group').style.display = type === 'cursos' ? 'block' : 'none';
+            
+            document.getElementById('db-btn-delete').classList.toggle('hidden', !id);
+            document.getElementById('db-btn-confirm-delete').classList.add('hidden');
+            document.getElementById('db-btn-delete').classList.remove('hidden');
+            document.getElementById('db-error-msg').classList.add('hidden');
+
+            document.getElementById('db-name').value = '';
+            document.getElementById('db-price').value = '';
+            document.getElementById('db-img').value = '';
+            document.getElementById('db-desc').value = '';
+            document.getElementById('db-ispromo').checked = false;
+            
+            if(type === 'productos') document.getElementById('db-category').value = currentCategory === 'Top' ? 'Promocionales' : currentCategory;
+
+            if(id) {
+                const docSnap = await getDocs(query(collection(db, type)));
+                let data = null;
+                docSnap.forEach(d => { if(d.id === id) data = d.data(); });
+                
+                if(data) {
+                    document.getElementById('db-name').value = data.name || '';
+                    document.getElementById('db-price').value = data.price || '';
+                    document.getElementById('db-img').value = data.img || '';
+                    if(type === 'cursos') document.getElementById('db-desc').value = data.desc || '';
+                    if(type === 'productos') {
+                        document.getElementById('db-category').value = data.category || 'General';
+                        document.getElementById('db-ispromo').checked = !!data.isPromo;
+                    }
+                }
+            }
+            document.getElementById('adminDBModal').classList.remove('hidden');
+        }
+
+        window.dbSaveRecord = async function() {
+            const btn = document.getElementById('db-btn-save');
+            const err = document.getElementById('db-error-msg');
+            const type = document.getElementById('db-type').value;
+            const id = document.getElementById('db-id').value || Date.now().toString();
+            
+            const data = {
+                name: document.getElementById('db-name').value,
+                price: parseFloat(document.getElementById('db-price').value || 0),
+                img: document.getElementById('db-img').value
+            };
+            
+            if(type === 'cursos') data.desc = document.getElementById('db-desc').value;
+            if(type === 'productos') {
+                data.category = document.getElementById('db-category').value;
+                data.isPromo = document.getElementById('db-ispromo').checked;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            try {
+                await setDoc(doc(db, type, id), data, {merge: true});
+                document.getElementById('adminDBModal').classList.add('hidden');
+                if(type === 'productos') loadProducts(currentCategory); else loadCourses();
+            } catch (e) { 
+                err.innerText = "Error: " + e.message;
+                err.classList.remove('hidden');
+            }
+            btn.innerHTML = 'Guardar Cambios';
+        }
+
+        window.dbAskDelete = function() {
+            document.getElementById('db-btn-delete').classList.add('hidden');
+            document.getElementById('db-btn-confirm-delete').classList.remove('hidden');
+        }
+
+        window.dbDeleteRecord = async function() {
+            const btn = document.getElementById('db-btn-confirm-delete');
+            const err = document.getElementById('db-error-msg');
+            const type = document.getElementById('db-type').value;
+            const id = document.getElementById('db-id').value;
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            try {
+                await deleteDoc(doc(db, type, id));
+                document.getElementById('adminDBModal').classList.add('hidden');
+                if(type === 'productos') loadProducts(currentCategory); else loadCourses();
+            } catch(e) { 
+                err.innerText = "Error eliminando: " + e.message;
+                err.classList.remove('hidden');
+                btn.innerHTML = '¿Borrar Definitivamente?';
+            }
+        }
+
+        // Listener Comunicador (Iframe Builder)
+        window.addEventListener('message', async (e) => {
+            if (e.data.type === 'ENABLE_BUILDER') { 
+                isAdminMode = false; document.body.classList.add('builder-active'); 
+                document.getElementById('product-grid').innerHTML = '<div class="col-span-full text-center text-cyan-400 p-8 border border-dashed border-cyan-500/30 rounded-xl bg-cyan-500/10">Catálogo Oculto.<br><span class="text-xs text-zinc-400">Usa "Navegar / Usar" en el panel para gestionar la DB.</span></div>';
+                document.getElementById('course-grid').innerHTML = '<div class="col-span-full text-center text-yellow-400 p-8 border border-dashed border-yellow-500/30 rounded-xl bg-yellow-500/10">Cursos Ocultos.<br><span class="text-xs text-zinc-400">Usa "Navegar / Usar" en el panel.</span></div>';
+            }
+            if (e.data.type === 'DISABLE_BUILDER') { 
+                document.body.classList.remove('builder-active'); document.body.classList.remove('drag-active');
+                isAdminMode = true; 
+                setFilter(currentCategory); loadCourses(); 
+            }
+        });
+    </script>
 </body>
 </html>
