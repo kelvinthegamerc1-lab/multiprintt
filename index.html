@@ -93,7 +93,6 @@ body.is-admin-session .admin-video-edit-overlay { display: flex; position: absol
 body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
 body.is-admin-session .video-testimonial-card .vt-quote { display: block !important; position: relative; z-index: 40; pointer-events: auto; }
 
-/* Candado Responsivo Modal */
 @media (max-width: 767px) {
     #videoModalContent { transform: scale(1) translate(0,0) !important; width: 100% !important; max-width: 360px !important; height: auto !important; aspect-ratio: 9/16 !important; border-radius: 24px !important; }
 }
@@ -153,7 +152,6 @@ body.is-admin-session .video-testimonial-card .vt-quote { display: block !import
       </div>
     </header>
 
-    <!-- Subnav de Filtros Desacoplado de Editable-Section para evitar borrados -->
     <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden h-[34px] md:h-[45px] opacity-100 shrink-0">
         <div class="flex items-center justify-between md:justify-center w-full px-0">
             <button onclick="setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap">
@@ -422,8 +420,15 @@ window.navigate = function(targetId) {
     });
     
     if (subnav) {
-        if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '45px'; subnav.style.opacity = '1'; } 
-        else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
+        if (targetId === 'catalog') { 
+            subnav.style.height = window.innerWidth < 768 ? '34px' : '45px'; 
+            subnav.style.opacity = '1'; 
+            subnav.style.borderBottomWidth = '1px';
+        } else { 
+            subnav.style.height = '0px'; 
+            subnav.style.opacity = '0'; 
+            subnav.style.borderBottomWidth = '0px';
+        }
     }
 };
 
@@ -436,7 +441,6 @@ window.setFilter = function(filterStr) {
 };
 
 window.handleWaClick = async function(productId, waUrl) {
-    // Analytics en tiempo real
     if (!window.isAdminMode) {
         try { await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { clicks: increment(1) }, { merge: true }); } catch (e) { console.warn("Analytics no registrado"); }
     }
@@ -471,7 +475,7 @@ window.renderProducts = function(){
 
     safeProducts.forEach((p,i)=>{
         // COPY DE WHATSAPP MEJORADO (CON ENCODEURICOMPONENT PARA EVITAR ERRORES DE EMOJIS)
-        const pUrl = p.image || 'https://multiprintt.web.app';
+        const pUrl = 'https://multiprintt.web.app/';
         const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy súper interesado/a en este producto:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 *Vengo desde la tienda online:*\n${pUrl}\n\n¿Me podrían dar más detalles? ¡Gracias! ✨`;
         const wa = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
         
@@ -579,6 +583,7 @@ window.applyThemeSwap = function(element, newThemeKey) {
 }
 
 let selectedEl = null;
+let builderListenersAdded = false;
 
 window.addEventListener('message', async (event) => {
     if (event.source !== window.parent) return;
@@ -586,34 +591,70 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
         
-        document.addEventListener('click', function(e) {
-            if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
-            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+        if (!builderListenersAdded) {
+            builderListenersAdded = true;
             
-            if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
-            
-            let target = e.target.closest('[data-editable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
-            
-            if (target && !target.closest('.ignore-drag')) {
-                e.preventDefault(); e.stopPropagation();
-                if(selectedEl) selectedEl.classList.remove('builder-selected-el');
-                selectedEl = target; selectedEl.classList.add('builder-selected-el');
+            document.addEventListener('click', function(e) {
+                if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
+                window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
                 
-                let isVideoCard = target.classList.contains('video-testimonial-card');
-                if(isVideoCard) currentVideoCardRef = target; 
+                if(e.target.closest('button[onclick^="navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
                 
-                let hasTheme = target.hasAttribute('data-theme');
-                let currentTheme = target.getAttribute('data-theme') || '';
+                let target = e.target.closest('[data-editable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
+                
+                if (target && !target.closest('.ignore-drag')) {
+                    e.preventDefault(); e.stopPropagation();
+                    if(selectedEl) selectedEl.classList.remove('builder-selected-el');
+                    selectedEl = target; selectedEl.classList.add('builder-selected-el');
+                    
+                    let isVideoCard = target.classList.contains('video-testimonial-card');
+                    if(isVideoCard) currentVideoCardRef = target; 
+                    
+                    let hasTheme = target.hasAttribute('data-theme');
+                    let currentTheme = target.getAttribute('data-theme') || '';
 
-                window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme }, '*');
-            }
-        }, true); 
+                    window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme }, '*');
+                }
+            }, true);
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
+                
+                let target = e.target.closest('[data-editable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
+                if (target && !target.closest('.ignore-drag')) {
+                    e.preventDefault(); e.stopPropagation();
+                    
+                    if(selectedEl) selectedEl.classList.remove('builder-selected-el');
+                    selectedEl = target; selectedEl.classList.add('builder-selected-el');
+                    
+                    let isVideoCard = target.classList.contains('video-testimonial-card');
+                    if(isVideoCard) currentVideoCardRef = target; 
+                    
+                    window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', isVideoCard: isVideoCard, hasTheme: target.hasAttribute('data-theme'), currentTheme: target.getAttribute('data-theme') || '' }, '*');
+                    
+                    window.parent.postMessage({ type: 'SHOW_CONTEXT_MENU', x: e.clientX, y: e.clientY, tagName: target.tagName }, '*');
+                }
+            }, true);
+        }
     }
 
     if (event.data.type === 'DISABLE_BUILDER') {
         document.body.classList.remove('builder-mode', 'is-admin-session');
         if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
         window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
+    }
+
+    if (event.data.type === 'CLEAR_SELECTION') {
+        if(selectedEl) { selectedEl.classList.remove('builder-selected-el'); selectedEl = null; }
+    }
+
+    if (event.data.type === 'RESET_LAYOUT') {
+        try {
+            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
+            window.parent.postMessage({ type: 'RESET_DONE' }, '*');
+        } catch(e) {
+            window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*');
+        }
     }
 
     if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); } }
@@ -784,7 +825,7 @@ window.openCourseModal = function(id) {
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
     
     // ENCODEURICOMPONENT APLICADO PARA EMOJIS SEGUROS
-    const cUrl = c.image || 'https://multiprintt.web.app';
+    const cUrl = 'https://multiprintt.web.app/';
     const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}*\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
     const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
     
@@ -824,7 +865,7 @@ window.openVideoModal = function(btn) {
     const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0) : 'C';
     
     let modalContent = document.getElementById('videoModalContent');
-    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); // Fallback
+    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); 
     
     if (modalContent) applyThemeSwap(modalContent, themeKey);
     
@@ -843,12 +884,11 @@ window.openVideoModal = function(btn) {
 
         video.src = videoSrc; video.load(); video.currentTime = 0; 
         
-        // Anti-Black Screen Safari/Chrome: Start muted to guarantee playback, then unmute
         video.muted = true;
         const playPromise = video.play(); 
         if (playPromise !== undefined) { 
             playPromise.then(() => {
-                video.muted = false; // Unmute safely once playing
+                video.muted = false; 
             }).catch(() => { 
                 video.muted = true; video.play(); 
             }); 
