@@ -39,8 +39,8 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .slide-scroll::-webkit-scrollbar-thumb:hover{background:var(--pink)}
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-.glass{background:rgba(7,7,9,.72);backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}
-.glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+.glass{background:rgba(7,7,9,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
 
 .filter-btn { transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease; font-weight: 600; }
 .filter-btn.active { color: white; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.2); text-shadow: 0 0 1px rgba(255,255,255,0.5); } 
@@ -501,29 +501,36 @@ window.handleWaClick = async function(productId, waUrl) {
     window.open(waUrl, '_blank');
 }
 
+window.sliderFrames = window.sliderFrames || {};
 window.updateSliderOpacities = function(sliderId) {
-    const slider = document.getElementById(sliderId);
-    if (!slider) return;
-    const slides = slider.querySelectorAll('.slider-item');
-    if (slides.length === 0) return;
-    const sliderRect = slider.getBoundingClientRect();
-    const sliderCenter = sliderRect.left + (sliderRect.width / 2);
-    let closestSlide = null;
-    let minDistance = Infinity;
-    
-    slides.forEach(slide => {
-        const slideRect = slide.getBoundingClientRect();
-        const slideCenter = slideRect.left + (slideRect.width / 2);
-        const distance = Math.abs(sliderCenter - slideCenter);
-        if (distance < minDistance) { minDistance = distance; closestSlide = slide; }
-        slide.classList.remove('opacity-100', 'scale-100', 'z-20');
-        slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
+    if(window.sliderFrames[sliderId]) cancelAnimationFrame(window.sliderFrames[sliderId]);
+    window.sliderFrames[sliderId] = requestAnimationFrame(() => {
+        const slider = document.getElementById(sliderId);
+        if (!slider) return;
+        const slides = slider.querySelectorAll('.slider-item');
+        if (slides.length === 0) return;
+        const sliderRect = slider.getBoundingClientRect();
+        const sliderCenter = sliderRect.left + (sliderRect.width / 2);
+        let closestSlide = null;
+        let minDistance = Infinity;
+        
+        slides.forEach(slide => {
+            const slideRect = slide.getBoundingClientRect();
+            const slideCenter = slideRect.left + (slideRect.width / 2);
+            const distance = Math.abs(sliderCenter - slideCenter);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestSlide = slide;
+            }
+            slide.classList.remove('opacity-100', 'scale-100', 'z-20');
+            slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
+        });
+        
+        if (closestSlide) {
+            closestSlide.classList.remove('opacity-40', 'scale-[0.70]', 'z-10');
+            closestSlide.classList.add('opacity-100', 'scale-100', 'z-20');
+        }
     });
-    
-    if (closestSlide) {
-        closestSlide.classList.remove('opacity-40', 'scale-[0.70]', 'z-10');
-        closestSlide.classList.add('opacity-100', 'scale-100', 'z-20');
-    }
 };
 
 window.scrollSlider = function(id, dir) {
@@ -627,6 +634,7 @@ window.renderProducts = function(){
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
     if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
 
+    let renderHTML = '';
     safeProducts.forEach((p,i)=>{
         const pUrl = 'https://multiprintt.web.app/';
         const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy interesado/a en:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 ${pUrl}\n\n¡Gracias! ✨`;
@@ -660,8 +668,9 @@ window.renderProducts = function(){
         let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
         let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
-        grid.innerHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}" data-resizable="true">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadge}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><button onclick="window.handleWaClick('${p.id}', '${wa}')" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</button></div></div></article>`;
+        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}" data-resizable="true">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadge}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><button onclick="window.handleWaClick('${p.id}', '${wa}')" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</button></div></div></article>`;
     });
+    if(safeProducts.length > 0) grid.innerHTML = renderHTML;
 }
 
 window.renderCourses = function(){
@@ -677,6 +686,7 @@ window.renderCourses = function(){
         { theme: 'pink', from: 'from-pink-500/20', text: 'text-pink-400', border: 'border-pink-500/20', hoverBorder: 'hover:border-pink-500/40', shadow: 'hover:shadow-[0_20px_50px_rgba(255,45,168,0.1)]' }
     ];
 
+    let renderHTML = '';
     safeCourses.forEach((c, i)=>{
         let a = accents[i % accents.length]; 
         let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
@@ -686,10 +696,10 @@ window.renderCourses = function(){
         let delay = 100 + (i * 100);
         let masterclassBadge = c.isMasterclass !== false ? `<div class="absolute top-5 left-5 z-20 pointer-events-none"><span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span></div>` : '';
         
-        grid.innerHTML += `
+        renderHTML += `
         <article class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder}" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
             ${adminHtml}
-            <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
+            <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0 p-3 pb-0">
                 <img src="${c.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/40 to-transparent z-10 pointer-events-none"></div>
                 ${masterclassBadge}
@@ -706,6 +716,7 @@ window.renderCourses = function(){
             </div>
         </article>`;
     });
+    grid.innerHTML = renderHTML;
 }
 
 // CREADOR DE ETIQUETAS Y TESTIMONIOS
@@ -796,7 +807,7 @@ window.loadFirebaseData = async function() {
         
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
-            window.navigate('catalog'); window.initMap(); 
+            window.navigate('catalog'); 
             if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, '*'); }
         }, 500); 
     }
