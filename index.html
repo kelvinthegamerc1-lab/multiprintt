@@ -51,7 +51,6 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .cat-imp-general.active { background: rgba(124,58,237,0.95); }
 .cat-packs.active { background: rgba(5,150,105,0.95); }
 
-.gradient-text{ background:linear-gradient(100deg,#fff 15%,#d5d0ff 48%,#ff4bb8 90%); -webkit-background-clip:text; background-clip:text; color:transparent; line-height: 1.4 !important; padding-bottom: 0.2em; display: inline-block; position: relative; z-index: 20; }
 .gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
 .hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
 
@@ -65,10 +64,10 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
 .reveal.show{opacity:1;transform:translate3d(0,0,0)}
 
-/* Nuevo estilo Nav Link Minimalista (Cero Negritas Expansivas) */
+/* Nav Link Rediseñado Minimalista (Cero Expansión de Negritas) */
 .nav-link { color: #a1a1aa; transition: color 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 0; margin: 0 1rem; font-weight: 500; font-size: 13px; position: relative; outline: none; }
 .nav-link:hover { color: #fff; }
-.nav-link.active { color: #25d8ff !important; }
+.nav-link.active { color: #25d8ff !important; font-weight: 500 !important; }
 .nav-link::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 0%; height: 1.5px; background: #25d8ff; transition: width 0.3s ease; }
 .nav-link.active::after { width: 100%; }
 
@@ -88,7 +87,7 @@ body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
 .sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
 
 .admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
-body.is-admin-session .card:hover .admin-overlay, body.is-admin-session article:hover .admin-overlay { opacity: 1; pointer-events: auto; }
+body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
 
 .loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
 .admin-video-edit-overlay { display: none; }
@@ -96,6 +95,7 @@ body.is-admin-session .admin-video-edit-overlay { display: flex; position: absol
 body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
 body.is-admin-session .video-testimonial-card .vt-quote { display: block !important; position: relative; z-index: 40; pointer-events: auto; }
 
+/* Bounding Box Interactivo */
 #builder-resize-box { display: none; position: fixed; pointer-events: none; border: 1.5px solid #25d8ff; z-index: 9999; box-shadow: 0 0 15px rgba(37,216,255,0.5); transition: opacity 0.2s; }
 body.is-admin-session.dragging-active #builder-resize-box { display: none !important; }
 .resize-handle { position: absolute; width: 10px; height: 10px; background: #fff; border: 2px solid #25d8ff; border-radius: 50%; pointer-events: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.5); transition: transform 0.1s;}
@@ -105,18 +105,13 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 .rh-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .rh-w { top: calc(50% - 5px); left: -6px; cursor: ew-resize; }
 
 @media (max-width: 767px) {
-    #videoModalContent { transform: scale(1) translate(0,0) !important; width: 100% !important; max-width: 360px !important; height: auto !important; aspect-ratio: 9/16 !important; border-radius: 24px !important; flex-direction: column !important; }
-    #videoModalContent > div:first-child { width: 100% !important; height: 60% !important; }
-    #videoModalContent > div:last-child { width: 100% !important; height: 40% !important; padding: 1.5rem !important; }
+    #videoModalContent { flex-direction: column !important; width: 100% !important; max-width: 380px !important; }
+    #videoModalContent > div:first-child { width: 100% !important; height: 50% !important; }
+    #videoModalContent > div:last-child { width: 100% !important; height: 50% !important; padding: 1.5rem !important; }
 }
 
 #media-grid::-webkit-scrollbar { width: 6px; }
 #media-grid::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-
-/* Estilos Formulario DB */
-.db-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; border-radius: 12px; color: white; outline: none; font-size: 13px; transition: all 0.2s; }
-.db-input:focus { border-color: #25d8ff; box-shadow: 0 0 0 2px rgba(37,216,255,0.2); }
-.db-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: bold; color: #a1a1aa; margin-bottom: 4px; display: block; }
 </style>
 </head>
 
@@ -133,42 +128,43 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <div class="fixed top-0 left-0 right-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] flex flex-col">
     <header id="section-header" class="glass h-[56px] md:h-[76px] transition-all editable-section shrink-0 border-b-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
-        <!-- Logo y Nav Integrados a la Izquierda -->
+        
+        <!-- Logo y Menú Minimalista a la Izquierda -->
         <div class="flex items-center gap-6 md:gap-10">
-            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
-            <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
+            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none">
+              <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
                 <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
-            </div>
-            <div>
-                <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
+              </div>
+              <div>
+                <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0 text-white" id="brand-name">MULTIPRINTT</h1>
                 <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
-            </div>
+              </div>
             </button>
 
-            <!-- Navbar Minimalista -->
+            <!-- Navbar PC Limpia (Sin Fondos invasivos) -->
             <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
-            <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
-            <button onclick="window.navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
-            <button onclick="window.navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
-            <button onclick="window.navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
+              <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
+              <button onclick="window.navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
+              <button onclick="window.navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
+              <button onclick="window.navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
             </nav>
         </div>
 
-        <!-- Botones Sociales -->
+        <!-- Botones Sociales Estables -->
         <div class="flex items-center relative">
             <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
-                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
-                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
             </div>
             
             <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
                 <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
-                    <!-- Sin hover:scale para que no salten -->
+                    <!-- Sin hover:scale, color transición suave -->
                     <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none">
                         <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
                     </button>
@@ -212,7 +208,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20" data-resizable="true">
             <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
                 <span data-editable="true" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
-                <span data-editable="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold gradient-text">Tú Imagen Viva.</span>
+                <span data-editable="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1">Tú Imagen Viva.</span>
             </h2>
             <p data-editable="true" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
             
@@ -230,6 +226,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
   </section>
 
+  <!-- SECCIÓN ACADEMIA (MASTERCLASS) -->
   <section id="view-courses" class="view-slide slide-scroll editable-section">
     <div class="hero-glow w-[400px] h-[400px] bg-cyan-600/10 left-[-100px] top-0"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-12 relative z-10">
@@ -238,17 +235,21 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <div data-editable="true" class="inline-block text-[10px] tracking-[.3em] uppercase text-cyan-400 font-extrabold mb-4 bg-cyan-500/10 border border-cyan-500/20 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]">Multiprintt Academy</div>
             <h2 class="display flex flex-col gap-1 text-4xl md:text-5xl lg:text-[4.5rem] font-extrabold tracking-tight relative z-20 leading-none">
                 <span data-editable="true" class="block text-white">No solo vendemos.</span>
+                <!-- Arreglo: bg-clip-text con text-transparent asegura que no haya bloques sólidos -->
                 <span data-editable="true" class="relative z-10 block bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent pb-2">Te enseñamos a crear.</span>
             </h2>
             <p data-editable="true" class="text-[13px] md:text-base text-zinc-400 leading-relaxed max-w-2xl mt-4 mx-auto md:mx-0 font-light">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
         </div>
 
-        <div class="reveal mt-2 flex flex-wrap justify-center md:justify-start gap-4 text-[9px] md:text-[11px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-10" style="transition-delay: 100ms;">
+        <!-- ETIQUETAS Y CLONADOR -->
+        <div class="reveal mt-2 flex flex-wrap justify-center md:justify-start gap-4 text-[9px] md:text-[11px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-10" style="transition-delay: 100ms;" id="course-badges-zone">
             <span class="flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.15)]"><i class="fa-solid fa-award text-amber-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-amber-100 font-extrabold">Práctica Garantizada</span></span>
             <span class="flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]"><i class="fa-solid fa-infinity text-cyan-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-cyan-100 font-extrabold">Acompañamiento de por vida</span></span>
+            
+            <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
         </div>
         
-        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone"></div>
+        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal" style="transition-delay: 200ms;"></div>
 
         <div class="reveal mt-4 mb-8 text-center md:text-left">
             <h3 data-editable="true" class="display text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-white">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
@@ -278,8 +279,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
 
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <!-- Botón reparado: Invoca openEditor directamente -->
-                        <button onclick="event.stopPropagation(); window.openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+                        <!-- Llama a parent OPEN_EDITOR -->
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial', itemId: 't1', itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText }}, '*')" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
                     </div>
                 </div>
 
@@ -316,7 +317,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <div data-editable="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
                 <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20 leading-[1.1]">
                     <span data-editable="true" class="block">Tu próxima idea</span>
-                    <span data-editable="true" class="relative z-10 block gradient-text pb-1">empieza aquí.</span>
+                    <span data-editable="true" class="relative z-10 block bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1">empieza aquí.</span>
                 </h2>
             </div>
 
@@ -343,12 +344,11 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone p-2 rounded-lg border border-transparent">
-                            <!-- Íconos Base -->
-                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
-                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
-                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
                             
-                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)]"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
                         </div>
                     </div>
                 </div>
@@ -370,22 +370,10 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
-<!-- MODAL GALERÍA -->
-<div id="gallery-modal" class="hidden fixed inset-0 z-[10000] bg-black/95 backdrop-blur-md p-4 items-center justify-center ignore-drag">
-    <div class="bg-[#101014] border border-white/10 w-full max-w-4xl rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,1)] p-6 flex flex-col h-[85vh] transform scale-95 transition-transform duration-300" id="gallery-modal-content">
-        <div class="flex justify-between items-center mb-6 shrink-0">
-            <h3 class="text-white font-extrabold text-lg"><i class="fa-solid fa-images text-cyan-400 mr-2"></i> Explorador de Galería</h3>
-            <button onclick="window.closeGallery()" class="text-white/50 hover:text-white w-8 h-8 rounded-full bg-white/5 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto hide-scrollbar flex-1 p-2 rounded-xl border border-white/5 bg-black/50">
-            <!-- Images go here -->
-        </div>
-    </div>
-</div>
-
+<!-- MODAL DETALLE DE CURSO -->
 <div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
   <div class="relative w-full max-w-5xl bg-[#0a0a0c] border border-white/10 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-500 ignore-drag" id="courseModalContent">
-    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
 
     <div class="w-full md:w-5/12 h-56 sm:h-64 md:h-auto bg-black relative overflow-hidden group">
       <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0c] z-10 hidden md:block"></div>
@@ -411,14 +399,14 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         </div>
       </div>
 
-      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag">
+      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag outline-none">
         <i class="fa-brands fa-whatsapp text-xl mr-2 pointer-events-none"></i> Separar mi cupo ahora
       </button>
     </div>
   </div>
 </div>
 
-<!-- NUEVO VIDEO MODAL HORIZONTAL/CUADRADO REDONDEADO -->
+<!-- NUEVO VIDEO MODAL HORIZONTAL PREMIUM (RECTÁNGULO REDONDEADO) -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         
@@ -426,7 +414,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <i class="fa-solid fa-xmark text-lg pointer-events-none"></i>
         </button>
 
-        <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto relative bg-black shrink-0">
+        <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto min-h-[300px] relative bg-black shrink-0">
             <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
             
             <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none">
@@ -452,17 +440,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <span data-editable="true" id="vm-role" class="text-[10px] md:text-xs uppercase tracking-[0.2em] font-extrabold drop-shadow-sm mt-1 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div id="db-editor-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center ignore-drag">
-    <div class="bg-[#101014] border border-white/10 w-full max-w-lg rounded-[24px] shadow-2xl p-6 md:p-8 transform transition-transform overflow-y-auto max-h-[90vh]">
-        <h3 id="db-modal-title" class="text-white font-extrabold text-xl mb-6">Editor de Base de Datos</h3>
-        <div id="db-form-container" class="flex flex-col gap-4"></div>
-        <div class="flex gap-3 mt-8">
-            <button onclick="window.saveItem()" class="flex-1 bg-cyan-500 text-black font-extrabold py-3.5 rounded-xl hover:bg-cyan-400 transition-colors shadow-[0_0_15px_rgba(37,216,255,0.3)]">Guardar Cambios</button>
-            <button onclick="window.closeEditor()" class="px-6 bg-black border border-white/10 text-white font-bold py-3.5 rounded-xl hover:bg-zinc-900 transition-colors">Cancelar</button>
         </div>
     </div>
 </div>
@@ -538,10 +515,7 @@ window.updateSliderOpacities = function(sliderId) {
         const slideRect = slide.getBoundingClientRect();
         const slideCenter = slideRect.left + (slideRect.width / 2);
         const distance = Math.abs(sliderCenter - slideCenter);
-        if (distance < minDistance) {
-            minDistance = distance;
-            closestSlide = slide;
-        }
+        if (distance < minDistance) { minDistance = distance; closestSlide = slide; }
         slide.classList.remove('opacity-100', 'scale-100', 'z-20');
         slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
     });
@@ -573,13 +547,13 @@ window.syncSocialNetworks = function() {
 
     const btnAdminPc = document.createElement('button');
     btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
-    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2";
+    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none";
     btnAdminPc.innerHTML = `<i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>`;
     navPcContainer.appendChild(btnAdminPc);
 
     const btnAdminMob = document.createElement('button');
     btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
-    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0";
+    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none";
     btnAdminMob.innerHTML = `<i class="fa-solid fa-plus text-xs pointer-events-none"></i>`;
     navMobileContainer.appendChild(btnAdminMob);
 
@@ -596,11 +570,8 @@ window.syncSocialNetworks = function() {
         btnPc.setAttribute('data-network', network);
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
         
-        if (isLast) {
-            btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none";
-        } else {
-            btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none";
-        }
+        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none"; } 
+        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none"; }
         
         if(network === 'facebook') btnPc.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') btnPc.classList.add('hover:text-[#e1306c]');
@@ -620,6 +591,7 @@ window.syncSocialNetworks = function() {
         btnMob.setAttribute('data-network', network);
         btnMob.setAttribute('onclick', `window.open('${url}', '_blank')`);
         btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none";
+        
         if(network === 'facebook') btnMob.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') btnMob.classList.add('hover:text-[#e1306c]');
         else if(network === 'whatsapp') btnMob.classList.add('hover:text-[#25d366]');
@@ -640,13 +612,9 @@ window.renderProducts = function(){
     let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
     let safeProducts = [];
     
-    if (window.currentFilter === 'mas-vendidos') {
-        safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); 
-    } else if (window.currentFilter === 'promocionales') {
-        safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true);
-    } else {
-        safeProducts = allProducts.filter(p => p.category === window.currentFilter);
-    }
+    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); } 
+    else if (window.currentFilter === 'promocionales') { safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true); } 
+    else { safeProducts = allProducts.filter(p => p.category === window.currentFilter); }
 
     if (window.currentFilter !== 'mas-vendidos') {
         let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
@@ -656,13 +624,12 @@ window.renderProducts = function(){
     grid.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mx-auto transition-all items-start w-full sortable-zone";
     if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`; }
     
-    let phoneEl = document.getElementById('contact-phone');
-    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
     if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
 
     safeProducts.forEach((p,i)=>{
         const pUrl = 'https://multiprintt.web.app/';
-        const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy súper interesado/a en este producto:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 *Vengo desde la tienda online:*\n${pUrl}\n\n¿Me podrían dar más detalles? ¡Gracias! ✨`;
+        const rawMsg = `¡Hola *Multiprintt*! ✌️\n\nEstoy interesado/a en:\n\n🛍️ *${p.name}*\n💲 Precio: *$${Number(p.price).toFixed(2)}*\n\n🔗 ${pUrl}\n\n¡Gracias! ✨`;
         const wa = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
         
         let imgs = [];
@@ -690,8 +657,8 @@ window.renderProducts = function(){
         let promoBadge = p.isPromo ? `<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-[#ea580c]/80 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-fire text-[#ffd84d]"></i> Promo</span>` : '';
         if (window.currentFilter === 'mas-vendidos' && i < 3) promoBadge = `<span class="absolute top-2 left-2 z-20 text-[8px] uppercase tracking-[.15em] text-white/90 font-bold bg-[#e11d48]/80 px-2 py-1 rounded backdrop-blur-md border border-white/10 shadow-sm pointer-events-none"><i class="fa-solid fa-crown text-[#ffd84d]"></i> Top ${i+1}</span>`;
 
-        // DB Editor Integrado
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.openEditor('product', '${p.id}', this)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.deleteItem('product', '${p.id}')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         grid.innerHTML += `<article class="card overflow-hidden group flex flex-col h-full relative" data-id="${p.id}" data-resizable="true">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadge}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between"><span class="text-sm md:text-base font-extrabold text-white">$${Number(p.price).toFixed(2)}</span><button onclick="window.handleWaClick('${p.id}', '${wa}')" class="px-3 py-1.5 rounded-lg bg-[#25D366]/10 text-[#58e88b] text-[10px] font-bold pointer-events-auto hover:bg-[#25d366] hover:text-black transition-colors ignore-drag">Pedir</button></div></div></article>`;
     });
@@ -712,14 +679,12 @@ window.renderCourses = function(){
 
     safeCourses.forEach((c, i)=>{
         let a = accents[i % accents.length]; 
+        let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
         
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.openEditor('course', '${c.id}', this)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.deleteItem('course', '${c.id}')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
-        let delay = 200 + (i * 100);
-        let masterclassBadge = c.isMasterclass !== false ? `
-        <div class="absolute top-5 left-5 z-20 pointer-events-none">
-            <span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>
-        </div>` : '';
+        let delay = 100 + (i * 100);
+        let masterclassBadge = c.isMasterclass !== false ? `<div class="absolute top-5 left-5 z-20 pointer-events-none"><span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span></div>` : '';
         
         grid.innerHTML += `
         <article class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder}" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
@@ -743,218 +708,18 @@ window.renderCourses = function(){
     });
 }
 
-// LOGICA EXPLORADOR DE GALERIA
-window.openGallery = async function(inputId) {
-    window.targetGalleryInput = inputId;
-    const m = document.getElementById('gallery-modal');
-    const content = document.getElementById('gallery-modal-content');
-    const grid = document.getElementById('gallery-grid');
-    
-    m.classList.remove('hidden'); m.classList.add('flex');
-    setTimeout(() => { content.classList.remove('scale-95'); }, 10);
-    
-    grid.innerHTML = '<div class="col-span-full text-center text-white/50 py-20 flex flex-col items-center justify-center h-full"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-cyan-400"></i><span>Cargando galería...</span></div>';
-    
-    try {
-        let res = await fetch('/recursos/imagenes.json');
-        if(!res.ok) throw new Error('Not found');
-        let data = await res.json();
-        grid.innerHTML = '';
-        if(data && data.length > 0) {
-            data.forEach(url => {
-                grid.innerHTML += `<div onclick="window.selectGalleryImage('${url}')" class="aspect-square bg-[#0a0a0c] rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-cyan-400 transition-all group relative"><img src="${url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform"><div class="absolute inset-0 bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><i class="fa-solid fa-check text-white text-2xl drop-shadow-md"></i></div></div>`;
-            });
-        } else {
-            grid.innerHTML = '<div class="col-span-full text-center text-white/50 py-20">La galería está vacía.</div>';
-        }
-    } catch (e) {
-        grid.innerHTML = '<div class="col-span-full text-center text-red-400 py-20 flex flex-col items-center justify-center h-full"><i class="fa-solid fa-folder-open text-4xl mb-3 opacity-50"></i><span>No se encontró el archivo /recursos/imagenes.json<br><small class="text-white/50 mt-2 block">Pega la URL de tu imagen directamente.</small></span></div>';
-    }
-}
-window.closeGallery = function() {
-    const m = document.getElementById('gallery-modal');
-    const content = document.getElementById('gallery-modal-content');
-    content.classList.add('scale-95');
-    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
-}
-window.selectGalleryImage = function(url) {
-    if(window.targetGalleryInput) {
-        const input = document.getElementById(window.targetGalleryInput);
-        if(input) { input.value = url; input.dispatchEvent(new Event('input', { bubbles: true })); }
-    }
-    window.closeGallery();
-}
-
-window.currentEditItem = null;
-window.currentEditNode = null;
-
-window.openEditor = function(type, id, btnNode) {
-    window.currentEditItem = { type, id };
-    window.currentEditNode = btnNode ? btnNode.closest('.card, .video-testimonial-card') : null;
-    
-    const m = document.getElementById('db-editor-modal');
-    const container = document.getElementById('db-form-container');
-    const title = document.getElementById('db-modal-title');
-    
-    container.innerHTML = '';
-    m.classList.remove('hidden'); m.classList.add('flex');
-    
-    if (type === 'product') {
-        title.innerHTML = id ? '<i class="fa-solid fa-box-open text-cyan-400 mr-2"></i> Editar Producto' : '<i class="fa-solid fa-plus text-cyan-400 mr-2"></i> Nuevo Producto';
-        let p = id ? window.appProducts.find(x => x.id === id) : {name:'', category:'mas-vendidos', price:0, image:'', isPromo:false};
-        
-        container.innerHTML = `
-            <div><span class="db-label">Nombre del Producto</span><input type="text" id="db-p-name" placeholder="Ej: Camiseta Básica" value="${p.name}" class="db-input"></div>
-            <div>
-                <span class="db-label">Categoría</span>
-                <select id="db-p-cat" class="db-input">
-                    <option value="mas-vendidos">Más Vendidos (Top)</option>
-                    <option value="promocionales">Promocionales</option>
-                    <option value="textil">Textil</option>
-                    <option value="jarros">Jarros & Thermos</option>
-                    <option value="imp-general">Imp. General</option>
-                    <option value="packs">Packs</option>
-                </select>
-            </div>
-            <div><span class="db-label">Precio ($)</span><input type="number" id="db-p-price" placeholder="Ej: 15.50" value="${p.price}" class="db-input"></div>
-            <div>
-                <span class="db-label">URLs de Imágenes (Separadas por coma)</span>
-                <div class="flex gap-2">
-                    <input type="text" id="db-p-img" placeholder="https://..." value="${Array.isArray(p.images) ? p.images.join(', ') : (p.image||'')}" class="db-input flex-1">
-                    <button onclick="window.openGallery('db-p-img')" class="bg-[#1a1a1e] border border-white/10 hover:border-cyan-400 text-white px-4 rounded-xl text-xs transition-colors shrink-0 flex items-center justify-center"><i class="fa-solid fa-image text-cyan-400 mr-1.5"></i> Galería</button>
-                </div>
-            </div>
-            <label class="flex items-center gap-3 text-white font-medium bg-black/50 p-3 rounded-xl border border-white/5 cursor-pointer mt-2 hover:border-white/20 transition-colors">
-                <input type="checkbox" id="db-p-promo" class="w-5 h-5 accent-cyan-400" ${p.isPromo ? 'checked' : ''}> Marcar como Promoción (Fuego)
-            </label>
-        `;
-        if(id) document.getElementById('db-p-cat').value = p.category;
-    } 
-    else if (type === 'course') {
-        title.innerHTML = id ? '<i class="fa-solid fa-laptop-file text-cyan-400 mr-2"></i> Editar Curso' : '<i class="fa-solid fa-plus text-cyan-400 mr-2"></i> Nuevo Curso';
-        let c = id ? window.appCourses.find(x => x.id === id) : {title:'', desc:'', schedule:'', price:'', image:'', isMasterclass:true};
-        
-        container.innerHTML = `
-            <div><span class="db-label">Título del Curso</span><input type="text" id="db-c-title" placeholder="Ej: Curso de Sublimación" value="${c.title}" class="db-input"></div>
-            <div><span class="db-label">Descripción Breve</span><textarea id="db-c-desc" placeholder="Detalles..." class="db-input min-h-[80px]">${c.desc}</textarea></div>
-            <div class="grid grid-cols-2 gap-3">
-                <div><span class="db-label">Horarios</span><input type="text" id="db-c-schedule" placeholder="Lunes a Viernes..." value="${c.schedule||''}" class="db-input"></div>
-                <div><span class="db-label">Inversión</span><input type="text" id="db-c-price" placeholder="Ej: $150 USD" value="${c.price||''}" class="db-input"></div>
-            </div>
-            <div>
-                <span class="db-label">URL de Imagen Principal</span>
-                <div class="flex gap-2">
-                    <input type="text" id="db-c-img" placeholder="https://..." value="${c.image}" class="db-input flex-1">
-                    <button onclick="window.openGallery('db-c-img')" class="bg-[#1a1a1e] border border-white/10 hover:border-cyan-400 text-white px-4 rounded-xl text-xs transition-colors shrink-0 flex items-center justify-center"><i class="fa-solid fa-image text-cyan-400 mr-1.5"></i> Galería</button>
-                </div>
-            </div>
-            <label class="flex items-center gap-3 text-white font-medium bg-black/50 p-3 rounded-xl border border-white/5 cursor-pointer mt-2 hover:border-white/20 transition-colors">
-                <input type="checkbox" id="db-c-master" class="w-5 h-5 accent-cyan-400" ${c.isMasterclass !== false ? 'checked' : ''}> Destacar como Masterclass
-            </label>
-        `;
-    } 
-    else if (type === 'testimonial') {
-        title.innerHTML = '<i class="fa-solid fa-video text-cyan-400 mr-2"></i> Editar Testimonio';
-        let vid = window.currentEditNode.querySelector('video').src || '';
-        let name = window.currentEditNode.querySelector('.vt-name').innerText || '';
-        let quote = window.currentEditNode.querySelector('.vt-quote').innerText || '';
-        let role = window.currentEditNode.querySelector('.vt-role').innerText || '';
-        
-        container.innerHTML = `
-            <div><span class="db-label">Enlace del Video (.mp4)</span><input type="text" id="db-t-vid" placeholder="https://...video.mp4" value="${vid}" class="db-input"></div>
-            <div class="grid grid-cols-2 gap-3">
-                <div><span class="db-label">Nombre del Alumno</span><input type="text" id="db-t-name" placeholder="Ej: Juan P." value="${name}" class="db-input"></div>
-                <div><span class="db-label">Rol / Subtítulo</span><input type="text" id="db-t-role" placeholder="Ej: Caso de Éxito" value="${role}" class="db-input"></div>
-            </div>
-            <div><span class="db-label">Cita Textual</span><textarea id="db-t-quote" placeholder="Su testimonio..." class="db-input min-h-[80px]">${quote}</textarea></div>
-            <div class="bg-cyan-500/10 border border-cyan-500/30 p-3 rounded-xl mt-2 text-[10px] text-cyan-400">
-                <i class="fa-solid fa-circle-info mr-1"></i> Modificar estos campos actualizará el diseño en pantalla. Recuerda presionar "Guardar Web" en la barra superior para hacerlo público.
-            </div>
-        `;
-    }
-}
-
-window.closeEditor = function() { 
-    document.getElementById('db-editor-modal').classList.add('hidden'); 
-    document.getElementById('db-editor-modal').classList.remove('flex'); 
-}
-
-window.saveItem = async function() {
-    const { type, id } = window.currentEditItem;
-    const btn = document.querySelector('#db-editor-modal button');
-    let originalText = btn.innerText;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Procesando...';
-    
-    if (type === 'testimonial') {
-        if(window.currentEditNode) {
-            window.currentEditNode.querySelector('video').src = document.getElementById('db-t-vid').value;
-            window.currentEditNode.querySelector('.vt-name').innerText = document.getElementById('db-t-name').value;
-            window.currentEditNode.querySelector('.vt-role').innerText = document.getElementById('db-t-role').value;
-            window.currentEditNode.querySelector('.vt-quote').innerText = document.getElementById('db-t-quote').value;
-            
-            let nameVal = document.getElementById('db-t-name').value;
-            let initialEl = window.currentEditNode.querySelector('.w-12.h-12');
-            if(initialEl) initialEl.innerText = nameVal ? nameVal.charAt(0).toUpperCase() : 'A';
-
-            if (window.updateResizeBox) window.updateResizeBox();
-        }
-        window.closeEditor();
-        btn.innerText = originalText;
-        if(window.parent) window.parent.postMessage({type: 'SAVE_DONE', msg: 'Video editado en interfaz. Recuerda pulsar Guardar Web arriba.'}, '*');
-        return;
-    }
-
-    try {
-        let docId = id || 'item_' + Date.now();
-        let data = {};
-        
-        if (type === 'product') {
-            data = {
-                name: document.getElementById('db-p-name').value,
-                category: document.getElementById('db-p-cat').value,
-                price: parseFloat(document.getElementById('db-p-price').value) || 0,
-                image: document.getElementById('db-p-img').value,
-                isPromo: document.getElementById('db-p-promo').checked
-            };
-            if (id) { let idx = window.appProducts.findIndex(x=>x.id===id); if(idx>-1) window.appProducts[idx] = {id: docId, ...data}; }
-            else { window.appProducts.push({id: docId, ...data}); }
-        } else if (type === 'course') {
-            data = {
-                title: document.getElementById('db-c-title').value,
-                desc: document.getElementById('db-c-desc').value,
-                schedule: document.getElementById('db-c-schedule').value,
-                price: document.getElementById('db-c-price').value,
-                image: document.getElementById('db-c-img').value,
-                isMasterclass: document.getElementById('db-c-master').checked
-            };
-            if (id) { let idx = window.appCourses.findIndex(x=>x.id===id); if(idx>-1) window.appCourses[idx] = {id: docId, ...data}; }
-            else { window.appCourses.push({id: docId, ...data}); }
-        }
-        
-        // PROXY: Delegar escritura segura al admin parent
-        if(window.parent) window.parent.postMessage({ type: 'DB_SAVE', itemType: type, id: docId, data: data }, '*');
-        
-        if (type === 'product') window.renderProducts();
-        if (type === 'course') window.renderCourses();
-        
-        window.closeEditor();
-    } catch (error) {
-        console.error(error);
-    }
-    btn.innerText = originalText;
-}
-
-window.deleteItem = async function(type, id) {
-    if(!confirm('¿Seguro que deseas ELIMINAR este elemento de la Base de Datos? Esta acción no se puede deshacer.')) return;
-    try {
-        // PROXY: Delegar borrado seguro al admin parent
-        if(window.parent) window.parent.postMessage({ type: 'DB_DELETE', itemType: type, id: id }, '*');
-        
-        if (type === 'product') { window.appProducts = window.appProducts.filter(x => x.id !== id); window.renderProducts(); }
-        if (type === 'course') { window.appCourses = window.appCourses.filter(x => x.id !== id); window.renderCourses(); }
-    } catch(e) {
-        console.error(e);
-    }
+// CREADOR DE ETIQUETAS Y TESTIMONIOS
+window.cloneCourseBadge = function(btn) {
+    if(!window.isAdminMode) return;
+    const colors = ['cyan', 'pink', 'amber', 'violet', 'emerald'];
+    const icons = ['fa-star', 'fa-award', 'fa-infinity', 'fa-fire', 'fa-gem'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+    const span = document.createElement('span');
+    span.className = `flex items-center gap-2 bg-gradient-to-r from-${randomColor}-500/10 to-transparent border border-${randomColor}-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.15)]`;
+    span.innerHTML = `<i class="fa-solid ${randomIcon} text-${randomColor}-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-${randomColor}-100 font-extrabold">Nueva Etiqueta</span>`;
+    btn.parentNode.insertBefore(span, btn);
+    if(window.updateResizeBox) window.updateResizeBox();
 }
 
 window.cloneTextTestimonial = function(btnNode) { 
@@ -980,7 +745,7 @@ window.cloneVideoTestimonial = function(btnNode) {
         const clone = cards[0].cloneNode(true); 
         const nameEl = clone.querySelector('.vt-name'); if(nameEl) nameEl.innerText = 'Nuevo Alumno';
         const roleEl = clone.querySelector('.vt-role'); if(roleEl) roleEl.innerText = 'Caso de Éxito';
-        const quoteEl = clone.querySelector('.vt-quote'); if(quoteEl) quoteEl.innerText = '"Haz clic en Editar Video para ajustar este testimonio..."';
+        const quoteEl = clone.querySelector('.vt-quote'); if(quoteEl) quoteEl.innerText = '"Haz clic en Editar Video para ajustar..."';
         grid.insertBefore(clone, btnNode); 
         if(window.updateResizeBox) window.updateResizeBox();
     } 
@@ -1011,6 +776,7 @@ window.loadFirebaseData = async function() {
                     if(newModalContent) {
                         newModalContent.id = 'videoModalContent'; 
                         newModalContent.classList.add('relative', 'w-[95vw]', 'max-w-4xl', 'rounded-[32px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col', 'md:flex-row');
+                        newModalContent.style.aspectRatio = '';
                     }
                 }
             }
@@ -1047,12 +813,12 @@ window.initMap = function() {
 }
 window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
 
-const themeData = { cyan: { base: 'cyan', rgb: '37,216,255', hex: '#25d8ff' }, pink: { base: 'pink', rgb: '255,45,168', hex: '#ff2da8' }, violet: { base: 'violet', rgb: '115,92,255', hex: '#735cff' }, yellow: { base: 'yellow', rgb: '250,204,21', hex: '#facc15' }, emerald: { base: 'emerald', rgb: '52,211,153', hex: '#34d399' } };
+const themeData = { cyan: { base: 'cyan', rgb: '37,216,255', hex: '#25d8ff' }, pink: { base: 'pink', rgb: '255,45,168', hex: '#ff2da8' }, violet: { base: 'violet', rgb: '115,92,255', hex: '#735cff' }, amber: { base: 'amber', rgb: '245,158,11', hex: '#f59e0b' }, emerald: { base: 'emerald', rgb: '52,211,153', hex: '#34d399' } };
 window.applyThemeSwap = function(element, newThemeKey) {
     if (!element) return; const newTheme = themeData[newThemeKey]; if (!newTheme) return;
     const els = [element, ...element.querySelectorAll('*')];
-    const colorNames = ['cyan', 'pink', 'violet', 'yellow', 'emerald'];
-    const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '250,204,21', '52,211,153'];
+    const colorNames = ['cyan', 'pink', 'violet', 'amber', 'emerald'];
+    const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '245,158,11', '52,211,153'];
     
     els.forEach(el => {
         if(!el.className || typeof el.className !== 'string') return;
@@ -1064,6 +830,9 @@ window.applyThemeSwap = function(element, newThemeKey) {
 
 window.selectedEl = null;
 
+// ==========================================
+// REDIMENSIONADOR INTERACTIVO (BOUNDING BOX)
+// ==========================================
 function initVisualResizer() {
     if(document.getElementById('builder-resize-box')) return;
     
@@ -1126,10 +895,6 @@ window.addEventListener('message', async (event) => {
         
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
-            
-            // Ignorar clicks dentro del modal del DB editor
-            if(e.target.closest('#db-editor-modal')) return;
-
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
             
             if(e.target.closest('button[onclick^="window.navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
@@ -1176,7 +941,7 @@ window.addEventListener('message', async (event) => {
         newBtn.setAttribute('data-editable', 'true');
         newBtn.setAttribute('data-network', network);
         newBtn.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl";
+        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none";
         
         if(network === 'facebook') newBtn.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') newBtn.classList.add('hover:text-[#e1306c]');
@@ -1191,8 +956,41 @@ window.addEventListener('message', async (event) => {
         newBtn.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
         
         footerContainer.insertBefore(newBtn, footerContainer.querySelector('.admin-tool'));
-        window.syncSocialNetworks(); 
+        window.syncSocialNetworks(); // Sincroniza al Navbar instantáneamente
         window.updateResizeBox();
+    }
+    
+    // RESPUESTAS AL EDITOR DB HUD
+    if (event.data.type === 'DB_UPDATED') {
+        const { itemType, id, data: newData } = event.data;
+        if(itemType === 'product') {
+            let idx = window.appProducts.findIndex(x=>x.id === id);
+            if(idx > -1) window.appProducts[idx] = {id, ...newData}; else window.appProducts.push({id, ...newData});
+            window.renderProducts();
+        }
+        if(itemType === 'course') {
+            let idx = window.appCourses.findIndex(x=>x.id === id);
+            if(idx > -1) window.appCourses[idx] = {id, ...newData}; else window.appCourses.push({id, ...newData});
+            window.renderCourses();
+        }
+    }
+    if (event.data.type === 'DB_DELETED_SUCCESS') {
+        const { itemType, id } = event.data;
+        if (itemType === 'product') { window.appProducts = window.appProducts.filter(x => x.id !== id); window.renderProducts(); }
+        if (itemType === 'course') { window.appCourses = window.appCourses.filter(x => x.id !== id); window.renderCourses(); }
+    }
+    if (event.data.type === 'UPDATE_TESTIMONIAL') {
+        if(currentVideoCardRef) {
+            const d = event.data.data;
+            if(d.src) currentVideoCardRef.querySelector('video').src = d.src;
+            if(d.name) currentVideoCardRef.querySelector('.vt-name').innerText = d.name;
+            if(d.role) currentVideoCardRef.querySelector('.vt-role').innerText = d.role;
+            if(d.quote) currentVideoCardRef.querySelector('.vt-quote').innerText = d.quote;
+            
+            let initialEl = currentVideoCardRef.querySelector('.w-12.h-12');
+            if(initialEl) initialEl.innerText = d.name ? d.name.charAt(0).toUpperCase() : 'A';
+            if (window.updateResizeBox) window.updateResizeBox();
+        }
     }
 
     if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); } }
@@ -1238,7 +1036,7 @@ window.addEventListener('message', async (event) => {
                 grid._sortable = new Sortable(grid, { 
                     animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool', delay: 300, delayOnTouchOnly: true,
                     onEnd: function(evt) {
-                        if(evt.to.id === 'social-footer-links') window.syncSocialNetworks(); 
+                        if(evt.to.id === 'social-footer-links') window.syncSocialNetworks(); // Sincroniza al soltar y reordenar
                     }
                 }); 
                 window.sortableInstances.push(grid._sortable); 
@@ -1247,7 +1045,12 @@ window.addEventListener('message', async (event) => {
         else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
 
-    if (event.data.type === 'GET_FULL_LAYOUT') {
+    if (event.data.type === 'RESET_TEMPLATE') {
+        // Redirige al administrador para purgar y recargar
+        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*');
+    }
+
+    if (event.data.type === 'SAVE_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
         if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; }
         if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
@@ -1266,6 +1069,7 @@ window.addEventListener('message', async (event) => {
             const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
             const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
             
+            // Borra solo el redimensionador del clon
             clone.querySelectorAll('#builder-resize-box').forEach(el => el.remove());
             
             layoutData[zone.id] = clone.innerHTML;
@@ -1281,13 +1085,7 @@ window.addEventListener('message', async (event) => {
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
 
-        // PROXY: Enviar información validada al Admin Padre para que ejecute el guardado seguro
-        window.parent.postMessage({ 
-            type: 'LAYOUT_DATA', 
-            layoutData: layoutData, 
-            prodOrder: prodOrder, 
-            courseOrder: courseOrder 
-        }, '*'); 
+        window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, '*');
     }
 });
 
