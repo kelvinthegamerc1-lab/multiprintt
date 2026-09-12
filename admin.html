@@ -87,6 +87,18 @@
 
 <div id="toast-container"></div>
 
+<!-- Modal de Confirmación Personalizado (Sustituto seguro de confirm()) -->
+<div id="custom-confirm-modal" class="modal-overlay z-[11000]">
+    <div class="modal-content text-center p-6">
+        <h3 id="confirm-title" class="text-white font-bold text-sm mb-2">Confirmación</h3>
+        <p id="confirm-msg" class="text-zinc-400 text-xs mb-6">¿Estás seguro de realizar esta acción?</p>
+        <div class="flex gap-3">
+            <button id="confirm-yes-btn" class="flex-1 btn-primary py-2.5">Sí, continuar</button>
+            <button onclick="document.getElementById('custom-confirm-modal').classList.remove('active')" class="flex-1 btn-secondary py-2.5">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 <div id="auth-screen">
     <div class="glass-panel p-8 w-full max-w-sm text-center">
         <h1 class="text-base font-bold mb-1 text-white">Multiprintt</h1>
@@ -139,7 +151,7 @@
             <button onclick="window.filterGallery('image')" class="tool-btn justify-center" id="gal-filt-img">Imágenes</button>
             <button onclick="window.filterGallery('video')" class="tool-btn justify-center" id="gal-filt-vid">Videos</button>
         </div>
-        <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Almacenamiento Local Multiprintt</div>
+        <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Almacenamiento Local & Cloud Multiprintt</div>
         <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[350px] overflow-y-auto pr-1"></div>
     </div>
 </div>
@@ -214,6 +226,18 @@
         setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
     }
 
+    // Modal de confirmación personalizado (sin usar confirm() nativo)
+    window.showConfirm = function(msg, callback) {
+        const modal = document.getElementById('custom-confirm-modal');
+        document.getElementById('confirm-msg').innerText = msg;
+        const yesBtn = document.getElementById('confirm-yes-btn');
+        yesBtn.onclick = () => {
+            modal.classList.remove('active');
+            callback();
+        };
+        modal.classList.add('active');
+    }
+
     onAuthStateChanged(auth, (user) => {
         if (user && !user.isAnonymous) {
             document.getElementById('auth-screen').style.opacity = '0';
@@ -266,10 +290,16 @@
     }
 
     window.resetTemplateConfirm = function() {
-        if(confirm("¿Restaurar diseño base de fábrica? Todos los cambios no guardados se perderán.")) {
+        window.showConfirm("¿Restaurar diseño base de fábrica? Todos los cambios no guardados se perderán.", async () => {
             window.showToast("Restaurando UI...");
-            document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*');
-        }
+            try {
+                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
+                window.showToast("Plantilla restablecida. Recargando...");
+                setTimeout(() => location.reload(), 1200);
+            } catch(e) {
+                window.showToast("Error al restablecer plantilla.");
+            }
+        });
     }
 
     let currentDbItem = {};
@@ -448,7 +478,8 @@
         document.getElementById('db-modal').classList.add('active');
     }
 
-    window.saveDbItem = function() {
+    // Corrección crítica: Guardado directo en Firestore desde admin.html
+    window.saveDbItem = async function() {
         let t = currentDbItem.type; let payload = {};
         const btnSave = document.getElementById('btn-save-db');
         let originalText = btnSave.innerHTML;
@@ -470,22 +501,55 @@
                 isBestSeller: document.getElementById('db-bestseller').checked
             }; 
         }
-        else if(t === 'course') { payload = { title: document.getElementById('db-title').value, desc: document.getElementById('db-desc').value, schedule: document.getElementById('db-schedule').value, price: document.getElementById('db-price').value, image: document.getElementById('db-img').value, isMasterclass: document.getElementById('db-master').checked }; }
-        else if(t === 'testimonial_video') { payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, src: document.getElementById('db-vid').value, theme: document.getElementById('db-theme').value }; }
-        else if(t === 'testimonial_text') { payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, theme: document.getElementById('db-theme').value }; }
+        else if(t === 'course') { 
+            payload = { 
+                title: document.getElementById('db-title').value, 
+                desc: document.getElementById('db-desc').value, 
+                schedule: document.getElementById('db-schedule').value, 
+                price: document.getElementById('db-price').value, 
+                image: document.getElementById('db-img').value, 
+                isMasterclass: document.getElementById('db-master').checked 
+            }; 
+        }
+        else if(t === 'testimonial_video') { 
+            payload = { 
+                name: document.getElementById('db-name').value, 
+                role: document.getElementById('db-role').value, 
+                quote: document.getElementById('db-quote').value, 
+                src: document.getElementById('db-vid').value, 
+                theme: document.getElementById('db-theme').value 
+            }; 
+        }
+        else if(t === 'testimonial_text') { 
+            payload = { 
+                name: document.getElementById('db-name').value, 
+                role: document.getElementById('db-role').value, 
+                quote: document.getElementById('db-quote').value, 
+                theme: document.getElementById('db-theme').value 
+            }; 
+        }
 
         btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
         
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_SAVE_REQUEST', itemType: t, id: currentDbItem.id, data: payload }, '*');
-        
-        if(t === 'testimonial_video') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
-        if(t === 'testimonial_text') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', data: payload }, '*');
-        
-        setTimeout(() => {
+        try {
+            if (t === 'product' || t === 'course') {
+                const col = t === 'product' ? 'products' : 'courses';
+                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, currentDbItem.id), payload, { merge: true });
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: t, id: currentDbItem.id, data: payload }, '*');
+            } else if (t === 'testimonial_video') {
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
+            } else if (t === 'testimonial_text') {
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', data: payload }, '*');
+            }
+
             btnSave.innerHTML = originalText;
             document.getElementById('db-modal').classList.remove('active');
-            window.showToast("✅ Base de datos actualizada.");
-        }, 600);
+            window.showToast("✅ Base de datos actualizada con éxito.");
+        } catch(e) {
+            console.error("Error al guardar en Firestore:", e);
+            window.showToast("❌ Error al guardar en base de datos.");
+            btnSave.innerHTML = originalText;
+        }
     }
 
     let selNet = '', selIcon = '';
@@ -526,25 +590,13 @@
                 }
             }
         }
-        if (data.type === 'DB_SAVE_REQUEST') {
-            if (data.itemType === 'product' || data.itemType === 'course') {
-                const col = data.itemType === 'product' ? 'products' : 'courses';
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.id), data.data, { merge: true });
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: data.itemType, id: data.id, data: data.data }, '*');
-            }
-        }
         if (data.type === 'DELETE_DB_ITEM') {
-            if (confirm("¿Eliminar elemento permanentemente de Firestore?")) {
+            window.showConfirm("¿Eliminar elemento permanentemente de Firestore?", async () => {
                 const col = data.itemType === 'product' ? 'products' : 'courses';
                 await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.itemId));
                 document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
                 window.showToast("🗑 Eliminado con éxito.");
-            }
-        }
-        if (data.type === 'RESET_TEMPLATE') {
-            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
-            window.showToast("Plantilla restablecida. Recargando...");
-            setTimeout(() => location.reload(), 1200);
+            });
         }
         if (data.type === 'APP_READY') { 
             document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); 
