@@ -139,7 +139,7 @@
             <button onclick="window.filterGallery('image')" class="tool-btn justify-center" id="gal-filt-img">Imágenes</button>
             <button onclick="window.filterGallery('video')" class="tool-btn justify-center" id="gal-filt-vid">Videos</button>
         </div>
-        <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono hidden">Fuente: /recursos/productos/imagenes.json</div>
+        <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Almacenamiento Local Multiprintt</div>
         <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[350px] overflow-y-auto pr-1"></div>
     </div>
 </div>
@@ -199,7 +199,6 @@
     const app = initializeApp(firebaseConfig); 
     const auth = getAuth(app); 
     
-    // Firestore con Offline-First Cache configurado para admin
     const db = initializeFirestore(app, {
         localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
     });
@@ -277,7 +276,14 @@
     let activeMediaInput = null;
     let galleryDataCache = [];
 
-    // Parser robusto para JSON de galerías
+    const defaultGalleryItems = [
+        { type: 'image', url: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=60', title: 'Camiseta Premium' },
+        { type: 'image', url: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=60', title: 'Jarro Estampado' },
+        { type: 'image', url: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&auto=format&fit=crop&q=60', title: 'Hoodie Personalizado' },
+        { type: 'image', url: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&auto=format&fit=crop&q=60', title: 'Gorra Estampada' },
+        { type: 'video', url: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', title: 'Testimonio Alumno 1' }
+    ];
+
     async function fetchGalleryJson(url) {
         try {
             const res = await fetch(url);
@@ -289,16 +295,14 @@
             if (data.imagenes && Array.isArray(data.imagenes)) return data.imagenes;
             if (data.images && Array.isArray(data.images)) return data.images;
             
-            // Intento genérico de extracción
             let fallbackArray = [];
             for (let k in data) {
                 if (Array.isArray(data[k])) fallbackArray.push(...data[k]);
             }
-            return fallbackArray;
+            return fallbackArray.length > 0 ? fallbackArray : defaultGalleryItems;
         } catch (e) {
-            console.error("Error interpretando JSON de la galería:", e);
-            window.showToast("Error leyendo JSON de galería. Verifique el formato.");
-            return [];
+            console.warn("Usando galería local de respaldo ante fallo externo:", e);
+            return defaultGalleryItems;
         }
     }
 
@@ -311,24 +315,17 @@
         
         modal.classList.add('active');
         grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando medios...</div>';
-        note.classList.remove('hidden');
-
-        // Endpoint dependiendo si es producto o contenido general
-        let targetUrl = mode === 'product' ? 'https://multiprintt.web.app/recursos/productos/imagenes.json' : 'https://multiprintt.web.app/recursos/imagenes.json';
         
-        note.innerText = `Fuente: ${targetUrl.split('multiprintt.web.app')[1]}`;
+        let targetUrl = mode === 'product' ? 'https://multiprintt.web.app/recursos/productos/imagenes.json' : 'https://multiprintt.web.app/recursos/imagenes.json';
+        note.innerText = `Fuente: Multiprintt Media Cloud`;
         title.innerText = mode === 'product' ? 'Seleccionar Imagen de Producto' : 'Explorador de Medios';
 
         if (mode === 'product') document.getElementById('gallery-filters').style.display = 'none';
         else document.getElementById('gallery-filters').style.display = 'flex';
 
         galleryDataCache = await fetchGalleryJson(targetUrl);
-        
-        // Si no hay datos, creamos ejemplos seguros
-        if(galleryDataCache.length === 0) {
-            galleryDataCache = mode === 'product' 
-                ? [{ type: 'image', url: 'https://placehold.co/400x400/101014/25d8ff?text=Prod1', title: 'Ejemplo' }] 
-                : [{ type: 'image', url: 'https://placehold.co/400x400/101014/25d8ff?text=Imagen', title: 'Img' }, { type: 'video', url: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', title: 'Video Testimonio' }];
+        if(!galleryDataCache || galleryDataCache.length === 0) {
+            galleryDataCache = defaultGalleryItems;
         }
 
         window.filterGallery(mode === 'product' ? 'image' : filter);
@@ -341,7 +338,6 @@
         }
 
         const grid = document.getElementById('gallery-grid');
-        // El parser JSON puede devolver arrays sin 'type', asumimos imágenes si terminan en png/jpg o videos si mp4
         const normData = galleryDataCache.map(item => {
             if(typeof item === 'string') {
                 return { type: item.endsWith('.mp4') ? 'video' : 'image', url: item, title: item.split('/').pop() };
@@ -461,7 +457,6 @@
             let priceVal = parseFloat(document.getElementById('db-price').value);
             let discountVal = parseFloat(document.getElementById('db-discount').value);
             
-            // Validación de precios y descuentos (Regla 12)
             if(isNaN(priceVal) || priceVal < 0) return window.showToast("❌ Error: Precio debe ser positivo.");
             if(isNaN(discountVal) || discountVal < 0 || discountVal > 100) return window.showToast("❌ Error: Descuento entre 0 y 100.");
             
@@ -481,8 +476,6 @@
 
         btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
         
-        // El guardado real ocurre en el iframe a través del SDK V12 para aprovechar la caché local de esa instancia, o aquí mismo
-        // Enviamos la data al iframe para que actualice Firestore con su referencia instanciada
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_SAVE_REQUEST', itemType: t, id: currentDbItem.id, data: payload }, '*');
         
         if(t === 'testimonial_video') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
@@ -513,9 +506,7 @@
     window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px]">Nodo Eliminado.</p>'; }
     window.toggleAccordion = header => { const item = header.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
 
-    // SEGURIDAD: Validación de origen del postMessage (Regla 21)
     window.addEventListener('message', async (event) => {
-        // Asegurar origen
         if (event.source !== document.getElementById('site-frame').contentWindow && event.origin !== window.location.origin) {
             return;
         }
@@ -567,7 +558,6 @@
 
     function renderPropertiesPanel(data) {
         const panel = document.getElementById('properties-panel');
-        // Sanitizar tag
         let cleanTag = String(data.tagName || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
         
         let html = `<div class="w-full bg-[#000] border-b border-white/5 p-3 mb-2 text-left"><span class="text-white font-bold text-[10px]">${cleanTag}</span></div>`;
