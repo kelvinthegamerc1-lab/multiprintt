@@ -4,73 +4,81 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<title>Multiprintt | Visual Builder Pro</title>
+<title>Multiprintt | Visual Builder Premium</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
     body { background-color: #050505; color: #e5e5e5; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #555; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(37,216,255,0.5); }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
 
     #auth-screen { position: fixed; inset: 0; background: #050505; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
-    .glass-panel { background: #0e0e11; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
+    .glass-panel { background: #0a0a0c; border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; box-shadow: 0 40px 80px -20px rgba(0,0,0,1); }
+    
     #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-    .topbar { height: 54px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; z-index: 50;}
+    .topbar { height: 60px; background: #0a0a0c; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; z-index: 50;}
     
     .workspace { display: flex; flex: 1; overflow: hidden; }
-    .sidebar { width: 260px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
+    .sidebar { width: 280px; background: #0a0a0c; border-right: 1px solid rgba(255,255,255,0.06); padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; z-index:10; }
     .sidebar-right { width: 340px; background: #0a0a0c; border-left: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; overflow-y: auto; z-index:10; }
     
-    #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
-    #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 30px 60px rgba(0,0,0,0.7); display: flex; flex-direction: column;}
-    .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 8px !important; border: 1px solid rgba(255,255,255,0.1) !important; margin: 10px; }
-    .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 16px; margin: auto; border: 10px solid #1a1a1a !important;}
-    .device-mobile { width: 390px !important; height: 844px !important; border-radius: 36px; margin: auto; border: 12px solid #1a1a1a !important;}
+    #preview-container { flex: 1; background: #000; display: flex; align-items: center; justify-content: center; position: relative; padding: 20px; overflow: auto; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+    #preview-wrapper { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #070709; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.8); display: flex; flex-direction: column;}
+    .device-desktop { width: 100% !important; min-width: 1024px; height: 100% !important; border-radius: 12px !important; border: 1px solid rgba(255,255,255,0.05) !important; margin: 10px; }
+    .device-tablet { width: 820px !important; height: 1180px !important; border-radius: 24px; margin: auto; border: 12px solid #1a1a1a !important;}
+    .device-mobile { width: 390px !important; height: 844px !important; border-radius: 40px; margin: auto; border: 14px solid #1a1a1a !important;}
     #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit;}
     
-    .device-btn { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #737373; transition: all 0.2s; cursor: pointer; font-size: 14px;}
-    .device-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; }
+    .device-btn { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #737373; transition: all 0.2s; cursor: pointer; font-size: 15px;}
+    .device-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; box-shadow: inset 0 0 0 1px rgba(37,216,255,0.3);}
     .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.05); }
 
-    .tool-btn { background: #121215; border: 1px solid rgba(255,255,255,0.08); padding: 10px 14px; border-radius: 8px; color: #e5e5e5; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 500;}
-    .tool-btn:hover { background: #1a1a1e; border-color: rgba(37,216,255,0.4); color: white;}
+    .tool-btn { background: #121215; border: 1px solid rgba(255,255,255,0.06); padding: 12px 16px; border-radius: 10px; color: #e5e5e5; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
+    .tool-btn:hover { background: #1a1a1e; border-color: rgba(37,216,255,0.4); color: white; transform: translateY(-1px);}
+    .danger-btn { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; }
+    .danger-btn:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; color: white;}
+    .warning-btn { background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); color: #f59e0b; }
+    .warning-btn:hover { background: rgba(245,158,11,0.15); border-color: #f59e0b; color: white;}
     
-    .panel-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #737373; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .panel-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #737373; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     
-    /* Accordion Styles Premium */
     .acc-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .acc-header { padding: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #e5e5e5; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #0d0d11; transition: background 0.2s; }
-    .acc-header:hover { background: #141419; color: #25d8ff; }
-    .acc-content { padding: 16px; display: none; background: #0a0a0c; flex-direction: column; gap: 14px; }
+    .acc-header { padding: 16px 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #a1a1aa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #0d0d11; transition: all 0.2s; border-left: 2px solid transparent;}
+    .acc-header:hover { background: #141419; color: #fff; }
+    .acc-item.active .acc-header { color: #25d8ff; border-left-color: #25d8ff; background: rgba(37,216,255,0.02);}
+    .acc-content { padding: 20px; display: none; background: #0a0a0c; flex-direction: column; gap: 16px; }
     .acc-item.active .acc-content { display: flex; }
-    .acc-item.active .acc-header i { transform: rotate(180deg); }
+    .acc-item.active .acc-header i.fa-chevron-down { transform: rotate(180deg); color: #25d8ff; }
     
-    /* Input Styles Modernos */
-    .inspector-label { font-size: 10px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;}
-    .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 6px; color: white; outline: none; font-size: 12px; transition: border-color 0.2s, box-shadow 0.2s;}
-    .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 2px rgba(37,216,255,0.1);}
+    .inspector-label { font-size: 10px; font-weight: 600; color: #737373; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;}
+    .inspector-input { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.08); padding: 10px 12px; border-radius: 8px; color: white; outline: none; font-size: 12px; transition: all 0.2s; font-family: 'Inter', sans-serif;}
+    .inspector-input:focus { border-color: #25d8ff; background: #050505; box-shadow: 0 0 0 3px rgba(37,216,255,0.15);}
     
-    .input-group { display: flex; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
-    .input-group-addon { padding: 8px 10px; background: #111; color: #737373; font-size: 10px; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; }
-    .input-group input { width: 100%; background: transparent; border: none; padding: 8px; color: white; outline: none; font-size: 12px; }
+    .input-group { display: flex; background: #000; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden; transition: all 0.2s;}
+    .input-group:focus-within { border-color: #25d8ff; box-shadow: 0 0 0 3px rgba(37,216,255,0.15); }
+    .input-group-addon { padding: 10px; background: #111; color: #737373; font-size: 10px; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; min-width: 32px;}
+    .input-group input { width: 100%; background: transparent; border: none; padding: 10px; color: white; outline: none; font-size: 12px; font-family: monospace;}
     
-    .color-picker { width: 100%; height: 36px; padding: 2px; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; cursor: pointer;}
+    .color-picker { width: 100%; height: 40px; padding: 4px; background: #000; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; cursor: pointer; transition: 0.2s;}
+    .color-picker:hover { border-color: rgba(255,255,255,0.2); }
     .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
     .color-picker::-webkit-color-swatch { border: none; border-radius: 4px; }
     
-    .align-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; }
+    .align-btn { flex: 1; padding: 8px; border-radius: 6px; color: #737373; transition: all 0.2s; border: 1px solid transparent; display: flex; justify-content: center; align-items: center;}
+    .align-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .align-btn.active { background: rgba(37,216,255,0.1); color: #25d8ff; border-color: rgba(37,216,255,0.2); box-shadow: 0 2px 10px rgba(37,216,255,0.1);}
 
-    /* Custom Toast Notification System */
-    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
-    .custom-toast { background: #0e0e11; border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid #25d8ff; color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; font-size: 13px; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+    .custom-toast { background: #121215; border: 1px solid rgba(255,255,255,0.08); border-left: 4px solid #25d8ff; color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 14px; font-size: 13px; font-weight: 500; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
     .custom-toast.show { transform: translateX(0); opacity: 1; }
     .custom-toast.error { border-left-color: #ef4444; }
+    .custom-toast.warning { border-left-color: #f59e0b; }
 </style>
 </head>
 <body>
@@ -79,36 +87,37 @@
 
 <div id="auth-screen">
     <div class="glass-panel p-10 w-full max-w-sm text-center">
-        <div class="w-16 h-16 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,216,255,0.15)]">
-            <i class="fa-solid fa-layer-group text-2xl text-cyan-400"></i>
+        <div class="w-20 h-20 bg-cyan-500/10 border border-cyan-500/30 rounded-[20px] flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(37,216,255,0.2)]">
+            <i class="fa-solid fa-wand-magic-sparkles text-3xl text-cyan-400"></i>
         </div>
-        <h1 class="text-xl font-bold mb-1">Visual Builder <span class="text-cyan-400 text-xs bg-cyan-500/10 px-2 py-0.5 rounded-full ml-1">PRO</span></h1>
-        <p class="text-zinc-500 text-xs mb-8">Acceso Seguro Firebase Auth.</p>
-        <div class="space-y-3">
-            <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
-            <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
-            <button onclick="window.attemptLogin()" id="btn-login" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Iniciar Sesión</button>
+        <h1 class="text-2xl font-extrabold mb-1 tracking-tight">Visual Builder <span class="text-cyan-400 text-[10px] bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-md ml-1 align-top uppercase tracking-widest">Premium</span></h1>
+        <p class="text-zinc-500 text-xs mb-8">Conexión Segura Firebase.</p>
+        <div class="space-y-4">
+            <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3.5 rounded-xl text-sm text-white outline-none focus:border-cyan-400 transition-colors">
+            <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3.5 rounded-xl text-sm text-white outline-none focus:border-pink-400 transition-colors">
+            <button onclick="window.attemptLogin()" id="btn-login" class="w-full bg-gradient-to-r from-cyan-500 to-cyan-400 text-black font-bold py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-[0_0_20px_rgba(37,216,255,0.3)] text-sm mt-2">Acceder al Panel</button>
         </div>
     </div>
 </div>
 
-<!-- Modal para Seleccionar Icono de Red Social -->
-<div id="icon-picker-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm p-4 items-center justify-center transition-opacity opacity-0">
-    <div class="bg-[#101014] border border-white/10 w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform" id="icon-picker-content">
-        <h3 class="text-white font-bold text-lg mb-4"><i class="fa-solid fa-icons text-cyan-400 mr-2"></i> Añadir Red Social</h3>
-        <div class="grid grid-cols-4 gap-3 mb-5" id="social-grid">
-            <button onclick="window.selectSocialIcon('fa-facebook-f', 'facebook', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-cyan-400 hover:text-cyan-400 transition-all text-zinc-400"><i class="fa-brands fa-facebook-f text-xl"></i></button>
-            <button onclick="window.selectSocialIcon('fa-instagram', 'instagram', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-pink-400 hover:text-pink-400 transition-all text-zinc-400"><i class="fa-brands fa-instagram text-xl"></i></button>
-            <button onclick="window.selectSocialIcon('fa-whatsapp', 'whatsapp', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-green-400 hover:text-green-400 transition-all text-zinc-400"><i class="fa-brands fa-whatsapp text-xl"></i></button>
-            <button onclick="window.selectSocialIcon('fa-tiktok', 'tiktok', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-white hover:text-white transition-all text-zinc-400"><i class="fa-brands fa-tiktok text-xl"></i></button>
-            <button onclick="window.selectSocialIcon('fa-youtube', 'youtube', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-red-500 hover:text-red-500 transition-all text-zinc-400"><i class="fa-brands fa-youtube text-xl"></i></button>
-            <button onclick="window.selectSocialIcon('fa-x-twitter', 'twitter', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-white hover:text-white transition-all text-zinc-400"><i class="fa-brands fa-x-twitter text-xl"></i></button>
-            <button onclick="window.selectSocialIcon('fa-linkedin-in', 'linkedin', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-blue-400 hover:text-blue-400 transition-all text-zinc-400"><i class="fa-brands fa-linkedin-in text-xl"></i></button>
+<div id="icon-picker-modal" class="hidden fixed inset-0 z-[9999] bg-black/90 backdrop-blur-md p-4 items-center justify-center transition-opacity opacity-0">
+    <div class="bg-[#101014] border border-white/10 w-full max-w-md rounded-3xl shadow-2xl p-8 transform scale-95 transition-transform" id="icon-picker-content">
+        <h3 class="text-white font-bold text-xl mb-6 flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30"><i class="fa-solid fa-icons text-cyan-400 text-sm"></i></div> Red Social</h3>
+        <div class="grid grid-cols-4 gap-3 mb-6" id="social-grid">
+            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-[#1877f2] hover:text-[#1877f2] transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(24,119,242,0.2)]"><i class="fa-brands fa-facebook-f text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-[#e1306c] hover:text-[#e1306c] transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(225,48,108,0.2)]"><i class="fa-brands fa-instagram text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-[#25d366] hover:text-[#25d366] transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(37,211,102,0.2)]"><i class="fa-brands fa-whatsapp text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-tiktok', 'tiktok', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-white hover:text-white transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"><i class="fa-brands fa-tiktok text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-youtube', 'youtube', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-[#ff0000] hover:text-[#ff0000] transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(255,0,0,0.2)]"><i class="fa-brands fa-youtube text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-x-twitter', 'twitter', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-white hover:text-white transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"><i class="fa-brands fa-x-twitter text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-linkedin-in', 'linkedin', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-[#0a66c2] hover:text-[#0a66c2] transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(10,102,194,0.2)]"><i class="fa-brands fa-linkedin-in text-2xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-telegram', 'telegram', this)" class="social-opt p-4 bg-black border border-white/5 rounded-xl hover:border-[#0088cc] hover:text-[#0088cc] transition-all text-zinc-500 hover:shadow-[0_0_15px_rgba(0,136,204,0.2)]"><i class="fa-brands fa-telegram text-2xl"></i></button>
         </div>
-        <input type="text" id="social-url-input" placeholder="https://..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-4 outline-none focus:border-cyan-400 text-sm">
+        <label class="text-xs text-zinc-400 font-bold mb-2 block uppercase tracking-wider">URL de Destino</label>
+        <input type="text" id="social-url-input" placeholder="Ej: https://instagram.com/tu_usuario" class="w-full bg-black border border-white/10 p-3.5 rounded-xl text-white mb-6 outline-none focus:border-cyan-400 text-sm font-mono">
         <div class="flex gap-3">
-            <button onclick="window.confirmAddSocial()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Añadir a tienda</button>
-            <button onclick="window.closeIconPicker()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 transition-colors text-sm">Cancelar</button>
+            <button onclick="window.confirmAddSocial()" class="flex-1 bg-cyan-500 text-black font-bold py-3 rounded-xl hover:bg-cyan-400 transition-colors text-sm shadow-[0_0_15px_rgba(37,216,255,0.3)]">Añadir a la web</button>
+            <button onclick="window.closeIconPicker()" class="px-6 bg-black border border-white/10 text-white font-bold py-3 rounded-xl hover:bg-zinc-900 transition-colors text-sm">Cancelar</button>
         </div>
     </div>
 </div>
@@ -116,38 +125,52 @@
 <div id="builder-ui">
     <div class="topbar">
         <div class="flex items-center gap-4">
-            <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
-                <i class="fa-solid fa-layer-group text-white text-sm"></i>
+            <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 to-violet-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(115,92,255,0.4)]">
+                <i class="fa-solid fa-layer-group text-white text-[15px]"></i>
             </div>
-            <span class="font-bold text-sm tracking-wide">Multiprintt <span class="text-zinc-500 font-normal">| Visual Builder</span></span>
+            <div class="flex flex-col">
+                <span class="font-bold text-sm tracking-wide leading-tight">Multiprintt <span class="text-cyan-400 font-normal">Builder</span></span>
+                <span class="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Modo Edición Total</span>
+            </div>
         </div>
         
-        <div class="flex items-center gap-2 bg-[#121215] p-1 border border-white/10 rounded-lg">
-            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
-            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
+        <div class="flex items-center gap-1.5 bg-[#121215] p-1 border border-white/5 rounded-xl shadow-inner">
+            <button class="device-btn active" onclick="window.setDevice('desktop', this)" title="Escritorio"><i class="fa-solid fa-desktop"></i></button>
+            <button class="device-btn" onclick="window.setDevice('tablet', this)" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button class="device-btn" onclick="window.setDevice('mobile', this)" title="Móvil"><i class="fa-solid fa-mobile-screen-button"></i></button>
         </div>
 
         <div class="flex items-center gap-3">
-            <button class="tool-btn" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> Mover Secciones</button>
-            <button class="tool-btn" id="publish-btn" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios</button>
-            <button class="tool-btn bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
+            <button class="tool-btn bg-pink-500/10 border-pink-500/30 text-pink-400 hover:bg-pink-500 hover:text-white" id="btn-drag" onclick="window.toggleDragMode(this)">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i> <span>Mover Elementos</span>
+            </button>
+            <button class="tool-btn warning-btn" onclick="window.resetTemplateConfirm()" title="Restaura la web a sus valores de fábrica">
+                <i class="fa-solid fa-rotate-left"></i> <span>Restablecer</span>
+            </button>
+            <button class="tool-btn" id="publish-btn" onclick="window.publishChanges()">
+                <i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>
+            </button>
+            <button class="tool-btn danger-btn px-4" onclick="window.logout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
     
     <div class="workspace">
         <div class="sidebar">
-            <div class="panel-header mt-2"><i class="fa-solid fa-sitemap"></i> Navegación Visual</div>
-            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 text-center"></i> Catálogo</button>
-            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-book w-4 text-center"></i> Academia</button>
-            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 text-center"></i> Nosotros</button>
-            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 text-center"></i> Contacto</button>
+            <div class="panel-header mt-2"><i class="fa-solid fa-sitemap"></i> Secciones de la Web</div>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'catalog')"><div class="w-6 text-center"><i class="fa-solid fa-store text-zinc-400"></i></div> Tienda / Catálogo</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'courses')"><div class="w-6 text-center"><i class="fa-solid fa-graduation-cap text-zinc-400"></i></div> Academia</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'about')"><div class="w-6 text-center"><i class="fa-solid fa-circle-info text-zinc-400"></i></div> Nosotros</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'contact')"><div class="w-6 text-center"><i class="fa-regular fa-envelope text-zinc-400"></i></div> Contacto & Footer</button>
             
             <div class="divider my-4"></div>
             
-            <div class="panel-header"><i class="fa-solid fa-database"></i> Base de Datos</div>
-            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('openEditor', 'product', null)"><i class="fa-solid fa-box-open text-pink-400 w-4 text-center"></i> Nuevo Producto</button>
-            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('openEditor', 'course', null)"><i class="fa-solid fa-graduation-cap text-cyan-400 w-4 text-center"></i> Nuevo Curso</button>
+            <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Gestión de Inventario</div>
+            <button class="tool-btn w-full justify-start border-pink-500/20 hover:border-pink-500" onclick="window.callIframeFunction('openEditor', 'product', null)"><div class="w-6 text-center"><i class="fa-solid fa-box-open text-pink-400"></i></div> Añadir Producto</button>
+            <button class="tool-btn w-full justify-start border-cyan-500/20 hover:border-cyan-500" onclick="window.callIframeFunction('openEditor', 'course', null)"><div class="w-6 text-center"><i class="fa-solid fa-laptop-file text-cyan-400"></i></div> Añadir Curso</button>
+            
+            <div class="mt-auto p-4 bg-cyan-500/5 border border-cyan-500/10 rounded-xl">
+                <p class="text-[10px] text-cyan-400/80 leading-relaxed font-medium"><i class="fa-solid fa-circle-info mr-1"></i> <b>Tip:</b> Activa "Mover Elementos" arriba para arrastrar productos, cursos o redes sociales y cambiar su orden.</p>
+            </div>
         </div>
         
         <div id="preview-container">
@@ -157,10 +180,13 @@
         </div>
         
         <div class="sidebar-right hide-scrollbar">
-            <!-- Panel Inspector Ultra Premium (Elementor Style) -->
-            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 text-xs text-center p-6 bg-black/30">
-                <i class="fa-solid fa-wand-magic-sparkles text-3xl mb-4 text-cyan-400/50"></i>
-                <p>Haz clic en cualquier elemento interactivo dentro de la vista previa para editar su contenido, estilos visuales y posición espacial.</p>
+            <!-- Panel Inspector Avanzado -->
+            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 text-xs text-center p-6 bg-black/20 rounded-2xl border border-dashed border-white/10 m-auto max-h-[80%]">
+                <div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-wand-magic-sparkles text-2xl text-cyan-400/60"></i>
+                </div>
+                <p class="font-medium text-[13px] text-zinc-400">Haz clic en un elemento<br>para inspeccionarlo.</p>
+                <p class="mt-3 text-[10px] bg-black px-3 py-1.5 rounded-lg border border-white/5">Textos, Botones, Imágenes, Cajas...</p>
             </div>
         </div>
     </div>
@@ -173,15 +199,25 @@
     const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app);
 
-    // Sistema de Notificaciones (Reemplazo de alert)
-    window.showToast = function(msg, isError = false) {
+    // Sistema de Notificaciones Premium
+    window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        toast.className = `custom-toast ${isError ? 'error' : ''}`;
-        toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation text-red-500' : 'fa-check text-cyan-400'} text-lg"></i> <span>${msg}</span>`;
+        let icon = '<i class="fa-solid fa-check-circle text-cyan-400 text-lg"></i>';
+        toast.className = 'custom-toast';
+        
+        if (type === 'error') {
+            toast.classList.add('error');
+            icon = '<i class="fa-solid fa-triangle-exclamation text-red-500 text-lg"></i>';
+        } else if (type === 'warning') {
+            toast.classList.add('warning');
+            icon = '<i class="fa-solid fa-rotate-left text-amber-500 text-lg"></i>';
+        }
+
+        toast.innerHTML = `${icon} <span>${msg}</span>`;
         container.appendChild(toast);
         setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -193,11 +229,10 @@
 
     window.attemptLogin = async function() {
         const email = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value; const btn = document.getElementById('btn-login');
-        if (!email || !pass) { window.showToast("Ingresa credenciales válidas.", true); return; }
+        if (!email || !pass) { window.showToast("Ingresa credenciales válidas.", "error"); return; }
         try { 
-            btn.textContent = "Iniciando..."; btn.disabled = true; 
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verificando...'; btn.disabled = true; 
             
-            // Revisa token inicial del sistema primero, o usa email/password
             if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await signInWithCustomToken(auth, __initial_auth_token);
             } else {
@@ -206,8 +241,9 @@
             
             document.getElementById('auth-screen').style.opacity = '0'; 
             setTimeout(() => { document.getElementById('auth-screen').style.display = 'none'; document.getElementById('builder-ui').style.display = 'flex'; }, 500); 
+            window.showToast("¡Bienvenido al Panel de Control!");
         } 
-        catch (error) { window.showToast("Error de autenticación.", true); btn.textContent = "Iniciar Sesión"; btn.disabled = false; }
+        catch (error) { window.showToast("Error de autenticación.", "error"); btn.textContent = "Acceder al Panel"; btn.disabled = false; }
     };
 
     window.logout = async function() { await signOut(auth); location.reload(); };
@@ -226,30 +262,54 @@
     let isDragMode = false;
     window.toggleDragMode = function(btn) {
         isDragMode = !isDragMode;
-        if(isDragMode) { btn.classList.add('bg-pink-500/20', 'text-pink-400', 'border-pink-500/50'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Arrastrar Activo'; } 
-        else { btn.classList.remove('bg-pink-500/20', 'text-pink-400', 'border-pink-500/50'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Mover Secciones'; }
+        if(isDragMode) { 
+            btn.classList.add('bg-pink-500', 'text-white', 'border-pink-400'); btn.classList.remove('bg-pink-500/10', 'text-pink-400');
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right animate-pulse"></i> <span>Arrastrar Activo</span>'; 
+        } 
+        else { 
+            btn.classList.remove('bg-pink-500', 'text-white', 'border-pink-400'); btn.classList.add('bg-pink-500/10', 'text-pink-400');
+            btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> <span>Mover Elementos</span>'; 
+        }
         document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
     }
 
     window.publishChanges = function() {
-        const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+        const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-lg"></i> <span>Guardando...</span>';
         document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
     }
 
+    window.resetTemplateConfirm = function() {
+        if(confirm("⚠️ ¿Estás seguro que deseas restablecer la plantilla a sus valores originales? Se perderán los cambios visuales guardados (Tus productos seguirán intactos).")) {
+            window.showToast("Restableciendo plantilla...", "warning");
+            document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*');
+        }
+    }
+
     // Modal de Iconos Sociales
-    let selectedSocialNetwork = '';
-    let selectedSocialIconClass = '';
+    let selectedSocialNetwork = ''; let selectedSocialIconClass = '';
     window.selectSocialIcon = function(iconClass, network, btnNode) {
-        document.querySelectorAll('.social-opt').forEach(b => b.classList.remove('border-white', 'scale-110'));
-        btnNode.classList.add('border-white', 'scale-110');
+        document.querySelectorAll('.social-opt').forEach(b => {
+            b.classList.remove('border-white', 'shadow-[0_0_20px_rgba(255,255,255,0.2)]', 'scale-105');
+            b.style.color = ''; b.style.borderColor = '';
+        });
+        
+        btnNode.classList.add('scale-105', 'border-white', 'text-white');
+        
+        // Mantener el color original activo si lo tiene
+        if(network === 'facebook') { btnNode.style.borderColor = '#1877f2'; btnNode.style.color = '#1877f2'; btnNode.style.boxShadow = '0 0 20px rgba(24,119,242,0.3)'; }
+        if(network === 'instagram') { btnNode.style.borderColor = '#e1306c'; btnNode.style.color = '#e1306c'; btnNode.style.boxShadow = '0 0 20px rgba(225,48,108,0.3)'; }
+        if(network === 'whatsapp') { btnNode.style.borderColor = '#25d366'; btnNode.style.color = '#25d366'; btnNode.style.boxShadow = '0 0 20px rgba(37,211,102,0.3)'; }
+        if(network === 'youtube') { btnNode.style.borderColor = '#ff0000'; btnNode.style.color = '#ff0000'; btnNode.style.boxShadow = '0 0 20px rgba(255,0,0,0.3)'; }
+        
         selectedSocialIconClass = iconClass;
         selectedSocialNetwork = network;
     }
     window.confirmAddSocial = function() {
         const url = document.getElementById('social-url-input').value;
-        if(!url || !selectedSocialNetwork) { window.showToast("Selecciona un icono y pon una URL válida.", true); return; }
+        if(!url || !selectedSocialNetwork) { window.showToast("Selecciona un ícono y escribe una URL válida.", "error"); return; }
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url: url, iconClass: selectedSocialIconClass, network: selectedSocialNetwork }, '*');
         window.closeIconPicker();
+        document.getElementById('social-url-input').value = '';
     }
     window.closeIconPicker = function() {
         const m = document.getElementById('icon-picker-modal'); m.classList.remove('opacity-100'); document.getElementById('icon-picker-content').classList.add('scale-95');
@@ -260,7 +320,7 @@
     window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
     window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
     window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
-    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<div class="text-zinc-500 text-xs p-6 text-center">Elemento eliminado.</div>'; }
+    window.deleteElement = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<div class="text-zinc-500 text-xs p-6 text-center"><i class="fa-solid fa-trash text-3xl mb-3 block text-red-500/50"></i>Elemento eliminado exitosamente.</div>'; }
     window.selectParent = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_PARENT_NODE'}, '*'); }
     window.selectChild = function() { document.getElementById('site-frame').contentWindow.postMessage({type: 'SELECT_CHILD_NODE'}, '*'); }
 
@@ -272,12 +332,12 @@
         if(!isActive) item.classList.add('active');
     }
 
-    // Escuchador de Eventos
+    // Escuchador de Eventos (Iframe -> Admin)
     window.addEventListener('message', (event) => {
         const data = event.data;
         if (data.type === 'APP_READY') { document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); }
         if (data.type === 'ELEMENT_SELECTED') { renderPropertiesPanel(data); }
-        if (data.type === 'CLEAR_SELECTION') { document.getElementById('properties-panel').innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-zinc-500 text-xs text-center p-6 bg-black/30"><i class="fa-solid fa-wand-magic-sparkles text-3xl mb-4 text-cyan-400/50"></i><p>Haz clic en cualquier elemento interactivo para editar su contenido y diseño.</p></div>'; }
+        if (data.type === 'CLEAR_SELECTION') { document.getElementById('properties-panel').innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-zinc-500 text-xs text-center p-6 bg-black/20 rounded-2xl border border-dashed border-white/10 m-auto max-h-[80%]"><div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4"><i class="fa-solid fa-wand-magic-sparkles text-2xl text-cyan-400/60"></i></div><p class="font-medium text-[13px] text-zinc-400">Haz clic en un elemento<br>para inspeccionarlo.</p></div>'; }
         if (data.type === 'OPEN_ICON_PICKER') {
             const m = document.getElementById('icon-picker-modal'); m.classList.remove('hidden'); m.classList.add('flex');
             setTimeout(() => { m.classList.add('opacity-100'); document.getElementById('icon-picker-content').classList.remove('scale-95'); }, 10);
@@ -286,78 +346,119 @@
             const wInput = document.getElementById('inp-width'); if(wInput) wInput.value = data.width;
             const hInput = document.getElementById('inp-height'); if(hInput) hInput.value = data.height;
         }
-        if (data.type === 'SAVE_DONE') { const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios'; window.showToast('¡Cambios publicados con éxito!'); }
-        if (data.type === 'SAVE_ERROR') { const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios'; window.showToast('Error: ' + data.msg, true); }
+        if (data.type === 'SAVE_DONE') { 
+            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
+            window.showToast(data.msg || '¡Cambios publicados con éxito!'); 
+        }
+        if (data.type === 'SAVE_ERROR') { 
+            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
+            window.showToast('Error: ' + data.msg, 'error'); 
+        }
     });
 
-    // Renderizado del Panel Avanzado (Divi/Elementor Style)
     function renderPropertiesPanel(data) {
         const panel = document.getElementById('properties-panel');
         let initialStyles = data.styles || {};
         
         let html = `
-        <div class="w-full bg-[#121215] border-b border-white/10 p-4 flex items-center justify-between sticky top-0 z-20 shadow-md">
-            <div><span class="text-cyan-400 font-bold text-[10px] uppercase tracking-wider block mb-1">Inspeccionando</span><span class="text-white text-xs font-mono font-bold bg-black px-2 py-1 rounded border border-white/10"><i class="fa-solid fa-code text-zinc-500"></i> ${data.tagName}</span></div>
-            <div class="flex gap-1">
-                <button onclick="window.selectParent()" class="w-7 h-7 bg-black hover:bg-[#25d8ff]/20 text-zinc-400 hover:text-[#25d8ff] border border-white/10 rounded flex items-center justify-center transition-colors" title="Subir nivel"><i class="fa-solid fa-arrow-up"></i></button>
-                <button onclick="window.selectChild()" class="w-7 h-7 bg-black hover:bg-[#25d8ff]/20 text-zinc-400 hover:text-[#25d8ff] border border-white/10 rounded flex items-center justify-center transition-colors" title="Bajar nivel"><i class="fa-solid fa-arrow-down"></i></button>
+        <div class="w-full bg-[#121215] border-b border-white/10 p-5 flex items-center justify-between sticky top-0 z-20 shadow-md">
+            <div>
+                <span class="text-cyan-400 font-extrabold text-[10px] uppercase tracking-widest block mb-1">Editando</span>
+                <span class="text-white text-sm font-mono font-bold bg-black px-2.5 py-1 rounded border border-white/10"><i class="fa-solid fa-code text-zinc-500 text-xs mr-1"></i> ${data.tagName}</span>
+            </div>
+            <div class="flex gap-1.5 bg-black p-1 rounded-lg border border-white/5">
+                <button onclick="window.selectParent()" class="w-8 h-8 rounded bg-transparent hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors" title="Seleccionar Padre"><i class="fa-solid fa-level-up-alt"></i></button>
+                <button onclick="window.selectChild()" class="w-8 h-8 rounded bg-transparent hover:bg-white/10 text-zinc-400 hover:text-white flex items-center justify-center transition-colors" title="Seleccionar Hijo"><i class="fa-solid fa-level-down-alt"></i></button>
             </div>
         </div>`;
 
-        // Acordeón 1: Contenido
+        // --- ACORDEÓN 1: CONTENIDO ---
         html += `<div class="acc-item active">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib text-pink-400"></i> Contenido</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib w-4"></i> Contenido</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">`;
             
             if (!['IMG', 'VIDEO', 'SECTION', 'DIV', 'ARTICLE'].includes(data.tagName)) {
-                html += `<div><label class="inspector-label">Texto Visible</label><textarea oninput="window.updateText(this.value)" class="inspector-input min-h-[80px]">${data.text || ''}</textarea></div>`;
+                html += `<div><label class="inspector-label">Texto Visible</label><textarea oninput="window.updateText(this.value)" class="inspector-input min-h-[100px] leading-relaxed resize-y">${data.text || ''}</textarea></div>`;
             }
             if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
-                html += `<div><label class="inspector-label">URL / Enlace / Origen</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inspector-input"></div>`;
+                html += `<div><label class="inspector-label">URL / Origen (Link o Imagen)</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inspector-input"></div>`;
             }
         html += `</div></div>`;
 
-        // Acordeón 2: Diseño (Dimensiones y Espaciado)
+        // --- ACORDEÓN 2: TIPOGRAFÍA ---
         html += `<div class="acc-item">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-cyan-400"></i> Diseño & Tamaño</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-font w-4"></i> Tipografía</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="inspector-label">Ancho (W)</label><div class="input-group"><span class="input-group-addon">W</span><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="100%, 200px"></div></div>
-                    <div><label class="inspector-label">Alto (H)</label><div class="input-group"><span class="input-group-addon">H</span><input type="text" id="inp-height" oninput="window.updateStyle('height', this.value)" value="${initialStyles.height || ''}" placeholder="auto, 200px"></div></div>
+                <div>
+                    <label class="inspector-label">Tamaño de Texto</label>
+                    <select onchange="window.updateStyle('textSize', this.value)" class="inspector-input">
+                        <option value="">Heredado (Default)</option>
+                        <option value="text-xs">Muy Pequeño (xs)</option>
+                        <option value="text-sm">Pequeño (sm)</option>
+                        <option value="text-base">Normal (base)</option>
+                        <option value="text-lg">Grande (lg)</option>
+                        <option value="text-xl">Muy Grande (xl)</option>
+                        <option value="text-2xl">Título 2XL</option>
+                        <option value="text-4xl">Título 4XL</option>
+                        <option value="text-6xl">Gigante 6XL</option>
+                    </select>
                 </div>
-                <div class="grid grid-cols-2 gap-3 mt-1">
-                    <div><label class="inspector-label">Padding (Interior)</label><div class="input-group"><span class="input-group-addon"><i class="fa-solid fa-compress"></i></span><input type="text" oninput="window.updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="10px 20px"></div></div>
-                    <div><label class="inspector-label">Margen (Exterior)</label><div class="input-group"><span class="input-group-addon"><i class="fa-solid fa-expand"></i></span><input type="text" oninput="window.updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="10px auto"></div></div>
+                <div>
+                    <label class="inspector-label">Grosor (Font Weight)</label>
+                    <select onchange="window.updateStyle('fontWeight', this.value)" class="inspector-input">
+                        <option value="">Heredado (Default)</option>
+                        <option value="font-light">Ligero (Light)</option>
+                        <option value="font-normal">Normal (Regular)</option>
+                        <option value="font-medium">Medio (Medium)</option>
+                        <option value="font-bold">Negrita (Bold)</option>
+                        <option value="font-extrabold">Extra Negrita (Extrabold)</option>
+                    </select>
                 </div>
-                <div class="mt-1">
-                    <label class="inspector-label">Alineación de Texto</label>
-                    <div class="flex gap-1 bg-black p-1 rounded-lg border border-white/10">
-                        <button onclick="window.updateStyle('textAlign', 'text-left'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn active"><i class="fa-solid fa-align-left"></i></button>
-                        <button onclick="window.updateStyle('textAlign', 'text-center'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn"><i class="fa-solid fa-align-center"></i></button>
-                        <button onclick="window.updateStyle('textAlign', 'text-right'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn"><i class="fa-solid fa-align-right"></i></button>
+                <div>
+                    <label class="inspector-label">Alineación</label>
+                    <div class="flex bg-black p-1 rounded-lg border border-white/10 gap-1">
+                        <button onclick="window.updateStyle('textAlign', 'text-left'); this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="align-btn active"><i class="fa-solid fa-align-left"></i></button>
+                        <button onclick="window.updateStyle('textAlign', 'text-center'); this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="align-btn"><i class="fa-solid fa-align-center"></i></button>
+                        <button onclick="window.updateStyle('textAlign', 'text-right'); this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="align-btn"><i class="fa-solid fa-align-right"></i></button>
                     </div>
                 </div>
             </div>
         </div>`;
 
-        // Acordeón 3: Estilos Visuales
+        // --- ACORDEÓN 3: DISEÑO (DIMENSIONES Y ESPACIADO) ---
+        html += `<div class="acc-item">
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined w-4"></i> Dimensiones</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
+            <div class="acc-content">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="inspector-label">Ancho <span class="text-zinc-500 font-normal">W</span></label><div class="input-group"><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="100%, 200px"></div></div>
+                    <div><label class="inspector-label">Alto <span class="text-zinc-500 font-normal">H</span></label><div class="input-group"><input type="text" id="inp-height" oninput="window.updateStyle('height', this.value)" value="${initialStyles.height || ''}" placeholder="auto, 200px"></div></div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="inspector-label" title="Espacio Interno">Padding <i class="fa-solid fa-compress text-zinc-500"></i></label><div class="input-group"><input type="text" oninput="window.updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="10px 20px"></div></div>
+                    <div><label class="inspector-label" title="Espacio Externo">Margen <i class="fa-solid fa-expand text-zinc-500"></i></label><div class="input-group"><input type="text" oninput="window.updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="0 auto"></div></div>
+                </div>
+            </div>
+        </div>`;
+
+        // --- ACORDEÓN 4: ESTILOS VISUALES ---
         let rgbToHex = (rgbStr) => { 
+            if(!rgbStr || !rgbStr.includes('rgb')) return '#ffffff';
             let a = rgbStr.split("(")[1].split(")")[0].split(","); 
-            return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length==1) ? "0"+x : x; }).join(""); 
+            return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length==1) ? "0"+x : x; }).join("").slice(0,6); 
         };
-        let initColor = initialStyles.color && initialStyles.color.includes('rgb') ? rgbToHex(initialStyles.color) : '#ffffff';
+        let initColor = rgbToHex(initialStyles.color);
         let initBg = initialStyles.bg && initialStyles.bg.includes('rgb') ? rgbToHex(initialStyles.bg) : '#000000';
 
         html += `<div class="acc-item">
-            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-palette text-violet-400"></i> Estilos Visuales</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-palette w-4"></i> Estilos Visuales</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-4">
                     <div><label class="inspector-label">Color Texto</label><input type="color" value="${initColor}" oninput="window.updateStyle('color', this.value)" class="color-picker"></div>
-                    <div><label class="inspector-label">Color Fondo</label><input type="color" value="${initBg}" oninput="window.updateStyle('bg', this.value)" class="color-picker"></div>
+                    <div><label class="inspector-label">Fondo (Bg)</label><input type="color" value="${initBg}" oninput="window.updateStyle('bg', this.value)" class="color-picker"></div>
                 </div>`;
                 
         if (data.hasTheme) {
-            html += `<div class="mt-2"><label class="inspector-label">Tema Base (Glows)</label>
+            html += `<div><label class="inspector-label">Tema Principal (Color Glow)</label>
                 <select onchange="window.updateStyle('theme', this.value)" class="inspector-input font-bold" style="color: ${data.currentTheme === 'pink' ? '#ff2da8' : data.currentTheme === 'violet' ? '#735cff' : '#25d8ff'}">
                     <option value="cyan" ${data.currentTheme === 'cyan' ? 'selected' : ''}>Cyan Luminoso</option>
                     <option value="pink" ${data.currentTheme === 'pink' ? 'selected' : ''}>Rosa Neón</option>
@@ -368,14 +469,14 @@
             </div>`;
         }
 
-        html += `<div class="mt-2"><label class="inspector-label">Bordes Redondeados</label><div class="input-group"><span class="input-group-addon"><i class="fa-regular fa-square"></i></span><input type="text" oninput="window.updateStyle('radius', this.value)" value="${initialStyles.radius || ''}" placeholder="12px, 50%..."></div></div>
+        html += `<div><label class="inspector-label">Bordes Redondeados (Radius)</label><div class="input-group"><input type="text" oninput="window.updateStyle('radius', this.value)" value="${initialStyles.radius || ''}" placeholder="12px, 50%..."></div></div>
             </div>
         </div>`;
 
-        html += `<div class="p-4"><button onclick="window.deleteElement()" class="w-full py-3 rounded-lg bg-red-500/10 text-red-500 border border-red-500/30 text-xs font-bold hover:bg-red-500 hover:text-white transition-colors shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-trash"></i> Eliminar Elemento</button></div>`;
+        html += `<div class="p-6 mt-2"><button onclick="window.deleteElement()" class="w-full py-3.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/30 text-xs font-bold hover:bg-red-500 hover:text-white transition-all shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] flex items-center justify-center gap-2"><i class="fa-solid fa-trash-can text-sm"></i> Eliminar Elemento Permanente</button></div>`;
 
         panel.innerHTML = html;
-        panel.className = "w-full flex-1 overflow-y-auto bg-[#0a0a0c]";
+        panel.className = "w-full flex-1 overflow-y-auto bg-[#0a0a0c] rounded-none border-none max-h-none p-0";
     }
 </script>
 </body>
