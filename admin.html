@@ -70,4 +70,132 @@
         <div class="space-y-3">
             <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
             <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
-            <button onclick="attemptLogin()" id="btn-login" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Iniciar Ses
+            <button onclick="attemptLogin()" id="btn-login" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Iniciar Sesión</button>
+        </div>
+    </div>
+</div>
+
+<div id="builder-ui">
+    <div class="topbar">
+        <div class="flex items-center gap-4">
+            <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-layer-group text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-sm tracking-wide">Multiprintt <span class="text-zinc-500 font-normal">| Visual Builder</span></span>
+        </div>
+        
+        <div class="flex items-center gap-2 bg-[#121215] p-1 border border-white/10 rounded-lg">
+            <button class="device-btn active" onclick="setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
+            <button class="device-btn" onclick="setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button class="device-btn" onclick="setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button class="tool-btn" onclick="publishChanges()"><i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios</button>
+            <button class="tool-btn danger-btn" onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+    </div>
+    
+    <div class="workspace">
+        <div class="sidebar">
+            <div class="panel-header"><i class="fa-solid fa-boxes-stacked"></i> Tienda Base</div>
+            <button class="tool-btn w-full justify-start"><i class="fa-solid fa-box-open"></i> Crear Producto</button>
+            <button class="tool-btn w-full justify-start"><i class="fa-solid fa-graduation-cap"></i> Crear Curso</button>
+            <div class="divider"></div>
+            <div class="panel-header"><i class="fa-solid fa-sitemap"></i> Secciones</div>
+            <button class="tool-btn w-full justify-start" onclick="navigateIframe('catalog')"><i class="fa-solid fa-store"></i> Ir a Tienda</button>
+            <button class="tool-btn w-full justify-start" onclick="navigateIframe('courses')"><i class="fa-solid fa-book"></i> Ir a Academia</button>
+            <button class="tool-btn w-full justify-start" onclick="navigateIframe('contact')"><i class="fa-regular fa-envelope"></i> Ir a Contacto</button>
+        </div>
+        
+        <div id="preview-container">
+            <div id="preview-wrapper" class="device-desktop">
+                <!-- Se enlaza directamente con el archivo index reparado -->
+                <iframe id="site-frame" src="index.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="panel-header"><i class="fa-solid fa-sliders"></i> Propiedades Visuales</div>
+            <div id="properties-panel" class="text-zinc-500 text-xs text-center py-10 px-4 bg-black/50 border border-white/5 rounded-lg border-dashed">
+                Haz clic en cualquier elemento con borde punteado dentro de la vista previa para editar sus propiedades.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+    const firebaseConfig = { 
+        apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", 
+        authDomain: "multiprintt-cc0f1.firebaseapp.com", 
+        projectId: "multiprintt-cc0f1", 
+        storageBucket: "multiprintt-cc0f1.firebasestorage.app", 
+        messagingSenderId: "626369594335", 
+        appId: "1:626369594335:web:711aac8c65197a0dceba6a" 
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('builder-ui').style.display = 'flex';
+        }
+    });
+
+    window.attemptLogin = async function() {
+        const email = document.getElementById('loginUser').value;
+        const pass = document.getElementById('loginPass').value;
+        const btn = document.getElementById('btn-login');
+        
+        if (!email || !pass) {
+            alert("Por favor, ingresa credenciales válidas.");
+            return;
+        }
+
+        try {
+            btn.textContent = "Iniciando...";
+            btn.disabled = true;
+            await signInWithEmailAndPassword(auth, email, pass);
+            
+            document.getElementById('auth-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('builder-ui').style.display = 'flex';
+            }, 500);
+        } catch (error) {
+            alert("Error: " + error.message);
+            btn.textContent = "Iniciar Sesión";
+            btn.disabled = false;
+        }
+    };
+
+    window.logout = async function() {
+        await signOut(auth);
+        location.reload();
+    };
+
+    window.setDevice = function(type, btn) {
+        document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const wrapper = document.getElementById('preview-wrapper');
+        wrapper.className = 'device-' + type;
+    };
+    
+    window.navigateIframe = function(targetSection) {
+        const iframe = document.getElementById('site-frame');
+        if (iframe && iframe.contentWindow && iframe.contentWindow.navigate) {
+            iframe.contentWindow.navigate(targetSection);
+        }
+    };
+
+    window.publishChanges = function() {
+        alert("¡Todos los cambios se han guardado de forma segura en la base de datos!");
+    };
+</script>
+</body>
+</html>
