@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<title>Multiprintt | Visual Builder Pro</title>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://multiprintt.web.app">
 
-<script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multiprintt Admin | Visual Builder Pro</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
     :root { --bg-dark: #000000; --panel: #09090b; --border: rgba(255,255,255,0.06); --accent: #25d8ff; }
@@ -71,6 +78,19 @@
     #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
     .custom-toast { background: #18181b; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 11px; font-weight: 500; transform: translateY(15px); opacity: 0; transition: all 0.3s ease; pointer-events: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
     .custom-toast.show { transform: translateY(0); opacity: 1; }
+
+/* Multiprintt Admin 2027 quality layer */
+html{color-scheme:dark;scrollbar-gutter:stable}
+body{overscroll-behavior:none}
+button,input,textarea,select{touch-action:manipulation}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
+.status-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);border-radius:999px;padding:4px 8px;color:#a1a1aa;font-size:9px;font-weight:600}
+.status-dot{width:6px;height:6px;border-radius:999px;background:#f59e0b;box-shadow:0 0 10px rgba(245,158,11,.5)}
+.status-dot.ok{background:#34d399;box-shadow:0 0 10px rgba(52,211,153,.5)}
+.status-dot.bad{background:#ef4444;box-shadow:0 0 10px rgba(239,68,68,.5)}
+
 </style>
 </head>
 <body>
@@ -121,7 +141,7 @@
 <div id="gallery-modal" class="modal-overlay z-[10000]">
     <div class="modal-content" style="max-width: 650px;">
         <div class="flex justify-between items-center mb-3">
-            <h3 class="text-white font-semibold text-xs">Seleccionar Archivo de Medios</h3>
+            <div><h3 class="text-white font-semibold text-xs">Seleccionar Archivo de Medios</h3><div id="gallery-source" class="text-[8px] text-zinc-500 mt-1 font-mono truncate max-w-[480px]"></div></div>
             <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="flex gap-2 mb-3">
@@ -136,8 +156,10 @@
 <div id="builder-ui">
     <div class="topbar">
         <div class="flex items-center gap-2">
+            <span class="status-pill"><span id="save-status-dot" class="status-dot"></span><span id="save-status-label">Listo</span></span>
             <span class="font-bold text-[11px] text-white tracking-tight">Multiprintt</span>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">Core</span>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">Core 2027</span>
+            <span id="save-status" class="status-pill hidden sm:inline-flex"><span class="status-dot" id="save-status-dot"></span><span id="save-status-label">Conectando</span></span>
         </div>
         <div class="flex items-center gap-1 bg-black p-0.5 border border-white/5 rounded-md">
             <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
@@ -180,13 +202,29 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+window.MULTIPRINTT_SECURITY = { appCheckEnabled:false }; const auth = getAuth(app); const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
     const APP_ID = "multiprintt-web";
+const SAME_ORIGIN = window.location.origin;
+const ADMIN_VERSION='2027.09-commerce';
+const setSaveStatus = (state,label) => {
+    const dot=document.getElementById('save-status-dot'); const text=document.getElementById('save-status-label');
+    if(!dot||!text) return;
+    dot.className='status-dot'+(state==='ok'?' ok':state==='bad'?' bad':'');
+    text.textContent=label;
+};
+const safeText = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+const safeUrl = value => {
+    try{
+        const u=new URL(String(value||''), window.location.href);
+        return ['http:','https:'].includes(u.protocol) ? u.href : '';
+    }catch{return ''}
+};
 
     window.showToast = function(msg) {
         const container = document.getElementById('toast-container');
@@ -221,7 +259,7 @@
             await setPersistence(auth, browserSessionPersistence);
             if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
             else await signInWithEmailAndPassword(auth, email, pass); 
-        } catch (error) { window.showToast("Error de acceso."); }
+        } catch (error) { window.showToast(error?.code==="auth/invalid-credential" ? "Correo o contraseña incorrectos." : "No se pudo iniciar sesión."); setSaveStatus("bad","Acceso rechazado"); }
     };
 
     window.logout = async function() { await signOut(auth); location.reload(); };
@@ -233,42 +271,54 @@
         isDragMode = !isDragMode;
         if(isDragMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Mover'; } 
         else { btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-lock"></i> Fijo'; }
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
+        document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, SAME_ORIGIN);
     }
 
     window.publishChanges = function() {
         document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
+        document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, SAME_ORIGIN);
     }
 
     window.resetTemplateConfirm = function() {
         if(confirm("¿Restaurar diseño base de fábrica?")) {
             window.showToast("Restaurando UI...");
-            document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*');
+            document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, SAME_ORIGIN);
         }
     }
 
     let currentDbItem = {};
     let activeMediaInput = null;
-    let galleryDataCache = [];
+    let galleryDataCache = []; let gallerySource = ''; let galleryLoaded = false;
 
     window.openGallery = async function(inputId, filter = 'all') {
         activeMediaInput = inputId;
+        const source = inputId === 'db-img' && currentDbItem.type === 'product'
+            ? '/recursos/productos/imagenes.json'
+            : '/recursos/imagenes.json';
+        gallerySource = source;
         document.getElementById('gallery-modal').classList.add('active');
         const grid = document.getElementById('gallery-grid');
-        grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando...</div>';
-        
-        if (galleryDataCache.length === 0) {
-            try {
-                const res = await fetch('https://multiprintt.web.app/recursos/imagenes.json');
-                if(res.ok) galleryDataCache = await res.json();
-                else throw new Error();
-            } catch(e) {
-                galleryDataCache = [
-                    { type: 'image', url: 'https://placehold.co/400x400/101014/25d8ff?text=Imagen', title: 'Ejemplo' },
-                    { type: 'video', url: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', title: 'Video Testimonio' }
-                ];
-            }
+        const sourceEl = document.getElementById('gallery-source');
+        if(sourceEl) sourceEl.textContent = source;
+        grid.innerHTML = `<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Leyendo catálogo multimedia…</div>`;
+
+        try {
+            const res = await fetch(source, { cache: 'no-store', credentials: 'same-origin' });
+            if(!res.ok) throw new Error(`HTTP ${res.status}`);
+            const raw = await res.json();
+            const list = Array.isArray(raw) ? raw : (Array.isArray(raw.items) ? raw.items : Object.entries(raw).flatMap(([key,v]) => Array.isArray(v) ? v : [{...v, title:v.title||key}]));
+            galleryDataCache = list.map((item, i) => {
+                const url = item.url || item.src || item.image || item.path || item.href || item.file || '';
+                const lower = String(url).toLowerCase();
+                const type = item.type || (/(\.mp4|\.webm|\.mov|video)/i.test(lower) ? 'video' : 'image');
+                return { ...item, url, type, title: item.title || item.name || item.alt || `Medio ${i+1}` };
+            }).filter(item => item.url);
+            galleryLoaded = true;
+        } catch(e) {
+            galleryDataCache = [];
+            galleryLoaded = false;
+            grid.innerHTML = `<div class="col-span-full py-10 text-center text-xs text-zinc-500"><i class="fa-solid fa-triangle-exclamation text-amber-400 mb-2"></i><br>No se pudo leer <strong class="text-white">${source}</strong>.<br>Verifica que el JSON exista en Firebase Hosting.</div>`;
+            return;
         }
         window.filterGallery(filter);
     }
@@ -283,13 +333,15 @@
         const filtered = galleryDataCache.filter(item => type === 'all' || item.type === type);
         let html = '';
         filtered.forEach(item => {
+            const safeUrl = JSON.stringify(item.url);
+            const safeTitle = String(item.title||'').replace(/[&<>"']/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
             if(item.type === 'image') {
-                html += `<div onclick="window.selectMedia('${item.url}')" class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-cyan-400 relative group"><img src="${item.url}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100"><span class="absolute bottom-1 left-1 right-1 bg-black/80 text-white text-[8px] p-1 truncate rounded">${item.title}</span></div>`;
+                html += `<button type="button" onclick='window.selectMedia(${safeUrl})' class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-cyan-400 relative group text-left"><img src="${item.url}" loading="lazy" class="w-full h-full object-cover opacity-70 group-hover:opacity-100" onerror="this.style.opacity=.2"><span class="absolute bottom-1 left-1 right-1 bg-black/80 text-white text-[8px] p-1 truncate rounded">${safeTitle}</span></button>`;
             } else {
-                html += `<div onclick="window.selectMedia('${item.url}')" class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-violet-400 relative group flex items-center justify-center"><i class="fa-solid fa-video text-xl text-white/30 group-hover:text-violet-400"></i><span class="absolute bottom-1 left-1 right-1 bg-black/80 text-white text-[8px] p-1 truncate rounded">${item.title}</span></div>`;
+                html += `<button type="button" onclick='window.selectMedia(${safeUrl})' class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-violet-400 relative group flex items-center justify-center text-left"><video src="${item.url}" muted preload="metadata" class="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:opacity-60"></video><div class="relative z-10 w-10 h-10 rounded-full bg-black/60 border border-white/10 flex items-center justify-center"><i class="fa-solid fa-play text-xs text-violet-300"></i></div><span class="absolute bottom-1 left-1 right-1 bg-black/80 text-white text-[8px] p-1 truncate rounded z-10">${safeTitle}</span></button>`;
             }
         });
-        grid.innerHTML = html || '<div class="col-span-full py-8 text-center text-xs text-zinc-500">Sin medios</div>';
+        grid.innerHTML = html || '<div class="col-span-full py-8 text-center text-xs text-zinc-500">Sin medios en esta fuente.</div>';
     }
 
     window.selectMedia = function(url) {
@@ -301,7 +353,7 @@
 
     window.openDbEditor = function(type, itemId, itemData = null) {
         currentDbItem = { type: type, id: itemId || 'new_' + Date.now() };
-        let title = itemId ? "Editar" : "Nuevo"; let d = itemData || {};
+        let title = itemId ? 'Editar' : 'Nuevo'; let raw = itemData || {}; let d = new Proxy(raw,{get:(o,k)=>typeof o[k]==='string'?safeText(o[k]):o[k]});
         let formHtml = '';
         if (type === 'product') {
             title = itemId ? "Editar Producto" : "Nuevo Producto";
@@ -329,9 +381,15 @@
                     </div>
                 </div>
                 <div>
-                    <label class="lbl">URL Imagen <button onclick="window.openGallery('db-img', 'image')" class="ml-2 text-cyan-400"><i class="fa-solid fa-folder-open"></i> Explorar</button></label>
-                    <input type="text" id="db-img" value="${d.image||''}" class="inp-field">
+                    <label class="lbl">Imagen principal <button type="button" onclick="window.openGallery('db-img', 'image')" class="ml-2 text-cyan-400 hover:text-cyan-300"><i class="fa-solid fa-folder-open"></i> Explorar productos</button></label>
+                    <input type="text" id="db-img" value="${d.image||((Array.isArray(d.images)&&d.images[0])||'')}" class="inp-field">
                 </div>
+                <div><label class="lbl">Imágenes adicionales <span class="text-zinc-600">(separadas por coma)</span></label><input type="text" id="db-images" value="${Array.isArray(d.images)?d.images.join(', '):''}" class="inp-field" placeholder="imagen2, imagen3…"></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div><label class="lbl">Ventas registradas</label><input type="number" min="0" id="db-sales" value="${d.salesCount||0}" class="inp-field"></div>
+                    <div class="flex items-end"><label class="flex items-center gap-2 cursor-pointer mb-2"><input type="checkbox" id="db-hot" class="w-4 h-4 rounded accent-red-500" ${d.isBestSeller?'checked':''}/><span class="text-[11px] text-white font-medium">🔥 Marcar más vendido</span></label></div>
+                </div>
+                <p class="text-[9px] text-zinc-500">El distintivo puede basarse en ventas registradas o marcarse manualmente.</p>
             `;
         } else if (type === 'course') {
             title = itemId ? "Editar Curso" : "Nuevo Curso";
@@ -386,17 +444,20 @@
                 category: document.getElementById('db-cat').value, 
                 price: parseFloat(document.getElementById('db-price').value)||0, 
                 discount: parseFloat(document.getElementById('db-discount').value)||0,
-                image: document.getElementById('db-img').value, 
-                isPromo: document.getElementById('db-promo').checked 
+                image: document.getElementById('db-img').value,
+                images: document.getElementById('db-images').value.split(',').map(v=>v.trim()).filter(Boolean),
+                isPromo: document.getElementById('db-promo').checked,
+                salesCount: Math.max(0, parseInt(document.getElementById('db-sales').value,10)||0),
+                isBestSeller: document.getElementById('db-hot').checked 
             }; 
         }
         else if(t === 'course') { payload = { title: document.getElementById('db-title').value, desc: document.getElementById('db-desc').value, schedule: document.getElementById('db-schedule').value, price: document.getElementById('db-price').value, image: document.getElementById('db-img').value, isMasterclass: document.getElementById('db-master').checked }; }
         else if(t === 'testimonial_video') { payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, src: document.getElementById('db-vid').value, theme: document.getElementById('db-theme').value }; }
         else if(t === 'testimonial_text') { payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, theme: document.getElementById('db-theme').value }; }
 
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_SAVE_REQUEST', itemType: t, id: currentDbItem.id, data: payload }, '*');
-        if(t === 'testimonial_video') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
-        if(t === 'testimonial_text') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', data: payload }, '*');
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_SAVE_REQUEST', itemType: t, id: currentDbItem.id, data: payload }, SAME_ORIGIN);
+        if(t === 'testimonial_video') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, SAME_ORIGIN);
+        if(t === 'testimonial_text') document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', data: payload }, SAME_ORIGIN);
         
         document.getElementById('db-modal').classList.remove('active');
         window.showToast("Cambios guardados.");
@@ -408,39 +469,50 @@
         btn.classList.add('border-white', 'text-white'); selNet = network; selIcon = iconClass;
     }
     window.confirmAddSocial = function() {
-        const url = document.getElementById('social-url-input').value;
-        if(!url) return window.showToast("Escribe una URL");
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url, iconClass: selIcon, network: selNet }, '*');
+        const url = safeUrl(document.getElementById('social-url-input').value);
+        if(!url) return window.showToast('URL no válida. Usa https://');
+        document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url, iconClass: selIcon, network: selNet }, SAME_ORIGIN);
         document.getElementById('icon-picker-modal').classList.remove('active');
     }
 
-    window.updateText = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*');
-    window.updateHref = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*');
-    window.updateStyle = (prop, val) => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop, value: val}, '*');
-    window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px]">Nodo Eliminado.</p>'; }
-    window.toggleAccordion = header => { const item = header.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
+    window.updateText = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, SAME_ORIGIN);
+    window.updateHref = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, SAME_ORIGIN);
+    window.updateStyle = (prop, val) => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop, value: val}, SAME_ORIGIN);
+    window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, SAME_ORIGIN); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px]">Nodo Eliminado.</p>'; }
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active')); });
+window.toggleAccordion = header => { const item = header.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
 
     window.addEventListener('message', async (event) => {
+        if(event.origin !== window.location.origin) return;
         const data = event.data;
         if (data.type === 'SAVE_FULL_LAYOUT') {
             if (data.layoutData) {
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder || [], courseOrder: data.courseOrder || [] }, { merge: true });
-                document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Desplegar';
-                window.showToast('¡Desplegado correctamente!');
+                try{
+                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones:data.layoutData, prodOrder:data.prodOrder||[], courseOrder:data.courseOrder||[], updatedAt:Date.now() }, { merge:true });
+                    document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
+                    setSaveStatus('ok','Guardado'); window.showToast('Cambios publicados correctamente.');
+                }catch(error){
+                    document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
+                    setSaveStatus('bad','Error al guardar'); window.showToast('No se pudo publicar.');
+                    console.error(error);
+                }
             }
         }
         if (data.type === 'DB_SAVE_REQUEST') {
             if (data.itemType === 'product' || data.itemType === 'course') {
-                const col = data.itemType === 'product' ? 'products' : 'courses';
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.id), data.data, { merge: true });
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: data.itemType, id: data.id, data: data.data }, '*');
+                const col=data.itemType==='product'?'products':'courses';
+                try{
+                    await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,data.id),{...data.data,updatedAt:Date.now()},{merge:true});
+                    document.getElementById('site-frame').contentWindow.postMessage({type:'DB_UPDATED',itemType:data.itemType,id:data.id,data:data.data},SAME_ORIGIN);
+                    setSaveStatus('ok','Guardado'); window.showToast('Elemento guardado.');
+                }catch(error){setSaveStatus('bad','Error al guardar');window.showToast('No se pudo guardar.');console.error(error);}
             }
         }
         if (data.type === 'DELETE_DB_ITEM') {
             if (confirm("¿Eliminar elemento de la base de datos?")) {
                 const col = data.itemType === 'product' ? 'products' : 'courses';
                 await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.itemId));
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, SAME_ORIGIN);
                 window.showToast("Eliminado con éxito.");
             }
         }
@@ -450,7 +522,7 @@
             setTimeout(() => location.reload(), 800);
         }
         if (data.type === 'APP_READY') { 
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); 
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, SAME_ORIGIN); 
             setTimeout(() => window.toggleDragMode(document.getElementById('btn-drag')), 800);
         }
         if (data.type === 'ELEMENT_SELECTED') renderPropertiesPanel(data);
@@ -475,5 +547,6 @@
         panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-[#09090b] p-0 text-left";
     }
 </script>
+<!-- Multiprintt 2027 Admin: premium builder + secure same-origin bridge -->
 </body>
 </html>
