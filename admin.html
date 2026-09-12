@@ -175,7 +175,8 @@
         
         <div id="preview-container">
             <div id="preview-wrapper" class="device-desktop">
-                <iframe id="site-frame" src="index.html"></iframe>
+                <!-- Se inyectará el src dinámicamente para evitar caché -->
+                <iframe id="site-frame" src=""></iframe>
             </div>
         </div>
         
@@ -193,6 +194,15 @@
 </div>
 
 <script type="module">
+    // Sistema de control de versiones y caché (Hard Reset Automático)
+    const BUILDER_VERSION = '3.0.0';
+    if (localStorage.getItem('admin_builder_version') !== BUILDER_VERSION) {
+        localStorage.clear();
+        sessionStorage.clear();
+        localStorage.setItem('admin_builder_version', BUILDER_VERSION);
+        window.location.href = window.location.pathname + '?v=' + new Date().getTime(); // Recarga forzada inmediata
+    }
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
@@ -224,6 +234,12 @@
         if (user) {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('builder-ui').style.display = 'flex';
+            
+            // Cargar el index de la tienda garantizando que sea la última versión libre de caché
+            const iframe = document.getElementById('site-frame');
+            if (!iframe.src || iframe.src === window.location.href || iframe.src.includes('about:blank')) {
+                iframe.src = 'index.html?nocache=' + new Date().getTime();
+            }
         }
     });
 
