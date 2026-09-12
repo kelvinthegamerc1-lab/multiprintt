@@ -65,9 +65,17 @@
     .color-picker::-webkit-color-swatch { border: none; border-radius: 4px; }
     
     .align-btn.active { background: rgba(37,216,255,0.15); color: #25d8ff; }
+
+    /* Custom Toast Notification System */
+    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .custom-toast { background: #0e0e11; border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid #25d8ff; color: white; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; font-size: 13px; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: auto; }
+    .custom-toast.show { transform: translateX(0); opacity: 1; }
+    .custom-toast.error { border-left-color: #ef4444; }
 </style>
 </head>
 <body>
+
+<div id="toast-container"></div>
 
 <div id="auth-screen">
     <div class="glass-panel p-10 w-full max-w-sm text-center">
@@ -79,7 +87,7 @@
         <div class="space-y-3">
             <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-cyan-400">
             <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3 rounded-lg text-sm text-white outline-none focus:border-pink-400">
-            <button onclick="attemptLogin()" id="btn-login" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Iniciar Sesión</button>
+            <button onclick="window.attemptLogin()" id="btn-login" class="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-zinc-200 transition-colors shadow-lg text-sm mt-2">Iniciar Sesión</button>
         </div>
     </div>
 </div>
@@ -89,18 +97,18 @@
     <div class="bg-[#101014] border border-white/10 w-full max-w-md rounded-2xl shadow-2xl p-6 transform scale-95 transition-transform" id="icon-picker-content">
         <h3 class="text-white font-bold text-lg mb-4"><i class="fa-solid fa-icons text-cyan-400 mr-2"></i> Añadir Red Social</h3>
         <div class="grid grid-cols-4 gap-3 mb-5" id="social-grid">
-            <button onclick="selectSocialIcon('fa-facebook-f', 'facebook', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-cyan-400 hover:text-cyan-400 transition-all text-zinc-400"><i class="fa-brands fa-facebook-f text-xl"></i></button>
-            <button onclick="selectSocialIcon('fa-instagram', 'instagram', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-pink-400 hover:text-pink-400 transition-all text-zinc-400"><i class="fa-brands fa-instagram text-xl"></i></button>
-            <button onclick="selectSocialIcon('fa-whatsapp', 'whatsapp', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-green-400 hover:text-green-400 transition-all text-zinc-400"><i class="fa-brands fa-whatsapp text-xl"></i></button>
-            <button onclick="selectSocialIcon('fa-tiktok', 'tiktok', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-white hover:text-white transition-all text-zinc-400"><i class="fa-brands fa-tiktok text-xl"></i></button>
-            <button onclick="selectSocialIcon('fa-youtube', 'youtube', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-red-500 hover:text-red-500 transition-all text-zinc-400"><i class="fa-brands fa-youtube text-xl"></i></button>
-            <button onclick="selectSocialIcon('fa-x-twitter', 'twitter', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-white hover:text-white transition-all text-zinc-400"><i class="fa-brands fa-x-twitter text-xl"></i></button>
-            <button onclick="selectSocialIcon('fa-linkedin-in', 'linkedin', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-blue-400 hover:text-blue-400 transition-all text-zinc-400"><i class="fa-brands fa-linkedin-in text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-facebook-f', 'facebook', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-cyan-400 hover:text-cyan-400 transition-all text-zinc-400"><i class="fa-brands fa-facebook-f text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-instagram', 'instagram', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-pink-400 hover:text-pink-400 transition-all text-zinc-400"><i class="fa-brands fa-instagram text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-whatsapp', 'whatsapp', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-green-400 hover:text-green-400 transition-all text-zinc-400"><i class="fa-brands fa-whatsapp text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-tiktok', 'tiktok', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-white hover:text-white transition-all text-zinc-400"><i class="fa-brands fa-tiktok text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-youtube', 'youtube', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-red-500 hover:text-red-500 transition-all text-zinc-400"><i class="fa-brands fa-youtube text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-x-twitter', 'twitter', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-white hover:text-white transition-all text-zinc-400"><i class="fa-brands fa-x-twitter text-xl"></i></button>
+            <button onclick="window.selectSocialIcon('fa-linkedin-in', 'linkedin', this)" class="social-opt p-3 bg-black border border-white/10 rounded-lg hover:border-blue-400 hover:text-blue-400 transition-all text-zinc-400"><i class="fa-brands fa-linkedin-in text-xl"></i></button>
         </div>
         <input type="text" id="social-url-input" placeholder="https://..." class="w-full bg-black border border-white/10 p-3 rounded-lg text-white mb-4 outline-none focus:border-cyan-400 text-sm">
         <div class="flex gap-3">
-            <button onclick="confirmAddSocial()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Añadir a tienda</button>
-            <button onclick="closeIconPicker()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 transition-colors text-sm">Cancelar</button>
+            <button onclick="window.confirmAddSocial()" class="flex-1 bg-cyan-500 text-black font-bold py-2.5 rounded-lg hover:bg-cyan-400 transition-colors text-sm">Añadir a tienda</button>
+            <button onclick="window.closeIconPicker()" class="px-6 bg-black border border-white/10 text-white font-bold py-2.5 rounded-lg hover:bg-zinc-900 transition-colors text-sm">Cancelar</button>
         </div>
     </div>
 </div>
@@ -115,31 +123,31 @@
         </div>
         
         <div class="flex items-center gap-2 bg-[#121215] p-1 border border-white/10 rounded-lg">
-            <button class="device-btn active" onclick="setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
-            <button class="device-btn" onclick="setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button class="device-btn" onclick="setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
+            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
+            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
+            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
         </div>
 
         <div class="flex items-center gap-3">
-            <button class="tool-btn" id="btn-drag" onclick="toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> Mover Secciones</button>
-            <button class="tool-btn" id="publish-btn" onclick="publishChanges()"><i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios</button>
-            <button class="tool-btn bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white" onclick="logout()"><i class="fa-solid fa-power-off"></i></button>
+            <button class="tool-btn" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> Mover Secciones</button>
+            <button class="tool-btn" id="publish-btn" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios</button>
+            <button class="tool-btn bg-red-500/10 border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
     
     <div class="workspace">
         <div class="sidebar">
             <div class="panel-header mt-2"><i class="fa-solid fa-sitemap"></i> Navegación Visual</div>
-            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 text-center"></i> Catálogo</button>
-            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-book w-4 text-center"></i> Academia</button>
-            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 text-center"></i> Nosotros</button>
-            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 text-center"></i> Contacto</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 text-center"></i> Catálogo</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-book w-4 text-center"></i> Academia</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 text-center"></i> Nosotros</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 text-center"></i> Contacto</button>
             
             <div class="divider my-4"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database"></i> Base de Datos</div>
-            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('openEditor', 'product', null)"><i class="fa-solid fa-box-open text-pink-400 w-4 text-center"></i> Nuevo Producto</button>
-            <button class="tool-btn w-full justify-start" onclick="callIframeFunction('openEditor', 'course', null)"><i class="fa-solid fa-graduation-cap text-cyan-400 w-4 text-center"></i> Nuevo Curso</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('openEditor', 'product', null)"><i class="fa-solid fa-box-open text-pink-400 w-4 text-center"></i> Nuevo Producto</button>
+            <button class="tool-btn w-full justify-start" onclick="window.callIframeFunction('openEditor', 'course', null)"><i class="fa-solid fa-graduation-cap text-cyan-400 w-4 text-center"></i> Nuevo Curso</button>
         </div>
         
         <div id="preview-container">
@@ -160,10 +168,21 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+
+    // Sistema de Notificaciones (Reemplazo de alert)
+    window.showToast = function(msg, isError = false) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `custom-toast ${isError ? 'error' : ''}`;
+        toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-triangle-exclamation text-red-500' : 'fa-check text-cyan-400'} text-lg"></i> <span>${msg}</span>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
+    }
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
@@ -174,9 +193,21 @@
 
     window.attemptLogin = async function() {
         const email = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value; const btn = document.getElementById('btn-login');
-        if (!email || !pass) { alert("Ingresa credenciales."); return; }
-        try { btn.textContent = "Iniciando..."; btn.disabled = true; await signInWithEmailAndPassword(auth, email, pass); document.getElementById('auth-screen').style.opacity = '0'; setTimeout(() => { document.getElementById('auth-screen').style.display = 'none'; document.getElementById('builder-ui').style.display = 'flex'; }, 500); } 
-        catch (error) { alert("Error: " + error.message); btn.textContent = "Iniciar Sesión"; btn.disabled = false; }
+        if (!email || !pass) { window.showToast("Ingresa credenciales válidas.", true); return; }
+        try { 
+            btn.textContent = "Iniciando..."; btn.disabled = true; 
+            
+            // Revisa token inicial del sistema primero, o usa email/password
+            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInWithEmailAndPassword(auth, email, pass); 
+            }
+            
+            document.getElementById('auth-screen').style.opacity = '0'; 
+            setTimeout(() => { document.getElementById('auth-screen').style.display = 'none'; document.getElementById('builder-ui').style.display = 'flex'; }, 500); 
+        } 
+        catch (error) { window.showToast("Error de autenticación.", true); btn.textContent = "Iniciar Sesión"; btn.disabled = false; }
     };
 
     window.logout = async function() { await signOut(auth); location.reload(); };
@@ -216,9 +247,9 @@
     }
     window.confirmAddSocial = function() {
         const url = document.getElementById('social-url-input').value;
-        if(!url || !selectedSocialNetwork) { alert("Selecciona un icono y pon una URL válida."); return; }
+        if(!url || !selectedSocialNetwork) { window.showToast("Selecciona un icono y pon una URL válida.", true); return; }
         document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url: url, iconClass: selectedSocialIconClass, network: selectedSocialNetwork }, '*');
-        closeIconPicker();
+        window.closeIconPicker();
     }
     window.closeIconPicker = function() {
         const m = document.getElementById('icon-picker-modal'); m.classList.remove('opacity-100'); document.getElementById('icon-picker-content').classList.add('scale-95');
@@ -255,86 +286,93 @@
             const wInput = document.getElementById('inp-width'); if(wInput) wInput.value = data.width;
             const hInput = document.getElementById('inp-height'); if(hInput) hInput.value = data.height;
         }
-        if (data.type === 'SAVE_DONE') { const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios'; alert('¡Cambios guardados con éxito!'); }
-        if (data.type === 'SAVE_ERROR') { const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios'; alert('Error: ' + data.msg); }
+        if (data.type === 'SAVE_DONE') { const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios'; window.showToast('¡Cambios publicados con éxito!'); }
+        if (data.type === 'SAVE_ERROR') { const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400"></i> Publicar Cambios'; window.showToast('Error: ' + data.msg, true); }
     });
 
-    // Renderizado del Panel Avanzado
+    // Renderizado del Panel Avanzado (Divi/Elementor Style)
     function renderPropertiesPanel(data) {
         const panel = document.getElementById('properties-panel');
         let initialStyles = data.styles || {};
         
         let html = `
-        <div class="w-full bg-[#121215] border-b border-white/10 p-4 flex items-center justify-between sticky top-0 z-20">
+        <div class="w-full bg-[#121215] border-b border-white/10 p-4 flex items-center justify-between sticky top-0 z-20 shadow-md">
             <div><span class="text-cyan-400 font-bold text-[10px] uppercase tracking-wider block mb-1">Inspeccionando</span><span class="text-white text-xs font-mono font-bold bg-black px-2 py-1 rounded border border-white/10"><i class="fa-solid fa-code text-zinc-500"></i> ${data.tagName}</span></div>
             <div class="flex gap-1">
-                <button onclick="selectParent()" class="w-7 h-7 bg-black hover:bg-[#25d8ff]/20 text-zinc-400 hover:text-[#25d8ff] border border-white/10 rounded flex items-center justify-center transition-colors" title="Subir nivel"><i class="fa-solid fa-arrow-up"></i></button>
-                <button onclick="selectChild()" class="w-7 h-7 bg-black hover:bg-[#25d8ff]/20 text-zinc-400 hover:text-[#25d8ff] border border-white/10 rounded flex items-center justify-center transition-colors" title="Bajar nivel"><i class="fa-solid fa-arrow-down"></i></button>
+                <button onclick="window.selectParent()" class="w-7 h-7 bg-black hover:bg-[#25d8ff]/20 text-zinc-400 hover:text-[#25d8ff] border border-white/10 rounded flex items-center justify-center transition-colors" title="Subir nivel"><i class="fa-solid fa-arrow-up"></i></button>
+                <button onclick="window.selectChild()" class="w-7 h-7 bg-black hover:bg-[#25d8ff]/20 text-zinc-400 hover:text-[#25d8ff] border border-white/10 rounded flex items-center justify-center transition-colors" title="Bajar nivel"><i class="fa-solid fa-arrow-down"></i></button>
             </div>
         </div>`;
 
         // Acordeón 1: Contenido
         html += `<div class="acc-item active">
-            <div class="acc-header" onclick="toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib text-pink-400"></i> Contenido</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib text-pink-400"></i> Contenido</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
             <div class="acc-content">`;
             
             if (!['IMG', 'VIDEO', 'SECTION', 'DIV', 'ARTICLE'].includes(data.tagName)) {
-                html += `<div><label class="inspector-label">Texto Visible</label><textarea oninput="updateText(this.value)" class="inspector-input min-h-[80px]">${data.text || ''}</textarea></div>`;
+                html += `<div><label class="inspector-label">Texto Visible</label><textarea oninput="window.updateText(this.value)" class="inspector-input min-h-[80px]">${data.text || ''}</textarea></div>`;
             }
             if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
-                html += `<div><label class="inspector-label">URL / Enlace</label><input type="text" oninput="updateHref(this.value)" value="${data.href || ''}" class="inspector-input"></div>`;
+                html += `<div><label class="inspector-label">URL / Enlace / Origen</label><input type="text" oninput="window.updateHref(this.value)" value="${data.href || ''}" class="inspector-input"></div>`;
             }
         html += `</div></div>`;
 
         // Acordeón 2: Diseño (Dimensiones y Espaciado)
         html += `<div class="acc-item">
-            <div class="acc-header" onclick="toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-cyan-400"></i> Diseño & Tamaño</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined text-cyan-400"></i> Diseño & Tamaño</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
             <div class="acc-content">
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="inspector-label">Ancho (W)</label><div class="input-group"><span class="input-group-addon">W</span><input type="text" id="inp-width" oninput="updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="auto, 100%, 200px"></div></div>
-                    <div><label class="inspector-label">Alto (H)</label><div class="input-group"><span class="input-group-addon">H</span><input type="text" id="inp-height" oninput="updateStyle('height', this.value)" value="${initialStyles.height || ''}" placeholder="auto, 100%, 200px"></div></div>
+                    <div><label class="inspector-label">Ancho (W)</label><div class="input-group"><span class="input-group-addon">W</span><input type="text" id="inp-width" oninput="window.updateStyle('width', this.value)" value="${initialStyles.width || ''}" placeholder="100%, 200px"></div></div>
+                    <div><label class="inspector-label">Alto (H)</label><div class="input-group"><span class="input-group-addon">H</span><input type="text" id="inp-height" oninput="window.updateStyle('height', this.value)" value="${initialStyles.height || ''}" placeholder="auto, 200px"></div></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mt-1">
-                    <div><label class="inspector-label">Padding (Interior)</label><div class="input-group"><span class="input-group-addon"><i class="fa-solid fa-compress"></i></span><input type="text" oninput="updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="10px 20px"></div></div>
-                    <div><label class="inspector-label">Margen (Exterior)</label><div class="input-group"><span class="input-group-addon"><i class="fa-solid fa-expand"></i></span><input type="text" oninput="updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="10px auto"></div></div>
+                    <div><label class="inspector-label">Padding (Interior)</label><div class="input-group"><span class="input-group-addon"><i class="fa-solid fa-compress"></i></span><input type="text" oninput="window.updateStyle('padding', this.value)" value="${initialStyles.padding || ''}" placeholder="10px 20px"></div></div>
+                    <div><label class="inspector-label">Margen (Exterior)</label><div class="input-group"><span class="input-group-addon"><i class="fa-solid fa-expand"></i></span><input type="text" oninput="window.updateStyle('margin', this.value)" value="${initialStyles.margin || ''}" placeholder="10px auto"></div></div>
                 </div>
                 <div class="mt-1">
                     <label class="inspector-label">Alineación de Texto</label>
                     <div class="flex gap-1 bg-black p-1 rounded-lg border border-white/10">
-                        <button onclick="updateStyle('textAlign', 'text-left'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn active"><i class="fa-solid fa-align-left"></i></button>
-                        <button onclick="updateStyle('textAlign', 'text-center'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn"><i class="fa-solid fa-align-center"></i></button>
-                        <button onclick="updateStyle('textAlign', 'text-right'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn"><i class="fa-solid fa-align-right"></i></button>
+                        <button onclick="window.updateStyle('textAlign', 'text-left'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn active"><i class="fa-solid fa-align-left"></i></button>
+                        <button onclick="window.updateStyle('textAlign', 'text-center'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn"><i class="fa-solid fa-align-center"></i></button>
+                        <button onclick="window.updateStyle('textAlign', 'text-right'); document.querySelectorAll('.align-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active');" class="flex-1 py-1.5 rounded text-zinc-400 align-btn"><i class="fa-solid fa-align-right"></i></button>
                     </div>
                 </div>
             </div>
         </div>`;
 
         // Acordeón 3: Estilos Visuales
+        let rgbToHex = (rgbStr) => { 
+            let a = rgbStr.split("(")[1].split(")")[0].split(","); 
+            return "#" + a.map(x => { x = parseInt(x).toString(16); return (x.length==1) ? "0"+x : x; }).join(""); 
+        };
+        let initColor = initialStyles.color && initialStyles.color.includes('rgb') ? rgbToHex(initialStyles.color) : '#ffffff';
+        let initBg = initialStyles.bg && initialStyles.bg.includes('rgb') ? rgbToHex(initialStyles.bg) : '#000000';
+
         html += `<div class="acc-item">
-            <div class="acc-header" onclick="toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-palette text-violet-400"></i> Estilo Visual</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
+            <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-palette text-violet-400"></i> Estilos Visuales</span> <i class="fa-solid fa-chevron-down text-zinc-500 transition-transform"></i></div>
             <div class="acc-content">
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="inspector-label">Color de Texto</label><input type="color" oninput="updateStyle('color', this.value)" class="color-picker"></div>
-                    <div><label class="inspector-label">Color de Fondo</label><input type="color" oninput="updateStyle('bg', this.value)" class="color-picker"></div>
+                    <div><label class="inspector-label">Color Texto</label><input type="color" value="${initColor}" oninput="window.updateStyle('color', this.value)" class="color-picker"></div>
+                    <div><label class="inspector-label">Color Fondo</label><input type="color" value="${initBg}" oninput="window.updateStyle('bg', this.value)" class="color-picker"></div>
                 </div>`;
                 
         if (data.hasTheme) {
-            html += `<div class="mt-2"><label class="inspector-label">Tema de Tarjeta (Glow)</label>
-                <select onchange="updateStyle('theme', this.value)" class="inspector-input">
+            html += `<div class="mt-2"><label class="inspector-label">Tema Base (Glows)</label>
+                <select onchange="window.updateStyle('theme', this.value)" class="inspector-input font-bold" style="color: ${data.currentTheme === 'pink' ? '#ff2da8' : data.currentTheme === 'violet' ? '#735cff' : '#25d8ff'}">
                     <option value="cyan" ${data.currentTheme === 'cyan' ? 'selected' : ''}>Cyan Luminoso</option>
                     <option value="pink" ${data.currentTheme === 'pink' ? 'selected' : ''}>Rosa Neón</option>
                     <option value="violet" ${data.currentTheme === 'violet' ? 'selected' : ''}>Violeta Profundo</option>
                     <option value="yellow" ${data.currentTheme === 'yellow' ? 'selected' : ''}>Amarillo Oro</option>
-                    <option value="emerald" ${data.currentTheme === 'emerald' ? 'selected' : ''}>Esmeralda Brillante</option>
+                    <option value="emerald" ${data.currentTheme === 'emerald' ? 'selected' : ''}>Esmeralda</option>
                 </select>
             </div>`;
         }
 
-        html += `<div class="mt-2"><label class="inspector-label">Bordes Redondeados</label><div class="input-group"><span class="input-group-addon"><i class="fa-regular fa-square"></i></span><input type="text" oninput="updateStyle('radius', this.value)" value="${initialStyles.radius || ''}" placeholder="12px, 50%..."></div></div>
+        html += `<div class="mt-2"><label class="inspector-label">Bordes Redondeados</label><div class="input-group"><span class="input-group-addon"><i class="fa-regular fa-square"></i></span><input type="text" oninput="window.updateStyle('radius', this.value)" value="${initialStyles.radius || ''}" placeholder="12px, 50%..."></div></div>
             </div>
         </div>`;
 
-        html += `<div class="p-4"><button onclick="deleteElement()" class="w-full py-2.5 rounded-lg bg-red-500/10 text-red-500 border border-red-500/30 text-xs font-bold hover:bg-red-500 hover:text-white transition-colors shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-trash"></i> Eliminar Permanentemente</button></div>`;
+        html += `<div class="p-4"><button onclick="window.deleteElement()" class="w-full py-3 rounded-lg bg-red-500/10 text-red-500 border border-red-500/30 text-xs font-bold hover:bg-red-500 hover:text-white transition-colors shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-trash"></i> Eliminar Elemento</button></div>`;
 
         panel.innerHTML = html;
         panel.className = "w-full flex-1 overflow-y-auto bg-[#0a0a0c]";
