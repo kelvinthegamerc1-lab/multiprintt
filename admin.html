@@ -82,6 +82,7 @@
 </style>
 </head>
 <body>
+
 <div id="toast-container"></div>
 
 <div id="auth-screen">
@@ -90,7 +91,7 @@
             <i class="fa-solid fa-wand-magic-sparkles text-3xl text-cyan-400"></i>
         </div>
         <h1 class="text-2xl font-extrabold mb-1 tracking-tight">Visual Builder <span class="text-cyan-400 text-[10px] bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-md ml-1 align-top uppercase tracking-widest">Premium</span></h1>
-        <p class="text-zinc-500 text-xs mb-8">Conexión Segura Firebase.</p>
+        <p class="text-zinc-500 text-xs mb-8">Conexión Segura Firestore.</p>
         <div class="space-y-4">
             <input type="email" id="loginUser" placeholder="Correo Administrativo" class="w-full bg-black border border-white/10 p-3.5 rounded-xl text-sm text-white outline-none focus:border-cyan-400 transition-colors">
             <input type="password" id="loginPass" placeholder="Contraseña" class="w-full bg-black border border-white/10 p-3.5 rounded-xl text-sm text-white outline-none focus:border-pink-400 transition-colors">
@@ -164,9 +165,8 @@
             <div class="divider my-4"></div>
             
             <div class="panel-header"><i class="fa-solid fa-database text-violet-400"></i> Gestión de Inventario</div>
-            <!-- Conexión del DB Editor a la función del iframe a través del puente de postMessage -->
-            <button class="tool-btn w-full justify-start border-pink-500/20 hover:border-pink-500" onclick="window.openDbEditorIframe('product')"><div class="w-6 text-center"><i class="fa-solid fa-box-open text-pink-400"></i></div> Añadir Producto</button>
-            <button class="tool-btn w-full justify-start border-cyan-500/20 hover:border-cyan-500" onclick="window.openDbEditorIframe('course')"><div class="w-6 text-center"><i class="fa-solid fa-laptop-file text-cyan-400"></i></div> Añadir Curso</button>
+            <button class="tool-btn w-full justify-start border-pink-500/20 hover:border-pink-500" onclick="window.callIframeFunction('openEditor', 'product', null)"><div class="w-6 text-center"><i class="fa-solid fa-box-open text-pink-400"></i></div> Añadir Producto</button>
+            <button class="tool-btn w-full justify-start border-cyan-500/20 hover:border-cyan-500" onclick="window.callIframeFunction('openEditor', 'course', null)"><div class="w-6 text-center"><i class="fa-solid fa-laptop-file text-cyan-400"></i></div> Añadir Curso</button>
             
             <div class="mt-auto p-4 bg-cyan-500/5 border border-cyan-500/10 rounded-xl">
                 <p class="text-[10px] text-cyan-400/80 leading-relaxed font-medium"><i class="fa-solid fa-circle-info mr-1"></i> <b>Tip:</b> Activa "Mover Elementos" arriba para arrastrar productos, cursos o redes sociales y cambiar su orden. Haz clic en cualquier elemento en la vista previa para editar su tamaño, texto o estilos.</p>
@@ -193,6 +193,7 @@
 </div>
 
 <script type="module">
+    // Control de versiones
     const BUILDER_VERSION = '6.1.0'; 
     if (localStorage.getItem('admin_builder_version') !== BUILDER_VERSION) {
         localStorage.clear(); sessionStorage.clear();
@@ -201,10 +202,12 @@
     }
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+    const APP_ID = "multiprintt-web";
 
     window.showToast = function(msg, type = 'success') {
         const container = document.getElementById('toast-container');
@@ -222,6 +225,7 @@
     }
 
     onAuthStateChanged(auth, (user) => {
+        // Validación estricta para evitar que visitantes anónimos de la tienda entren al panel
         if (user && !user.isAnonymous) {
             document.getElementById('auth-screen').style.opacity = '0';
             setTimeout(() => {
@@ -246,6 +250,10 @@
         try { 
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verificando...'; btn.disabled = true; 
             
+            // Seguridad: La sesión solo dura mientras la pestaña está abierta. 
+            // Si el usuario sale y vuelve a entrar, deberá logearse nuevamente.
+            await setPersistence(auth, browserSessionPersistence);
+
             if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 await signInWithCustomToken(auth, __initial_auth_token);
             } else {
@@ -268,15 +276,6 @@
         if (iframe && iframe.contentWindow && typeof iframe.contentWindow[fnName] === 'function') iframe.contentWindow[fnName](...args);
     };
 
-    // Función puente para mandar a abrir el Editor de Base de datos en el iframe
-    window.openDbEditorIframe = function(type) {
-        document.getElementById('site-frame').contentWindow.postMessage({
-            type: 'CALL_IFRAME_FUNCTION', 
-            fnName: 'openEditor', 
-            args: [type, null]
-        }, '*');
-    }
-
     let isDragMode = false;
     window.toggleDragMode = function(btn) {
         isDragMode = !isDragMode;
@@ -293,16 +292,10 @@
 
     window.publishChanges = function() {
         const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-cyan-400 text-lg"></i> <span>Guardando...</span>';
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
+        document.getElementById('site-frame').contentWindow.postMessage({type: 'GET_FULL_LAYOUT'}, '*');
     }
 
-    window.resetTemplateConfirm = function() {
-        if(confirm("⚠️ ¿Estás seguro que deseas restablecer la plantilla a sus valores originales? Se perderán los cambios visuales guardados (Tus productos seguirán intactos).")) {
-            window.showToast("Restableciendo plantilla...", "warning");
-            document.getElementById('site-frame').contentWindow.postMessage({type: 'RESET_TEMPLATE'}, '*');
-        }
-    }
-
+    // Modal de Iconos Sociales
     let selectedSocialNetwork = ''; let selectedSocialIconClass = '';
     window.selectSocialIcon = function(iconClass, network, btnNode) {
         document.querySelectorAll('.social-opt').forEach(b => {
@@ -320,6 +313,7 @@
         selectedSocialIconClass = iconClass;
         selectedSocialNetwork = network;
     }
+    
     window.confirmAddSocial = function() {
         const url = document.getElementById('social-url-input').value;
         if(!url || !selectedSocialNetwork) { window.showToast("Selecciona un ícono y escribe una URL válida.", "error"); return; }
@@ -332,6 +326,21 @@
         setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
     }
 
+    // Proxy DB Delete & Guardado de Plantilla
+    window.resetTemplateConfirm = async function() {
+        if(confirm("⚠️ ¿Estás seguro que deseas restablecer la plantilla a sus valores originales? Se perderán los cambios visuales guardados (Tus productos seguirán intactos).")) {
+            window.showToast("Restableciendo plantilla...", "warning");
+            try { 
+                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')); 
+                window.showToast("Plantilla de fábrica restablecida exitosamente. Recargando...");
+                document.getElementById('site-frame').contentWindow.location.reload();
+            } catch(e) { 
+                window.showToast(e.message, 'error');
+            }
+        }
+    }
+
+    // Enviar comandos al Iframe
     window.updateText = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*'); }
     window.updateHref = function(val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*'); }
     window.updateStyle = function(prop, val) { document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop: prop, value: val}, '*'); }
@@ -346,8 +355,10 @@
         if(!isActive) item.classList.add('active');
     }
 
-    window.addEventListener('message', (event) => {
+    // COMUNICACIÓN SEGURA IFRAME -> ADMIN
+    window.addEventListener('message', async (event) => {
         const data = event.data;
+        
         if (data.type === 'APP_READY') { document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); }
         if (data.type === 'ELEMENT_SELECTED') { renderPropertiesPanel(data); }
         if (data.type === 'CLEAR_SELECTION') { document.getElementById('properties-panel').innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-zinc-500 text-xs text-center p-6 bg-black/20 rounded-2xl border border-dashed border-white/10 m-auto max-h-[80%]"><div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4"><i class="fa-solid fa-wand-magic-sparkles text-2xl text-cyan-400/60"></i></div><p class="font-medium text-[13px] text-zinc-400">Haz clic en un elemento<br>para inspeccionarlo.</p></div>'; }
@@ -361,19 +372,37 @@
         }
         if (data.type === 'SAVE_DONE') { 
             const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
-            window.showToast(data.msg || '¡Cambios publicados con éxito!'); 
+            window.showToast(data.msg || '¡Cambios visuales aplicados con éxito!'); 
             
-            if(data.msg && data.msg.includes("Base de datos")) {
-                // No forzar recarga si es guardado de DB (para que se quede en el editor sin saltos)
-            } else {
-                const iframe = document.getElementById('site-frame');
-                let baseSrc = iframe.src.split('?')[0];
-                iframe.src = baseSrc + '?v=' + new Date().getTime();
-            }
+            // Recargar forzado anti caché
+            const iframe = document.getElementById('site-frame');
+            let baseSrc = iframe.src.split('?')[0];
+            iframe.src = baseSrc + '?v=' + new Date().getTime();
         }
-        if (data.type === 'SAVE_ERROR') { 
-            const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
-            window.showToast('Error: ' + data.msg, 'error'); 
+        
+        // PROXY GUARDADO LAYOUT COMPLETO
+        if (data.type === 'LAYOUT_DATA') {
+            try { 
+                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder, courseOrder: data.courseOrder }, { merge: true }); 
+                const btn = document.getElementById('publish-btn'); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-cyan-400 text-lg"></i> <span>Guardar Web</span>'; 
+                window.showToast('¡Sitio Web Publicado con éxito!'); 
+            } catch(e) { window.showToast('Error de permisos. ' + e.message, 'error'); }
+        }
+
+        // PROXY BASE DE DATOS (PRODUCTOS Y CURSOS)
+        if (data.type === 'DB_SAVE') {
+            try {
+                const collectionName = data.itemType === 'product' ? 'products' : 'courses';
+                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, data.id), data.data, { merge: true });
+                window.showToast(`Inventario guardado en la Nube.`);
+            } catch (e) { window.showToast('Error de Base de Datos. ' + e.message, 'error'); }
+        }
+        if (data.type === 'DB_DELETE') {
+            try {
+                const collectionName = data.itemType === 'product' ? 'products' : 'courses';
+                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', collectionName, data.id));
+                window.showToast(`Elemento borrado definitivamente.`);
+            } catch (e) { window.showToast('Error de Base de Datos. ' + e.message, 'error'); }
         }
     });
 
@@ -393,6 +422,7 @@
             </div>
         </div>`;
 
+        // ACORDEÓN 1: CONTENIDO
         html += `<div class="acc-item active">
             <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-pen-nib w-4"></i> Contenido</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">`;
@@ -405,6 +435,7 @@
             }
         html += `</div></div>`;
 
+        // ACORDEÓN 2: TIPOGRAFÍA
         html += `<div class="acc-item">
             <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-font w-4"></i> Tipografía</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">
@@ -444,6 +475,7 @@
             </div>
         </div>`;
 
+        // ACORDEÓN 3: DISEÑO (DIMENSIONES Y ESPACIADO)
         html += `<div class="acc-item">
             <div class="acc-header" onclick="window.toggleAccordion(this)"><span class="flex items-center gap-2"><i class="fa-solid fa-ruler-combined w-4"></i> Dimensiones</span> <i class="fa-solid fa-chevron-down transition-transform"></i></div>
             <div class="acc-content">
@@ -458,6 +490,7 @@
             </div>
         </div>`;
 
+        // ACORDEÓN 4: ESTILOS VISUALES
         let rgbToHex = (rgbStr) => { 
             if(!rgbStr || !rgbStr.includes('rgb')) return '#ffffff';
             let a = rgbStr.split("(")[1].split(")")[0].split(","); 
