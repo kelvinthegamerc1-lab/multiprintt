@@ -65,9 +65,12 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
 .reveal.show{opacity:1;transform:translate3d(0,0,0)}
 
-.nav-link { color: #aaaab3; transition: all 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 99px; font-weight: 500; }
-.nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.nav-link.active { color: #000 !important; background: #fff !important; font-weight: 700 !important; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
+/* Nuevo estilo Nav Link Minimalista (Cero Negritas Expansivas) */
+.nav-link { color: #a1a1aa; transition: color 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 0; margin: 0 1rem; font-weight: 500; font-size: 13px; position: relative; outline: none; }
+.nav-link:hover { color: #fff; }
+.nav-link.active { color: #25d8ff !important; }
+.nav-link::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 0%; height: 1.5px; background: #25d8ff; transition: width 0.3s ease; }
+.nav-link.active::after { width: 100%; }
 
 .bot-nav-item { transition: all 0.3s ease; }
 .bot-nav-item.active { color: #fff; transform: translateY(-2px); }
@@ -102,7 +105,9 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 .rh-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .rh-w { top: calc(50% - 5px); left: -6px; cursor: ew-resize; }
 
 @media (max-width: 767px) {
-    #videoModalContent { transform: scale(1) translate(0,0) !important; width: 100% !important; max-width: 360px !important; height: auto !important; aspect-ratio: 9/16 !important; border-radius: 24px !important; }
+    #videoModalContent { transform: scale(1) translate(0,0) !important; width: 100% !important; max-width: 360px !important; height: auto !important; aspect-ratio: 9/16 !important; border-radius: 24px !important; flex-direction: column !important; }
+    #videoModalContent > div:first-child { width: 100% !important; height: 60% !important; }
+    #videoModalContent > div:last-child { width: 100% !important; height: 40% !important; padding: 1.5rem !important; }
 }
 
 #media-grid::-webkit-scrollbar { width: 6px; }
@@ -128,23 +133,28 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <div class="fixed top-0 left-0 right-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] flex flex-col">
     <header id="section-header" class="glass h-[56px] md:h-[76px] transition-all editable-section shrink-0 border-b-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
-        <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
-          <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
-            <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
-          </div>
-          <div>
-            <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
-            <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
-          </div>
-        </button>
+        <!-- Logo y Nav Integrados a la Izquierda -->
+        <div class="flex items-center gap-6 md:gap-10">
+            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group">
+            <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1">
+                <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
+            </div>
+            <div>
+                <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0" id="brand-name">MULTIPRINTT</h1>
+                <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors" id="brand-slogan">Tú Imagen Viva</div>
+            </div>
+            </button>
 
-        <nav id="nav-pc-zone" class="hidden md:flex items-center gap-2 text-sm bg-white/[0.03] p-1.5 rounded-full border border-white/10 sortable-zone">
-          <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
-          <button onclick="window.navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
-          <button onclick="window.navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
-          <button onclick="window.navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
-        </nav>
+            <!-- Navbar Minimalista -->
+            <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
+            <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
+            <button onclick="window.navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
+            <button onclick="window.navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
+            <button onclick="window.navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
+            </nav>
+        </div>
 
+        <!-- Botones Sociales -->
         <div class="flex items-center relative">
             <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
                 <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
@@ -158,13 +168,14 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 hover:scale-110 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none">
+                    <!-- Sin hover:scale para que no salten -->
+                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none">
                         <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 hover:scale-110 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none">
+                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none">
                         <i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square hover:scale-110 relative z-20 m-0 p-0 hover:text-[#25D366] outline-none">
+                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 hover:text-[#25D366] outline-none">
                         <i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i>
                     </button>
                 </div>
@@ -227,7 +238,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <div data-editable="true" class="inline-block text-[10px] tracking-[.3em] uppercase text-cyan-400 font-extrabold mb-4 bg-cyan-500/10 border border-cyan-500/20 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]">Multiprintt Academy</div>
             <h2 class="display flex flex-col gap-1 text-4xl md:text-5xl lg:text-[4.5rem] font-extrabold tracking-tight relative z-20 leading-none">
                 <span data-editable="true" class="block text-white">No solo vendemos.</span>
-                <span data-editable="true" class="relative z-10 block bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 -webkit-background-clip-text text-transparent pb-2">Te enseñamos a crear.</span>
+                <span data-editable="true" class="relative z-10 block bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent pb-2">Te enseñamos a crear.</span>
             </h2>
             <p data-editable="true" class="text-[13px] md:text-base text-zinc-400 leading-relaxed max-w-2xl mt-4 mx-auto md:mx-0 font-light">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
         </div>
@@ -267,7 +278,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
 
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <!-- Botón actualizado para usar DB Editor nativo -->
+                        <!-- Botón reparado: Invoca openEditor directamente -->
                         <button onclick="event.stopPropagation(); window.openEditor('testimonial', null, this)" class="bg-violet-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
                     </div>
                 </div>
@@ -332,6 +343,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone p-2 rounded-lg border border-transparent">
+                            <!-- Íconos Base -->
                             <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
                             <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
                             <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
@@ -357,6 +369,19 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <button onclick="window.navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
     <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
+
+<!-- MODAL GALERÍA -->
+<div id="gallery-modal" class="hidden fixed inset-0 z-[10000] bg-black/95 backdrop-blur-md p-4 items-center justify-center ignore-drag">
+    <div class="bg-[#101014] border border-white/10 w-full max-w-4xl rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,1)] p-6 flex flex-col h-[85vh] transform scale-95 transition-transform duration-300" id="gallery-modal-content">
+        <div class="flex justify-between items-center mb-6 shrink-0">
+            <h3 class="text-white font-extrabold text-lg"><i class="fa-solid fa-images text-cyan-400 mr-2"></i> Explorador de Galería</h3>
+            <button onclick="window.closeGallery()" class="text-white/50 hover:text-white w-8 h-8 rounded-full bg-white/5 flex items-center justify-center transition-colors"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 overflow-y-auto hide-scrollbar flex-1 p-2 rounded-xl border border-white/5 bg-black/50">
+            <!-- Images go here -->
+        </div>
+    </div>
+</div>
 
 <div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
   <div class="relative w-full max-w-5xl bg-[#0a0a0c] border border-white/10 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-500 ignore-drag" id="courseModalContent">
@@ -393,28 +418,38 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   </div>
 </div>
 
+<!-- NUEVO VIDEO MODAL HORIZONTAL/CUADRADO REDONDEADO -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
-    <div id="videoModalContent" data-editable="true" class="relative w-[90vw] max-w-[360px] bg-black border border-cyan-400/20 rounded-[24px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col mx-auto" data-theme="cyan" style="aspect-ratio: 9/16;">
-        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 z-[310] w-8 h-8 rounded-full bg-black/40 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg">
-            <i class="fa-solid fa-xmark text-sm pointer-events-none"></i>
+    <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
+        
+        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg">
+            <i class="fa-solid fa-xmark text-lg pointer-events-none"></i>
         </button>
-        <div data-editable="true" class="absolute top-4 left-4 z-[310] bg-black/50 backdrop-blur-md border border-white/10 text-white text-[10px] font-mono px-2 py-1 rounded-md shadow-lg pointer-events-none">
-            <span id="vm-time">00:00</span>
-        </div>
-        <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
-        <div data-editable="true" class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050507] via-[#050507]/80 to-transparent z-10 pointer-events-none"></div>
-        <div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end w-full px-7 pb-7 pt-12 pointer-events-none">
-            <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[42px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-1 pointer-events-auto"></i>
-            <div class="overflow-y-auto hide-scrollbar max-h-[160px] mb-4 pointer-events-none">
-                <p data-editable="true" id="vm-quote" class="text-white/95 text-[14px] leading-[1.5] font-light italic drop-shadow-md pr-1 pointer-events-auto">"..."</p>
+
+        <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto relative bg-black shrink-0">
+            <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
+            
+            <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none">
+                <span id="vm-time">00:00</span>
             </div>
-            <div class="border-t border-white/10 pt-4 shrink-0 flex items-center gap-4 pointer-events-none">
-                <div data-editable="true" id="vm-avatar-container" class="w-10 h-10 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto">
-                    <span class="font-bold text-sm text-cyan-400" id="vm-initial">C</span>
+            
+            <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0a0c] to-transparent z-10 pointer-events-none block md:hidden"></div>
+        </div>
+
+        <div class="w-full md:w-[55%] p-8 sm:p-10 md:p-12 flex flex-col justify-center relative z-20 bg-[#0a0a0c]">
+            <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[36px] md:text-[48px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-6 pointer-events-auto"></i>
+            
+            <div class="overflow-y-auto hide-scrollbar max-h-[160px] md:max-h-[220px] mb-8 pointer-events-none">
+                <p data-editable="true" id="vm-quote" class="text-white/95 text-base md:text-xl leading-relaxed font-light italic drop-shadow-md pr-2 pointer-events-auto">"..."</p>
+            </div>
+            
+            <div class="border-t border-white/10 pt-6 md:pt-8 shrink-0 flex items-center gap-5 pointer-events-none mt-auto">
+                <div data-editable="true" id="vm-avatar-container" class="w-14 h-14 md:w-16 md:h-16 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto shadow-[0_0_15px_rgba(37,216,255,0.2)]">
+                    <span class="font-bold text-xl md:text-2xl text-cyan-400" id="vm-initial">C</span>
                 </div>
                 <div class="flex flex-col justify-center pointer-events-none">
-                    <h4 data-editable="true" id="vm-name" class="text-white text-sm font-bold tracking-wide drop-shadow-sm pointer-events-auto">Carlos P.</h4>
-                    <span data-editable="true" id="vm-role" class="text-[9px] uppercase tracking-[0.2em] font-bold drop-shadow-sm mt-0.5 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
+                    <h4 data-editable="true" id="vm-name" class="text-white text-lg md:text-xl font-bold tracking-wide drop-shadow-sm pointer-events-auto">Carlos P.</h4>
+                    <span data-editable="true" id="vm-role" class="text-[10px] md:text-xs uppercase tracking-[0.2em] font-extrabold drop-shadow-sm mt-1 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
                 </div>
             </div>
         </div>
@@ -437,7 +472,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
 const app = initializeApp(firebaseConfig);
@@ -562,9 +597,9 @@ window.syncSocialNetworks = function() {
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
         
         if (isLast) {
-            btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square hover:scale-110 relative z-20 m-0 p-0 outline-none";
+            btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none";
         } else {
-            btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 hover:scale-110 overflow-hidden group-hover:mr-1 outline-none";
+            btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none";
         }
         
         if(network === 'facebook') btnPc.classList.add('hover:text-[#1877f2]');
@@ -678,12 +713,9 @@ window.renderCourses = function(){
     safeCourses.forEach((c, i)=>{
         let a = accents[i % accents.length]; 
         
-        // DB Editor Integrado
         let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.openEditor('course', '${c.id}', this)" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)]"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.deleteItem('course', '${c.id}')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let delay = 200 + (i * 100);
-        
-        // Etiqueta de Masterclass dependiente de c.isMasterclass
         let masterclassBadge = c.isMasterclass !== false ? `
         <div class="absolute top-5 left-5 z-20 pointer-events-none">
             <span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>
@@ -692,19 +724,15 @@ window.renderCourses = function(){
         grid.innerHTML += `
         <article class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder}" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
             ${adminHtml}
-            
             <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
-                <img src="${c.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Masterclass'">
+                <img src="${c.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/40 to-transparent z-10 pointer-events-none"></div>
                 ${masterclassBadge}
             </div>
-            
             <div class="relative flex flex-col w-full flex-1 p-6 md:p-8 pt-0 z-20 bg-[#070709]">
                 <div class="w-12 h-1 rounded-full bg-gradient-to-r ${a.from} to-transparent mb-5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
                 <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display">${c.title}</h3>
                 <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light">${c.desc}</p>
-                
                 <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
                     <button onclick="window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0">
                         Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
@@ -713,6 +741,48 @@ window.renderCourses = function(){
             </div>
         </article>`;
     });
+}
+
+// LOGICA EXPLORADOR DE GALERIA
+window.openGallery = async function(inputId) {
+    window.targetGalleryInput = inputId;
+    const m = document.getElementById('gallery-modal');
+    const content = document.getElementById('gallery-modal-content');
+    const grid = document.getElementById('gallery-grid');
+    
+    m.classList.remove('hidden'); m.classList.add('flex');
+    setTimeout(() => { content.classList.remove('scale-95'); }, 10);
+    
+    grid.innerHTML = '<div class="col-span-full text-center text-white/50 py-20 flex flex-col items-center justify-center h-full"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-cyan-400"></i><span>Cargando galería...</span></div>';
+    
+    try {
+        let res = await fetch('/recursos/imagenes.json');
+        if(!res.ok) throw new Error('Not found');
+        let data = await res.json();
+        grid.innerHTML = '';
+        if(data && data.length > 0) {
+            data.forEach(url => {
+                grid.innerHTML += `<div onclick="window.selectGalleryImage('${url}')" class="aspect-square bg-[#0a0a0c] rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-cyan-400 transition-all group relative"><img src="${url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform"><div class="absolute inset-0 bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"><i class="fa-solid fa-check text-white text-2xl drop-shadow-md"></i></div></div>`;
+            });
+        } else {
+            grid.innerHTML = '<div class="col-span-full text-center text-white/50 py-20">La galería está vacía.</div>';
+        }
+    } catch (e) {
+        grid.innerHTML = '<div class="col-span-full text-center text-red-400 py-20 flex flex-col items-center justify-center h-full"><i class="fa-solid fa-folder-open text-4xl mb-3 opacity-50"></i><span>No se encontró el archivo /recursos/imagenes.json<br><small class="text-white/50 mt-2 block">Pega la URL de tu imagen directamente.</small></span></div>';
+    }
+}
+window.closeGallery = function() {
+    const m = document.getElementById('gallery-modal');
+    const content = document.getElementById('gallery-modal-content');
+    content.classList.add('scale-95');
+    setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+}
+window.selectGalleryImage = function(url) {
+    if(window.targetGalleryInput) {
+        const input = document.getElementById(window.targetGalleryInput);
+        if(input) { input.value = url; input.dispatchEvent(new Event('input', { bubbles: true })); }
+    }
+    window.closeGallery();
 }
 
 window.currentEditItem = null;
@@ -747,7 +817,13 @@ window.openEditor = function(type, id, btnNode) {
                 </select>
             </div>
             <div><span class="db-label">Precio ($)</span><input type="number" id="db-p-price" placeholder="Ej: 15.50" value="${p.price}" class="db-input"></div>
-            <div><span class="db-label">URLs de Imágenes (Separadas por coma)</span><input type="text" id="db-p-img" placeholder="https://..." value="${Array.isArray(p.images) ? p.images.join(', ') : (p.image||'')}" class="db-input"></div>
+            <div>
+                <span class="db-label">URLs de Imágenes (Separadas por coma)</span>
+                <div class="flex gap-2">
+                    <input type="text" id="db-p-img" placeholder="https://..." value="${Array.isArray(p.images) ? p.images.join(', ') : (p.image||'')}" class="db-input flex-1">
+                    <button onclick="window.openGallery('db-p-img')" class="bg-[#1a1a1e] border border-white/10 hover:border-cyan-400 text-white px-4 rounded-xl text-xs transition-colors shrink-0 flex items-center justify-center"><i class="fa-solid fa-image text-cyan-400 mr-1.5"></i> Galería</button>
+                </div>
+            </div>
             <label class="flex items-center gap-3 text-white font-medium bg-black/50 p-3 rounded-xl border border-white/5 cursor-pointer mt-2 hover:border-white/20 transition-colors">
                 <input type="checkbox" id="db-p-promo" class="w-5 h-5 accent-cyan-400" ${p.isPromo ? 'checked' : ''}> Marcar como Promoción (Fuego)
             </label>
@@ -765,7 +841,13 @@ window.openEditor = function(type, id, btnNode) {
                 <div><span class="db-label">Horarios</span><input type="text" id="db-c-schedule" placeholder="Lunes a Viernes..." value="${c.schedule||''}" class="db-input"></div>
                 <div><span class="db-label">Inversión</span><input type="text" id="db-c-price" placeholder="Ej: $150 USD" value="${c.price||''}" class="db-input"></div>
             </div>
-            <div><span class="db-label">URL de Imagen Principal</span><input type="text" id="db-c-img" placeholder="https://..." value="${c.image}" class="db-input"></div>
+            <div>
+                <span class="db-label">URL de Imagen Principal</span>
+                <div class="flex gap-2">
+                    <input type="text" id="db-c-img" placeholder="https://..." value="${c.image}" class="db-input flex-1">
+                    <button onclick="window.openGallery('db-c-img')" class="bg-[#1a1a1e] border border-white/10 hover:border-cyan-400 text-white px-4 rounded-xl text-xs transition-colors shrink-0 flex items-center justify-center"><i class="fa-solid fa-image text-cyan-400 mr-1.5"></i> Galería</button>
+                </div>
+            </div>
             <label class="flex items-center gap-3 text-white font-medium bg-black/50 p-3 rounded-xl border border-white/5 cursor-pointer mt-2 hover:border-white/20 transition-colors">
                 <input type="checkbox" id="db-c-master" class="w-5 h-5 accent-cyan-400" ${c.isMasterclass !== false ? 'checked' : ''}> Destacar como Masterclass
             </label>
@@ -801,7 +883,7 @@ window.saveItem = async function() {
     const { type, id } = window.currentEditItem;
     const btn = document.querySelector('#db-editor-modal button');
     let originalText = btn.innerText;
-    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Guardando...';
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Procesando...';
     
     if (type === 'testimonial') {
         if(window.currentEditNode) {
@@ -810,7 +892,6 @@ window.saveItem = async function() {
             window.currentEditNode.querySelector('.vt-role').innerText = document.getElementById('db-t-role').value;
             window.currentEditNode.querySelector('.vt-quote').innerText = document.getElementById('db-t-quote').value;
             
-            // Actualizar inicial
             let nameVal = document.getElementById('db-t-name').value;
             let initialEl = window.currentEditNode.querySelector('.w-12.h-12');
             if(initialEl) initialEl.innerText = nameVal ? nameVal.charAt(0).toUpperCase() : 'A';
@@ -819,13 +900,12 @@ window.saveItem = async function() {
         }
         window.closeEditor();
         btn.innerText = originalText;
-        if(window.parent) window.parent.postMessage({type: 'SAVE_DONE', msg: 'Video editado. Recuerda Guardar la Web arriba.'}, '*');
+        if(window.parent) window.parent.postMessage({type: 'SAVE_DONE', msg: 'Video editado en interfaz. Recuerda pulsar Guardar Web arriba.'}, '*');
         return;
     }
 
     try {
         let docId = id || 'item_' + Date.now();
-        let colName = type === 'product' ? 'products' : 'courses';
         let data = {};
         
         if (type === 'product') {
@@ -851,17 +931,15 @@ window.saveItem = async function() {
             else { window.appCourses.push({id: docId, ...data}); }
         }
         
-        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', colName, docId), data, { merge: true });
+        // PROXY: Delegar escritura segura al admin parent
+        if(window.parent) window.parent.postMessage({ type: 'DB_SAVE', itemType: type, id: docId, data: data }, '*');
         
         if (type === 'product') window.renderProducts();
         if (type === 'course') window.renderCourses();
         
         window.closeEditor();
-        if(window.parent) window.parent.postMessage({type: 'SAVE_DONE', msg: 'Base de datos guardada exitosamente.'}, '*');
-        
     } catch (error) {
         console.error(error);
-        if(window.parent) window.parent.postMessage({type: 'SAVE_ERROR', msg: 'No se pudo conectar a Firebase.'}, '*');
     }
     btn.innerText = originalText;
 }
@@ -869,16 +947,13 @@ window.saveItem = async function() {
 window.deleteItem = async function(type, id) {
     if(!confirm('¿Seguro que deseas ELIMINAR este elemento de la Base de Datos? Esta acción no se puede deshacer.')) return;
     try {
-        let colName = type === 'product' ? 'products' : 'courses';
-        await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', colName, id));
+        // PROXY: Delegar borrado seguro al admin parent
+        if(window.parent) window.parent.postMessage({ type: 'DB_DELETE', itemType: type, id: id }, '*');
         
         if (type === 'product') { window.appProducts = window.appProducts.filter(x => x.id !== id); window.renderProducts(); }
         if (type === 'course') { window.appCourses = window.appCourses.filter(x => x.id !== id); window.renderCourses(); }
-        
-        if(window.parent) window.parent.postMessage({type: 'SAVE_DONE', msg: 'Elemento eliminado de la base de datos.'}, '*');
     } catch(e) {
         console.error(e);
-        if(window.parent) window.parent.postMessage({type: 'SAVE_ERROR', msg: 'Error al intentar eliminar de Firebase.'}, '*');
     }
 }
 
@@ -935,8 +1010,7 @@ window.loadFirebaseData = async function() {
                     const newModalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
                     if(newModalContent) {
                         newModalContent.id = 'videoModalContent'; 
-                        newModalContent.style.aspectRatio = "9/16";
-                        newModalContent.classList.add('relative', 'w-[90vw]', 'max-w-[360px]', 'rounded-[24px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col');
+                        newModalContent.classList.add('relative', 'w-[95vw]', 'max-w-4xl', 'rounded-[32px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col', 'md:flex-row');
                     }
                 }
             }
@@ -1123,11 +1197,6 @@ window.addEventListener('message', async (event) => {
 
     if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(currentVideoCardRef) { window.openVideoModal(currentVideoCardRef); } }
     
-    // Conexión Directa a openEditor desde el parent
-    if (event.data.type === 'CALL_IFRAME_FUNCTION' && event.data.fnName === 'openEditor') {
-        window.openEditor(event.data.args[0], event.data.args[1], null);
-    }
-
     if (event.data.type === 'UPDATE_ELEMENT' && window.selectedEl) {
         if(event.data.text !== undefined && window.selectedEl.tagName !== 'IMG' && window.selectedEl.tagName !== 'VIDEO') { let icon = window.selectedEl.querySelector('i'); window.selectedEl.innerText = event.data.text; if(icon) window.selectedEl.prepend(icon); }
         if(event.data.href !== undefined) { 
@@ -1178,16 +1247,7 @@ window.addEventListener('message', async (event) => {
         else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
 
-    if (event.data.type === 'RESET_TEMPLATE') {
-        try { 
-            await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout')); 
-            window.parent.postMessage({ type: 'SAVE_DONE', msg: 'Plantilla de fábrica restablecida exitosamente. Recargando...' }, '*');
-        } catch(e) { 
-            window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); 
-        }
-    }
-
-    if (event.data.type === 'SAVE_FULL_LAYOUT') {
+    if (event.data.type === 'GET_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
         if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; }
         if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
@@ -1221,11 +1281,13 @@ window.addEventListener('message', async (event) => {
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
 
-        try { 
-            await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: layoutData, prodOrder, courseOrder }, { merge: true }); 
-            window.parent.postMessage({ type: 'SAVE_DONE', msg: 'Cambios visuales guardados exitosamente.' }, '*'); 
-        } 
-        catch(e) { window.parent.postMessage({ type: 'SAVE_ERROR', msg: e.message }, '*'); }
+        // PROXY: Enviar información validada al Admin Padre para que ejecute el guardado seguro
+        window.parent.postMessage({ 
+            type: 'LAYOUT_DATA', 
+            layoutData: layoutData, 
+            prodOrder: prodOrder, 
+            courseOrder: courseOrder 
+        }, '*'); 
     }
 });
 
