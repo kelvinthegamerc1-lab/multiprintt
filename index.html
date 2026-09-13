@@ -9,7 +9,7 @@
 
 <title>Multiprintt | Impresión & Publicidad, Tú Imagen Viva</title>
 <meta name="title" content="Multiprintt | Impresión & Publicidad, Tú Imagen Viva">
-<meta name="description" content="Multiprintt: Expertos en personalización, impresión gráfica, sublimación, DTF y academia para emprendedores. Dirigido por Alfredo Aguilar P. en Ecuador.">
+<meta name="description" content="Impresión & Publicidad, Tú Imagen Viva. Expertos en personalización, impresión gráfica, sublimación, DTF y academia profesional dirigida por Alfredo Aguilar P. en Guayaquil, Ecuador.">
 <meta name="keywords" content="Multiprintt, Impresión, Publicidad, Alfredo Aguilar P., Guayaquil, Ecuador, Sublimación, DTF, Academia de impresión, Personalización">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://multiprintt.web.app/">
@@ -157,7 +157,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 .animate-marquee { animation: scrollMarquee linear infinite; }
 .hover\:pause-marquee:hover { animation-play-state: paused; }
 
-/* Ocultar marca de agua Elfsight */
 [class*="eapps-link"], a[href*="elfsight.com"], a[title*="Free TikTok"] { display: none !important; opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
 </style>
 </head>
@@ -246,52 +245,112 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
   </section>
 
+  <!-- SECCIÓN "NOSOTROS" - EXPERIENCIA CINEMATOGRÁFICA DUAL (PC & MÓVIL SCROLL VERTICAL CON FLECHA) -->
   <section id="view-about" class="view-slide flex flex-col overflow-hidden bg-[#070709] select-none">
     <div class="hero-glow w-[300px] h-[300px] lg:w-[450px] lg:h-[450px] bg-violet-600/15 right-0 md:right-10 top-10 lg:top-20"></div>
     <div class="hero-glow w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] bg-pink-500/10 left-[-50px] top-[40vh]"></div>
     
-    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center relative z-10 h-full py-2 lg:py-0 editable-section shrink-0" id="about-history-zone">
-        <div class="flex flex-col lg:grid lg:grid-cols-[auto_1fr] items-center justify-center gap-4 sm:gap-6 lg:gap-10 w-full max-w-5xl mx-auto my-auto">
+    <!-- CONTENEDOR ESCRITORIO (PC) -->
+    <div class="hidden lg:flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-col justify-center items-center relative z-10 h-full py-0 editable-section shrink-0" id="about-history-zone">
+        <div class="grid grid-cols-[auto_1fr] items-center justify-center gap-10 w-full max-w-5xl mx-auto my-auto">
             
-            <!-- Video Cloudinary 9:16 Inmersivo -->
-            <div class="relative w-[170px] sm:w-[210px] lg:w-[280px] xl:w-[310px] h-[34vh] sm:h-[38vh] lg:h-[62vh] aspect-[9/16] shrink-0 rounded-[28px] lg:rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-2xl border border-white/10" data-resizable="true">
+            <div class="relative w-[280px] xl:w-[310px] h-[62vh] aspect-[9/16] shrink-0 rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-[0_10px_30px_rgba(115,92,255,0.25)] border border-white/15 shrink-0" data-resizable="true">
                 <video id="about-cinematic-video" 
                        src="https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01" 
                        class="w-full h-full object-cover relative z-10 cursor-pointer"
-                       playsinline disablePictureInPicture oncontextmenu="return false;" controlsList="nodownload" crossorigin="anonymous"></video>
+                       playsinline crossorigin="anonymous"
+                       onended="window.handleVideoEnded()" onerror="window.handleVideoError(this)"></video>
 
-                <div id="about-video-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all duration-500 cursor-pointer" onclick="window.toggleAboutVideo()">
-                    <div class="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center text-white text-xl lg:text-2xl shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-play ml-1"></i>
+                <div id="about-video-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-black/20 backdrop-blur-[1px] transition-all duration-500 cursor-pointer" onclick="window.toggleAboutVideo()">
+                    <div class="w-16 h-16 rounded-full bg-white/15 border border-white/30 backdrop-blur-md flex items-center justify-center text-white text-2xl shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-play ml-0.5"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- Manifiesto Multiprintt -->
-            <div class="flex flex-col text-center lg:text-left items-center lg:items-start z-20 w-full" data-resizable="true">
-                <h2 class="display flex flex-col items-center lg:items-start tracking-tight w-full gap-0 relative z-20 mb-2">
-                    <span data-editable="true" class="block text-[8px] sm:text-[9px] lg:text-[10px] uppercase tracking-[0.3em] font-extrabold text-cyan-400 mb-0.5 drop-shadow-md">Impresión & Publicidad,</span>
-                    <span data-editable="true" class="relative z-10 block text-[2.2rem] sm:text-[3rem] lg:text-[4.5rem] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1 leading-[1.1] drop-shadow-lg">Multiprintt</span>
+            <div class="flex flex-col text-left items-start z-20 w-full px-1" data-resizable="true">
+                <h2 class="display flex flex-col items-start tracking-tight w-full gap-0 relative z-20 mb-2">
+                    <span data-editable="true" class="block text-[10px] uppercase tracking-[0.25em] font-extrabold text-cyan-400 mb-1 drop-shadow-md">Impresión & Publicidad,</span>
+                    <span data-editable="true" class="relative z-10 block text-[4.5rem] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-0.5 leading-[1.1] drop-shadow-lg">Multiprintt</span>
                 </h2>
                 
-                <div class="flex flex-col gap-2 lg:gap-3 text-zinc-400 text-[10px] sm:text-[11px] lg:text-[12.5px] leading-snug font-light w-full max-w-2xl mx-auto lg:mx-0">
-                    <p data-editable="true" class="text-white/95 text-[11px] sm:text-[11.5px] lg:text-[14px] font-bold leading-snug drop-shadow-md m-0 tracking-wide">
-                        Nacimos con una misión clara: dominar el arte de la personalización y transformar ideas simples en productos extraordinarios.
+                <div class="flex flex-col gap-3 text-zinc-400 text-[12.5px] leading-snug font-light w-full max-w-2xl">
+                    <p data-editable="true" class="text-white/95 text-[14px] font-bold leading-snug drop-shadow-md m-0 tracking-wide">
+                        Multiprintt nació con una misión clara: dominar el arte de la personalización y transformar ideas simples en productos extraordinarios.
                     </p>
-                    <p data-editable="true" class="m-0">
-                        Lo que comenzó en Guayaquil como un taller explorando la sublimación, la impresión, la serigrafía y el grabado en vidrio, se convirtió rápidamente en un referente de innovación y acabado profesional.
+                    <p data-editable="true" class="m-0 text-[11px] text-zinc-400">
+                        Lo que comenzó en Guayaquil como un taller explorando las técnicas de personalización, la sublimación, la impresión, la serigrafía y el grabado en vidrio, se convirtió rápidamente en un referente de innovación y acabado profesional.
                     </p>
-                    <div class="px-3 border-l-[2px] border-pink-500/60 my-0.5 py-1.5 bg-gradient-to-r from-pink-500/5 to-transparent rounded-r-xl text-left">
-                        <p data-editable="true" class="italic text-white/90 m-0 leading-snug text-[10px] sm:text-[10.5px] lg:text-[12px] font-medium">
-                            "Con más de 20 años en el camino, entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca, acompañar momentos especiales y abrir puertas al crecimiento personal."
+                    <div class="px-3 border-l-[2px] border-pink-500/60 my-1 py-1.5 bg-gradient-to-r from-pink-500/5 to-transparent rounded-r-xl text-left">
+                        <p data-editable="true" class="italic text-white/90 m-0 leading-snug text-[12px] font-medium">
+                            "Con más de 20 años en el camino entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca y abrir puertas al crecimiento personal."
                         </p>
                     </div>
-                    <p data-editable="true" class="m-0">
-                        Hoy, Multiprintt es un espacio dual donde creamos productos de alto nivel y capacitamos a la nueva generación de emprendedores de la impresión.
-                    </p>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- CONTENEDOR MÓVIL - VERTICAL CINEMATIC STORY (VIDEO LIMPIO CON BLEND Y FLECHA ESTÁTICA SIN ANIMACIÓN) -->
+    <div class="flex lg:hidden absolute inset-0 z-20 w-full h-full overflow-y-auto slide-scroll flex-col bg-[#070709]">
+        
+        <!-- PANTALLA 1: VIDEO CINEMATOGRÁFICO LIMPIO CON BLEND SUAVE -->
+        <div class="relative w-full h-[calc(100dvh-121px)] min-h-[480px] shrink-0 bg-[#070709] flex flex-col items-center justify-center overflow-hidden">
+            <video id="mobile-cinematic-video" 
+                   src="https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01" 
+                   class="absolute inset-0 w-full h-full object-cover"
+                   playsinline crossorigin="anonymous"
+                   onended="window.handleMobileVideoEnded()" onerror="window.handleVideoError(this)"></video>
+
+            <!-- Fundido / Degradado cinematográfico que une el video suavemente con el fondo -->
+            <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070709] via-[#070709]/80 to-transparent pointer-events-none"></div>
+            <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#070709] via-[#070709]/80 to-transparent pointer-events-none"></div>
+
+            <!-- Botón Play Central Móvil -->
+            <div class="relative z-20 my-auto flex items-center justify-center">
+                <button id="mobile-play-btn" onclick="window.toggleMobileVideo()" class="w-18 h-18 rounded-full bg-white/20 border border-white/40 backdrop-blur-md flex items-center justify-center text-white text-2xl shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-90 transition-transform cursor-pointer outline-none border-none">
+                    <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
+                </button>
+            </div>
+
+            <!-- Indicador Minimalista SIN ANIMACIÓN (Texto + Flecha con blur) -->
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+                <button onclick="document.getElementById('mobile-history-block').scrollIntoView({ behavior: 'smooth' })" class="flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white shadow-[0_10px_25px_rgba(0,0,0,0.6)] cursor-pointer outline-none border-none">
+                    <span class="text-[9px] font-extrabold uppercase tracking-[0.2em]">Desliza</span>
+                    <i class="fa-solid fa-chevron-down text-xs text-cyan-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: RESEÑA HISTÓRICA OFICIAL ABAJO -->
+        <div id="mobile-history-block" class="w-full min-h-[100dvh] bg-[#070709] px-6 pt-10 pb-28 flex flex-col justify-between relative z-20 border-t border-white/5">
+            <div class="flex flex-col gap-4 text-left">
+                <div class="flex flex-col items-start gap-1">
+                    <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-cyan-400">Manifiesto Oficial</span>
+                    <h3 class="text-3xl font-extrabold text-white tracking-tight bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent m-0">Nuestra Historia</h3>
+                </div>
+
+                <p class="text-zinc-300 text-xs leading-relaxed m-0 font-light">
+                    <strong class="text-white font-semibold">Multiprintt</strong> nació con una misión clara: dominar el arte de la personalización y transformar ideas simples en productos extraordinarios. Lo que comenzó en Guayaquil como un taller explorando las técnicas de personalización, la sublimación, la impresión, la serigrafía y el grabado en vidrio, se convirtió rápidamente en un referente de innovación y acabado profesional.
+                </p>
+
+                <div class="p-4 border-l-2 border-pink-500 bg-pink-500/10 rounded-r-2xl my-2 shadow-[0_10px_30px_rgba(255,45,168,0.1)]">
+                    <p class="text-white/95 text-[11.5px] italic m-0 font-medium leading-relaxed">
+                        "Con más de 20 años en el camino entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca, acompañar momentos especiales y abrir puertas al crecimiento personal."
+                    </p>
+                </div>
+
+                <p class="text-zinc-400 text-xs leading-relaxed m-0 font-light">
+                    Tras años de ensayo, error y perfeccionamiento técnico, decidimos que nuestro conocimiento no debía quedarse encerrado en el taller. Hoy, Multiprintt es un espacio dual dirigido por <strong class="text-white font-medium">Alfredo Aguilar P.</strong> donde creamos productos de alto nivel y capacitamos a la nueva generación de emprendedores de la impresión. Este catálogo es el reflejo de años de dedicación y pasión por hacer las cosas bien desde el primer intento.
+                </p>
+            </div>
+
+            <div class="pt-8 text-center border-t border-white/5 mt-12">
+                <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-extrabold block">Multiprintt • Tú Imagen Viva</span>
+                <span class="text-[8px] text-zinc-600 mt-1 block">Guayaquil, Ecuador</span>
+            </div>
+        </div>
+
     </div>
   </section>
 
@@ -524,7 +583,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer border-none"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
         <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto min-h-[300px] relative bg-black shrink-0">
-            <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
+            <video id="testimonial-video" data-editable="true" playsinline crossorigin="anonymous" class="absolute inset-0 w-full h-full object-cover object-center"></video>
             <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none"><span id="vm-time">00:00</span></div>
         </div>
         <div class="w-full md:w-[55%] p-8 sm:p-10 md:p-12 flex flex-col justify-center relative z-20 bg-[#0a0a0c]">
@@ -580,14 +639,44 @@ window.toggleAboutVideo = function() {
     
     if(vid.paused) {
         vid.play().then(() => {
-            overlay.style.opacity = '0';
-            overlay.style.pointerEvents = 'none';
-        }).catch(e => { console.error("Error al reproducir:", e); });
+            if(overlay) overlay.style.opacity = '0';
+            if(overlay) overlay.style.pointerEvents = 'none';
+        }).catch(e => { console.warn("Reproducción pausada por política del navegador"); });
     } else {
         vid.pause();
-        overlay.style.opacity = '1';
-        overlay.style.pointerEvents = 'auto';
+        if(overlay) overlay.style.opacity = '1';
+        if(overlay) overlay.style.pointerEvents = 'auto';
     }
+};
+
+window.handleVideoEnded = function() {
+    const vid = document.getElementById('about-cinematic-video');
+    const overlay = document.getElementById('about-video-overlay');
+    if(vid) { vid.pause(); vid.currentTime = 0.01; }
+    if(overlay) { overlay.style.opacity = '1'; overlay.style.pointerEvents = 'auto'; }
+};
+
+window.toggleMobileVideo = function() {
+    const vid = document.getElementById('mobile-cinematic-video');
+    const btn = document.getElementById('mobile-play-btn');
+    if(!vid) return;
+    if(vid.paused) {
+        vid.play().then(() => { if(btn) btn.style.opacity = '0'; }).catch(e => {});
+    } else {
+        vid.pause();
+        if(btn) btn.style.opacity = '1';
+    }
+};
+
+window.handleMobileVideoEnded = function() {
+    const vid = document.getElementById('mobile-cinematic-video');
+    const btn = document.getElementById('mobile-play-btn');
+    if(vid) { vid.pause(); vid.currentTime = 0.01; }
+    if(btn) { btn.style.opacity = '1'; }
+};
+
+window.handleVideoError = function(el) {
+    console.warn("Recurso de video respaldado de forma segura.");
 };
 
 window.addToCart = function(productId, e) {
@@ -1084,7 +1173,7 @@ window.loadAcademyGallery = async function() {
             else if(data.items) images = data.items;
             else { for(let k in data) if(Array.isArray(data[k])) images.push(...data[k]); }
         }
-    } catch(e) {}
+    } catch(e) { images = premiumBackups; }
     
     let validImages = images.map(item => typeof item === 'string' ? item : (item.url || item.src)).filter(url => {
         if(!url) return false;
@@ -1408,7 +1497,7 @@ window.openImageModal = function(src) {
     const content = document.getElementById('imageModalContent');
     const imgEl = document.getElementById('im-full-image');
     imgEl.src = src;
-    modal.classList.remove('hidden'); modal.classList.add('flex'); 
+    modal.classList.add('hidden'); modal.classList.add('flex'); 
     setTimeout(() => { modal.classList.remove('opacity-0'); if(content) content.classList.remove('scale-95'); }, 10);
 }
 
@@ -1422,19 +1511,6 @@ window.closeImageModal = function() {
 
 document.addEventListener('DOMContentLoaded', () => { 
     window.loadFirebaseData(); 
-    setTimeout(() => {
-        const aboutVid = document.getElementById('about-cinematic-video');
-        const overlay = document.getElementById('about-video-overlay');
-        if(aboutVid && overlay) {
-            aboutVid.addEventListener('ended', () => {
-                aboutVid.pause();
-                aboutVid.currentTime = 0.01;
-                overlay.style.transition = 'opacity 0.5s ease';
-                overlay.style.opacity = '1';
-                overlay.style.pointerEvents = 'auto';
-            });
-        }
-    }, 1000);
 });
 </script>
 </body>
