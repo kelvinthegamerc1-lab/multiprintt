@@ -139,7 +139,7 @@
     </div>
 </div>
 
-<!-- Modal Galería / Explorador de Medios -->
+<!-- Modal Galería / Explorador de Medios con Selección Múltiple -->
 <div id="gallery-modal" class="modal-overlay z-[10000]">
     <div class="modal-content" style="max-width: 650px;">
         <div class="flex justify-between items-center mb-3">
@@ -152,7 +152,11 @@
             <button onclick="window.filterGallery('video')" class="tool-btn justify-center" id="gal-filt-vid">Videos</button>
         </div>
         <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Multiprintt Media Cloud</div>
-        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[350px] overflow-y-auto pr-1"></div>
+        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[320px] overflow-y-auto pr-1 mb-4"></div>
+        <div id="gallery-footer-actions" class="flex justify-between items-center pt-3 border-t border-white/5">
+            <span class="text-[10px] text-zinc-400" id="gallery-selection-count">Haz clic en las imágenes para seleccionarlas</span>
+            <button onclick="window.confirmMultiMediaSelection()" class="btn-primary py-2 px-5 hidden" id="gallery-confirm-btn">Confirmar Selección (0)</button>
+        </div>
     </div>
 </div>
 
@@ -226,7 +230,6 @@
         setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
     }
 
-    // Modal de confirmación personalizado (sin usar confirm() nativo)
     window.showConfirm = function(msg, callback) {
         const modal = document.getElementById('custom-confirm-modal');
         document.getElementById('confirm-msg').innerText = msg;
@@ -305,6 +308,8 @@
     let currentDbItem = {};
     let activeMediaInput = null;
     let galleryDataCache = [];
+    let selectedMediaUrls = [];
+    let isMultiSelectMode = false;
 
     const defaultGalleryItems = [
         { type: 'image', url: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=60', title: 'Camiseta Premium' },
@@ -370,15 +375,27 @@
 
     window.openGallery = async function(inputId, filter = 'all', mode = 'media') {
         activeMediaInput = inputId;
+        isMultiSelectMode = (mode === 'product');
+        selectedMediaUrls = [];
+        
         const modal = document.getElementById('gallery-modal');
         const grid = document.getElementById('gallery-grid');
         const title = document.getElementById('gallery-title');
+        const confirmBtn = document.getElementById('gallery-confirm-btn');
         
         modal.classList.add('active');
         grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando medios...</div>';
         
+        if(isMultiSelectMode) {
+            confirmBtn.classList.remove('hidden');
+            document.getElementById('gallery-selection-count').innerText = 'Selecciona una o varias imágenes';
+        } else {
+            confirmBtn.classList.add('hidden');
+            document.getElementById('gallery-selection-count').innerText = 'Haz clic en una imagen para seleccionarla';
+        }
+        
         let targetUrl = mode === 'product' ? 'https://multiprintt.web.app/recursos/productos/imagenes.json' : 'https://multiprintt.web.app/recursos/imagenes.json';
-        title.innerText = mode === 'product' ? 'Seleccionar Imagen de Producto' : 'Explorador de Medios';
+        title.innerText = mode === 'product' ? 'Seleccionar Imágenes (Multi-selección)' : 'Explorador de Medios';
 
         if (mode === 'product') document.getElementById('gallery-filters').style.display = 'none';
         else document.getElementById('gallery-filters').style.display = 'flex';
@@ -408,22 +425,57 @@
         const filtered = normData.filter(item => type === 'all' || item.type === type);
         let html = '';
         filtered.forEach(item => {
-            // Galería limpia sin mostrar texto de nombre de producto
+            const isSelected = selectedMediaUrls.includes(item.url);
+            const selClass = isSelected ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-white/10 hover:border-white/30';
+            
             if(item.type === 'image') {
-                html += `<div onclick="window.selectMedia('${item.url}')" class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-cyan-400 relative group"><img src="${item.url}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"></div>`;
+                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group transition-all"><img src="${item.url}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"></div>`;
             } else {
-                html += `<div onclick="window.selectMedia('${item.url}')" class="aspect-square bg-black border border-white/10 rounded-lg overflow-hidden cursor-pointer hover:border-violet-400 relative group flex items-center justify-center"><i class="fa-solid fa-video text-2xl text-white/40 group-hover:text-violet-400"></i></div>`;
+                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group flex items-center justify-center transition-all"><i class="fa-solid fa-video text-2xl text-white/40 group-hover:text-violet-400"></i></div>`;
             }
         });
         grid.innerHTML = html || '<div class="col-span-full py-8 text-center text-xs text-zinc-500">Sin medios</div>';
     }
 
-    window.selectMedia = function(url) {
+    window.handleMediaClick = function(url, el) {
+        if(!isMultiSelectMode) {
+            window.selectSingleMedia(url);
+            return;
+        }
+
+        const idx = selectedMediaUrls.indexOf(url);
+        if(idx > -1) {
+            selectedMediaUrls.splice(idx, 1);
+            el.classList.remove('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
+            el.classList.add('border-white/10');
+        } else {
+            selectedMediaUrls.push(url);
+            el.classList.remove('border-white/10');
+            el.classList.add('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
+        }
+
+        const confirmBtn = document.getElementById('gallery-confirm-btn');
+        confirmBtn.innerText = `Confirmar Selección (${selectedMediaUrls.length})`;
+    }
+
+    window.selectSingleMedia = function(url) {
         if(activeMediaInput && document.getElementById(activeMediaInput)) {
             const inp = document.getElementById(activeMediaInput);
             inp.value = url;
             if(activeMediaInput === 'db-img') {
                 window.updateImgPreview(url);
+            }
+        }
+        document.getElementById('gallery-modal').classList.remove('active');
+    }
+
+    window.confirmMultiMediaSelection = function() {
+        if(selectedMediaUrls.length === 0) return window.showToast("Selecciona al menos una imagen.");
+        if(activeMediaInput && document.getElementById(activeMediaInput)) {
+            const inp = document.getElementById(activeMediaInput);
+            inp.value = selectedMediaUrls.join(', ');
+            if(activeMediaInput === 'db-img') {
+                window.updateImgPreview(inp.value);
             }
         }
         document.getElementById('gallery-modal').classList.remove('active');
@@ -444,7 +496,7 @@
         const preview = document.getElementById('db-img-preview');
         if(!preview) return;
         const firstUrl = url.split(',')[0].trim();
-        preview.innerHTML = `<img src="${firstUrl}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/101014/ffffff?text=img'">`;
+        preview.innerHTML = `<img src="${firstUrl}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/60x60/101014/ffffff?text=img'">`;
     }
 
     window.openDbEditor = function(type, itemId, itemData = null) {
