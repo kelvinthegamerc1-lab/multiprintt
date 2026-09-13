@@ -7,7 +7,6 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 
-<!-- Optimización SEO Avanzada (Para Google Search, Redes Sociales y WhatsApp) -->
 <title>Multiprintt | Impresión & Publicidad, Tú Imagen Viva</title>
 <meta name="title" content="Multiprintt | Impresión & Publicidad, Tú Imagen Viva">
 <meta name="description" content="Multiprintt: Expertos en personalización, impresión gráfica, sublimación, DTF y academia para emprendedores. Dirigido por Alfredo Aguilar P. en Ecuador.">
@@ -15,7 +14,7 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://multiprintt.web.app/">
 
-<!-- Open Graph (Corrige el error de "Google" como nombre del sitio y mejora previsualizaciones en links) -->
+<!-- Open Graph y Redes Oficiales -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
 <meta property="og:site_name" content="Multiprintt">
@@ -23,7 +22,7 @@
 <meta property="og:description" content="Impresión & Publicidad, Tú Imagen Viva. Expertos en personalización, impresión gráfica y capacitación profesional dirigida por Alfredo Aguilar P.">
 <meta property="og:image" content="https://multiprintt.web.app/recursos/logo_mejorado.png">
 
-<!-- Marcado de Datos Estructurados JSON-LD (Fuerza a Google a reconocer tu Marca, Propietario y Redes) -->
+<!-- Marcado de Datos Estructurados JSON-LD (Fuerza a Google Knowledge Graph) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -46,7 +45,8 @@
   "sameAs": [
     "https://facebook.com/multiprintt",
     "https://instagram.com/multiprintt",
-    "https://youtube.com/@multiprintt"
+    "https://youtube.com/@multiprintt",
+    "https://www.tiktok.com/@alfredoaguilar734"
   ]
 }
 </script>
@@ -156,6 +156,9 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 .animate-marquee { animation: scrollMarquee linear infinite; }
 .hover\:pause-marquee:hover { animation-play-state: paused; }
+
+/* Ocultar marca de agua Elfsight */
+[class*="eapps-link"], a[href*="elfsight.com"], a[title*="Free TikTok"] { display: none !important; opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; }
 </style>
 </head>
 
@@ -239,69 +242,54 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   
   <section id="view-catalog" class="view-slide active-slide slide-scroll pb-24 md:pb-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[58px] md:pt-[85px] relative flex flex-col min-h-[calc(100vh-160px)]">
-        <div id="product-grid" class="w-full reveal show transition-all sortable-zone"></div>
+        <div id="product-grid" class="w-full transition-all sortable-zone"></div>
     </div>
   </section>
 
-  <section id="view-about" class="view-slide slide-scroll editable-section flex flex-col justify-center overflow-x-hidden bg-[#070709]">
+  <section id="view-about" class="view-slide flex flex-col overflow-hidden bg-[#070709] select-none">
     <div class="hero-glow w-[300px] h-[300px] lg:w-[450px] lg:h-[450px] bg-violet-600/15 right-0 md:right-10 top-10 lg:top-20"></div>
-    <div class="hero-glow w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] bg-pink-500/10 left-[-50px] bottom-10"></div>
+    <div class="hero-glow w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] bg-pink-500/10 left-[-50px] top-[40vh]"></div>
     
-    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center relative z-10 py-4 lg:py-0">
-        
-        <div class="flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-16 w-full h-full lg:max-h-[80vh]">
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center relative z-10 h-full py-2 lg:py-0 editable-section shrink-0" id="about-history-zone">
+        <div class="flex flex-col lg:grid lg:grid-cols-[auto_1fr] items-center justify-center gap-4 sm:gap-6 lg:gap-10 w-full max-w-5xl mx-auto my-auto">
             
-            <div class="relative h-[35vh] min-h-[240px] max-h-[380px] lg:h-[70vh] lg:max-h-[700px] lg:min-h-[500px] aspect-[9/16] shrink-0 rounded-[20px] lg:rounded-[32px] overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(115,92,255,0.15)] bg-[#070709]" data-resizable="true">
-                
-                <video id="about-video" 
-                       src="https://drive.google.com/uc?export=download&id=1h4fMVIuvcROJKXlm9KBSLkphgLc2ru5C#t=0.01" 
-                       class="absolute inset-0 w-full h-full object-cover z-10 cursor-pointer" 
-                       playsinline 
-                       disablePictureInPicture 
-                       controlsList="nodownload nofullscreen noremoteplayback" 
-                       oncontextmenu="return false;"
-                       onclick="window.toggleAboutVideo()">
-                </video>
+            <!-- Video Cloudinary 9:16 Inmersivo -->
+            <div class="relative w-[170px] sm:w-[210px] lg:w-[280px] xl:w-[310px] h-[34vh] sm:h-[38vh] lg:h-[62vh] aspect-[9/16] shrink-0 rounded-[28px] lg:rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-2xl border border-white/10" data-resizable="true">
+                <video id="about-cinematic-video" 
+                       src="https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01" 
+                       class="w-full h-full object-cover relative z-10 cursor-pointer"
+                       playsinline disablePictureInPicture oncontextmenu="return false;" controlsList="nodownload" crossorigin="anonymous"></video>
 
-                <div id="about-play-btn" onclick="window.toggleAboutVideo()" class="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 cursor-pointer">
-                    <div class="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-md text-white transition-transform duration-300 transform scale-100">
-                        <i class="fa-solid fa-play text-lg lg:text-2xl ml-1"></i>
+                <div id="about-video-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all duration-500 cursor-pointer" onclick="window.toggleAboutVideo()">
+                    <div class="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-white/10 border border-white/20 backdrop-blur-md flex items-center justify-center text-white text-xl lg:text-2xl shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-play ml-1"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="flex flex-col text-center lg:text-left items-center lg:items-start z-20 w-full shrink lg:shrink-0 lg:max-w-[50%]" data-resizable="true">
-                
-                <h2 class="display flex flex-col items-center lg:items-start tracking-tight w-full gap-0 relative z-20 mb-3 lg:mb-6">
-                    <span data-editable="true" class="block text-[8px] sm:text-[10px] lg:text-[12px] uppercase tracking-[0.3em] font-extrabold text-cyan-400 mb-1 lg:mb-2">Impresión & Publicidad,</span>
-                    <span data-editable="true" class="relative z-10 block text-[2.5rem] sm:text-[3.5rem] lg:text-7xl xl:text-[5.5rem] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1 leading-none">Multiprintt</span>
+            <!-- Manifiesto Multiprintt -->
+            <div class="flex flex-col text-center lg:text-left items-center lg:items-start z-20 w-full" data-resizable="true">
+                <h2 class="display flex flex-col items-center lg:items-start tracking-tight w-full gap-0 relative z-20 mb-2">
+                    <span data-editable="true" class="block text-[8px] sm:text-[9px] lg:text-[10px] uppercase tracking-[0.3em] font-extrabold text-cyan-400 mb-0.5 drop-shadow-md">Impresión & Publicidad,</span>
+                    <span data-editable="true" class="relative z-10 block text-[2.2rem] sm:text-[3rem] lg:text-[4.5rem] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1 leading-[1.1] drop-shadow-lg">Multiprintt</span>
                 </h2>
                 
-                <div class="flex flex-col gap-2.5 lg:gap-4 text-zinc-400 text-[10.5px] sm:text-[12px] lg:text-[14px] xl:text-[15px] leading-snug lg:leading-relaxed font-light w-full max-w-2xl mx-auto lg:mx-0">
-                    
-                    <p data-editable="true" class="text-white/95 text-[12px] sm:text-[13px] lg:text-lg font-medium leading-snug lg:leading-relaxed drop-shadow-md m-0">
-                        Multiprintt nació con una misión clara: dominar el arte de la personalización y transformar ideas simples en productos extraordinarios.
+                <div class="flex flex-col gap-2 lg:gap-3 text-zinc-400 text-[10px] sm:text-[11px] lg:text-[12.5px] leading-snug font-light w-full max-w-2xl mx-auto lg:mx-0">
+                    <p data-editable="true" class="text-white/95 text-[11px] sm:text-[11.5px] lg:text-[14px] font-bold leading-snug drop-shadow-md m-0 tracking-wide">
+                        Nacimos con una misión clara: dominar el arte de la personalización y transformar ideas simples en productos extraordinarios.
                     </p>
-                    
-                    <p data-editable="true" class="m-0 hidden sm:block lg:block">
-                        Lo que comenzó en Guayaquil como un taller explorando las técnicas de personalizacion, la sublimación, la impresión, la serigrafía y el grabado en vidrio, se convirtió rápidamente en un referente de innovación y acabado profesional.
+                    <p data-editable="true" class="m-0">
+                        Lo que comenzó en Guayaquil como un taller explorando la sublimación, la impresión, la serigrafía y el grabado en vidrio, se convirtió rápidamente en un referente de innovación y acabado profesional.
                     </p>
-                    
-                    <div class="px-4 lg:px-5 border-l-2 lg:border-l-[3px] border-gradient-to-b border-pink-500/60 my-1 lg:my-2 py-1.5 lg:py-2 bg-gradient-to-r from-pink-500/5 to-transparent rounded-r-xl text-left">
-                        <p data-editable="true" class="italic text-white/80 m-0 leading-snug lg:leading-relaxed text-[10px] sm:text-[11px] lg:text-[14px]">
-                            "Con mas de 20 años en el camino entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca, acompañar momentos especiales y abrir puertas al crecimiento personal."
+                    <div class="px-3 border-l-[2px] border-pink-500/60 my-0.5 py-1.5 bg-gradient-to-r from-pink-500/5 to-transparent rounded-r-xl text-left">
+                        <p data-editable="true" class="italic text-white/90 m-0 leading-snug text-[10px] sm:text-[10.5px] lg:text-[12px] font-medium">
+                            "Con más de 20 años en el camino, entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca, acompañar momentos especiales y abrir puertas al crecimiento personal."
                         </p>
                     </div>
-                    
                     <p data-editable="true" class="m-0">
-                        Tras años de ensayo, error y perfeccionamiento técnico, decidimos que nuestro conocimiento no debía quedarse encerrado en el taller. Hoy, Multiprintt es un espacio dual donde creamos productos de alto nivel y capacitamos a la nueva generación de emprendedores de la impresión.
-                    </p>
-                    
-                    <p data-editable="true" class="m-0 hidden lg:block">
-                        Este catálogo es el reflejo de años de dedicación, pruebas de calidad y una constante pasión por hacer las cosas bien desde el primer intento.
+                        Hoy, Multiprintt es un espacio dual donde creamos productos de alto nivel y capacitamos a la nueva generación de emprendedores de la impresión.
                     </p>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -311,7 +299,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <div class="hero-glow w-[400px] h-[400px] bg-cyan-600/10 left-[-100px] top-0"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-12 relative z-10">
         
-        <div class="reveal text-center md:text-left shrink-0 relative z-20 mb-4" data-resizable="true" style="transition-delay: 0ms;">
+        <div class="reveal show text-center md:text-left shrink-0 relative z-20 mb-4" data-resizable="true">
             <div data-editable="true" class="inline-block text-[10px] tracking-[.3em] uppercase text-cyan-400 font-extrabold mb-4 bg-cyan-500/10 border border-cyan-500/20 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]">Multiprintt Academy</div>
             <h2 class="display flex flex-col gap-1 text-4xl md:text-5xl lg:text-[4.5rem] font-extrabold tracking-tight relative z-20 leading-none">
                 <span data-editable="true" class="block text-white">No solo vendemos.</span>
@@ -320,32 +308,30 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <p data-editable="true" class="text-[13px] md:text-base text-zinc-400 leading-relaxed max-w-2xl mt-4 mx-auto md:mx-0 font-light">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
         </div>
 
-        <div class="reveal mt-2 flex flex-wrap justify-center md:justify-start gap-4 text-[9px] md:text-[11px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-10" style="transition-delay: 100ms;" id="course-badges-zone">
+        <div class="reveal show mt-2 flex flex-wrap justify-center md:justify-start gap-4 text-[9px] md:text-[11px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-10" id="course-badges-zone">
             <span class="flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.15)]"><i class="fa-solid fa-award text-amber-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-amber-100 font-extrabold">Práctica Garantizada</span></span>
             <span class="flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]"><i class="fa-solid fa-infinity text-cyan-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-cyan-100 font-extrabold">Acompañamiento de por vida</span></span>
-            
             <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag cursor-pointer bg-transparent"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
         </div>
         
-        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal show" style="transition-delay: 200ms;"></div>
+        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal show"></div>
 
-        <div class="reveal mb-12 w-full flex flex-col items-center justify-center relative overflow-hidden pb-10 border-b border-white/5" style="transition-delay: 300ms;">
+        <div id="academy-gallery-section" class="reveal show mb-12 w-full flex flex-col items-center justify-center relative overflow-hidden pb-10 border-b border-white/5">
             <div class="text-center mb-8 z-20" data-resizable="true">
                 <h3 data-editable="true" class="display text-2xl md:text-3xl font-extrabold tracking-tight text-white"><span class="text-amber-400">Momentos</span> Multiprintt</h3>
                 <p data-editable="true" class="text-[11px] md:text-sm text-zinc-400 mt-2 font-light">Un vistazo a nuestras clases y talleres prácticos.</p>
             </div>
             
             <div class="w-full relative flex items-center max-w-[100vw] overflow-hidden mask-edges py-4 z-20">
-                <div id="academy-gallery-marquee" class="flex gap-4 md:gap-6 items-center w-max animate-marquee hover:pause-marquee">
-                </div>
+                <div id="academy-gallery-marquee" class="flex gap-4 md:gap-6 items-center w-max animate-marquee hover:pause-marquee"></div>
             </div>
         </div>
 
-        <div class="reveal mt-4 mb-8 text-center md:text-left">
+        <div class="reveal show mt-4 mb-8 text-center md:text-left">
             <h3 data-editable="true" class="display text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-white">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
         </div>
         
-        <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
+        <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal show w-full pb-20 md:pb-0">
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
                 <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-card-id="t_default_1" data-resizable="true">
                     <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4" autoplay muted loop playsinline crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none"></video>
@@ -408,7 +394,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   <section id="view-contact" class="view-slide flex flex-col slide-scroll editable-section">
     <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-1 sm:pt-2 pb-2 sm:pb-6 relative z-10">
         <div class="flex-1 flex flex-col justify-evenly">
-            <div class="reveal text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2" data-resizable="true">
+            <div class="reveal show text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2" data-resizable="true">
                 <div data-editable="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
                 <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20 leading-[1.1]">
                     <span data-editable="true" class="block">Tu próxima idea</span>
@@ -416,7 +402,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 </h2>
             </div>
 
-            <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
+            <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal show w-full lg:-mt-[22px] sortable-zone">
                 <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0" data-resizable="true">
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
@@ -477,9 +463,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none border-none"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
-    <div id="cart-items-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
-        <!-- Items renderizados aquí -->
-    </div>
+    <div id="cart-items-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4"></div>
 
     <div class="p-5 border-t border-white/10 bg-[#070709] shrink-0 flex flex-col gap-3">
         <div class="flex items-center justify-between text-zinc-400 text-sm">
@@ -538,32 +522,16 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
-        
-        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer border-none">
-            <i class="fa-solid fa-xmark text-lg pointer-events-none"></i>
-        </button>
-
+        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer border-none"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
         <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto min-h-[300px] relative bg-black shrink-0">
             <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
-            
-            <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none">
-                <span id="vm-time">00:00</span>
-            </div>
-            
-            <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0a0c] to-transparent z-10 pointer-events-none block md:hidden"></div>
+            <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none"><span id="vm-time">00:00</span></div>
         </div>
-
         <div class="w-full md:w-[55%] p-8 sm:p-10 md:p-12 flex flex-col justify-center relative z-20 bg-[#0a0a0c]">
             <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[36px] md:text-[48px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-6 pointer-events-auto"></i>
-            
-            <div class="overflow-y-auto hide-scrollbar max-h-[160px] md:max-h-[220px] mb-8 pointer-events-none">
-                <p data-editable="true" id="vm-quote" class="text-white/95 text-base md:text-xl leading-relaxed font-light italic drop-shadow-md pr-2 pointer-events-auto m-0">"..."</p>
-            </div>
-            
+            <div class="overflow-y-auto hide-scrollbar max-h-[160px] md:max-h-[220px] mb-8 pointer-events-none"><p data-editable="true" id="vm-quote" class="text-white/95 text-base md:text-xl leading-relaxed font-light italic drop-shadow-md pr-2 pointer-events-auto m-0">"..."</p></div>
             <div class="border-t border-white/10 pt-6 md:pt-8 shrink-0 flex items-center gap-5 pointer-events-none mt-auto">
-                <div data-editable="true" id="vm-avatar-container" class="w-14 h-14 md:w-16 md:h-16 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto shadow-[0_0_15px_rgba(37,216,255,0.2)]">
-                    <span class="font-bold text-xl md:text-2xl text-cyan-400" id="vm-initial">C</span>
-                </div>
+                <div data-editable="true" id="vm-avatar-container" class="w-14 h-14 md:w-16 md:h-16 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto shadow-[0_0_15px_rgba(37,216,255,0.2)]"><span class="font-bold text-xl md:text-2xl text-cyan-400" id="vm-initial">C</span></div>
                 <div class="flex flex-col justify-center pointer-events-none">
                     <h4 data-editable="true" id="vm-name" class="text-white text-lg md:text-xl font-bold tracking-wide drop-shadow-sm pointer-events-auto m-0">Carlos P.</h4>
                     <span data-editable="true" id="vm-role" class="text-[10px] md:text-xs uppercase tracking-[0.2em] font-extrabold drop-shadow-sm mt-1 transition-colors duration-300 text-cyan-400 pointer-events-auto block">Caso de Éxito</span>
@@ -573,10 +541,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
 </div>
 
-<div id="imageModal" class="hidden fixed inset-0 z-[99999] bg-[#050507]/95 backdrop-blur-xl p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag" onclick="window.closeImageModal()">
-    <button onclick="window.closeImageModal()" class="absolute top-4 right-4 md:top-8 md:right-8 z-[310] w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all shadow-lg cursor-pointer outline-none border-none">
-        <i class="fa-solid fa-xmark text-xl pointer-events-none"></i>
-    </button>
+<div id="imageModal" class="hidden fixed inset-0 z-[99999] bg-[#050507]/90 backdrop-blur-xl p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag" onclick="window.closeImageModal()">
+    <button onclick="window.closeImageModal()" class="absolute top-4 right-4 md:top-8 md:right-8 z-[310] w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all shadow-lg cursor-pointer outline-none border-none"><i class="fa-solid fa-xmark text-xl pointer-events-none"></i></button>
     <div class="relative max-w-6xl max-h-[90vh] w-full h-full flex items-center justify-center transform scale-95 transition-transform duration-500" id="imageModalContent">
         <img id="im-full-image" src="" class="max-w-full max-h-full object-contain rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)]" onclick="event.stopPropagation()">
     </div>
@@ -592,64 +558,54 @@ import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, increment, i
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
-const db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-});
-
+const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
 const APP_ID = "multiprintt-web";
 
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
-
 window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
 
-window.saveCart = function() {
-    localStorage.setItem('multiprintt_cart', JSON.stringify(window.multiprinttCart));
-    window.updateCartUI();
-}
-
+window.saveCart = function() { localStorage.setItem('multiprintt_cart', JSON.stringify(window.multiprinttCart)); window.updateCartUI(); }
 window.toggleCart = function() {
     const overlay = document.getElementById('cart-overlay');
     const sidebar = document.getElementById('cart-sidebar');
-    
-    if (overlay.classList.contains('pointer-events-none')) {
-        overlay.classList.remove('pointer-events-none', 'opacity-0');
-        sidebar.classList.remove('translate-x-full');
-        window.updateCartUI();
-    } else {
-        overlay.classList.add('opacity-0', 'pointer-events-none');
-        sidebar.classList.add('translate-x-full');
-    }
+    if (overlay.classList.contains('pointer-events-none')) { overlay.classList.remove('pointer-events-none', 'opacity-0'); sidebar.classList.remove('translate-x-full'); window.updateCartUI(); } 
+    else { overlay.classList.add('opacity-0', 'pointer-events-none'); sidebar.classList.add('translate-x-full'); }
 }
+window.clearCart = function() { window.multiprinttCart = []; window.saveCart(); }
 
-window.clearCart = function() {
-    window.multiprinttCart = [];
-    window.saveCart();
-}
+window.toggleAboutVideo = function() {
+    const vid = document.getElementById('about-cinematic-video');
+    const overlay = document.getElementById('about-video-overlay');
+    if(!vid) return;
+    
+    if(vid.paused) {
+        vid.play().then(() => {
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+        }).catch(e => { console.error("Error al reproducir:", e); });
+    } else {
+        vid.pause();
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'auto';
+    }
+};
 
 window.addToCart = function(productId, e) {
     if(e) e.stopPropagation();
     if(window.isAdminMode) return;
-    
     const existing = window.multiprinttCart.find(item => item.id === productId);
     if(existing) { existing.qty += 1; } else { window.multiprinttCart.push({ id: productId, qty: 1 }); }
-    
     try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { cartAdds: increment(1) }, { merge: true }); } catch (err) {}
-    
     window.saveCart();
-    
     const badge = document.getElementById('cart-badge');
-    badge.classList.add('scale-125');
-    setTimeout(() => badge.classList.remove('scale-125'), 200);
+    badge.classList.add('scale-125'); setTimeout(() => badge.classList.remove('scale-125'), 200);
 }
 
 window.updateCartQty = function(productId, delta) {
     const idx = window.multiprinttCart.findIndex(item => item.id === productId);
     if(idx > -1) {
         window.multiprinttCart[idx].qty += delta;
-        if(window.multiprinttCart[idx].qty <= 0) {
-            window.multiprinttCart.splice(idx, 1);
-        }
+        if(window.multiprinttCart[idx].qty <= 0) window.multiprinttCart.splice(idx, 1);
         window.saveCart();
     }
 }
@@ -657,52 +613,34 @@ window.updateCartQty = function(productId, delta) {
 window.updateCartUI = function() {
     const badge = document.getElementById('cart-badge');
     const totalQty = window.multiprinttCart.reduce((sum, item) => sum + item.qty, 0);
-    
-    if(totalQty > 0) {
-        badge.innerText = totalQty;
-        badge.classList.remove('scale-0');
-        badge.classList.add('scale-100');
-    } else {
-        badge.classList.remove('scale-100');
-        badge.classList.add('scale-0');
-    }
+    if(totalQty > 0) { badge.innerText = totalQty; badge.classList.remove('scale-0'); badge.classList.add('scale-100'); } 
+    else { badge.classList.remove('scale-100'); badge.classList.add('scale-0'); }
 
     const container = document.getElementById('cart-items-container');
     const subtotalEl = document.getElementById('cart-subtotal');
     const totalEl = document.getElementById('cart-total');
-    
     if(!container) return;
-    
-    container.innerHTML = '';
-    let total = 0;
+    container.innerHTML = ''; let total = 0;
 
     if(window.multiprinttCart.length === 0) {
         container.innerHTML = `<div class="text-zinc-500 text-center py-10 flex flex-col items-center gap-3"><i class="fa-solid fa-basket-shopping text-3xl opacity-20"></i><span class="text-xs">Tu carrito está vacío</span></div>`;
-        subtotalEl.innerText = '$0.00';
-        totalEl.innerText = '$0.00';
-        return;
+        subtotalEl.innerText = '$0.00'; totalEl.innerText = '$0.00'; return;
     }
 
     window.multiprinttCart.forEach(item => {
         let p = window.appProducts.find(x => x.id === item.id);
         if(!p) return;
-        
         let pPrice = Number(p.price) || 0;
         let discountVal = Number(p.discount) || 0;
         let finalPrice = (p.isPromo && discountVal > 0) ? pPrice * (1 - discountVal / 100) : pPrice;
-        let lineTotal = finalPrice * item.qty;
-        total += lineTotal;
-
+        let lineTotal = finalPrice * item.qty; total += lineTotal;
         let imgUrl = p.image ? (p.image.split(',')[0] || '').trim() : '';
         if(Array.isArray(p.images) && p.images.length > 0) imgUrl = p.images[0];
-        
         let imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-contain bg-transparent">` : `<div class="w-full h-full bg-transparent flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-white/30"></i></div>`;
 
         container.innerHTML += `
         <div class="flex items-center gap-4 bg-[#101014] p-3 rounded-xl border border-white/5">
-            <div class="w-14 h-14 bg-transparent rounded-lg overflow-hidden shrink-0 border border-white/5 flex items-center justify-center p-1">
-                ${imgHtml}
-            </div>
+            <div class="w-14 h-14 bg-transparent rounded-lg overflow-hidden shrink-0 border border-white/5 flex items-center justify-center p-1">${imgHtml}</div>
             <div class="flex-1 flex flex-col justify-center min-w-0">
                 <h4 class="text-white text-[11px] font-bold truncate m-0">${p.name}</h4>
                 <div class="text-[#25d366] text-xs font-extrabold mt-0.5">$${finalPrice.toFixed(2)}</div>
@@ -714,41 +652,29 @@ window.updateCartUI = function() {
             </div>
         </div>`;
     });
-
-    subtotalEl.innerText = `$${total.toFixed(2)}`;
-    totalEl.innerText = `$${total.toFixed(2)}`;
+    subtotalEl.innerText = `$${total.toFixed(2)}`; totalEl.innerText = `$${total.toFixed(2)}`;
 }
 
 window.checkoutWhatsApp = function() {
     if(window.multiprinttCart.length === 0) return;
-    
     let phoneEl = document.getElementById('contact-phone'); 
     let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
     if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
 
-    let msg = `👋 Hola *Multiprintt*, quiero realizar este pedido:\n\n`;
-    let total = 0;
-
+    let msg = `👋 Hola *Multiprintt*, quiero realizar este pedido:\n\n`; let total = 0;
     window.multiprinttCart.forEach(item => {
         let p = window.appProducts.find(x => x.id === item.id);
         if(!p) return;
-        
         let pPrice = Number(p.price) || 0;
         let discountVal = Number(p.discount) || 0;
         let finalPrice = (p.isPromo && discountVal > 0) ? pPrice * (1 - discountVal / 100) : pPrice;
-        let lineTotal = finalPrice * item.qty;
-        total += lineTotal;
-        
+        let lineTotal = finalPrice * item.qty; total += lineTotal;
         msg += `🛍️ *${p.name}*\n`;
-        if (p.isPromo && discountVal > 0) msg += `   🏷️ Descuento aplicado: ${discountVal}%\n`;
-        msg += `   Cantidad: ${item.qty}\n`;
-        msg += `   💰 $${lineTotal.toFixed(2)}\n\n`;
-        
+        if (p.isPromo && discountVal > 0) msg += `   🏷️ Descuento: ${discountVal}%\n`;
+        msg += `   Cantidad: ${item.qty}\n   💰 $${lineTotal.toFixed(2)}\n\n`;
         try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', p.id), { checkoutIntents: increment(item.qty) }, { merge: true }); } catch (err) {}
     });
-    
     msg += `🧾 *Total:* $${total.toFixed(2)}\n\n¿Me ayudan a finalizar mi compra? ✅`;
-    
     window.open(`https://wa.me/${rawPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     window.toggleCart();
 }
@@ -771,7 +697,6 @@ window.navigate = function(targetId) {
             if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
         }
     });
-    
     if (subnav) {
         if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '45px'; subnav.style.opacity = '1'; } 
         else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
@@ -784,14 +709,10 @@ window.setFilter = function(filterStr) {
     window.currentFilter = filterStr;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`filter-${filterStr}`).classList.add('active');
-    
     const grid = document.getElementById('product-grid');
     if (grid) {
         grid.style.opacity = '0';
-        setTimeout(() => {
-            window.renderProducts();
-            grid.style.opacity = '1';
-        }, 300);
+        setTimeout(() => { window.renderProducts(); grid.style.opacity = '1'; }, 300);
     }
 };
 
@@ -799,27 +720,17 @@ window.sliderFrames = window.sliderFrames || {};
 window.updateSliderOpacities = function(sliderId) {
     if(window.sliderFrames[sliderId]) cancelAnimationFrame(window.sliderFrames[sliderId]);
     window.sliderFrames[sliderId] = requestAnimationFrame(() => {
-        const slider = document.getElementById(sliderId);
-        if (!slider) return;
-        const slides = slider.querySelectorAll('.slider-item');
-        if (slides.length === 0) return;
-        const sliderRect = slider.getBoundingClientRect();
-        const sliderCenter = sliderRect.left + (sliderRect.width / 2);
-        let closestIdx = 0;
-        let minDistance = Infinity;
-        
+        const slider = document.getElementById(sliderId); if (!slider) return;
+        const slides = slider.querySelectorAll('.slider-item'); if (slides.length === 0) return;
+        const sliderRect = slider.getBoundingClientRect(); const sliderCenter = sliderRect.left + (sliderRect.width / 2);
+        let closestIdx = 0; let minDistance = Infinity;
         slides.forEach((slide, idx) => {
-            const slideRect = slide.getBoundingClientRect();
-            const slideCenter = slideRect.left + (slideRect.width / 2);
+            const slideRect = slide.getBoundingClientRect(); const slideCenter = slideRect.left + (slideRect.width / 2);
             const distance = Math.abs(sliderCenter - slideCenter);
             if (distance < minDistance) { minDistance = distance; closestIdx = idx; }
             slide.classList.remove('opacity-100', 'scale-100', 'z-20'); slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
         });
-        
-        if (slides[closestIdx]) {
-            slides[closestIdx].classList.remove('opacity-40', 'scale-[0.70]', 'z-10'); slides[closestIdx].classList.add('opacity-100', 'scale-100', 'z-20');
-        }
-
+        if (slides[closestIdx]) { slides[closestIdx].classList.remove('opacity-40', 'scale-[0.70]', 'z-10'); slides[closestIdx].classList.add('opacity-100', 'scale-100', 'z-20'); }
         const dots = document.querySelectorAll(`.dot-${sliderId}`);
         dots.forEach((dot, idx) => {
             if (idx === closestIdx) { dot.classList.remove('bg-white/40', 'w-1.5'); dot.classList.add('bg-cyan-400', 'w-3'); } 
@@ -830,16 +741,14 @@ window.updateSliderOpacities = function(sliderId) {
 
 window.scrollSlider = function(id, dir, e) {
     if(e) { e.preventDefault(); e.stopPropagation(); }
-    const slider = document.getElementById(id);
-    if(!slider) return;
-    const width = slider.querySelector('.slider-item').offsetWidth;
+    const slider = document.getElementById(id); if(!slider) return;
+    const width = slider.querySelector('div') ? slider.querySelector('div').offsetWidth : slider.offsetWidth;
     slider.scrollBy({ left: dir * width, behavior: 'smooth' });
 };
 
 window.scrollToSlide = function(sliderId, idx, e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
-    const slider = document.getElementById(sliderId);
-    const slides = slider.querySelectorAll('.slider-item');
+    const slider = document.getElementById(sliderId); const slides = slider.querySelectorAll('.slider-item');
     if(slider && slides[idx]) {
         const slide = slides[idx];
         const scrollLeft = slide.offsetLeft - (slider.offsetWidth - slide.offsetWidth) / 2;
@@ -851,13 +760,9 @@ window.syncSocialNetworks = function() {
     const footerLinksContainer = document.getElementById('social-footer-links');
     const navPcContainer = document.getElementById('social-nav-pc');
     const navMobileContainer = document.getElementById('social-nav-mobile');
-    
     if(!footerLinksContainer || !navPcContainer || !navMobileContainer) return;
-
     const currentLinks = footerLinksContainer.querySelectorAll('button:not(.admin-tool)');
-    
-    navPcContainer.innerHTML = '';
-    navMobileContainer.innerHTML = '';
+    navPcContainer.innerHTML = ''; navMobileContainer.innerHTML = '';
 
     const btnAdminPc = document.createElement('button');
     btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
@@ -880,42 +785,16 @@ window.syncSocialNetworks = function() {
         const network = link.getAttribute('data-network') || 'link';
 
         const btnPc = document.createElement('button');
-        btnPc.setAttribute('data-editable', 'true');
-        btnPc.setAttribute('data-network', network);
+        btnPc.setAttribute('data-editable', 'true'); btnPc.setAttribute('data-network', network);
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        
-        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer bg-transparent border-none"; } 
-        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer bg-transparent border-none p-0"; }
-        
-        if(network === 'facebook') btnPc.classList.add('hover:text-[#1877f2]');
-        else if(network === 'instagram') btnPc.classList.add('hover:text-[#e1306c]');
-        else if(network === 'whatsapp') btnPc.classList.add('hover:text-[#25d366]');
-        else if(network === 'youtube') btnPc.classList.add('hover:text-[#ff0000]');
-        else if(network === 'tiktok') btnPc.classList.add('hover:text-white');
-        else if(network === 'twitter') btnPc.classList.add('hover:text-white');
-        else if(network === 'linkedin') btnPc.classList.add('hover:text-[#0a66c2]');
-        else if(network === 'telegram') btnPc.classList.add('hover:text-[#0088cc]');
-        else btnPc.classList.add('hover:text-cyan-400');
-
+        btnPc.className = isLast ? "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer bg-transparent border-none" : "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer bg-transparent border-none p-0";
         btnPc.innerHTML = `<i class="${iconClasses} text-[18px] pointer-events-none"></i>`;
         navPcContainer.appendChild(btnPc);
 
         const btnMob = document.createElement('button');
-        btnMob.setAttribute('data-editable', 'true');
-        btnMob.setAttribute('data-network', network);
+        btnMob.setAttribute('data-editable', 'true'); btnMob.setAttribute('data-network', network);
         btnMob.setAttribute('onclick', `window.open('${url}', '_blank')`);
         btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none cursor-pointer bg-transparent border-none p-0";
-        
-        if(network === 'facebook') btnMob.classList.add('hover:text-[#1877f2]');
-        else if(network === 'instagram') btnMob.classList.add('hover:text-[#e1306c]');
-        else if(network === 'whatsapp') btnMob.classList.add('hover:text-[#25d366]');
-        else if(network === 'youtube') btnMob.classList.add('hover:text-[#ff0000]');
-        else if(network === 'tiktok') btnMob.classList.add('hover:text-white');
-        else if(network === 'twitter') btnMob.classList.add('hover:text-white');
-        else if(network === 'linkedin') btnMob.classList.add('hover:text-[#0a66c2]');
-        else if(network === 'telegram') btnMob.classList.add('hover:text-[#0088cc]');
-        else btnMob.classList.add('hover:text-cyan-400');
-
         btnMob.innerHTML = `<i class="${iconClasses} text-lg pointer-events-none"></i>`;
         navMobileContainer.insertBefore(btnMob, navMobileContainer.querySelector('.admin-tool'));
     });
@@ -955,13 +834,9 @@ window.renderProducts = function(){
         const finalPrice = (p.isPromo && discountVal > 0) ? basePrice * (1 - discountVal / 100) : basePrice;
 
         let imgs = [];
-        if (p.image) {
-            imgs = p.image.split(/[\n,]+/).map(s=>s.trim()).filter(s=>s);
-        } else if (Array.isArray(p.images) && p.images.length > 0) {
-            imgs = p.images;
-        }
-        
-        if (imgs.length === 2) { imgs = [imgs[0], imgs[1], imgs[0], imgs[1]]; }
+        if (p.image) imgs = p.image.split(/[\n,]+/).map(s=>s.trim()).filter(s=>s);
+        else if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images;
+        if (imgs.length === 2) imgs = [imgs[0], imgs[1], imgs[0], imgs[1]];
         
         let art = '';
         if (imgs.length <= 1) {
@@ -969,48 +844,31 @@ window.renderProducts = function(){
         } else {
             let sliderId = `slider-${p.id}`;
             let dotsHtml = '<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-30 pointer-events-none">';
-
             let slides = imgs.map((img, idx) => {
                 const isActive = idx === 1;
                 const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
-                
                 let dotClass = isActive ? 'bg-cyan-400 w-3' : 'bg-white/40 w-1.5';
                 dotsHtml += `<button onclick="window.scrollToSlide('${sliderId}', ${idx}, event)" class="dot-${sliderId} h-1.5 ${dotClass} rounded-full transition-all duration-300 pointer-events-auto outline-none cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.8)] ignore-drag border-none p-0"></button>`;
-
                 return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
             }).join('');
-            
             dotsHtml += '</div>';
-            
             art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', -1, event)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', 1, event)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}`;
-            setTimeout(() => { const slider = document.getElementById(sliderId); if (slider) { const items = slider.querySelectorAll('.slider-item'); if (items[1]) { slider.scrollTo({ left: items[1].offsetLeft - (slider.offsetWidth - items[1].offsetWidth) / 2, behavior: 'instant' }); } } window.updateSliderOpacities(sliderId); }, 60);
+            setTimeout(() => { const slider = document.getElementById(sliderId); if (slider) { const items = slider.querySelectorAll('.slider-item'); if (items[1]) slider.scrollTo({ left: items[1].offsetLeft - (slider.offsetWidth - items[1].offsetWidth) / 2, behavior: 'instant' }); } window.updateSliderOpacities(sliderId); }, 60);
         }
 
         const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
-        
         let badgesHtml = '';
         let isTopSeller = p.isBestSeller || (window.currentFilter === 'mas-vendidos' && i < 3);
-        if (isTopSeller) {
-            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-rose-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-300 text-[9px]"></i> Más vendido</span>`;
-        }
-        if (p.isPromo && discountVal > 0) {
-            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-pink-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm">-${discountVal}% OFF</span>`;
-        } else if (p.isPromo) {
-            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-amber-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-crown text-amber-200 text-[9px]"></i> Promo</span>`;
-        }
-        
+        if (isTopSeller) badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-rose-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-300 text-[9px]"></i> Más vendido</span>`;
+        if (p.isPromo && discountVal > 0) badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-pink-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm">-${discountVal}% OFF</span>`;
         let promoBadgeContainer = badgesHtml ? `<div class="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">${badgesHtml}</div>` : '';
 
         let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
         let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
-        
         let priceHtml = `<span class="text-sm md:text-base font-extrabold text-white">$${finalPrice.toFixed(2)}</span>`;
-        if (p.isPromo && discountVal > 0) {
-            priceHtml = `<div class="flex flex-col items-start"><span class="text-[9px] text-zinc-500 line-through leading-none">$${basePrice.toFixed(2)}</span><span class="text-sm md:text-base font-extrabold text-pink-400 leading-none mt-0.5">$${finalPrice.toFixed(2)}</span></div>`;
-        }
+        if (p.isPromo && discountVal > 0) priceHtml = `<div class="flex flex-col items-start"><span class="text-[9px] text-zinc-500 line-through leading-none">$${basePrice.toFixed(2)}</span><span class="text-sm md:text-base font-extrabold text-pink-400 leading-none mt-0.5">$${finalPrice.toFixed(2)}</span></div>`;
 
         let delay = (i % 8) * 50;
-
         renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${p.id}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight m-0">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button onclick="window.addToCart('${p.id}', event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
     });
     if(safeProducts.length > 0) grid.innerHTML = renderHTML;
@@ -1033,9 +891,7 @@ window.renderCourses = function(){
     safeCourses.forEach((c, i)=>{
         let a = accents[i % accents.length]; 
         let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
-        
         let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
-        
         let delay = 100 + (i * 100);
         let masterclassBadge = c.isMasterclass !== false ? `<span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>` : '';
         
@@ -1045,13 +901,11 @@ window.renderCourses = function(){
         let modIconColor = 'text-white/50';
 
         if(modalityStr.toLowerCase() === 'virtual' || modalityStr.toLowerCase() === 'online') {
-            modalityStr = 'Online';
-            modIcon = 'fa-laptop';
+            modalityStr = 'Online'; modIcon = 'fa-laptop';
             modColorClass = 'text-red-100 bg-red-600/20 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
             modIconColor = 'text-red-400';
         } else if(modalityStr.toLowerCase() === 'híbrido') {
-            modIcon = 'fa-rotate';
-            modColorClass = 'text-violet-100 bg-violet-600/20 border-violet-500/30 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
+            modIcon = 'fa-rotate'; modColorClass = 'text-violet-100 bg-violet-600/20 border-violet-500/30 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
             modIconColor = 'text-violet-400';
         }
 
@@ -1100,25 +954,18 @@ window.cloneContactPhone = function(btn) {
     if(!window.isAdminMode) return;
     const parent = btn.parentElement;
     const clone = document.createElement('div');
-    clone.className = 'group mt-3';
-    clone.setAttribute('data-resizable', 'true');
-    clone.innerHTML = `
-        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Nuevo Teléfono</div>
-        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer bg-transparent border-none p-0">+593 99 000 0000</button>
-    `;
+    clone.className = 'group mt-3'; clone.setAttribute('data-resizable', 'true');
+    clone.innerHTML = `<div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Nuevo Teléfono</div><button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer bg-transparent border-none p-0">+593 99 000 0000</button>`;
     parent.insertBefore(clone, btn);
     if(window.updateResizeBox) window.updateResizeBox();
 }
 
 window.cloneTextTestimonial = function(btnNode) { 
     if(!window.isAdminMode) return; 
-    const grid = btnNode.parentElement; 
-    const newId = 'txt_' + Date.now();
+    const grid = btnNode.parentElement; const newId = 'txt_' + Date.now();
     const div = document.createElement('div');
     div.className = "p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer";
-    div.setAttribute('data-theme', 'pink');
-    div.setAttribute('data-card-id', newId);
-    div.setAttribute('data-resizable', 'true');
+    div.setAttribute('data-theme', 'pink'); div.setAttribute('data-card-id', newId); div.setAttribute('data-resizable', 'true');
     div.innerHTML = `
         <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
         <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Escribe tu comentario aquí..."</p>
@@ -1130,7 +977,7 @@ window.cloneTextTestimonial = function(btnNode) {
             </div>
         </div>
         <div class="admin-video-edit-overlay ignore-drag">
-            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
+            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button>
             <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
         </div>
     `;
@@ -1140,13 +987,10 @@ window.cloneTextTestimonial = function(btnNode) {
 
 window.cloneVideoTestimonial = function(btnNode) { 
     if(!window.isAdminMode) return; 
-    const col = btnNode.parentElement; 
-    const newId = 't_' + Date.now();
+    const col = btnNode.parentElement; const newId = 't_' + Date.now();
     const div = document.createElement('div');
     div.className = "video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]";
-    div.setAttribute('data-theme', 'cyan');
-    div.setAttribute('data-card-id', newId);
-    div.setAttribute('data-resizable', 'true');
+    div.setAttribute('data-theme', 'cyan'); div.setAttribute('data-card-id', newId); div.setAttribute('data-resizable', 'true');
     div.innerHTML = `
         <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4" autoplay muted loop playsinline crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none"></video>
         <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
@@ -1165,7 +1009,7 @@ window.cloneVideoTestimonial = function(btnNode) {
             </div>
         </div>
         <div class="admin-video-edit-overlay ignore-drag">
-            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button>
             <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
         </div>
     `;
@@ -1175,35 +1019,22 @@ window.cloneVideoTestimonial = function(btnNode) {
 
 window.deleteTestimonialCard = function(btn) {
     const card = btn.closest('.video-testimonial-card, .card');
-    if(card) {
-        card.remove();
-        if(window.showToast) window.showToast("Testimonio eliminado.");
-    }
+    if(card) { card.remove(); window.showToast("Testimonio eliminado."); }
 }
 
 window.loadFirebaseData = async function() {
     try {
         await auth.authStateReady();
-        if (!auth.currentUser) { await signInAnonymously(auth); }
-
+        if (!auth.currentUser) await signInAnonymously(auth);
         const layoutSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
 
         if (layoutSnap.exists()) {
             const data = layoutSnap.data();
             if(data.zones) { 
                 document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
-                
                 if(data.zones['videoModalTpl']) {
-                    let modalContent = document.getElementById('videoModalContent');
-                    if(!modalContent) modalContent = document.querySelector('#videoModal > div');
+                    let modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
                     if(modalContent) modalContent.outerHTML = data.zones['videoModalTpl'];
-                    
-                    const newModalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-                    if(newModalContent) {
-                        newModalContent.id = 'videoModalContent'; 
-                        newModalContent.classList.add('relative', 'w-[95vw]', 'max-w-4xl', 'rounded-[32px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col', 'md:flex-row');
-                        newModalContent.style.aspectRatio = '';
-                    }
                 }
             }
             if(data.prodOrder) window.productOrderArray = data.prodOrder;
@@ -1212,47 +1043,37 @@ window.loadFirebaseData = async function() {
 
         onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
             window.appProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
-            window.renderProducts();
-            window.updateCartUI();
+            window.renderProducts(); window.updateCartUI();
         });
 
         onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
             window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => ({id: d.id, ...d.data()}));
             window.renderCourses();
         });
-
     } catch (error) { 
-        console.warn("Error Firebase, usando respaldo seguro.", error); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
         window.renderProducts(); window.renderCourses();
-    } 
-    finally {
+    } finally {
         window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
         try { window.setFilter('mas-vendidos'); window.syncSocialNetworks(); window.updateCartUI(); window.loadAcademyGallery(); } catch(e) {}
-        
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
             window.navigate('catalog'); 
-            if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, '*'); }
+            if(window.parent && window.parent !== window) window.parent.postMessage({ type: 'APP_READY' }, '*');
         }, 500); 
     }
 }
 
 window.loadAcademyGallery = async function() {
-    const container = document.getElementById('academy-gallery-marquee');
-    if(!container) return;
-    
+    const container = document.getElementById('academy-gallery-marquee'); if(!container) return;
     const exclusions = ["polimacion.jpg", "impresion.jpg", "vidrio.jpg", "pedreria.jpg", "plotter.jpg", "sellos.jpg", "resina.jpg", "agenda.jpg", "serigrafia.jpg", "sublimacion.jpg"];
-    
     const premiumBackups = [
         "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1626786139474-124b8df2e6d6?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop&q=80"
+        "https://images.unsplash.com/photo-1626786139474-124b8df2e6d6?w=800&auto=format&fit=crop&q=80"
     ];
-    
     let images = [];
     try {
         const res = await fetch('https://multiprintt.web.app/recursos/imagenes.json');
@@ -1263,9 +1084,7 @@ window.loadAcademyGallery = async function() {
             else if(data.items) images = data.items;
             else { for(let k in data) if(Array.isArray(data[k])) images.push(...data[k]); }
         }
-    } catch(e) {
-        console.warn("Usando galería de respaldo premium por fallo o ausencia de json.");
-    }
+    } catch(e) {}
     
     let validImages = images.map(item => typeof item === 'string' ? item : (item.url || item.src)).filter(url => {
         if(!url) return false;
@@ -1273,45 +1092,18 @@ window.loadAcademyGallery = async function() {
         return !exclusions.includes(filename) && !url.endsWith('.mp4');
     }).map(url => url.startsWith('http') ? url : 'https://multiprintt.web.app/recursos/' + url);
     
-    if(validImages.length === 0) {
-        validImages = premiumBackups;
-    }
-    
+    if(validImages.length === 0) validImages = premiumBackups;
     let html = '';
     validImages.forEach(img => {
-        html += `<div onclick="window.openImageModal('${img}')" class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c] cursor-pointer"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
+        html += `<div onclick="window.openImageModal('${img}')" class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c] cursor-pointer relative"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"><div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none"><i class="fa-solid fa-magnifying-glass-plus text-white text-3xl drop-shadow-lg"></i></div></div>`;
     });
-    
     container.innerHTML = html + html + html + html;
-    
-    let duration = validImages.length * 12; 
-    container.style.animationDuration = `${duration}s`;
-}
-
-// Lógica de control custom para el video de Nosotros (Sin Hover, Sin Controles)
-window.toggleAboutVideo = function() {
-    const video = document.getElementById('about-video');
-    const btnOverlay = document.getElementById('about-play-btn');
-    if (!video) return;
-    
-    if (video.paused) {
-        video.play().then(() => {
-            btnOverlay.style.opacity = '0';
-            btnOverlay.style.pointerEvents = 'none';
-        }).catch(e => {
-            console.error("Video play blocked by browser or Google Drive CORS:", e);
-            if(window.showToast) window.showToast("No se pudo reproducir. Verifique el enlace.");
-        });
-    } else {
-        video.pause();
-        btnOverlay.style.opacity = '1';
-        btnOverlay.style.pointerEvents = 'auto';
-    }
+    container.style.animationDuration = `${validImages.length * 12}s`;
 }
 
 window.initMap = function() {
     const mapContainer = document.getElementById('contact-map-col'); if(!mapContainer) return;
-    let oldMap = document.getElementById('leaflet-map'); if(oldMap) { oldMap.remove(); } 
+    let oldMap = document.getElementById('leaflet-map'); if(oldMap) oldMap.remove();
     let newMapDiv = document.createElement('div'); newMapDiv.id = 'leaflet-map'; newMapDiv.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
     mapContainer.insertBefore(newMapDiv, mapContainer.firstChild);
     window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
@@ -1326,7 +1118,6 @@ window.applyThemeSwap = function(element, newThemeKey) {
     const els = [element, ...element.querySelectorAll('*')];
     const colorNames = ['cyan', 'pink', 'violet', 'amber', 'emerald'];
     const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '245,158,11', '52,211,153'];
-    
     els.forEach(el => {
         if(!el.className || typeof el.className !== 'string') return;
         colorNames.forEach(c => { if(c === newTheme.base) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(`-${c}-`, 'g'), `-${newTheme.base}-`)).join(' '); });
@@ -1336,21 +1127,14 @@ window.applyThemeSwap = function(element, newThemeKey) {
 }
 
 window.selectedEl = null;
-
 function initVisualResizer() {
     if(document.getElementById('builder-resize-box')) return;
-    
     window.resizerOverlay = document.createElement('div');
     window.resizerOverlay.id = 'builder-resize-box';
-    window.resizerOverlay.innerHTML = `
-        <div class="resize-handle rh-nw" data-dir="nw"></div><div class="resize-handle rh-n" data-dir="n"></div><div class="resize-handle rh-ne" data-dir="ne"></div>
-        <div class="resize-handle rh-e" data-dir="e"></div><div class="resize-handle rh-se" data-dir="se"></div><div class="resize-handle rh-s" data-dir="s"></div>
-        <div class="resize-handle rh-sw" data-dir="sw"></div><div class="resize-handle rh-w" data-dir="w"></div>
-    `;
+    window.resizerOverlay.innerHTML = `<div class="resize-handle rh-nw" data-dir="nw"></div><div class="resize-handle rh-n" data-dir="n"></div><div class="resize-handle rh-ne" data-dir="ne"></div><div class="resize-handle rh-e" data-dir="e"></div><div class="resize-handle rh-se" data-dir="se"></div><div class="resize-handle rh-s" data-dir="s"></div><div class="resize-handle rh-sw" data-dir="sw"></div><div class="resize-handle rh-w" data-dir="w"></div>`;
     document.body.appendChild(window.resizerOverlay);
 
     let isResizing = false; let currentDir = ''; let startX, startY, startW, startH;
-
     window.resizerOverlay.addEventListener('mousedown', (e) => {
         if (e.target.classList.contains('resize-handle')) {
             isResizing = true; currentDir = e.target.getAttribute('data-dir');
@@ -1359,20 +1143,16 @@ function initVisualResizer() {
             e.preventDefault(); e.stopPropagation();
         }
     });
-
     window.addEventListener('mousemove', (e) => {
         if (!isResizing || !window.selectedEl) return;
         let dx = e.clientX - startX; let dy = e.clientY - startY;
-
         if (currentDir.includes('e')) window.selectedEl.style.width = Math.max(30, startW + dx) + 'px';
         if (currentDir.includes('s')) window.selectedEl.style.height = Math.max(30, startH + dy) + 'px';
         if (currentDir.includes('w')) window.selectedEl.style.width = Math.max(30, startW - dx) + 'px';
         if (currentDir.includes('n')) window.selectedEl.style.height = Math.max(30, startH - dy) + 'px';
-
         window.updateResizeBox();
         window.parent.postMessage({ type: 'RESIZE_UPDATE', width: window.selectedEl.style.width, height: window.selectedEl.style.height }, '*');
     });
-
     window.addEventListener('mouseup', () => { isResizing = false; });
     document.querySelector('.slide-scroll').addEventListener('scroll', window.updateResizeBox);
     window.addEventListener('resize', window.updateResizeBox);
@@ -1396,30 +1176,20 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
         window.renderProducts(); window.renderCourses(); initVisualResizer();
-        
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
-            
             if(e.target.closest('button[onclick^="window.navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
-            
             let target = e.target.closest('[data-editable="true"], [data-resizable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
-            
             if (target && !target.closest('.ignore-drag')) {
                 e.preventDefault(); e.stopPropagation();
                 if(window.selectedEl) window.selectedEl.classList.remove('builder-selected-el');
                 window.selectedEl = target; window.selectedEl.classList.add('builder-selected-el');
                 window.updateResizeBox();
-                
-                let isVideoCard = target.classList.contains('video-testimonial-card');
-                let hasTheme = target.hasAttribute('data-theme');
-                let currentTheme = target.getAttribute('data-theme') || '';
-                let computed = window.getComputedStyle(target);
-
                 window.parent.postMessage({ 
                     type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', 
-                    isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme,
-                    styles: { width: target.style.width || computed.width, height: target.style.height || computed.height, padding: target.style.padding || computed.padding, margin: target.style.margin || computed.margin, radius: target.style.borderRadius || computed.borderRadius, color: target.style.color || computed.color, bg: target.style.backgroundColor || computed.backgroundColor }
+                    isVideoCard: target.classList.contains('video-testimonial-card'), hasTheme: target.hasAttribute('data-theme'), currentTheme: target.getAttribute('data-theme') || '',
+                    styles: { width: target.style.width, height: target.style.height, padding: target.style.padding, margin: target.style.margin, radius: target.style.borderRadius, color: target.style.color, bg: target.style.backgroundColor }
                 }, '*');
             } else {
                 if(window.selectedEl) window.selectedEl.classList.remove('builder-selected-el');
@@ -1440,40 +1210,18 @@ window.addEventListener('message', async (event) => {
         const { url, iconClass, network } = event.data;
         const footerContainer = document.getElementById('social-footer-links');
         const newBtn = document.createElement('button');
-        newBtn.setAttribute('data-editable', 'true');
-        newBtn.setAttribute('data-network', network);
+        newBtn.setAttribute('data-editable', 'true'); newBtn.setAttribute('data-network', network);
         newBtn.setAttribute('onclick', `window.open('${url}', '_blank')`);
         newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none cursor-pointer bg-transparent border-none p-0";
-        
-        if(network === 'facebook') newBtn.classList.add('hover:text-[#1877f2]');
-        else if(network === 'instagram') newBtn.classList.add('hover:text-[#e1306c]');
-        else if(network === 'whatsapp') newBtn.classList.add('hover:text-[#25d366]');
-        else if(network === 'youtube') newBtn.classList.add('hover:text-[#ff0000]');
-        else if(network === 'tiktok') newBtn.classList.add('hover:text-white');
-        else if(network === 'twitter') newBtn.classList.add('hover:text-white');
-        else if(network === 'linkedin') newBtn.classList.add('hover:text-[#0a66c2]');
-        else if(network === 'telegram') newBtn.classList.add('hover:text-[#0088cc]');
-        else newBtn.classList.add('hover:text-cyan-400');
-
         newBtn.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
-        
         footerContainer.insertBefore(newBtn, footerContainer.querySelector('.admin-tool'));
-        window.syncSocialNetworks(); 
-        window.updateResizeBox();
+        window.syncSocialNetworks(); window.updateResizeBox();
     }
     
     if (event.data.type === 'DB_UPDATED') {
         const { itemType, id, data: newData } = event.data;
-        if(itemType === 'product') {
-            let idx = window.appProducts.findIndex(x=>x.id === id);
-            if(idx > -1) window.appProducts[idx] = {id, ...newData}; else window.appProducts.push({id, ...newData});
-            window.renderProducts();
-        }
-        if(itemType === 'course') {
-            let idx = window.appCourses.findIndex(x=>x.id === id);
-            if(idx > -1) window.appCourses[idx] = {id, ...newData}; else window.appCourses.push({id, ...newData});
-            window.renderCourses();
-        }
+        if(itemType === 'product') { let idx = window.appProducts.findIndex(x=>x.id === id); if(idx > -1) window.appProducts[idx] = {id, ...newData}; else window.appProducts.push({id, ...newData}); window.renderProducts(); }
+        if(itemType === 'course') { let idx = window.appCourses.findIndex(x=>x.id === id); if(idx > -1) window.appCourses[idx] = {id, ...newData}; else window.appCourses.push({id, ...newData}); window.renderCourses(); }
     }
     if (event.data.type === 'DB_DELETED_SUCCESS') {
         const { itemType, id } = event.data;
@@ -1484,40 +1232,25 @@ window.addEventListener('message', async (event) => {
         const { itemId, data: d } = event.data;
         const targetCard = document.querySelector(`.video-testimonial-card[data-card-id="${itemId}"]`);
         if(targetCard) {
-            if(d.src) {
-                const vid = targetCard.querySelector('video');
-                if(vid) { vid.src = d.src; vid.load(); }
-            }
-            if(d.name) {
-                const n = targetCard.querySelector('.vt-name');
-                if(n) n.innerText = d.name;
-                const init = targetCard.querySelector('.vt-initial');
-                if(init) init.innerText = d.name.charAt(0).toUpperCase();
-            }
+            if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { vid.src = d.src; vid.load(); } }
+            if(d.name) { const n = targetCard.querySelector('.vt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.vt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
             if(d.role) { const r = targetCard.querySelector('.vt-role'); if(r) r.innerText = d.role; }
             if(d.quote) { const q = targetCard.querySelector('.vt-quote'); if(q) q.innerText = d.quote; }
             if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
             if (window.updateResizeBox) window.updateResizeBox();
         }
     }
-
     if (event.data.type === 'UPDATE_TEXT_TESTIMONIAL') {
         const { itemId, data: d } = event.data;
         const targetCard = document.querySelector(`.card[data-card-id="${itemId}"]`);
         if(targetCard) {
-            if(d.name) {
-                const n = targetCard.querySelector('.txt-name');
-                if(n) n.innerText = d.name;
-                const init = targetCard.querySelector('.txt-initial');
-                if(init) init.innerText = d.name.charAt(0).toUpperCase();
-            }
+            if(d.name) { const n = targetCard.querySelector('.txt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.txt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
             if(d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.role; }
             if(d.quote) { const q = targetCard.querySelector('p'); if(q) q.innerText = d.quote; }
             if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
             if (window.updateResizeBox) window.updateResizeBox();
         }
     }
-
     if (event.data.type === 'UPDATE_ELEMENT' && window.selectedEl) {
         if(event.data.text !== undefined && window.selectedEl.tagName !== 'IMG' && window.selectedEl.tagName !== 'VIDEO') { let icon = window.selectedEl.querySelector('i'); window.selectedEl.innerText = event.data.text; if(icon) window.selectedEl.prepend(icon); }
         if(event.data.href !== undefined) { 
@@ -1526,24 +1259,15 @@ window.addEventListener('message', async (event) => {
         }
         window.updateResizeBox();
     }
-    
     if (event.data.type === 'UPDATE_STYLE' && window.selectedEl) {
-        if(event.data.prop === 'color') { window.selectedEl.style.color = event.data.value; }
-        if(event.data.prop === 'bg') { window.selectedEl.style.backgroundColor = event.data.value; }
-        if(event.data.prop === 'radius') { window.selectedEl.style.borderRadius = event.data.value; }
-        if(event.data.prop === 'width') { window.selectedEl.style.width = event.data.value; }
-        if(event.data.prop === 'height') { window.selectedEl.style.height = event.data.value; }
-        if(event.data.prop === 'padding') { window.selectedEl.style.padding = event.data.value; }
-        if(event.data.prop === 'margin') { window.selectedEl.style.margin = event.data.value; }
-        
-        if(event.data.prop === 'textAlign') { window.selectedEl.className = window.selectedEl.className.replace(/\btext-(left|center|right|justify)\b/g, '').trim(); if(event.data.value) window.selectedEl.classList.add(event.data.value); }
-        if(event.data.prop === 'textSize') { window.selectedEl.className = window.selectedEl.className.replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[.*?\])\b/g, '').trim(); if(event.data.value) window.selectedEl.classList.add(event.data.value); }
-        if(event.data.prop === 'fontWeight') { window.selectedEl.className = window.selectedEl.className.replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '').trim(); if(event.data.value) window.selectedEl.classList.add(event.data.value); }
-        
-        if(event.data.prop === 'theme') { window.applyThemeSwap(window.selectedEl, event.data.value); }
+        if(event.data.prop === 'color') window.selectedEl.style.color = event.data.value;
+        if(event.data.prop === 'bg') window.selectedEl.style.backgroundColor = event.data.value;
+        if(event.data.prop === 'radius') window.selectedEl.style.borderRadius = event.data.value;
+        if(event.data.prop === 'width') window.selectedEl.style.width = event.data.value;
+        if(event.data.prop === 'height') window.selectedEl.style.height = event.data.value;
+        if(event.data.prop === 'theme') window.applyThemeSwap(window.selectedEl, event.data.value);
         window.updateResizeBox();
     }
-
     if (event.data.type === 'DELETE_SELECTED_NODE') { if(window.selectedEl) { window.selectedEl.remove(); window.selectedEl = null; window.updateResizeBox(); } }
 
     if (event.data.type === 'TOGGLE_DRAG') {
@@ -1556,17 +1280,12 @@ window.addEventListener('message', async (event) => {
                 if(grid._sortable) grid._sortable.destroy(); 
                 grid._sortable = new Sortable(grid, { 
                     animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool', delay: 300, delayOnTouchOnly: true,
-                    onEnd: function(evt) {
-                        if(evt.to.id === 'social-footer-links') window.syncSocialNetworks();
-                    }
+                    onEnd: function(evt) { if(evt.to.id === 'social-footer-links') window.syncSocialNetworks(); }
                 }); 
                 window.sortableInstances.push(grid._sortable); 
             }); 
-        } 
-        else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
+        } else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
-
-    if (event.data.type === 'RESET_TEMPLATE') { window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*'); }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
@@ -1574,22 +1293,17 @@ window.addEventListener('message', async (event) => {
         if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
 
         const layoutData = {};
-        
         document.querySelectorAll('.editable-section').forEach(zone => {
             if(!zone.id) return;
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            
             const mapInClone = clone.querySelector('#leaflet-map'); 
-            if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; mapInClone.removeAttribute('style'); mapInClone.removeAttribute('tabindex'); }
-            
+            if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; }
             const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
             const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
             const gMarquee = clone.querySelector('#academy-gallery-marquee'); if(gMarquee) gMarquee.innerHTML = '';
-            
             clone.querySelectorAll('#builder-resize-box').forEach(el => el.remove());
-            
             layoutData[zone.id] = clone.innerHTML;
         });
         
@@ -1602,7 +1316,6 @@ window.addEventListener('message', async (event) => {
 
         const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
         const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
-
         window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, '*');
     }
 });
@@ -1625,11 +1338,9 @@ window.openCourseModal = function(id) {
     }
 
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
-    
     const cUrl = 'https://multiprintt.web.app/';
     const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}* (${modalityStr})\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
     const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
-    
     document.getElementById('cm-btn').onclick = () => window.open(waUrl, '_blank');
     
     document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
@@ -1642,7 +1353,6 @@ window.closeCourseModal = function() {
 
 window.openVideoModal = function(btn) {
     if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
-    
     let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4"; 
     let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."'; let themeKey = "cyan"; 
     
@@ -1658,20 +1368,16 @@ window.openVideoModal = function(btn) {
     }
     
     const video = document.getElementById('testimonial-video'); 
-    
     const n = document.getElementById('vm-name'); if(n) n.innerText = name; 
     const r = document.getElementById('vm-role'); if(r) r.innerText = role; 
     const q = document.getElementById('vm-quote'); if(q) q.innerText = quote; 
     const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0).toUpperCase() : 'C';
     
-    let modalContent = document.getElementById('videoModalContent');
-    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); 
-    
+    let modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
     if (modalContent) window.applyThemeSwap(modalContent, themeKey);
     
     const modal = document.getElementById('videoModal'); 
     modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); if(!window.isAdminMode && modalContent) modalContent.classList.remove('scale-95'); }, 10);
-    
     const timeBadge = document.getElementById('vm-time'); if(timeBadge) timeBadge.innerText = "00:00"; 
     
     if(video) {
@@ -1681,15 +1387,9 @@ window.openVideoModal = function(btn) {
                 timeBadge.innerText = `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${Math.floor(remaining % 60).toString().padStart(2, '0')}`;
             }
         };
-
         video.src = videoSrc; video.load(); video.currentTime = 0; 
-        
         video.muted = true;
-        const playPromise = video.play(); 
-        if (playPromise !== undefined) { 
-            playPromise.then(() => { video.muted = false; }).catch(() => { video.muted = true; video.play(); }); 
-        }
-
+        video.play().then(() => { video.muted = false; }).catch(() => { video.muted = true; video.play(); });
         if(!window.isAdminMode) { video.loop = false; video.onended = () => window.closeVideoModal(); } else { video.loop = true; } 
     }
 }
@@ -1697,7 +1397,7 @@ window.openVideoModal = function(btn) {
 window.closeVideoModal = function(e) {
     if(e) e.stopPropagation(); 
     const video = document.getElementById('testimonial-video'); const modal = document.getElementById('videoModal'); 
-    let content = document.getElementById('videoModalContent'); if(!content) content = document.querySelector('#videoModal > div');
+    let content = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
     modal.classList.add('opacity-0'); if(!window.isAdminMode && content) content.classList.add('scale-95'); 
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
 }
@@ -1707,34 +1407,34 @@ window.openImageModal = function(src) {
     const modal = document.getElementById('imageModal');
     const content = document.getElementById('imageModalContent');
     const imgEl = document.getElementById('im-full-image');
-    
     imgEl.src = src;
-    
-    modal.classList.remove('hidden'); 
-    modal.classList.add('flex'); 
-    setTimeout(() => { 
-        modal.classList.remove('opacity-0'); 
-        if(content) content.classList.remove('scale-95'); 
-    }, 10);
+    modal.classList.remove('hidden'); modal.classList.add('flex'); 
+    setTimeout(() => { modal.classList.remove('opacity-0'); if(content) content.classList.remove('scale-95'); }, 10);
 }
 
 window.closeImageModal = function() {
     const modal = document.getElementById('imageModal');
     const content = document.getElementById('imageModalContent');
     const imgEl = document.getElementById('im-full-image');
-    
-    modal.classList.add('opacity-0'); 
-    if(content) content.classList.add('scale-95'); 
-    
-    setTimeout(() => { 
-        modal.classList.add('hidden'); 
-        modal.classList.remove('flex'); 
-        imgEl.src = ""; 
-    }, 300);
+    modal.classList.add('opacity-0'); if(content) content.classList.add('scale-95'); 
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); imgEl.src = ""; }, 300);
 }
 
 document.addEventListener('DOMContentLoaded', () => { 
     window.loadFirebaseData(); 
+    setTimeout(() => {
+        const aboutVid = document.getElementById('about-cinematic-video');
+        const overlay = document.getElementById('about-video-overlay');
+        if(aboutVid && overlay) {
+            aboutVid.addEventListener('ended', () => {
+                aboutVid.pause();
+                aboutVid.currentTime = 0.01;
+                overlay.style.transition = 'opacity 0.5s ease';
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+            });
+        }
+    }, 1000);
 });
 </script>
 </body>
