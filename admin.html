@@ -48,7 +48,7 @@
     .device-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
     .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); }
 
-    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
+    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
     .tool-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
     .tool-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
 
@@ -308,7 +308,8 @@
         { type: 'video', url: 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4', title: 'Video' }
     ];
 
-    async function fetchGalleryJson(url) {
+    // Añadimos "mode" como parámetro para distinguir entre productos y multimedia normal
+    async function fetchGalleryJson(url, mode) {
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error("Error HTTP");
@@ -322,7 +323,20 @@
             return rawArray.map(item => {
                 let u = typeof item === 'string' ? item : (item.url || item.src || '');
                 let t = u.endsWith('.mp4') ? 'video' : 'image';
-                if(u && !u.startsWith('http') && !u.startsWith('data:')) u = 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/' + u;
+                
+                // Si la URL es relativa, le agregamos la ruta base dependiendo del modo (productos o cursos)
+                if (u && !u.startsWith('http') && !u.startsWith('data:')) {
+                    let basePath = mode === 'product' 
+                        ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/' 
+                        : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';
+                    u = basePath + u;
+                } else if (u.startsWith('http') && mode === 'product') {
+                    // Corrección automática: si la URL absoluta de un producto olvidó la carpeta "productos/"
+                    if (u.includes('/recursos/') && !u.includes('/recursos/productos/')) {
+                        u = u.replace('/recursos/', '/recursos/productos/');
+                    }
+                }
+
                 return { type: t, url: u, title: u.split('/').pop() };
             });
         } catch (e) { return defaultGalleryItems; }
@@ -332,7 +346,12 @@
         activeMediaInput = inputId; isMultiSelectMode = (mode === 'product'); selectedMediaUrls = [];
         const modal = document.getElementById('gallery-modal'); const grid = document.getElementById('gallery-grid');
         modal.classList.add('active'); grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando...</div>';
-        galleryDataCache = await fetchGalleryJson(mode === 'product' ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json' : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json');
+        
+        // Aquí pasamos el "mode" a la función fetchGalleryJson para que sepa cómo manejar las URLs
+        galleryDataCache = await fetchGalleryJson(
+            mode === 'product' ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json' : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json', 
+            mode
+        );
         window.filterGallery(mode === 'product' ? 'image' : filter);
     }
 
