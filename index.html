@@ -61,7 +61,6 @@
     --color-panel: #101014;
   }
 
-
     /* Elimina únicamente la barra/franja de scroll visual de la sección Nosotros */
     #view-about .slide-scroll {
       scrollbar-width: none;
@@ -258,14 +257,14 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   </section>
 
   <!-- SECCIÓN "NOSOTROS" - EXPERIENCIA CINEMATOGRÁFICA DUAL (PC & MÓVIL SCROLL VERTICAL CON FLECHA) -->
-  <section id="view-about" class="view-slide flex flex-col overflow-hidden bg-[#070709] select-none !p-0">
+  <section id="view-about" class="view-slide flex flex-col bg-[#070709] !p-0">
     <div class="hero-glow w-[300px] h-[300px] lg:w-[450px] lg:h-[450px] bg-violet-600/15 right-0 md:right-10 top-10 lg:top-20"></div>
     <div class="hero-glow w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] bg-pink-500/10 left-[-50px] top-[40vh]"></div>
     
-    <!-- CONTENEDOR ESCRITORIO (PC) -->
-    <div class="hidden lg:flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-col justify-center items-center relative z-10 h-full py-0 pt-[76px] editable-section shrink-0" id="about-history-zone">
-        <div class="grid grid-cols-[auto_1fr] items-center justify-center gap-10 w-full max-w-5xl mx-auto my-auto">
-            <div class="relative w-[280px] xl:w-[310px] h-[62vh] aspect-[9/16] shrink-0 rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-[0_10px_30px_rgba(115,92,255,0.25)] border border-white/15" data-resizable="true">
+    <!-- CONTENEDOR ESCRITORIO (PC) - Añadido scroll para que no se corte en laptops -->
+    <div class="hidden lg:flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-col justify-center items-center relative z-10 h-full py-0 pt-[76px] pb-8 editable-section shrink-0 overflow-y-auto slide-scroll hide-scrollbar" id="about-history-zone">
+        <div class="grid grid-cols-[auto_1fr] items-center justify-center gap-10 w-full max-w-5xl mx-auto my-auto py-10">
+            <div class="relative w-[280px] xl:w-[310px] h-[62vh] min-h-[450px] aspect-[9/16] shrink-0 rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-[0_10px_30px_rgba(115,92,255,0.25)] border border-white/15" data-resizable="true">
                 <video id="about-cinematic-video" 
                        src="https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01" 
                        class="w-full h-full object-cover relative z-10 cursor-pointer"
@@ -1166,7 +1165,10 @@ window.loadFirebaseData = async function() {
 
 window.loadAcademyGallery = async function() {
     const container = document.getElementById('academy-gallery-marquee'); if(!container) return;
-    const exclusions = ["polimacion.jpg", "impresion.jpg", "vidrio.jpg", "pedreria.jpg", "plotter.jpg", "sellos.jpg", "resina.jpg", "agenda.jpg", "serigrafia.jpg", "sublimacion.jpg"];
+    
+    // Nueva lista de exclusiones basada en .webp
+    const exclusions = ["agenda.webp", "favincon.webp", "impresion.webp", "logomejorado.webp", "logo_mejorado.webp", "pedreria.webp", "plotter.webp", "polimacion.webp", "resina.webp", "sellos.webp", "serigrafia.webp", "sublimacion.webp", "vidrio.webp"];
+    
     const premiumBackups = [
         "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=80",
@@ -1176,7 +1178,8 @@ window.loadAcademyGallery = async function() {
     ];
     let images = [];
     try {
-        const res = await fetch('https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json');
+        // Se cambia la URL base al JSON de la carpeta superior
+        const res = await fetch('https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json');
         if (res.ok) {
             const data = await res.json();
             if(Array.isArray(data)) images = data;
@@ -1190,7 +1193,7 @@ window.loadAcademyGallery = async function() {
         if(!url) return false;
         const filename = url.split('/').pop().toLowerCase();
         return !exclusions.includes(filename) && !url.endsWith('.mp4');
-    }).map(url => url.startsWith('http') ? url : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/' + url);
+    }).map(url => url.startsWith('http') ? url : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/' + url);
     
     if(validImages.length === 0) validImages = premiumBackups;
     let html = '';
@@ -1508,7 +1511,11 @@ window.openImageModal = function(src) {
     const content = document.getElementById('imageModalContent');
     const imgEl = document.getElementById('im-full-image');
     imgEl.src = src;
-    modal.classList.add('hidden'); modal.classList.add('flex'); 
+    
+    // BUG FIX: Aquí antes decía modal.classList.add('hidden'), ahora se remueve para que el popup se muestre bien
+    modal.classList.remove('hidden'); 
+    modal.classList.add('flex'); 
+    
     setTimeout(() => { modal.classList.remove('opacity-0'); if(content) content.classList.remove('scale-95'); }, 10);
 }
 
