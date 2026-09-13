@@ -2,745 +2,1472 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<title>Multiprintt | Visual Builder Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<title>Multiprintt | Impresión & Publicidad en Guayaquil</title>
+<meta name="description" content="Multiprintt: Impresión & Publicidad. Expertos en personalización, impresión gráfica, DTF, sublimación, resina y academia para emprendedores en Ecuador.">
+<meta name="theme-color" content="#070709">
 
 <!-- Tailwind CSS v4 -->
 <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 <style type="text/tailwindcss">
   @theme {
     --color-bg: #070709;
-    --color-panel: #09090b;
-    --color-border: rgba(255,255,255,0.06);
-    --color-accent: #25d8ff;
+    --color-panel: #101014;
   }
 </style>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <style>
-    :root { --bg-dark: #000000; --panel: #09090b; --border: rgba(255,255,255,0.06); --accent: #25d8ff; }
-    body { background-color: var(--bg-dark); color: #a1a1aa; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
+:root{ --bg:#070709;--panel:#101014;--line:rgba(255,255,255,.09); --pink:#ff2da8;--violet:#735cff;--cyan:#25d8ff; }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body, html{ margin:0; padding:0; height: 100%; overflow: hidden; background:var(--bg); color:#f7f7f8; font-family:"DM Sans",sans-serif; -webkit-tap-highlight-color: transparent; }
 
-    #auth-screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
-    .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+body:not(.builder-mode) img, body:not(.builder-mode) video { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; user-select: none; }
+button, .cursor-pointer { cursor: pointer; }
 
-    #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-    .topbar { height: 50px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; z-index: 50; }
-    .workspace { display: flex; flex: 1; min-height: 0; width: 100%; overflow: hidden; }
-    .sidebar-left { width: 220px; background: var(--panel); border-right: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex-shrink: 0; z-index: 20;}
-    .sidebar-right { width: 280px; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; z-index: 20;}
+.leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution { filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%); }
+.leaflet-container { background: #0e0e12 !important; }
 
-    .canvas-area { flex: 1; min-width: 0; background-color: #000; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
-    #preview-wrapper { transition: all 0.3s ease; overflow: hidden; display: flex; flex-direction: column; background: var(--bg-dark); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.6); }
-    .device-desktop { width: 100%; height: 100%; max-width: 100%; border-radius: 0; border: none; box-shadow: none !important;}
-    .device-tablet { width: 820px; height: 1180px; border-radius: 12px; margin: 40px auto; flex-shrink: 0; border: 8px solid #141417; }
-    .device-mobile { width: 390px; height: 844px; border-radius: 20px; margin: 40px auto; flex-shrink: 0; border: 10px solid #141417; }
-    #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit; }
+h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
+::selection{background:var(--pink);color:white}
 
-    .device-btn { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #71717a; transition: all 0.2s; cursor: pointer; font-size: 12px;}
-    .device-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
-    .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); }
+.slide-scroll { overflow-y: auto; -webkit-overflow-scrolling: touch; will-change: scroll-position; transform: translate3d(0,0,0); }
+.slide-scroll::-webkit-scrollbar{width:6px; height: 6px;}
+.slide-scroll::-webkit-scrollbar-track{background:transparent}
+.slide-scroll::-webkit-scrollbar-thumb{background:#292930;border-radius:99px}
+.slide-scroll::-webkit-scrollbar-thumb:hover{background:var(--pink)}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
 
-    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
-    .tool-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .tool-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
+.glass{background:rgba(7,7,9,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
 
-    .btn-primary { background: #fff; color: #000; font-weight: 600; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; border: none; cursor: pointer; }
-    .btn-primary:hover { opacity: 0.9; }
-    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.08); color: #e5e5e5; font-weight: 500; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.04); color: #fff; }
-    .btn-warning { background: transparent; border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; font-weight: 500; border-radius: 6px; padding: 6px 12px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-warning:hover { background: rgba(245, 158, 11, 0.1); }
-    .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; font-weight: 500; border-radius: 6px; padding: 6px 12px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
+.filter-btn { transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease; font-weight: 600; cursor: pointer; }
+.filter-btn.active { color: white; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.2); text-shadow: 0 0 1px rgba(255,255,255,0.5); } 
+.cat-mas-vendidos.active { background: rgba(225,29,72,0.95); }
+.cat-promocionales.active { background: rgba(234,88,12,0.95); }
+.cat-textil.active { background: rgba(8,145,178,0.95); }
+.cat-jarros.active { background: rgba(219,39,119,0.95); }
+.cat-imp-general.active { background: rgba(124,58,237,0.95); }
+.cat-packs.active { background: rgba(5,150,105,0.95); }
 
-    .panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: #52525b; font-weight: 700; margin: 12px 4px 4px 4px; display: flex; align-items: center; gap: 6px; }
-    .divider { height: 1px; background: var(--border); width: 100%; margin: 6px 0; }
-    .inp-field { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.08); padding: 7px 10px; border-radius: 6px; color: #fff; outline: none; font-size: 11px; transition: border-color 0.2s; }
-    .inp-field:focus { border-color: var(--accent); }
-    .lbl { font-size: 9px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: block; }
+.gradient-line{background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),#ffd84d)}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index: 0;}
 
-    .acc-item { border-bottom: 1px solid var(--border); }
-    .acc-header { padding: 10px 14px; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #71717a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; }
-    .acc-header:hover { color: #fff; }
-    .acc-item.active .acc-header { color: #fff; background: rgba(255,255,255,0.02); }
-    .acc-content { padding: 12px 14px; display: none; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.3); }
-    .acc-item.active .acc-content { display: flex; }
+.card{ background:linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.025)); border:1px solid var(--line); border-radius:12px; transform: translate3d(0,0,0); transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease; will-change: transform; cursor: pointer; }
+@media(min-width: 768px) { .card:hover{ border-color:rgba(255,255,255,.18); transform:translateY(-3px) translate3d(0,0,0); box-shadow:0 12px 40px rgba(0,0,0,.28); } }
 
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.2s; }
-    .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-content { background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; padding: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+.view-slide { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: var(--bg); opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.99) translate3d(0,0,0); transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.4s; z-index: 0; padding-top: 56px; padding-bottom: calc(75px + env(safe-area-inset-bottom)); }
+@media(min-width: 768px) { .view-slide { padding-top: 76px; padding-bottom: 20px; } }
+.view-slide.active-slide { opacity: 1; visibility: visible; transform: translateY(0) scale(1) translate3d(0,0,0); z-index: 10; }
 
-    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .custom-toast { background: #18181b; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 11px; font-weight: 500; transform: translateY(15px); opacity: 0; transition: all 0.3s ease; pointer-events: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .custom-toast.show { transform: translateY(0); opacity: 1; }
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.show{opacity:1;transform:translate3d(0,0,0)}
+
+.nav-link { color: #a1a1aa; transition: color 0.3s ease; background: transparent; border: none; cursor: pointer; padding: 0.5rem 0; margin: 0 1rem; font-weight: 500; font-size: 13px; position: relative; outline: none; }
+.nav-link:hover { color: #fff; }
+.nav-link.active { color: #25d8ff !important; font-weight: 500 !important; }
+.nav-link::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 0%; height: 1.5px; background: #25d8ff; transition: width 0.3s ease; }
+.nav-link.active::after { width: 100%; }
+
+.bot-nav-item { transition: all 0.3s ease; cursor: pointer; }
+.bot-nav-item.active { color: #fff; transform: translateY(-2px); }
+.bot-nav-item.active i { color: var(--pink); text-shadow: 0 0 15px rgba(255,45,168,0.5); }
+
+.admin-tool { display: none !important; }
+body.is-admin-session .admin-tool { display: flex !important; }
+
+body.builder-mode [data-editable="true"]:hover { outline: 2px dashed rgba(37, 216, 255, 0.5); cursor: crosshair; border-radius: 4px; }
+body.builder-mode:not(.dragging-active) .builder-selected-el { outline: 2px solid var(--cyan) !important; background: rgba(37, 216, 255, 0.1) !important; border-radius: 4px; box-shadow: 0 0 15px rgba(37,216,255,0.3) !important; }
+body.builder-mode:not(.dragging-active) button:hover, body.builder-mode:not(.dragging-active) video:hover, body.builder-mode:not(.dragging-active) img:hover { outline: 2px dashed var(--violet); cursor: pointer; }
+
+body.dragging-active .sortable-zone > * { cursor: grab !important; }
+body.dragging-active .sortable-zone > *:active { cursor: grabbing !important; }
+.sortable-ghost { opacity: 0.3; border: 2px dashed var(--pink) !important; background: rgba(255,45,168,0.1); border-radius: 12px; }
+
+.admin-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; z-index: 50; gap: 10px; border-radius: 12px; pointer-events: none; }
+body.is-admin-session .card:hover .admin-overlay { opacity: 1; pointer-events: auto; }
+
+.loader-hidden { opacity: 0; visibility: hidden; transform: scale(1.05); pointer-events: none; }
+.admin-video-edit-overlay { display: none; }
+body.is-admin-session .admin-video-edit-overlay { display: flex; position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 30; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; border-radius: inherit; gap: 8px; }
+body.is-admin-session .video-testimonial-card:hover .admin-video-edit-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(2px); pointer-events: auto; }
+body.is-admin-session .video-testimonial-card .vt-quote { display: block !important; position: relative; z-index: 40; pointer-events: auto; }
+
+#builder-resize-box { display: none; position: fixed; pointer-events: none; border: 1.5px solid #25d8ff; z-index: 9999; box-shadow: 0 0 15px rgba(37,216,255,0.5); transition: opacity 0.2s; }
+body.is-admin-session.dragging-active #builder-resize-box { display: none !important; }
+.resize-handle { position: absolute; width: 10px; height: 10px; background: #fff; border: 2px solid #25d8ff; border-radius: 50%; pointer-events: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.5); transition: transform 0.1s;}
+.resize-handle:hover { transform: scale(1.3); background: #25d8ff; }
+.rh-nw { top: -6px; left: -6px; cursor: nwse-resize; } .rh-n { top: -6px; left: calc(50% - 5px); cursor: ns-resize; } .rh-ne { top: -6px; right: -6px; cursor: nesw-resize; }
+.rh-e { top: calc(50% - 5px); right: -6px; cursor: ew-resize; } .rh-se { bottom: -6px; right: -6px; cursor: nwse-resize; } .rh-s { bottom: -6px; left: calc(50% - 5px); cursor: ns-resize; }
+.rh-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .rh-w { top: calc(50% - 5px); left: -6px; cursor: ew-resize; }
 </style>
 </head>
+
 <body>
+<div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
+    <div class="relative flex items-center justify-center">
+        <div class="absolute w-16 h-16 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-[25px] opacity-30 animate-pulse"></div>
+        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));"><i class="fa-solid fa-circle-notch animate-spin text-4xl block"></i></div>
+    </div>
+</div>
 
-<div id="toast-container"></div>
+<div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
 
-<!-- Modal de Confirmación Personalizado (Sustituto seguro de confirm()) -->
-<div id="custom-confirm-modal" class="modal-overlay z-[11000]">
-    <div class="modal-content text-center p-6">
-        <h3 id="confirm-title" class="text-white font-bold text-sm mb-2">Confirmación</h3>
-        <p id="confirm-msg" class="text-zinc-400 text-xs mb-6">¿Estás seguro de realizar esta acción?</p>
-        <div class="flex gap-3">
-            <button id="confirm-yes-btn" class="flex-1 btn-primary py-2.5">Sí, continuar</button>
-            <button onclick="document.getElementById('custom-confirm-modal').classList.remove('active')" class="flex-1 btn-secondary py-2.5">Cancelar</button>
+<div class="fixed top-0 left-0 right-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.3)] flex flex-col">
+    <header id="section-header" class="glass h-[56px] md:h-[76px] transition-all editable-section shrink-0 border-b-0">
+      <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
+        <div class="flex items-center gap-6 md:gap-10">
+            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none cursor-pointer">
+              <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1 cursor-pointer">
+                <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
+              </div>
+              <div>
+                <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0 text-white" id="brand-name">MULTIPRINTT</h1>
+                <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors cursor-pointer" id="brand-slogan">Tú Imagen Viva</div>
+              </div>
+            </button>
+            <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
+              <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active cursor-pointer" data-target="catalog">Catálogo</button>
+              <button onclick="window.navigate('courses')" data-editable="true" class="nav-link cursor-pointer" data-target="courses">Academia</button>
+              <button onclick="window.navigate('about')" data-editable="true" class="nav-link cursor-pointer" data-target="about">Nosotros</button>
+              <button onclick="window.navigate('contact')" data-editable="true" class="nav-link cursor-pointer" data-target="contact">Contacto</button>
+            </nav>
+        </div>
+
+        <div class="flex items-center relative">
+            <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
+                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+            </div>
+            
+            <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
+                <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer">
+                        <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
+                    </button>
+                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none cursor-pointer">
+                        <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
+                    </button>
+                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none cursor-pointer">
+                        <i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i>
+                    </button>
+                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 hover:text-[#25D366] outline-none cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Botón del Carrito -->
+            <button onclick="window.toggleCart()" class="relative ml-5 w-9 h-9 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white/90 hover:text-[#25d366] hover:bg-[#25d366]/10 hover:border-[#25d366]/30 transition-all duration-300 outline-none cursor-pointer ignore-drag">
+                <i class="fa-solid fa-cart-shopping text-sm pointer-events-none"></i>
+                <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-[#25d366] text-black text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center transition-all transform scale-0 pointer-events-none shadow-[0_0_10px_rgba(37,211,102,0.4)]">0</span>
+            </button>
+        </div>
+      </div>
+    </header>
+
+    <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden h-[34px] md:h-[45px] opacity-100 shrink-0">
+        <div class="flex items-center justify-between md:justify-center w-full px-0">
+            <button onclick="window.setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span></button>
+            <button onclick="window.setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span></button>
+            <button onclick="window.setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer">Textil</button>
+            <button onclick="window.setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span></button>
+            <button onclick="window.setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span></button>
+            <button onclick="window.setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer">Packs</button>
         </div>
     </div>
 </div>
 
-<div id="auth-screen">
-    <div class="glass-panel p-8 w-full max-w-sm text-center">
-        <h1 class="text-base font-bold mb-1 text-white">Multiprintt</h1>
-        <p class="text-zinc-500 text-[10px] mb-6">Panel Administrativo Pro</p>
-        <div class="space-y-3">
-            <input type="email" id="loginUser" placeholder="Correo" class="inp-field">
-            <input type="password" id="loginPass" placeholder="Contraseña" class="inp-field">
-            <button onclick="window.attemptLogin()" id="btn-login" class="w-full btn-primary mt-3 py-2.5">Ingresar al Sistema</button>
+<main class="relative w-full h-[100dvh] overflow-hidden">
+  
+  <section id="view-catalog" class="view-slide active-slide slide-scroll pb-24 md:pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[58px] md:pt-[85px] relative flex flex-col min-h-[calc(100vh-160px)]">
+        <div id="product-grid" class="w-full reveal show transition-all sortable-zone"></div>
+    </div>
+  </section>
+
+  <section id="view-about" class="view-slide slide-scroll editable-section">
+    <div class="hero-glow w-[350px] h-[350px] bg-violet-600/20 right-0 md:right-20 top-20"></div>
+    <div class="hero-glow w-[300px] h-[300px] bg-pink-500/15 left-[-50px] bottom-10"></div>
+    
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
+        <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20" data-resizable="true">
+            <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
+                <span data-editable="true" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
+                <span data-editable="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1">Tú Imagen Viva.</span>
+            </h2>
+            <p data-editable="true" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
+            
+            <div class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sortable-zone">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400 pointer-events-none"></i> <span data-editable="true">Envíos Nacionales</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-award text-violet-400 pointer-events-none"></i> <span data-editable="true">Calidad Premium</span></span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-cyan-400 pointer-events-none"></i> <span data-editable="true">Atención Única</span></span>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
+                <button data-editable="true" onclick="window.navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-transform hover:-translate-y-1 cursor-pointer">Ver catálogo</button>
+                <button data-editable="true" onclick="window.navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-transform hover:-translate-y-1 cursor-pointer">Nuestra academia</button>
+            </div>
         </div>
     </div>
-</div>
+  </section>
 
-<div id="db-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 id="db-modal-title" class="text-white font-semibold text-xs mb-3">Editor</h3>
-        <div id="db-modal-body" class="flex flex-col gap-3 mb-5"></div>
-        <div class="flex gap-2 pt-2 border-t border-white/5">
-            <button onclick="window.saveDbItem()" id="btn-save-db" class="flex-1 btn-primary py-2">Guardar</button>
-            <button onclick="document.getElementById('db-modal').classList.remove('active')" class="px-4 btn-secondary py-2">Cancelar</button>
+  <!-- SECCIÓN ACADEMIA (MASTERCLASS) -->
+  <section id="view-courses" class="view-slide slide-scroll editable-section">
+    <div class="hero-glow w-[400px] h-[400px] bg-cyan-600/10 left-[-100px] top-0"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-12 relative z-10">
+        
+        <div class="reveal text-center md:text-left shrink-0 relative z-20 mb-4" data-resizable="true" style="transition-delay: 0ms;">
+            <div data-editable="true" class="inline-block text-[10px] tracking-[.3em] uppercase text-cyan-400 font-extrabold mb-4 bg-cyan-500/10 border border-cyan-500/20 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]">Multiprintt Academy</div>
+            <h2 class="display flex flex-col gap-1 text-4xl md:text-5xl lg:text-[4.5rem] font-extrabold tracking-tight relative z-20 leading-none">
+                <span data-editable="true" class="block text-white">No solo vendemos.</span>
+                <span data-editable="true" class="relative z-10 block bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent pb-2">Te enseñamos a crear.</span>
+            </h2>
+            <p data-editable="true" class="text-[13px] md:text-base text-zinc-400 leading-relaxed max-w-2xl mt-4 mx-auto md:mx-0 font-light">Capacitaciones enfocadas en las mejores técnicas de impresión y personalización.</p>
+        </div>
+
+        <div class="reveal mt-2 flex flex-wrap justify-center md:justify-start gap-4 text-[9px] md:text-[11px] font-bold text-white uppercase tracking-[0.15em] sortable-zone mb-10" style="transition-delay: 100ms;" id="course-badges-zone">
+            <span class="flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.15)]"><i class="fa-solid fa-award text-amber-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-amber-100 font-extrabold">Práctica Garantizada</span></span>
+            <span class="flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]"><i class="fa-solid fa-infinity text-cyan-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-cyan-100 font-extrabold">Acompañamiento de por vida</span></span>
+            
+            <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag cursor-pointer"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
+        </div>
+        
+        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal" style="transition-delay: 200ms;"></div>
+
+        <div class="reveal mt-4 mb-8 text-center md:text-left">
+            <h3 data-editable="true" class="display text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-white">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
+        </div>
+        
+        <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal w-full pb-20 md:pb-0">
+            <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
+                <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-resizable="true">
+                    <video data-editable="true" src="https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4" autoplay muted loop playsinline crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none"></video>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
+                    
+                    <div class="absolute top-6 left-6 right-6 z-20 pointer-events-none drop-shadow-md">
+                        <i class="fa-solid fa-quote-left text-4xl text-cyan-400/50 mb-3"></i>
+                        <p data-editable="true" class="vt-quote text-white/95 text-base italic leading-relaxed font-light">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo; fue la mejor decisión que pude tomar."</p>
+                    </div>
+
+                    <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110 cursor-pointer">
+                        <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
+                    </button>
+
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-20 flex items-center gap-4 pointer-events-none border-t border-white/5 bg-black/30 backdrop-blur-xl">
+                        <div class="w-12 h-12 rounded-full bg-cyan-400/20 border border-cyan-400 flex items-center justify-center font-bold text-xl text-cyan-400 shadow-[0_0_10px_rgba(37,216,255,0.3)] shrink-0">C</div>
+                        <div class="flex flex-col">
+                            <h4 data-editable="true" class="vt-name text-white font-bold text-sm tracking-wide drop-shadow-md pointer-events-auto w-max">Carlos P.</h4>
+                            <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-extrabold uppercase tracking-[0.2em] pointer-events-auto w-max drop-shadow-md mt-1">Caso de Éxito</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-video-edit-overlay ignore-drag">
+                        <button onclick="event.stopPropagation(); window.activeVideoCardRef = this.closest('.video-testimonial-card'); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: 't1', itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+                        <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
+                    </div>
+                </div>
+
+                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-cyan-500/50 rounded-[32px] bg-cyan-500/5 flex items-center justify-center text-cyan-400 font-bold hover:bg-cyan-500 hover:text-black hover:border-cyan-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(37,216,255,0.1)] ignore-drag">
+                    <i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Nuevo Video</span>
+                </button>
+            </div>
+            
+            <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone h-max">
+                <div class="p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer" data-theme="pink" data-resizable="true">
+                    <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
+                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
+                    <div class="flex items-center gap-4 pt-4 border-t border-white/5">
+                        <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true">M</span></div>
+                        <div class="flex flex-col">
+                            <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide">María F.</h4>
+                            <span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors">Curso de Sublimación</span>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-video-edit-overlay ignore-drag">
+                        <button onclick="event.stopPropagation(); window.activeTextCardRef = this.closest('.card'); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: 'txt1', itemData: { name: this.closest('.card').querySelector('h4').innerText, role: this.closest('.card').querySelector('span:not([class*=\'w-10\'])').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
+                        <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
+                    </div>
+                </div>
+                
+                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-pink-500/50 rounded-[32px] bg-pink-500/5 flex flex-col items-center justify-center text-pink-400 font-bold hover:bg-cyan-500 hover:text-black hover:border-cyan-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(255,45,168,0.1)] ignore-drag">
+                    <i class="fa-solid fa-comment-dots text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Comentario</span>
+                </button>
+            </div>
         </div>
     </div>
-</div>
+  </section>
 
-<div id="icon-picker-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 class="text-white font-semibold text-xs mb-3">Añadir Red Social</h3>
-        <div class="grid grid-cols-3 gap-2 mb-3">
-            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-facebook-f mr-1"></i> FB</button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-instagram mr-1"></i> IG</button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-whatsapp mr-1"></i> WA</button>
+  <section id="view-contact" class="view-slide flex flex-col slide-scroll editable-section">
+    <div class="max-w-5xl mx-auto px-4 sm:px-5 lg:px-8 w-full min-h-full flex flex-col pt-1 sm:pt-2 pb-2 sm:pb-6 relative z-10">
+        <div class="flex-1 flex flex-col justify-evenly">
+            <div class="reveal text-center shrink-0 relative z-20 mb-2 sm:mb-8 mt-2" data-resizable="true">
+                <div data-editable="true" class="text-[8px] sm:text-[9px] tracking-[.25em] uppercase text-cyan-300 font-bold mb-1 sm:mb-2">Hablemos</div>
+                <h2 class="display flex flex-col items-center gap-0 text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-[-.05em] relative z-20 leading-[1.1]">
+                    <span data-editable="true" class="block">Tu próxima idea</span>
+                    <span data-editable="true" class="relative z-10 block bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1">empieza aquí.</span>
+                </h2>
+            </div>
+
+            <div id="contact-flex" class="flex flex-col lg:flex-row gap-3 sm:gap-6 lg:gap-10 items-center justify-center reveal w-full lg:-mt-[22px] sortable-zone">
+                <div id="contact-map-col" class="w-full lg:w-1/2 h-[220px] sm:h-[260px] lg:h-[280px] xl:h-[320px] min-h-[220px] rounded-[16px] lg:rounded-[24px] overflow-hidden relative border border-white/10 shadow-xl bg-[#0e0e12] shrink-0" data-resizable="true">
+                    <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
+                    <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
+                        <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
+                            <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
+                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
+                    <div class="group" data-resizable="true">
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
+                        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer" id="contact-phone">+593 99 759 1021</button>
+                    </div>
+                    <div class="group" data-resizable="true">
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
+                        <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer">multiprintt@yahoo.com</button>
+                    </div>
+                    
+                    <button onclick="window.cloneContactPhone(this)" class="admin-tool border border-dashed border-cyan-400/50 text-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_10px_rgba(37,216,255,0.15)] ignore-drag cursor-pointer">
+                        <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none">Añadir Número / Etiqueta</span>
+                    </button>
+
+                    <div class="group" data-resizable="true">
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
+                        <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone p-2 rounded-lg border border-transparent">
+                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
+                            
+                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <label class="lbl">URL de Destino</label>
-        <input type="text" id="social-url-input" placeholder="https://..." class="inp-field mb-4">
-        <div class="flex gap-2">
-            <button onclick="window.confirmAddSocial()" class="flex-1 btn-primary py-2">Añadir</button>
-            <button onclick="document.getElementById('icon-picker-modal').classList.remove('active')" class="px-4 btn-secondary py-2">Cancelar</button>
-        </div>
+
+        <footer class="mt-2 sm:mt-8 pt-2 sm:pt-4 text-center text-[8px] sm:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-1 sm:gap-2 relative z-20 pb-2 sm:pb-4">
+            <span data-editable="true">© 2026 Multiprintt. Tú Imagen Viva.</span>
+        </footer>
     </div>
-</div>
+  </section>
+</main>
 
-<!-- Modal Galería / Explorador de Medios con Selección Múltiple y Vista Previa -->
-<div id="gallery-modal" class="modal-overlay z-[10000]">
-    <div class="modal-content" style="max-width: 680px;">
-        <div class="flex justify-between items-center mb-3">
-            <h3 class="text-white font-semibold text-xs" id="gallery-title">Explorador de Medios</h3>
-            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="flex gap-2 mb-3" id="gallery-filters">
-            <button onclick="window.filterGallery('all')" class="tool-btn justify-center active cursor-pointer" id="gal-filt-all">Todos</button>
-            <button onclick="window.filterGallery('image')" class="tool-btn justify-center cursor-pointer" id="gal-filt-img">Imágenes</button>
-            <button onclick="window.filterGallery('video')" class="tool-btn justify-center cursor-pointer" id="gal-filt-vid">Videos</button>
-        </div>
-        <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Multiprintt Media Cloud</div>
-        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[320px] overflow-y-auto pr-1 mb-4"></div>
-        <div id="gallery-footer-actions" class="flex justify-between items-center pt-3 border-t border-white/5">
-            <span class="text-[10px] text-zinc-400" id="gallery-selection-count">Haz clic en las imágenes para seleccionarlas</span>
-            <button onclick="window.confirmMultiMediaSelection()" class="btn-primary py-2 px-5 hidden cursor-pointer" id="gallery-confirm-btn">Confirmar Selección (0)</button>
-        </div>
-    </div>
-</div>
+<nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
+    <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
+    <button onclick="window.navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white cursor-pointer"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
+    <button onclick="window.navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
+    <button onclick="window.navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
+    <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
+</nav>
 
-<div id="builder-ui">
-    <div class="topbar">
-        <div class="flex items-center gap-2">
-            <span class="font-bold text-[11px] text-white tracking-tight">Multiprintt</span>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">Core Admin</span>
-        </div>
-        <div class="flex items-center gap-1 bg-black p-0.5 border border-white/5 rounded-md">
-            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
-            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
-        </div>
-        <div class="flex items-center gap-2">
-            <button class="tool-btn active w-auto py-1.5 px-2.5 cursor-pointer" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="hidden sm:inline">Mover</span></button>
-            <button class="btn-warning py-1.5 px-2.5" onclick="window.resetTemplateConfirm()"><i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span></button>
-            <button class="btn-primary py-1.5 px-3 flex items-center gap-1.5" id="publish-btn" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span></button>
-            <button class="btn-secondary py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
-        </div>
+<!-- CARRITO DE COMPRAS SIDEBAR -->
+<div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 ignore-drag cursor-pointer" onclick="window.toggleCart()"></div>
+<div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
+    <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
+        <h3 class="text-white font-extrabold text-lg flex items-center"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
+        <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
-    <div class="workspace">
-        <div class="sidebar-left hide-scrollbar">
-            <div class="panel-title">Navegación</div>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4"></i> Tienda / Carrito</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4"></i> Academia</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4"></i> Nosotros</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4"></i> Contacto</button>
-            <div class="divider"></div>
-            <div class="panel-title">Base de Datos</div>
-            <button class="tool-btn text-pink-400 cursor-pointer" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4"></i> + Producto</button>
-            <button class="tool-btn text-cyan-400 cursor-pointer" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4"></i> + Curso</button>
+    <div id="cart-items-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
+        <!-- Items renderizados aquí -->
+    </div>
+
+    <div class="p-5 border-t border-white/10 bg-[#070709] shrink-0 flex flex-col gap-3">
+        <div class="flex items-center justify-between text-zinc-400 text-sm">
+            <span>Subtotal</span>
+            <span id="cart-subtotal" class="font-bold text-white">$0.00</span>
         </div>
+        <div class="flex items-center justify-between text-white text-lg font-extrabold">
+            <span>Total</span>
+            <span id="cart-total" class="text-[#25d366]">$0.00</span>
+        </div>
+        <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none">
+            <i class="fa-brands fa-whatsapp text-xl"></i> 💰 Finalizar compra
+        </button>
+        <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none">
+            <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
+        </button>
+    </div>
+</div>
+
+<!-- MODAL DETALLE DE CURSO -->
+<div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
+  <div class="relative w-full max-w-5xl bg-[#0a0a0c] border border-white/10 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-500 ignore-drag" id="courseModalContent">
+    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none cursor-pointer"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+
+    <div class="w-full md:w-5/12 h-56 sm:h-64 md:h-auto bg-black relative overflow-hidden group">
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0c] z-10 hidden md:block"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] to-transparent z-10 block md:hidden"></div>
+      <img id="cm-image" src="" alt="Curso" class="w-full h-full object-cover relative z-0 ignore-drag transition-transform duration-1000 group-hover:scale-105 opacity-80" onerror="this.src='https://placehold.co/600x800/101014/ffffff?text=Curso'">
+      <div class="absolute top-6 left-6 z-20">
+         <span class="bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.2)]"><i class="fa-solid fa-award mr-1"></i> Masterclass</span>
+      </div>
+    </div>
+
+    <div class="w-full md:w-7/12 p-6 sm:p-8 md:p-12 flex flex-col relative z-20 justify-center bg-[#0a0a0c]">
+      <h3 id="cm-title" class="display text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white ignore-drag leading-tight drop-shadow-md"></h3>
+      <p id="cm-desc" class="text-sm md:text-base text-zinc-400 leading-relaxed mb-8 flex-1 ignore-drag font-light"></p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 ignore-drag bg-[#101014] p-5 rounded-2xl border border-white/5 shadow-inner">
+        <div class="flex items-center text-zinc-300">
+            <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mr-4 text-violet-400 shadow-[0_0_15px_rgba(115,92,255,0.15)]"><i class="fa-regular fa-calendar-days text-xl"></i></div>
+            <div><span class="block text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-extrabold mb-0.5">Horarios</span><span id="cm-schedule" class="font-bold text-white text-sm md:text-base"></span></div>
+        </div>
+        <div class="flex items-center text-zinc-300">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mr-4 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.15)]"><i class="fa-solid fa-sack-dollar text-xl"></i></div>
+            <div><span class="block text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-extrabold mb-0.5">Inversión</span><span id="cm-price" class="font-bold text-amber-400 text-sm md:text-base"></span></div>
+        </div>
+      </div>
+
+      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag outline-none cursor-pointer">
+        <i class="fa-brands fa-whatsapp text-xl mr-2 pointer-events-none"></i> 🎓 Reserva tu cupo
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
+    <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         
-        <div class="canvas-area">
-            <div id="preview-wrapper" class="device-desktop">
-                <iframe id="site-frame" src=""></iframe>
+        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer">
+            <i class="fa-solid fa-xmark text-lg pointer-events-none"></i>
+        </button>
+
+        <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto min-h-[300px] relative bg-black shrink-0">
+            <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
+            
+            <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none">
+                <span id="vm-time">00:00</span>
             </div>
+            
+            <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0a0a0c] to-transparent z-10 pointer-events-none block md:hidden"></div>
         </div>
-        
-        <div class="sidebar-right hide-scrollbar">
-            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 p-6 text-center">
-                <p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento<br>en el lienzo.</p>
+
+        <div class="w-full md:w-[55%] p-8 sm:p-10 md:p-12 flex flex-col justify-center relative z-20 bg-[#0a0a0c]">
+            <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[36px] md:text-[48px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-6 pointer-events-auto"></i>
+            
+            <div class="overflow-y-auto hide-scrollbar max-h-[160px] md:max-h-[220px] mb-8 pointer-events-none">
+                <p data-editable="true" id="vm-quote" class="text-white/95 text-base md:text-xl leading-relaxed font-light italic drop-shadow-md pr-2 pointer-events-auto">"..."</p>
+            </div>
+            
+            <div class="border-t border-white/10 pt-6 md:pt-8 shrink-0 flex items-center gap-5 pointer-events-none mt-auto">
+                <div data-editable="true" id="vm-avatar-container" class="w-14 h-14 md:w-16 md:h-16 rounded-full border border-cyan-400 bg-cyan-400/10 shrink-0 flex items-center justify-center transition-all duration-300 pointer-events-auto shadow-[0_0_15px_rgba(37,216,255,0.2)]">
+                    <span class="font-bold text-xl md:text-2xl text-cyan-400" id="vm-initial">C</span>
+                </div>
+                <div class="flex flex-col justify-center pointer-events-none">
+                    <h4 data-editable="true" id="vm-name" class="text-white text-lg md:text-xl font-bold tracking-wide drop-shadow-sm pointer-events-auto">Carlos P.</h4>
+                    <span data-editable="true" id="vm-role" class="text-[10px] md:text-xs uppercase tracking-[0.2em] font-extrabold drop-shadow-sm mt-1 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, increment, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-    const app = initializeApp(firebaseConfig); 
-    const auth = getAuth(app); 
+const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+});
+
+const APP_ID = "multiprintt-web";
+
+window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
+let activeVideoCardRef = null;
+let activeTextCardRef = null;
+
+window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
+
+window.saveCart = function() {
+    localStorage.setItem('multiprintt_cart', JSON.stringify(window.multiprinttCart));
+    window.updateCartUI();
+}
+
+window.toggleCart = function() {
+    const overlay = document.getElementById('cart-overlay');
+    const sidebar = document.getElementById('cart-sidebar');
     
-    const db = initializeFirestore(app, {
-        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+    if (overlay.classList.contains('pointer-events-none')) {
+        overlay.classList.remove('pointer-events-none', 'opacity-0');
+        sidebar.classList.remove('translate-x-full');
+        window.updateCartUI();
+    } else {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        sidebar.classList.add('translate-x-full');
+    }
+}
+
+window.clearCart = function() {
+    window.multiprinttCart = [];
+    window.saveCart();
+}
+
+window.addToCart = function(productId, e) {
+    if(e) e.stopPropagation();
+    if(window.isAdminMode) return;
+    
+    const existing = window.multiprinttCart.find(item => item.id === productId);
+    if(existing) {
+        existing.qty += 1;
+    } else {
+        window.multiprinttCart.push({ id: productId, qty: 1 });
+    }
+    
+    try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { cartAdds: increment(1) }, { merge: true }); } catch (err) {}
+    
+    window.saveCart();
+    
+    const badge = document.getElementById('cart-badge');
+    badge.classList.add('scale-125');
+    setTimeout(() => badge.classList.remove('scale-125'), 200);
+}
+
+window.updateCartQty = function(productId, delta) {
+    const idx = window.multiprinttCart.findIndex(item => item.id === productId);
+    if(idx > -1) {
+        window.multiprinttCart[idx].qty += delta;
+        if(window.multiprinttCart[idx].qty <= 0) {
+            window.multiprinttCart.splice(idx, 1);
+        }
+        window.saveCart();
+    }
+}
+
+window.updateCartUI = function() {
+    const badge = document.getElementById('cart-badge');
+    const totalQty = window.multiprinttCart.reduce((sum, item) => sum + item.qty, 0);
+    
+    if(totalQty > 0) {
+        badge.innerText = totalQty;
+        badge.classList.remove('scale-0');
+        badge.classList.add('scale-100');
+    } else {
+        badge.classList.remove('scale-100');
+        badge.classList.add('scale-0');
+    }
+
+    const container = document.getElementById('cart-items-container');
+    const subtotalEl = document.getElementById('cart-subtotal');
+    const totalEl = document.getElementById('cart-total');
+    
+    if(!container) return;
+    
+    container.innerHTML = '';
+    let total = 0;
+
+    if(window.multiprinttCart.length === 0) {
+        container.innerHTML = `<div class="text-zinc-500 text-center py-10 flex flex-col items-center gap-3"><i class="fa-solid fa-basket-shopping text-3xl opacity-20"></i><span class="text-xs">Tu carrito está vacío</span></div>`;
+        subtotalEl.innerText = '$0.00';
+        totalEl.innerText = '$0.00';
+        return;
+    }
+
+    window.multiprinttCart.forEach(item => {
+        let p = window.appProducts.find(x => x.id === item.id);
+        if(!p) return;
+        
+        let pPrice = Number(p.price) || 0;
+        let discountVal = Number(p.discount) || 0;
+        let finalPrice = (p.isPromo && discountVal > 0) ? pPrice * (1 - discountVal / 100) : pPrice;
+        let lineTotal = finalPrice * item.qty;
+        total += lineTotal;
+
+        let imgUrl = p.image ? (p.image.split(',')[0] || '').trim() : '';
+        if(Array.isArray(p.images) && p.images.length > 0) imgUrl = p.images[0];
+        
+        let imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-contain bg-transparent">` : `<div class="w-full h-full bg-transparent flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-white/30"></i></div>`;
+
+        container.innerHTML += `
+        <div class="flex items-center gap-4 bg-[#101014] p-3 rounded-xl border border-white/5">
+            <div class="w-14 h-14 bg-transparent rounded-lg overflow-hidden shrink-0 border border-white/5 flex items-center justify-center p-1">
+                ${imgHtml}
+            </div>
+            <div class="flex-1 flex flex-col justify-center min-w-0">
+                <h4 class="text-white text-[11px] font-bold truncate">${p.name}</h4>
+                <div class="text-[#25d366] text-xs font-extrabold mt-0.5">$${finalPrice.toFixed(2)}</div>
+            </div>
+            <div class="flex items-center gap-2 bg-black rounded-lg p-1 border border-white/10 shrink-0">
+                <button onclick="window.updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                <span class="text-white text-xs font-bold w-4 text-center">${item.qty}</span>
+                <button onclick="window.updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></button>
+            </div>
+        </div>`;
     });
-    const APP_ID = "multiprintt-web";
 
-    window.showToast = function(msg) {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'custom-toast';
-        toast.innerText = msg;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
-    }
+    subtotalEl.innerText = `$${total.toFixed(2)}`;
+    totalEl.innerText = `$${total.toFixed(2)}`;
+}
 
-    window.showConfirm = function(msg, callback) {
-        const modal = document.getElementById('custom-confirm-modal');
-        document.getElementById('confirm-msg').innerText = msg;
-        const yesBtn = document.getElementById('confirm-yes-btn');
-        yesBtn.onclick = () => {
-            modal.classList.remove('active');
-            callback();
-        };
-        modal.classList.add('active');
-    }
+window.checkoutWhatsApp = function() {
+    if(window.multiprinttCart.length === 0) return;
+    
+    let phoneEl = document.getElementById('contact-phone'); 
+    let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    if(!rawPhone.startsWith('593')) rawPhone = "593997591021";
 
-    onAuthStateChanged(auth, (user) => {
-        if (user && !user.isAnonymous) {
-            document.getElementById('auth-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('builder-ui').style.display = 'flex';
-                const iframe = document.getElementById('site-frame');
-                if (!iframe.src || iframe.src === window.location.href) iframe.src = 'index.html?t=' + Date.now();
-            }, 300);
+    let msg = `👋 Hola *Multiprintt*, quiero realizar este pedido:\n\n`;
+    let total = 0;
+
+    window.multiprinttCart.forEach(item => {
+        let p = window.appProducts.find(x => x.id === item.id);
+        if(!p) return;
+        
+        let pPrice = Number(p.price) || 0;
+        let discountVal = Number(p.discount) || 0;
+        let finalPrice = (p.isPromo && discountVal > 0) ? pPrice * (1 - discountVal / 100) : pPrice;
+        let lineTotal = finalPrice * item.qty;
+        total += lineTotal;
+        
+        msg += `🛍️ *${p.name}*\n`;
+        if (p.isPromo && discountVal > 0) msg += `   🏷️ Descuento aplicado: ${discountVal}%\n`;
+        msg += `   Cantidad: ${item.qty}\n`;
+        msg += `   💰 $${lineTotal.toFixed(2)}\n\n`;
+        
+        try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', p.id), { checkoutIntents: increment(item.qty) }, { merge: true }); } catch (err) {}
+    });
+    
+    msg += `🧾 *Total:* $${total.toFixed(2)}\n\n¿Me ayudan a finalizar mi compra? ✅`;
+    
+    window.open(`https://wa.me/${rawPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    window.toggleCart();
+}
+
+const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
+const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,image:'',icon:'fa-shirt'}];
+const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:"", isMasterclass: true}];
+window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
+
+window.navigate = function(targetId) {
+    const subnav = document.getElementById('catalog-subnav');
+    ['catalog', 'about', 'courses', 'contact'].forEach(id => {
+        const section = document.getElementById(`view-${id}`); const btns = document.querySelectorAll(`[data-target="${id}"]`); const botBtn = document.getElementById(`bot-${id}`);
+        if (id === targetId) {
+            if (section) { section.classList.add('active-slide'); setTimeout(() => section.scrollTop = 0, 10); }
+            btns.forEach(b => b.classList.add('active')); if(botBtn) { botBtn.classList.add('active', 'text-white'); botBtn.classList.remove('text-zinc-500'); }
+            setTimeout(() => { if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.add('show')); if(id === 'contact') { if(!window.multiprinttMap) { window.initMap(); } else { window.multiprinttMap.invalidateSize(); window.recenterMap(); } } }, 500); 
         } else {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('auth-screen').style.opacity = '1';
-            document.getElementById('builder-ui').style.display = 'none';
+            if (section) section.classList.remove('active-slide'); btns.forEach(b => b.classList.remove('active')); if(botBtn) { botBtn.classList.remove('active', 'text-white'); botBtn.classList.add('text-zinc-500'); }
+            if (section) section.querySelectorAll('.reveal').forEach(el => el.classList.remove('show'));
         }
     });
-
-    window.attemptLogin = async function() {
-        const email = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value;
-        const btn = document.getElementById('btn-login');
-        if (!email || !pass) return window.showToast("Datos incompletos.");
-        
-        let originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
-        
-        try { 
-            await setPersistence(auth, browserSessionPersistence);
-            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
-            else await signInWithEmailAndPassword(auth, email, pass); 
-        } catch (error) { 
-            window.showToast("Error de acceso.");
-            btn.innerHTML = originalText;
-        }
-    };
-
-    window.logout = async function() { await signOut(auth); location.reload(); };
-    window.setDevice = function(type, btn) { document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.getElementById('preview-wrapper').className = 'device-' + type; };
-    window.callIframeFunction = function(fnName, ...args) { const iframe = document.getElementById('site-frame'); if (iframe && iframe.contentWindow && typeof iframe.contentWindow[fnName] === 'function') iframe.contentWindow[fnName](...args); };
-
-    let isDragMode = true;
-    window.toggleDragMode = function(btn) {
-        isDragMode = !isDragMode;
-        if(isDragMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Mover'; } 
-        else { btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-lock"></i> Fijo'; }
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
+    
+    if (subnav) {
+        if (targetId === 'catalog') { subnav.style.height = window.innerWidth < 768 ? '34px' : '45px'; subnav.style.opacity = '1'; } 
+        else { subnav.style.height = '0px'; subnav.style.opacity = '0'; }
     }
+    if(window.updateResizeBox) window.updateResizeBox();
+};
 
-    window.publishChanges = function() {
-        document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
+window.setFilter = function(filterStr) {
+    if(!document.getElementById(`filter-${filterStr}`)) return;
+    window.currentFilter = filterStr;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`filter-${filterStr}`).classList.add('active');
+    
+    const grid = document.getElementById('product-grid');
+    if (grid) {
+        grid.style.opacity = '0';
+        setTimeout(() => {
+            window.renderProducts();
+            grid.style.opacity = '1';
+        }, 300);
     }
+};
 
-    window.resetTemplateConfirm = function() {
-        window.showConfirm("¿Restaurar diseño base de fábrica? Todos los cambios no guardados se perderán.", async () => {
-            window.showToast("Restaurando UI...");
-            try {
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
-                window.showToast("Plantilla restablecida. Recargando...");
-                setTimeout(() => location.reload(), 1200);
-            } catch(e) {
-                window.showToast("Error al restablecer plantilla.");
+window.sliderFrames = window.sliderFrames || {};
+window.updateSliderOpacities = function(sliderId) {
+    if(window.sliderFrames[sliderId]) cancelAnimationFrame(window.sliderFrames[sliderId]);
+    window.sliderFrames[sliderId] = requestAnimationFrame(() => {
+        const slider = document.getElementById(sliderId);
+        if (!slider) return;
+        const slides = slider.querySelectorAll('.slider-item');
+        if (slides.length === 0) return;
+        const sliderRect = slider.getBoundingClientRect();
+        const sliderCenter = sliderRect.left + (sliderRect.width / 2);
+        let closestSlide = null;
+        let minDistance = Infinity;
+        
+        slides.forEach(slide => {
+            const slideRect = slide.getBoundingClientRect();
+            const slideCenter = slideRect.left + (slideRect.width / 2);
+            const distance = Math.abs(sliderCenter - slideCenter);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestSlide = slide;
             }
+            slide.classList.remove('opacity-100', 'scale-100', 'z-20');
+            slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
         });
+        
+        if (closestSlide) {
+            closestSlide.classList.remove('opacity-40', 'scale-[0.70]', 'z-10');
+            closestSlide.classList.add('opacity-100', 'scale-100', 'z-20');
+        }
+    });
+};
+
+window.scrollSlider = function(id, dir) {
+    const slider = document.getElementById(id);
+    if(!slider) return;
+    const width = slider.querySelector('.slider-item').offsetWidth;
+    slider.scrollBy({ left: dir * width, behavior: 'smooth' });
+};
+
+window.syncSocialNetworks = function() {
+    const footerLinksContainer = document.getElementById('social-footer-links');
+    const navPcContainer = document.getElementById('social-nav-pc');
+    const navMobileContainer = document.getElementById('social-nav-mobile');
+    
+    if(!footerLinksContainer || !navPcContainer || !navMobileContainer) return;
+
+    const currentLinks = footerLinksContainer.querySelectorAll('button:not(.admin-tool)');
+    
+    navPcContainer.innerHTML = '';
+    navMobileContainer.innerHTML = '';
+
+    const btnAdminPc = document.createElement('button');
+    btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
+    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer";
+    btnAdminPc.innerHTML = `<i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>`;
+    navPcContainer.appendChild(btnAdminPc);
+
+    const btnAdminMob = document.createElement('button');
+    btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
+    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer";
+    btnAdminMob.innerHTML = `<i class="fa-solid fa-plus text-xs pointer-events-none"></i>`;
+    navMobileContainer.appendChild(btnAdminMob);
+
+    currentLinks.forEach((link, index) => {
+        const isLast = index === currentLinks.length - 1; 
+        const urlMatch = link.getAttribute('onclick').match(/'([^']+)'/);
+        const url = urlMatch ? urlMatch[1] : '#';
+        const iconElement = link.querySelector('i');
+        const iconClasses = iconElement ? iconElement.className.replace('pointer-events-none', '').trim() : 'fa-solid fa-link';
+        const network = link.getAttribute('data-network') || 'link';
+
+        const btnPc = document.createElement('button');
+        btnPc.setAttribute('data-editable', 'true');
+        btnPc.setAttribute('data-network', network);
+        btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
+        
+        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer"; } 
+        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer"; }
+        
+        if(network === 'facebook') btnPc.classList.add('hover:text-[#1877f2]');
+        else if(network === 'instagram') btnPc.classList.add('hover:text-[#e1306c]');
+        else if(network === 'whatsapp') btnPc.classList.add('hover:text-[#25d366]');
+        else if(network === 'youtube') btnPc.classList.add('hover:text-[#ff0000]');
+        else if(network === 'tiktok') btnPc.classList.add('hover:text-white');
+        else if(network === 'twitter') btnPc.classList.add('hover:text-white');
+        else if(network === 'linkedin') btnPc.classList.add('hover:text-[#0a66c2]');
+        else if(network === 'telegram') btnPc.classList.add('hover:text-[#0088cc]');
+        else btnPc.classList.add('hover:text-cyan-400');
+
+        btnPc.innerHTML = `<i class="${iconClasses} text-[18px] pointer-events-none"></i>`;
+        navPcContainer.appendChild(btnPc);
+
+        const btnMob = document.createElement('button');
+        btnMob.setAttribute('data-editable', 'true');
+        btnMob.setAttribute('data-network', network);
+        btnMob.setAttribute('onclick', `window.open('${url}', '_blank')`);
+        btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none cursor-pointer";
+        
+        if(network === 'facebook') btnMob.classList.add('hover:text-[#1877f2]');
+        else if(network === 'instagram') btnMob.classList.add('hover:text-[#e1306c]');
+        else if(network === 'whatsapp') btnMob.classList.add('hover:text-[#25d366]');
+        else if(network === 'youtube') btnMob.classList.add('hover:text-[#ff0000]');
+        else if(network === 'tiktok') btnMob.classList.add('hover:text-white');
+        else if(network === 'twitter') btnMob.classList.add('hover:text-white');
+        else if(network === 'linkedin') btnMob.classList.add('hover:text-[#0a66c2]');
+        else if(network === 'telegram') btnMob.classList.add('hover:text-[#0088cc]');
+        else btnMob.classList.add('hover:text-cyan-400');
+
+        btnMob.innerHTML = `<i class="${iconClasses} text-lg pointer-events-none"></i>`;
+        navMobileContainer.insertBefore(btnMob, navMobileContainer.querySelector('.admin-tool'));
+    });
+}
+
+window.renderProducts = function(){
+    const grid = document.getElementById('product-grid'); if(!grid) return; grid.innerHTML = '';
+    let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
+    let safeProducts = [];
+    
+    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); } 
+    else if (window.currentFilter === 'promocionales') { safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true || (p.discount && p.discount > 0)); } 
+    else { safeProducts = allProducts.filter(p => p.category === window.currentFilter); }
+
+    if (window.currentFilter !== 'mas-vendidos') {
+        let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
+        safeProducts.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
     }
+    
+    grid.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mx-auto transition-opacity duration-300 items-start w-full sortable-zone";
+    if(safeProducts.length === 0) { grid.innerHTML = `<div class="col-span-full py-10 text-center text-zinc-500 text-sm">No hay productos en esta categoría.</div>`; }
+    
+    let renderHTML = '';
+    safeProducts.forEach((p,i)=>{
+        const basePrice = Number(p.price) || 0;
+        const discountVal = Number(p.discount) || 0;
+        const finalPrice = (p.isPromo && discountVal > 0) ? basePrice * (1 - discountVal / 100) : basePrice;
 
-    let currentDbItem = {};
-    let activeMediaInput = null;
-    let galleryDataCache = [];
-    let selectedMediaUrls = [];
-    let isMultiSelectMode = false;
+        let imgs = [];
+        if (p.image) {
+            imgs = p.image.split(/[\n,]+/).map(s=>s.trim()).filter(s=>s);
+        } else if (Array.isArray(p.images) && p.images.length > 0) {
+            imgs = p.images;
+        }
+        
+        if (imgs.length === 2) { imgs = [imgs[0], imgs[1], imgs[0], imgs[1]]; }
+        
+        let art = '';
+        if (imgs.length <= 1) {
+            art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+        } else {
+            let sliderId = `slider-${p.id}`;
+            let slides = imgs.map((img, idx) => {
+                const isActive = idx === 1;
+                const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
+                return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
+            }).join('');
+            
+            art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', -1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button onclick="window.scrollSlider('${sliderId}', 1)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>`;
+            setTimeout(() => { const slider = document.getElementById(sliderId); if (slider) { const items = slider.querySelectorAll('.slider-item'); if (items[1]) { slider.scrollTo({ left: items[1].offsetLeft - (slider.offsetWidth - items[1].offsetWidth) / 2, behavior: 'instant' }); } } window.updateSliderOpacities(sliderId); }, 60);
+        }
 
-    const defaultGalleryItems = [
-        { type: 'image', url: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=60', title: 'Camiseta Premium' },
-        { type: 'image', url: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=60', title: 'Jarro Estampado' },
-        { type: 'image', url: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=600&auto=format&fit=crop&q=60', title: 'Hoodie Personalizado' },
-        { type: 'image', url: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&auto=format&fit=crop&q=60', title: 'Gorra Estampada' },
-        { type: 'video', url: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', title: 'Testimonio Alumno 1' }
+        const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
+        
+        let badgesHtml = '';
+        let isTopSeller = p.isBestSeller || (window.currentFilter === 'mas-vendidos' && i < 3);
+        if (isTopSeller) {
+            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-rose-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-300 text-[9px]"></i> Más vendido</span>`;
+        }
+        if (p.isPromo && discountVal > 0) {
+            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-pink-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm">-${discountVal}% OFF</span>`;
+        } else if (p.isPromo) {
+            badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-amber-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-crown text-amber-200 text-[9px]"></i> Promo</span>`;
+        }
+        
+        let promoBadgeContainer = badgesHtml ? `<div class="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">${badgesHtml}</div>` : '';
+
+        let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        
+        let priceHtml = `<span class="text-sm md:text-base font-extrabold text-white">$${finalPrice.toFixed(2)}</span>`;
+        if (p.isPromo && discountVal > 0) {
+            priceHtml = `<div class="flex flex-col items-start"><span class="text-[9px] text-zinc-500 line-through leading-none">$${basePrice.toFixed(2)}</span><span class="text-sm md:text-base font-extrabold text-pink-400 leading-none mt-0.5">$${finalPrice.toFixed(2)}</span></div>`;
+        }
+
+        let delay = (i % 8) * 50;
+
+        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${p.id}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button onclick="window.addToCart('${p.id}', event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
+    });
+    if(safeProducts.length > 0) grid.innerHTML = renderHTML;
+}
+
+window.renderCourses = function(){
+    const grid = document.getElementById('courses-grid'); if(!grid) return; grid.innerHTML = '';
+    let safeCourses = Array.isArray(window.appCourses) && window.appCourses.length > 0 ? [...window.appCourses] : [...defaultCourses];
+    let safeOrder = Array.isArray(window.courseOrderArray) ? window.courseOrderArray : [];
+    safeCourses.sort((a, b) => { let ia = safeOrder.indexOf(a.id); let ib = safeOrder.indexOf(b.id); return (ia===-1?999:ia) - (ib===-1?999:ib); });
+    
+    const accents = [
+        { theme: 'amber', from: 'from-amber-500/20', text: 'text-amber-400', border: 'border-amber-500/20', hoverBorder: 'hover:border-amber-500/40', shadow: 'hover:shadow-[0_20px_50px_rgba(245,158,11,0.1)]' },
+        { theme: 'cyan', from: 'from-cyan-500/20', text: 'text-cyan-400', border: 'border-cyan-500/20', hoverBorder: 'hover:border-cyan-500/40', shadow: 'hover:shadow-[0_20px_50px_rgba(37,216,255,0.1)]' },
+        { theme: 'violet', from: 'from-violet-500/20', text: 'text-violet-400', border: 'border-violet-500/20', hoverBorder: 'hover:border-violet-500/40', shadow: 'hover:shadow-[0_20px_50px_rgba(115,92,255,0.1)]' },
+        { theme: 'pink', from: 'from-pink-500/20', text: 'text-pink-400', border: 'border-pink-500/20', hoverBorder: 'hover:border-pink-500/40', shadow: 'hover:shadow-[0_20px_50px_rgba(255,45,168,0.1)]' }
     ];
 
-    async function fetchGalleryJson(url) {
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error("Error HTTP");
-            const data = await res.json();
-            
-            let rawArray = [];
-            if (Array.isArray(data)) rawArray = data;
-            else if (data.items && Array.isArray(data.items)) rawArray = data.items;
-            else if (data.imagenes && Array.isArray(data.imagenes)) rawArray = data.imagenes;
-            else if (data.images && Array.isArray(data.images)) rawArray = data.images;
-            else {
-                for (let k in data) {
-                    if (Array.isArray(data[k])) rawArray.push(...data[k]);
-                }
-            }
-            if(rawArray.length === 0) rawArray = defaultGalleryItems;
+    let renderHTML = '';
+    safeCourses.forEach((c, i)=>{
+        let a = accents[i % accents.length]; 
+        let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
+        
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        
+        let delay = 100 + (i * 100);
+        let masterclassBadge = c.isMasterclass !== false ? `<div class="absolute top-5 left-5 z-20 pointer-events-none"><span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span></div>` : '';
+        
+        renderHTML += `
+        <article class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder}" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
+            ${adminHtml}
+            <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
+                <img src="${c.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/40 to-transparent z-10 pointer-events-none"></div>
+                ${masterclassBadge}
+            </div>
+            <div class="relative flex flex-col w-full flex-1 p-6 md:p-8 pt-4 z-20 bg-[#070709]">
+                <div class="w-12 h-1 rounded-full bg-gradient-to-r ${a.from} to-transparent mb-5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display">${c.title}</h3>
+                <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light">${c.desc}</p>
+                <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
+                    <button onclick="window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
+                        Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
+                    </button>
+                </div>
+            </div>
+        </article>`;
+    });
+    grid.innerHTML = renderHTML;
+}
 
-            const baseProdUrl = 'https://multiprintt.web.app/recursos/productos/';
-            const baseMediaUrl = 'https://multiprintt.web.app/recursos/';
+window.cloneCourseBadge = function(btn) {
+    if(!window.isAdminMode) return;
+    const colors = ['cyan', 'pink', 'amber', 'violet', 'emerald'];
+    const icons = ['fa-star', 'fa-award', 'fa-infinity', 'fa-fire', 'fa-gem'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+    const span = document.createElement('span');
+    span.className = `flex items-center gap-2 bg-gradient-to-r from-${randomColor}-500/10 to-transparent border border-${randomColor}-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.15)]`;
+    span.innerHTML = `<i class="fa-solid ${randomIcon} text-${randomColor}-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-${randomColor}-100 font-extrabold">Nueva Etiqueta</span>`;
+    btn.parentNode.insertBefore(span, btn);
+    if(window.updateResizeBox) window.updateResizeBox();
+}
 
-            return rawArray.map(item => {
-                let u = '';
-                let t = 'image';
-                let title = '';
-                if(typeof item === 'string') {
-                    u = item;
-                    t = u.endsWith('.mp4') ? 'video' : 'image';
-                    title = u.split('/').pop();
-                } else {
-                    u = item.url || item.src || '';
-                    t = item.type || (u.endsWith('.mp4') ? 'video' : 'image');
-                    title = item.title || u.split('/').pop();
-                }
+window.cloneContactPhone = function(btn) {
+    if(!window.isAdminMode) return;
+    const parent = btn.parentElement;
+    const clone = document.createElement('div');
+    clone.className = 'group mt-3';
+    clone.setAttribute('data-resizable', 'true');
+    clone.innerHTML = `
+        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Nuevo Teléfono</div>
+        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer">+593 99 000 0000</button>
+    `;
+    parent.insertBefore(clone, btn);
+    if(window.updateResizeBox) window.updateResizeBox();
+}
 
-                if(u && !u.startsWith('http') && !u.startsWith('data:')) {
-                    if(url.includes('productos')) {
-                        u = baseProdUrl + u;
-                    } else {
-                        if(u.includes('testimonio/')) {
-                            u = 'https://multiprintt.web.app/recursos/' + u;
-                        } else {
-                            u = baseMediaUrl + u;
-                        }
+window.cloneTextTestimonial = function(btnNode) { 
+    if(!window.isAdminMode) return; 
+    const grid = btnNode.parentElement; 
+    const cards = grid.querySelectorAll('.card:not(.admin-tool)'); 
+    if(cards.length > 0) { 
+        const clone = cards[0].cloneNode(true); 
+        const quoteEl = clone.querySelector('p'); if(quoteEl) quoteEl.innerText = '"Escribe tu testimonio aquí. Haz clic para editar..."';
+        const nameEl = clone.querySelector('h4'); if(nameEl) nameEl.innerText = 'NUEVO ALUMNO';
+        const roleEl = clone.querySelector('span:not([class*="w-10"])'); if(roleEl) roleEl.innerText = 'Nuevo Curso';
+        const initialEl = clone.querySelector('span[class*="w-10"], div > span:first-child'); if(initialEl) initialEl.innerText = 'N';
+        grid.insertBefore(clone, btnNode); 
+        if(window.updateResizeBox) window.updateResizeBox();
+    } 
+}
+
+window.cloneVideoTestimonial = function(btnNode) { 
+    if(!window.isAdminMode) return; 
+    const grid = btnNode.parentElement; 
+    const cards = grid.querySelectorAll('.video-testimonial-card'); 
+    if(cards.length > 0) { 
+        const clone = cards[0].cloneNode(true); 
+        const nameEl = clone.querySelector('.vt-name'); if(nameEl) nameEl.innerText = 'Nuevo Alumno';
+        const roleEl = clone.querySelector('.vt-role'); if(roleEl) roleEl.innerText = 'Caso de Éxito';
+        const quoteEl = clone.querySelector('.vt-quote'); if(quoteEl) quoteEl.innerText = '"Haz clic en Editar Video para ajustar..."';
+        grid.insertBefore(clone, btnNode); 
+        if(window.updateResizeBox) window.updateResizeBox();
+    } 
+}
+
+window.deleteTestimonialCard = function(btn) {
+    const card = btn.closest('.video-testimonial-card, .card');
+    if(card) {
+        card.remove();
+        if(window.showToast) window.showToast("Testimonio eliminado.");
+    }
+}
+
+window.loadFirebaseData = async function() {
+    try {
+        await auth.authStateReady();
+        if (!auth.currentUser) { await signInAnonymously(auth); }
+
+        const layoutSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
+
+        if (layoutSnap.exists()) {
+            const data = layoutSnap.data();
+            if(data.zones) { 
+                document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
+                
+                if(data.zones['videoModalTpl']) {
+                    let modalContent = document.getElementById('videoModalContent');
+                    if(!modalContent) modalContent = document.querySelector('#videoModal > div');
+                    if(modalContent) modalContent.outerHTML = data.zones['videoModalTpl'];
+                    
+                    const newModalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
+                    if(newModalContent) {
+                        newModalContent.id = 'videoModalContent'; 
+                        newModalContent.classList.add('relative', 'w-[95vw]', 'max-w-4xl', 'rounded-[32px]', 'overflow-hidden', 'mx-auto', 'flex', 'flex-col', 'md:flex-row');
+                        newModalContent.style.aspectRatio = '';
                     }
                 }
-                return { type: t, url: u, title: title };
-            });
-        } catch (e) {
-            console.warn("Usando galería local de respaldo ante fallo externo:", e);
-            return defaultGalleryItems;
-        }
-    }
-
-    window.openGallery = async function(inputId, filter = 'all', mode = 'media') {
-        activeMediaInput = inputId;
-        isMultiSelectMode = (mode === 'product');
-        selectedMediaUrls = [];
-        
-        const modal = document.getElementById('gallery-modal');
-        const grid = document.getElementById('gallery-grid');
-        const title = document.getElementById('gallery-title');
-        const confirmBtn = document.getElementById('gallery-confirm-btn');
-        
-        modal.classList.add('active');
-        grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando medios...</div>';
-        
-        if(isMultiSelectMode) {
-            confirmBtn.classList.remove('hidden');
-            document.getElementById('gallery-selection-count').innerText = 'Selecciona una o varias imágenes';
-        } else {
-            confirmBtn.classList.add('hidden');
-            document.getElementById('gallery-selection-count').innerText = 'Haz clic en una imagen para seleccionarla';
-        }
-        
-        let targetUrl = mode === 'product' ? 'https://multiprintt.web.app/recursos/productos/imagenes.json' : 'https://multiprintt.web.app/recursos/imagenes.json';
-        title.innerText = mode === 'product' ? 'Seleccionar Imágenes (Multi-selección)' : 'Explorador de Medios';
-
-        if (mode === 'product') document.getElementById('gallery-filters').style.display = 'none';
-        else document.getElementById('gallery-filters').style.display = 'flex';
-
-        galleryDataCache = await fetchGalleryJson(targetUrl);
-        if(!galleryDataCache || galleryDataCache.length === 0) {
-            galleryDataCache = defaultGalleryItems;
-        }
-
-        window.filterGallery(mode === 'product' ? 'image' : filter);
-    }
-
-    window.filterGallery = function(type) {
-        document.querySelectorAll('#gallery-modal .tool-btn').forEach(b => b.classList.remove('active'));
-        if(document.getElementById('gal-filt-' + (type==='all'?'all':type.substring(0,3)))) {
-            document.getElementById('gal-filt-' + (type==='all'?'all':type.substring(0,3))).classList.add('active');
-        }
-
-        const grid = document.getElementById('gallery-grid');
-        const normData = galleryDataCache.map(item => {
-            if(typeof item === 'string') {
-                return { type: item.endsWith('.mp4') ? 'video' : 'image', url: item, title: item.split('/').pop() };
             }
-            return item;
+            if(data.prodOrder) window.productOrderArray = data.prodOrder;
+            if(data.courseOrder) window.courseOrderArray = data.courseOrder;
+        }
+
+        onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
+            window.appProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
+            window.renderProducts();
+            window.updateCartUI();
         });
 
-        const filtered = normData.filter(item => type === 'all' || item.type === type);
-        let html = '';
-        filtered.forEach(item => {
-            const isSelected = selectedMediaUrls.includes(item.url);
-            const selClass = isSelected ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-white/10 hover:border-white/30';
-            
-            if(item.type === 'image') {
-                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group transition-all"><img src="${item.url}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"></div>`;
-            } else {
-                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group flex items-center justify-center transition-all"><i class="fa-solid fa-video text-2xl text-white/40 group-hover:text-violet-400"></i></div>`;
-            }
+        onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
+            window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => ({id: d.id, ...d.data()}));
+            window.renderCourses();
         });
-        grid.innerHTML = html || '<div class="col-span-full py-8 text-center text-xs text-zinc-500">Sin medios</div>';
-    }
 
-    window.handleMediaClick = function(url, el) {
-        if(!isMultiSelectMode) {
-            window.selectSingleMedia(url);
-            return;
-        }
-
-        const idx = selectedMediaUrls.indexOf(url);
-        if(idx > -1) {
-            selectedMediaUrls.splice(idx, 1);
-            el.classList.remove('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
-            el.classList.add('border-white/10');
-        } else {
-            selectedMediaUrls.push(url);
-            el.classList.remove('border-white/10');
-            el.classList.add('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
-        }
-
-        const confirmBtn = document.getElementById('gallery-confirm-btn');
-        confirmBtn.innerText = `Confirmar Selección (${selectedMediaUrls.length})`;
-    }
-
-    window.selectSingleMedia = function(url) {
-        if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            const inp = document.getElementById(activeMediaInput);
-            inp.value = url;
-            if(activeMediaInput === 'db-img') {
-                window.updateImgPreview(url);
-            }
-        }
-        document.getElementById('gallery-modal').classList.remove('active');
-    }
-
-    window.confirmMultiMediaSelection = function() {
-        if(selectedMediaUrls.length === 0) return window.showToast("Selecciona al menos una imagen.");
-        if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            const inp = document.getElementById(activeMediaInput);
-            inp.value = selectedMediaUrls.join(', ');
-            if(activeMediaInput === 'db-img') {
-                window.updateImgPreview(inp.value);
-            }
-        }
-        document.getElementById('gallery-modal').classList.remove('active');
-    }
-
-    window.handleDiscountInput = function(val) {
-        const promoCheck = document.getElementById('db-promo');
-        if(!promoCheck) return;
-        const num = parseFloat(val);
-        if(!isNaN(num) && num > 0) {
-            promoCheck.checked = true;
-        } else {
-            promoCheck.checked = false;
-        }
-    }
-
-    window.updateImgPreview = function(url) {
-        const preview = document.getElementById('db-img-preview');
-        if(!preview) return;
-        const firstUrl = url.split(',')[0].trim();
-        preview.innerHTML = `<img src="${firstUrl}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/60x60/101014/ffffff?text=img'">`;
-    }
-
-    window.openDbEditor = function(type, itemId, itemData = null) {
-        currentDbItem = { type: type, id: itemId || 'new_' + Date.now() };
-        let title = itemId ? "Editar" : "Nuevo"; let d = itemData || {};
-        let formHtml = '';
-        if (type === 'product') {
-            title = itemId ? "Editar Producto" : "Nuevo Producto";
-            formHtml = `
-                <div><label class="lbl">Nombre</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="lbl">Categoría</label>
-                        <select id="db-cat" class="inp-field">
-                            <option value="textil" ${d.category==='textil'?'selected':''}>Textil</option>
-                            <option value="jarros" ${d.category==='jarros'?'selected':''}>Jarros</option>
-                            <option value="imp-general" ${d.category==='imp-general'?'selected':''}>General</option>
-                            <option value="promocionales" ${d.category==='promocionales'?'selected':''}>Promocionales</option>
-                            <option value="packs" ${d.category==='packs'?'selected':''}>Packs</option>
-                        </select>
-                    </div>
-                    <div><label class="lbl">Precio Original ($)</label><input type="number" step="0.01" id="db-price" value="${d.price||'0.00'}" class="inp-field" placeholder="Precio Base"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Descuento (%)</label><input type="number" min="0" max="100" id="db-discount" value="${d.discount||'0'}" class="inp-field" oninput="window.handleDiscountInput(this.value)"></div>
-                    <div class="flex flex-col gap-1.5 mt-4">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="db-promo" class="w-4 h-4 rounded accent-cyan-400" ${d.isPromo?'checked':''}/>
-                            <span class="text-[11px] text-white font-medium">Activar Promoción</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" id="db-bestseller" class="w-4 h-4 rounded accent-rose-500" ${d.isBestSeller?'checked':''}/>
-                            <span class="text-[11px] text-white font-medium flex items-center gap-1"><i class="fa-solid fa-fire text-amber-500 text-[9px]"></i> Es Más Vendido</span>
-                        </label>
-                    </div>
-                </div>
-                <div>
-                    <label class="lbl">URLs de Imágenes (Separadas por comas para Muestrario / Slider) <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar JSON</button></label>
-                    <div class="flex gap-2 items-start">
-                        <textarea id="db-img" class="inp-field h-16 resize-none flex-1" placeholder="https://..., https://..." oninput="window.updateImgPreview(this.value)">${d.image||''}</textarea>
-                        <div id="db-img-preview" class="w-16 h-16 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
-                            <img src="${(d.image||'').split(',')[0].trim()}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/60x60/101014/ffffff?text=img'">
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else if (type === 'course') {
-            title = itemId ? "Editar Curso" : "Nuevo Curso";
-            formHtml = `
-                <div><label class="lbl">Título</label><input type="text" id="db-title" value="${d.title||''}" class="inp-field"></div>
-                <div><label class="lbl">Descripción</label><textarea id="db-desc" class="inp-field h-16 resize-none">${d.desc||''}</textarea></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Horario</label><input type="text" id="db-schedule" value="${d.schedule||''}" class="inp-field"></div>
-                    <div><label class="lbl">Precio</label><input type="text" id="db-price" value="${d.price||''}" class="inp-field"></div>
-                </div>
-                <div>
-                    <label class="lbl">Portada URL <button onclick="window.openGallery('db-img', 'image', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar Media</button></label>
-                    <div class="flex gap-2 items-center">
-                        <input type="text" id="db-img" value="${d.image||''}" class="inp-field flex-1" oninput="window.updateImgPreview(this.value)">
-                        <div id="db-img-preview" class="w-10 h-10 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
-                            <img src="${d.image || ''}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/101014/ffffff?text=img'">
-                        </div>
-                    </div>
-                </div>
-                <label class="flex items-center gap-2 mt-2 cursor-pointer">
-                    <input type="checkbox" id="db-master" class="w-4 h-4 rounded accent-cyan-400" ${(d.isMasterclass!==false)?'checked':''}/>
-                    <span class="text-[11px] text-white font-medium">Masterclass Premium</span>
-                </label>
-            `;
-        } else if (type === 'testimonial_video' || type === 'testimonial_text') {
-            title = type === 'testimonial_video' ? 'Editar Testimonio Video' : 'Editar Testimonio Texto';
-            formHtml = `
-                <div><label class="lbl">Nombre del Alumno</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div><label class="lbl">Rol / Curso</label><input type="text" id="db-role" value="${d.role||''}" class="inp-field"></div>
-                <div><label class="lbl">Frase / Cita</label><textarea id="db-quote" class="inp-field h-16 resize-none">${d.quote||''}</textarea></div>
-            `;
-            if(type === 'testimonial_video') {
-                formHtml += `<div><label class="lbl">Video URL (.mp4) <button onclick="window.openGallery('db-vid', 'video', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar Videos</button></label><input type="text" id="db-vid" value="${d.src||''}" class="inp-field"></div>`;
-            }
-            formHtml += `
-                <div>
-                    <label class="lbl">Color / Tema</label>
-                    <select id="db-theme" class="inp-field">
-                        <option value="cyan" ${d.theme==='cyan'?'selected':''}>Cyan</option>
-                        <option value="pink" ${d.theme==='pink'?'selected':''}>Rosa</option>
-                        <option value="violet" ${d.theme==='violet'?'selected':''}>Violeta</option>
-                        <option value="amber" ${d.theme==='amber'?'selected':''}>Ámbar</option>
-                    </select>
-                </div>
-            `;
-        }
-        document.getElementById('db-modal-title').innerHTML = title;
-        document.getElementById('db-modal-body').innerHTML = formHtml;
-        document.getElementById('db-modal').classList.add('active');
-    }
-
-    window.saveDbItem = async function() {
-        let t = currentDbItem.type; let payload = {};
-        const btnSave = document.getElementById('btn-save-db');
-        let originalText = btnSave.innerHTML;
-
-        if(t === 'product') { 
-            let priceVal = parseFloat(document.getElementById('db-price').value);
-            let discountVal = parseFloat(document.getElementById('db-discount').value);
-            
-            if(isNaN(priceVal) || priceVal < 0) return window.showToast("❌ Error: Precio debe ser positivo.");
-            if(isNaN(discountVal) || discountVal < 0 || discountVal > 100) return window.showToast("❌ Error: Descuento entre 0 y 100.");
-            
-            payload = { 
-                name: document.getElementById('db-name').value, 
-                category: document.getElementById('db-cat').value, 
-                price: parseFloat(priceVal.toFixed(2)), 
-                discount: discountVal,
-                image: document.getElementById('db-img').value, 
-                isPromo: document.getElementById('db-promo').checked,
-                isBestSeller: document.getElementById('db-bestseller').checked
-            }; 
-        }
-        else if(t === 'course') { 
-            payload = { 
-                title: document.getElementById('db-title').value, 
-                desc: document.getElementById('db-desc').value, 
-                schedule: document.getElementById('db-schedule').value, 
-                price: document.getElementById('db-price').value, 
-                image: document.getElementById('db-img').value, 
-                isMasterclass: document.getElementById('db-master').checked 
-            }; 
-        }
-        else if(t === 'testimonial_video') { 
-            payload = { 
-                name: document.getElementById('db-name').value, 
-                role: document.getElementById('db-role').value, 
-                quote: document.getElementById('db-quote').value, 
-                src: document.getElementById('db-vid').value, 
-                theme: document.getElementById('db-theme').value 
-            }; 
-        }
-        else if(t === 'testimonial_text') { 
-            payload = { 
-                name: document.getElementById('db-name').value, 
-                role: document.getElementById('db-role').value, 
-                quote: document.getElementById('db-quote').value, 
-                theme: document.getElementById('db-theme').value 
-            }; 
-        }
-
-        btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+    } catch (error) { 
+        console.warn("Error Firebase, usando respaldo seguro.", error); 
+        window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
+        window.renderProducts(); window.renderCourses();
+    } 
+    finally {
+        window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
+        try { window.setFilter('mas-vendidos'); window.syncSocialNetworks(); window.updateCartUI(); } catch(e) {}
         
-        try {
-            if (t === 'product' || t === 'course') {
-                const col = t === 'product' ? 'products' : 'courses';
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, currentDbItem.id), payload, { merge: true });
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: t, id: currentDbItem.id, data: payload }, '*');
-            } else if (t === 'testimonial_video') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
-            } else if (t === 'testimonial_text') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', data: payload }, '*');
-            }
-
-            btnSave.innerHTML = originalText;
-            document.getElementById('db-modal').classList.remove('active');
-            window.showToast("✅ Base de datos actualizada con éxito.");
-        } catch(e) {
-            console.error("Error al guardar en Firestore:", e);
-            window.showToast("❌ Error al guardar en base de datos.");
-            btnSave.innerHTML = originalText;
-        }
+        setTimeout(() => { 
+            const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
+            window.navigate('catalog'); 
+            if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, '*'); }
+        }, 500); 
     }
+}
 
-    let selNet = '', selIcon = '';
-    window.selectSocialIcon = function(iconClass, network, btn) {
-        document.querySelectorAll('.social-opt').forEach(b => b.classList.remove('border-white', 'text-white'));
-        btn.classList.add('border-white', 'text-white'); selNet = network; selIcon = iconClass;
-    }
-    window.confirmAddSocial = function() {
-        const url = document.getElementById('social-url-input').value;
-        if(!url || !url.startsWith('http')) return window.showToast("Escribe una URL válida (http/https)");
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url, iconClass: selIcon, network: selNet }, '*');
-        document.getElementById('icon-picker-modal').classList.remove('active');
-    }
+window.initMap = function() {
+    const mapContainer = document.getElementById('contact-map-col'); if(!mapContainer) return;
+    let oldMap = document.getElementById('leaflet-map'); if(oldMap) { oldMap.remove(); } 
+    let newMapDiv = document.createElement('div'); newMapDiv.id = 'leaflet-map'; newMapDiv.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events';
+    mapContainer.insertBefore(newMapDiv, mapContainer.firstChild);
+    window.multiprinttMap = L.map('leaflet-map', {zoomControl: false, attributionControl: false}).setView([-2.185747, -79.892229], 19);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 19}).addTo(window.multiprinttMap);
+    L.marker([-2.185747, -79.892229], {icon: L.divIcon({ className: 'custom-pin', html: `<div class="flex items-center justify-center w-8 h-8 bg-[#101014] rounded-full border border-pink-500 shadow-[0_0_15px_rgba(255,45,168,0.5)]"><i class="fa-solid fa-location-dot text-pink-500 text-sm"></i></div>`, iconSize: [32, 32], iconAnchor: [16, 16] })}).addTo(window.multiprinttMap);
+}
+window.recenterMap = function() { if(window.multiprinttMap) window.multiprinttMap.setView([-2.185747, -79.892229], 19, { animate: true }); }
 
-    window.updateText = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*');
-    window.updateHref = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*');
-    window.updateStyle = (prop, val) => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop, value: val}, '*');
-    window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px]">Nodo Eliminado.</p>'; }
-    window.toggleAccordion = header => { const item = header.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
+const themeData = { cyan: { base: 'cyan', rgb: '37,216,255', hex: '#25d8ff' }, pink: { base: 'pink', rgb: '255,45,168', hex: '#ff2da8' }, violet: { base: 'violet', rgb: '115,92,255', hex: '#735cff' }, amber: { base: 'amber', rgb: '245,158,11', hex: '#f59e0b' }, emerald: { base: 'emerald', rgb: '52,211,153', hex: '#34d399' } };
+window.applyThemeSwap = function(element, newThemeKey) {
+    if (!element) return; const newTheme = themeData[newThemeKey]; if (!newTheme) return;
+    const els = [element, ...element.querySelectorAll('*')];
+    const colorNames = ['cyan', 'pink', 'violet', 'amber', 'emerald'];
+    const rgbValues = ['37,216,255', '255,45,168', '115,92,255', '245,158,11', '52,211,153'];
+    
+    els.forEach(el => {
+        if(!el.className || typeof el.className !== 'string') return;
+        colorNames.forEach(c => { if(c === newTheme.base) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(`-${c}-`, 'g'), `-${newTheme.base}-`)).join(' '); });
+        rgbValues.forEach(rgb => { if(rgb === newTheme.rgb) return; el.className = el.className.split(' ').map(cls => cls.replace(new RegExp(rgb, 'g'), newTheme.rgb)).join(' '); });
+    });
+    element.setAttribute('data-theme', newThemeKey);
+}
 
-    window.addEventListener('message', async (event) => {
-        if (event.source !== document.getElementById('site-frame').contentWindow && event.origin !== window.location.origin) {
-            return;
+window.selectedEl = null;
+
+function initVisualResizer() {
+    if(document.getElementById('builder-resize-box')) return;
+    
+    window.resizerOverlay = document.createElement('div');
+    window.resizerOverlay.id = 'builder-resize-box';
+    window.resizerOverlay.innerHTML = `
+        <div class="resize-handle rh-nw" data-dir="nw"></div><div class="resize-handle rh-n" data-dir="n"></div><div class="resize-handle rh-ne" data-dir="ne"></div>
+        <div class="resize-handle rh-e" data-dir="e"></div><div class="resize-handle rh-se" data-dir="se"></div><div class="resize-handle rh-s" data-dir="s"></div>
+        <div class="resize-handle rh-sw" data-dir="sw"></div><div class="resize-handle rh-w" data-dir="w"></div>
+    `;
+    document.body.appendChild(window.resizerOverlay);
+
+    let isResizing = false; let currentDir = ''; let startX, startY, startW, startH;
+
+    window.resizerOverlay.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('resize-handle')) {
+            isResizing = true; currentDir = e.target.getAttribute('data-dir');
+            startX = e.clientX; startY = e.clientY;
+            const rect = window.selectedEl.getBoundingClientRect(); startW = rect.width; startH = rect.height;
+            e.preventDefault(); e.stopPropagation();
         }
-
-        const data = event.data;
-        if (!data || !data.type) return;
-
-        if (data.type === 'SAVE_FULL_LAYOUT') {
-            if (data.layoutData) {
-                try {
-                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder || [], courseOrder: data.courseOrder || [] }, { merge: true });
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Desplegar';
-                    window.showToast('¡Desplegado correctamente!');
-                } catch(e) {
-                    window.showToast('Error de despliegue. Revisa conexión.');
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Reintentar';
-                }
-            }
-        }
-        if (data.type === 'DELETE_DB_ITEM') {
-            window.showConfirm("¿Eliminar elemento permanentemente de Firestore?", async () => {
-                const col = data.itemType === 'product' ? 'products' : 'courses';
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.itemId));
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
-                window.showToast("🗑 Eliminado con éxito.");
-            });
-        }
-        if (data.type === 'APP_READY') { 
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); 
-            setTimeout(() => window.toggleDragMode(document.getElementById('btn-drag')), 800);
-        }
-        if (data.type === 'ELEMENT_SELECTED') renderPropertiesPanel(data);
-        if (data.type === 'CLEAR_SELECTION') document.getElementById('properties-panel').innerHTML = '<p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento en el lienzo.</p>';
-        if (data.type === 'OPEN_ICON_PICKER') document.getElementById('icon-picker-modal').classList.add('active');
-        if (data.type === 'OPEN_EDITOR') window.openDbEditor(data.editorType, data.itemId, data.itemData);
     });
 
-    function renderPropertiesPanel(data) {
-        const panel = document.getElementById('properties-panel');
-        let cleanTag = String(data.tagName || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        
-        let html = `<div class="w-full bg-[#000] border-b border-white/5 p-3 mb-2 text-left"><span class="text-white font-bold text-[10px]">${cleanTag}</span></div>`;
-        if (!['IMG', 'VIDEO', 'SECTION', 'DIV'].includes(data.tagName)) {
-            let cleanText = String(data.text || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            html += `<div class="acc-item active"><div class="acc-header" onclick="window.toggleAccordion(this)">Texto</div><div class="acc-content"><textarea oninput="window.updateText(this.value)" class="inp-field min-h-[60px]">${cleanText}</textarea></div></div>`;
-        }
-        if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
-            let cleanHref = String(data.href || '').replace(/javascript:/gi, "").replace(/"/g, "&quot;");
-            html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Enlace / URL</div><div class="acc-content"><input type="text" oninput="window.updateHref(this.value)" value="${cleanHref}" class="inp-field"></div></div>`;
-        }
-        if (data.hasTheme) {
-            html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Tema de Color</div><div class="acc-content"><select onchange="window.updateStyle('theme', this.value)" class="inp-field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option></select></div></div>`;
-        }
-        html += `<div class="p-4 mt-auto"><button onclick="window.deleteElement()" class="w-full btn-danger py-2">Eliminar Nodo</button></div>`;
-        panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-[#09090b] p-0 text-left";
+    window.addEventListener('mousemove', (e) => {
+        if (!isResizing || !window.selectedEl) return;
+        let dx = e.clientX - startX; let dy = e.clientY - startY;
+
+        if (currentDir.includes('e')) window.selectedEl.style.width = Math.max(30, startW + dx) + 'px';
+        if (currentDir.includes('s')) window.selectedEl.style.height = Math.max(30, startH + dy) + 'px';
+        if (currentDir.includes('w')) window.selectedEl.style.width = Math.max(30, startW - dx) + 'px';
+        if (currentDir.includes('n')) window.selectedEl.style.height = Math.max(30, startH - dy) + 'px';
+
+        window.updateResizeBox();
+        window.parent.postMessage({ type: 'RESIZE_UPDATE', width: window.selectedEl.style.width, height: window.selectedEl.style.height }, '*');
+    });
+
+    window.addEventListener('mouseup', () => { isResizing = false; });
+    document.querySelector('.slide-scroll').addEventListener('scroll', window.updateResizeBox);
+    window.addEventListener('resize', window.updateResizeBox);
+}
+
+window.updateResizeBox = function() {
+    if (!window.selectedEl || !window.resizerOverlay || !document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) {
+        if(window.resizerOverlay) window.resizerOverlay.style.display = 'none'; return;
     }
+    if (window.selectedEl.getAttribute('data-resizable') === 'true' || window.selectedEl.classList.contains('card') || window.selectedEl.tagName === 'IMG' || window.selectedEl.tagName === 'VIDEO' || window.selectedEl.tagName === 'DIV') {
+        const rect = window.selectedEl.getBoundingClientRect();
+        window.resizerOverlay.style.top = rect.top + 'px'; window.resizerOverlay.style.left = rect.left + 'px';
+        window.resizerOverlay.style.width = rect.width + 'px'; window.resizerOverlay.style.height = rect.height + 'px';
+        window.resizerOverlay.style.display = 'block';
+    } else { window.resizerOverlay.style.display = 'none'; }
+}
+
+window.addEventListener('message', async (event) => {
+    if (event.source !== window.parent && event.origin !== window.location.origin) return;
+
+    if (event.data.type === 'ENABLE_BUILDER') {
+        window.isAdminMode = true; document.body.classList.add('is-admin-session', 'builder-mode');
+        window.renderProducts(); window.renderCourses(); initVisualResizer();
+        
+        document.addEventListener('click', function(e) {
+            if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active')) return;
+            window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
+            
+            if(e.target.closest('button[onclick^="window.navigate("]') || e.target.closest('.ignore-drag') || e.target.closest('.filter-btn')) return;
+            
+            let target = e.target.closest('[data-editable="true"], [data-resizable="true"], button, video, img, .card, section, div:not(#videoModalContent)');
+            
+            if (target && !target.closest('.ignore-drag')) {
+                e.preventDefault(); e.stopPropagation();
+                if(window.selectedEl) window.selectedEl.classList.remove('builder-selected-el');
+                window.selectedEl = target; window.selectedEl.classList.add('builder-selected-el');
+                window.updateResizeBox();
+                
+                let isVideoCard = target.classList.contains('video-testimonial-card');
+                if(isVideoCard) activeVideoCardRef = target;
+                if(target.classList.contains('card') && !isVideoCard) activeTextCardRef = target;
+                
+                let hasTheme = target.hasAttribute('data-theme');
+                let currentTheme = target.getAttribute('data-theme') || '';
+                let computed = window.getComputedStyle(target);
+
+                window.parent.postMessage({ 
+                    type: 'ELEMENT_SELECTED', tagName: target.tagName, text: target.innerText || '', href: target.src || '', 
+                    isVideoCard: isVideoCard, hasTheme: hasTheme, currentTheme: currentTheme,
+                    styles: { width: target.style.width || computed.width, height: target.style.height || computed.height, padding: target.style.padding || computed.padding, margin: target.style.margin || computed.margin, radius: target.style.borderRadius || computed.borderRadius, color: target.style.color || computed.color, bg: target.style.backgroundColor || computed.backgroundColor }
+                }, '*');
+            } else {
+                if(window.selectedEl) window.selectedEl.classList.remove('builder-selected-el');
+                window.selectedEl = null; window.updateResizeBox(); window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
+            }
+        }, true); 
+    }
+
+    if (event.data.type === 'DISABLE_BUILDER') {
+        window.isAdminMode = false; document.body.classList.remove('builder-mode', 'is-admin-session');
+        window.renderProducts(); window.renderCourses();
+        if (window.resizerOverlay) window.resizerOverlay.style.display = 'none';
+        if (document.body.classList.contains('dragging-active')) { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
+        window.parent.postMessage({ type: 'CLEAR_SELECTION' }, '*');
+    }
+
+    if (event.data.type === 'ADD_SOCIAL_ICON') {
+        const { url, iconClass, network } = event.data;
+        const footerContainer = document.getElementById('social-footer-links');
+        const newBtn = document.createElement('button');
+        newBtn.setAttribute('data-editable', 'true');
+        newBtn.setAttribute('data-network', network);
+        newBtn.setAttribute('onclick', `window.open('${url}', '_blank')`);
+        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none cursor-pointer";
+        
+        if(network === 'facebook') newBtn.classList.add('hover:text-[#1877f2]');
+        else if(network === 'instagram') newBtn.classList.add('hover:text-[#e1306c]');
+        else if(network === 'whatsapp') newBtn.classList.add('hover:text-[#25d366]');
+        else if(network === 'youtube') newBtn.classList.add('hover:text-[#ff0000]');
+        else if(network === 'tiktok') newBtn.classList.add('hover:text-white');
+        else if(network === 'twitter') newBtn.classList.add('hover:text-white');
+        else if(network === 'linkedin') newBtn.classList.add('hover:text-[#0a66c2]');
+        else if(network === 'telegram') newBtn.classList.add('hover:text-[#0088cc]');
+        else newBtn.classList.add('hover:text-cyan-400');
+
+        newBtn.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
+        
+        footerContainer.insertBefore(newBtn, footerContainer.querySelector('.admin-tool'));
+        window.syncSocialNetworks(); 
+        window.updateResizeBox();
+    }
+    
+    if (event.data.type === 'DB_UPDATED') {
+        const { itemType, id, data: newData } = event.data;
+        if(itemType === 'product') {
+            let idx = window.appProducts.findIndex(x=>x.id === id);
+            if(idx > -1) window.appProducts[idx] = {id, ...newData}; else window.appProducts.push({id, ...newData});
+            window.renderProducts();
+        }
+        if(itemType === 'course') {
+            let idx = window.appCourses.findIndex(x=>x.id === id);
+            if(idx > -1) window.appCourses[idx] = {id, ...newData}; else window.appCourses.push({id, ...newData});
+            window.renderCourses();
+        }
+    }
+    if (event.data.type === 'DB_DELETED_SUCCESS') {
+        const { itemType, id } = event.data;
+        if (itemType === 'product') { window.appProducts = window.appProducts.filter(x => x.id !== id); window.renderProducts(); }
+        if (itemType === 'course') { window.appCourses = window.appCourses.filter(x => x.id !== id); window.renderCourses(); }
+    }
+    if (event.data.type === 'UPDATE_TESTIMONIAL') {
+        const d = event.data.data;
+        const targetCard = activeVideoCardRef || document.querySelector('.video-testimonial-card');
+        if(targetCard) {
+            if(d.src) {
+                const vid = targetCard.querySelector('video');
+                if(vid) { vid.src = d.src; vid.load(); }
+            }
+            if(d.name) {
+                const n = targetCard.querySelector('.vt-name');
+                if(n) n.innerText = d.name;
+                const init = targetCard.querySelector('.w-12.h-12 span') || targetCard.querySelector('.w-12.h-12');
+                if(init) init.innerText = d.name.charAt(0).toUpperCase();
+            }
+            if(d.role) {
+                const r = targetCard.querySelector('.vt-role');
+                if(r) r.innerText = d.role;
+            }
+            if(d.quote) {
+                const q = targetCard.querySelector('.vt-quote');
+                if(q) q.innerText = d.quote;
+            }
+            if(d.theme) {
+                window.applyThemeSwap(targetCard, d.theme);
+                targetCard.setAttribute('data-theme', d.theme);
+            }
+            if (window.updateResizeBox) window.updateResizeBox();
+        }
+    }
+
+    if (event.data.type === 'UPDATE_TEXT_TESTIMONIAL') {
+        const d = event.data.data;
+        const targetCard = activeTextCardRef || window.selectedEl || document.querySelector('#testimonials-grid-right .card');
+        if(targetCard) {
+            if(d.name) {
+                const n = targetCard.querySelector('h4');
+                if(n) n.innerText = d.name;
+                const init = targetCard.querySelector('.w-10.h-10 span') || targetCard.querySelector('.w-10.h-10');
+                if(init) init.innerText = d.name.charAt(0).toUpperCase();
+            }
+            if(d.role) {
+                const r = targetCard.querySelector('span:not([class*="w-10"])');
+                if(r) r.innerText = d.role;
+            }
+            if(d.quote) {
+                const q = targetCard.querySelector('p');
+                if(q) q.innerText = d.quote;
+            }
+            if(d.theme) {
+                window.applyThemeSwap(targetCard, d.theme);
+                targetCard.setAttribute('data-theme', d.theme);
+            }
+            if (window.updateResizeBox) window.updateResizeBox();
+        }
+    }
+
+    if (event.data.type === 'TRIGGER_VIDEO_MODAL') { if(activeVideoCardRef) { window.openVideoModal(activeVideoCardRef); } }
+    
+    if (event.data.type === 'UPDATE_ELEMENT' && window.selectedEl) {
+        if(event.data.text !== undefined && window.selectedEl.tagName !== 'IMG' && window.selectedEl.tagName !== 'VIDEO') { let icon = window.selectedEl.querySelector('i'); window.selectedEl.innerText = event.data.text; if(icon) window.selectedEl.prepend(icon); }
+        if(event.data.href !== undefined) { 
+            if(window.selectedEl.tagName === 'IMG' || window.selectedEl.tagName === 'VIDEO') window.selectedEl.src = event.data.href; 
+            else if (window.selectedEl.tagName === 'BUTTON') window.selectedEl.setAttribute('onclick', `window.open('${event.data.href}', '_blank')`);
+        }
+        window.updateResizeBox();
+    }
+    
+    if (event.data.type === 'UPDATE_STYLE' && window.selectedEl) {
+        if(event.data.prop === 'color') { window.selectedEl.style.color = event.data.value; }
+        if(event.data.prop === 'bg') { window.selectedEl.style.backgroundColor = event.data.value; }
+        if(event.data.prop === 'radius') { window.selectedEl.style.borderRadius = event.data.value; }
+        if(event.data.prop === 'width') { window.selectedEl.style.width = event.data.value; }
+        if(event.data.prop === 'height') { window.selectedEl.style.height = event.data.value; }
+        if(event.data.prop === 'padding') { window.selectedEl.style.padding = event.data.value; }
+        if(event.data.prop === 'margin') { window.selectedEl.style.margin = event.data.value; }
+        
+        if(event.data.prop === 'textAlign') { window.selectedEl.className = window.selectedEl.className.replace(/\btext-(left|center|right|justify)\b/g, '').trim(); if(event.data.value) window.selectedEl.classList.add(event.data.value); }
+        if(event.data.prop === 'textSize') { window.selectedEl.className = window.selectedEl.className.replace(/\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|\[.*?\])\b/g, '').trim(); if(event.data.value) window.selectedEl.classList.add(event.data.value); }
+        if(event.data.prop === 'fontWeight') { window.selectedEl.className = window.selectedEl.className.replace(/\bfont-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)\b/g, '').trim(); if(event.data.value) window.selectedEl.classList.add(event.data.value); }
+        
+        if(event.data.prop === 'theme') { window.applyThemeSwap(window.selectedEl, event.data.value); if(window.selectedEl.id === 'videoModalContent' && activeVideoCardRef) { window.applyThemeSwap(activeVideoCardRef, event.data.value); } }
+        window.updateResizeBox();
+    }
+
+    if (event.data.type === 'DELETE_SELECTED_NODE') { if(window.selectedEl) { window.selectedEl.remove(); window.selectedEl = null; window.updateResizeBox(); } }
+    if (event.data.type === 'SELECT_PARENT_NODE') { if(window.selectedEl && window.selectedEl.parentElement && window.selectedEl.parentElement.tagName !== 'BODY') { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.parentElement; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, '*'); } }
+    if (event.data.type === 'SELECT_CHILD_NODE') { if(window.selectedEl && window.selectedEl.firstElementChild) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = window.selectedEl.firstElementChild; window.selectedEl.classList.add('builder-selected-el'); window.updateResizeBox(); let computed = window.getComputedStyle(window.selectedEl); window.parent.postMessage({ type: 'ELEMENT_SELECTED', tagName: window.selectedEl.tagName, text: window.selectedEl.innerText, href: window.selectedEl.src, hasTheme: window.selectedEl.hasAttribute('data-theme'), currentTheme: window.selectedEl.getAttribute('data-theme') || '', styles: { width: window.selectedEl.style.width||computed.width, height: window.selectedEl.style.height||computed.height, padding: window.selectedEl.style.padding||computed.padding, margin: window.selectedEl.style.margin||computed.margin, radius: window.selectedEl.style.borderRadius||computed.borderRadius, color: window.selectedEl.style.color||computed.color, bg: window.selectedEl.style.backgroundColor||computed.backgroundColor } }, '*'); } }
+
+    if (event.data.type === 'TOGGLE_DRAG') {
+        const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
+        if (enabled) { 
+            document.body.classList.add('dragging-active'); 
+            if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; } 
+            window.updateResizeBox();
+            containers.forEach(grid => { 
+                if(grid._sortable) grid._sortable.destroy(); 
+                grid._sortable = new Sortable(grid, { 
+                    animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool', delay: 300, delayOnTouchOnly: true,
+                    onEnd: function(evt) {
+                        if(evt.to.id === 'social-footer-links') window.syncSocialNetworks();
+                    }
+                }); 
+                window.sortableInstances.push(grid._sortable); 
+            }); 
+        } 
+        else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
+    }
+
+    if (event.data.type === 'RESET_TEMPLATE') {
+        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*');
+    }
+
+    if (event.data.type === 'SAVE_FULL_LAYOUT') {
+        if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
+        if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; }
+        if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
+
+        const layoutData = {};
+        
+        document.querySelectorAll('.editable-section').forEach(zone => {
+            if(!zone.id) return;
+            const clone = zone.cloneNode(true);
+            clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
+            clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
+            
+            const mapInClone = clone.querySelector('#leaflet-map'); 
+            if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; mapInClone.removeAttribute('style'); mapInClone.removeAttribute('tabindex'); }
+            
+            const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
+            const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
+            
+            clone.querySelectorAll('#builder-resize-box').forEach(el => el.remove());
+            
+            layoutData[zone.id] = clone.innerHTML;
+        });
+        
+        let modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
+        if (modalContent) {
+            const modalClone = modalContent.cloneNode(true);
+            modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
+            layoutData['videoModalTpl'] = modalClone.outerHTML; 
+        }
+
+        const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
+        const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
+
+        window.parent.postMessage({ type: 'SAVE_FULL_LAYOUT', layoutData, prodOrder, courseOrder }, '*');
+    }
+});
+
+window.openCourseModal = function(id) {
+    if(document.body.classList.contains('builder-mode')) return;
+    const c = window.appCourses.find(x => x.id === id); if(!c) return;
+    document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc; document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
+    
+    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    
+    const cUrl = 'https://multiprintt.web.app/';
+    const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}*\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
+    const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
+    
+    document.getElementById('cm-btn').onclick = () => window.open(waUrl, '_blank');
+    
+    document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
+}
+
+window.closeCourseModal = function() {
+    const modal = document.getElementById('courseModal');
+    const content = document.getElementById('courseModalContent');
+    if (modal) { modal.classList.add('opacity-0'); if(content) content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
+};
+
+window.openVideoModal = function(btn) {
+    if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
+    
+    let videoSrc = "https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4"; 
+    let name = "Carlos P."; let role = "Caso de Éxito"; let quote = '"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios."'; let themeKey = "cyan"; 
+    
+    if (btn && typeof btn.closest === 'function') {
+        const card = btn.closest('.video-testimonial-card, .card');
+        if (card) {
+            themeKey = card.getAttribute('data-theme') || "cyan";
+            const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0]; 
+            const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
+            const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
+            const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
+        }
+    }
+    
+    const video = document.getElementById('testimonial-video'); 
+    
+    const n = document.getElementById('vm-name'); if(n) n.innerText = name; 
+    const r = document.getElementById('vm-role'); if(r) r.innerText = role; 
+    const q = document.getElementById('vm-quote'); if(q) q.innerText = quote; 
+    const i = document.getElementById('vm-initial'); if(i) i.innerText = name ? name.charAt(0).toUpperCase() : 'C';
+    
+    let modalContent = document.getElementById('videoModalContent');
+    if(!modalContent) modalContent = document.querySelector('#videoModal > div'); 
+    
+    if (modalContent) window.applyThemeSwap(modalContent, themeKey);
+    
+    const modal = document.getElementById('videoModal'); 
+    modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); if(!window.isAdminMode && modalContent) modalContent.classList.remove('scale-95'); }, 10);
+    
+    const timeBadge = document.getElementById('vm-time'); if(timeBadge) timeBadge.innerText = "00:00"; 
+    
+    if(video) {
+        video.ontimeupdate = () => {
+            if(video.duration && timeBadge) {
+                let remaining = Math.max(0, video.duration - video.currentTime);
+                timeBadge.innerText = `${Math.floor(remaining / 60).toString().padStart(2, '0')}:${Math.floor(remaining % 60).toString().padStart(2, '0')}`;
+            }
+        };
+
+        video.src = videoSrc; video.load(); video.currentTime = 0; 
+        
+        video.muted = true;
+        const playPromise = video.play(); 
+        if (playPromise !== undefined) { 
+            playPromise.then(() => {
+                video.muted = false; 
+            }).catch(() => { 
+                video.muted = true; video.play(); 
+            }); 
+        }
+
+        if(!window.isAdminMode) { video.loop = false; video.onended = () => window.closeVideoModal(); } else { video.loop = true; } 
+    }
+}
+
+window.closeVideoModal = function(e) {
+    if(e) e.stopPropagation(); 
+    const video = document.getElementById('testimonial-video'); const modal = document.getElementById('videoModal'); 
+    let content = document.getElementById('videoModalContent'); if(!content) content = document.querySelector('#videoModal > div');
+    modal.classList.add('opacity-0'); if(!window.isAdminMode && content) content.classList.add('scale-95'); 
+    setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
+}
+
+document.addEventListener('DOMContentLoaded', () => { window.loadFirebaseData(); });
 </script>
 </body>
 </html>
