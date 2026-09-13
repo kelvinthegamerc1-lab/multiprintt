@@ -320,16 +320,48 @@
             if (!res.ok) throw new Error("Error HTTP");
             const data = await res.json();
             
-            if (Array.isArray(data)) return data;
-            if (data.items && Array.isArray(data.items)) return data.items;
-            if (data.imagenes && Array.isArray(data.imagenes)) return data.imagenes;
-            if (data.images && Array.isArray(data.images)) return data.images;
-            
-            let fallbackArray = [];
-            for (let k in data) {
-                if (Array.isArray(data[k])) fallbackArray.push(...data[k]);
+            let rawArray = [];
+            if (Array.isArray(data)) rawArray = data;
+            else if (data.items && Array.isArray(data.items)) rawArray = data.items;
+            else if (data.imagenes && Array.isArray(data.imagenes)) rawArray = data.imagenes;
+            else if (data.images && Array.isArray(data.images)) rawArray = data.images;
+            else {
+                for (let k in data) {
+                    if (Array.isArray(data[k])) rawArray.push(...data[k]);
+                }
             }
-            return fallbackArray.length > 0 ? fallbackArray : defaultGalleryItems;
+            if(rawArray.length === 0) rawArray = defaultGalleryItems;
+
+            const baseProdUrl = 'https://multiprintt.web.app/recursos/productos/';
+            const baseMediaUrl = 'https://multiprintt.web.app/recursos/';
+
+            return rawArray.map(item => {
+                let u = '';
+                let t = 'image';
+                let title = '';
+                if(typeof item === 'string') {
+                    u = item;
+                    t = u.endsWith('.mp4') ? 'video' : 'image';
+                    title = u.split('/').pop();
+                } else {
+                    u = item.url || item.src || '';
+                    t = item.type || (u.endsWith('.mp4') ? 'video' : 'image');
+                    title = item.title || u.split('/').pop();
+                }
+
+                if(u && !u.startsWith('http') && !u.startsWith('data:')) {
+                    if(url.includes('productos')) {
+                        u = baseProdUrl + u;
+                    } else {
+                        if(u.includes('testimonio/')) {
+                            u = 'https://multiprintt.web.app/recursos/' + u;
+                        } else {
+                            u = baseMediaUrl + u;
+                        }
+                    }
+                }
+                return { type: t, url: u, title: title };
+            });
         } catch (e) {
             console.warn("Usando galería local de respaldo ante fallo externo:", e);
             return defaultGalleryItems;
@@ -389,9 +421,28 @@
 
     window.selectMedia = function(url) {
         if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            document.getElementById(activeMediaInput).value = url;
+            const inp = document.getElementById(activeMediaInput);
+            inp.value = url;
+            if(activeMediaInput === 'db-img') {
+                window.updateImgPreview(url);
+            }
         }
         document.getElementById('gallery-modal').classList.remove('active');
+    }
+
+    window.handleDiscountInput = function(val) {
+        const promoCheck = document.getElementById('db-promo');
+        if(!promoCheck) return;
+        const num = parseFloat(val);
+        if(!isNaN(num) && num > 0) {
+            promoCheck.checked = true;
+        }
+    }
+
+    window.updateImgPreview = function(url) {
+        const preview = document.getElementById('db-img-preview');
+        if(!preview) return;
+        preview.innerHTML = `<img src="${url}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/101014/ffffff?text=img'">`;
     }
 
     window.openDbEditor = function(type, itemId, itemData = null) {
@@ -416,7 +467,7 @@
                     <div><label class="lbl">Precio Original ($)</label><input type="number" step="0.01" id="db-price" value="${d.price||'0.00'}" class="inp-field" placeholder="Precio Base"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Descuento (%)</label><input type="number" min="0" max="100" id="db-discount" value="${d.discount||'0'}" class="inp-field"></div>
+                    <div><label class="lbl">Descuento (%)</label><input type="number" min="0" max="100" id="db-discount" value="${d.discount||'0'}" class="inp-field" oninput="window.handleDiscountInput(this.value)"></div>
                     <div class="flex flex-col gap-1.5 mt-4">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" id="db-promo" class="w-4 h-4 rounded accent-cyan-400" ${d.isPromo?'checked':''}/>
@@ -430,7 +481,12 @@
                 </div>
                 <div>
                     <label class="lbl">URL Imagen <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar JSON</button></label>
-                    <input type="text" id="db-img" value="${d.image||''}" class="inp-field">
+                    <div class="flex gap-2 items-center">
+                        <input type="text" id="db-img" value="${d.image||''}" class="inp-field flex-1" oninput="window.updateImgPreview(this.value)">
+                        <div id="db-img-preview" class="w-10 h-10 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                            <img src="${d.image || ''}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/101014/ffffff?text=img'">
+                        </div>
+                    </div>
                 </div>
             `;
         } else if (type === 'course') {
@@ -444,7 +500,12 @@
                 </div>
                 <div>
                     <label class="lbl">Portada URL <button onclick="window.openGallery('db-img', 'image', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar Media</button></label>
-                    <input type="text" id="db-img" value="${d.image||''}" class="inp-field">
+                    <div class="flex gap-2 items-center">
+                        <input type="text" id="db-img" value="${d.image||''}" class="inp-field flex-1" oninput="window.updateImgPreview(this.value)">
+                        <div id="db-img-preview" class="w-10 h-10 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                            <img src="${d.image || ''}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/101014/ffffff?text=img'">
+                        </div>
+                    </div>
                 </div>
                 <label class="flex items-center gap-2 mt-2 cursor-pointer">
                     <input type="checkbox" id="db-master" class="w-4 h-4 rounded accent-cyan-400" ${(d.isMasterclass!==false)?'checked':''}/>
