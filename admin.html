@@ -552,6 +552,22 @@
                     <div><label class="lbl">Horario</label><input type="text" id="db-schedule" value="${d.schedule||''}" class="inp-field"></div>
                     <div><label class="lbl">Precio</label><input type="text" id="db-price" value="${d.price||''}" class="inp-field"></div>
                 </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="lbl">Modalidad</label>
+                        <select id="db-modality" class="inp-field">
+                            <option value="Presencial" ${d.modality==='Presencial'?'selected':''}>Presencial</option>
+                            <option value="Virtual" ${d.modality==='Virtual'?'selected':''}>Virtual</option>
+                            <option value="Híbrido" ${d.modality==='Híbrido'?'selected':''}>Híbrido</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end pb-1">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="db-master" class="w-4 h-4 rounded accent-cyan-400" ${(d.isMasterclass!==false)?'checked':''}/>
+                            <span class="text-[11px] text-white font-medium">Masterclass Premium</span>
+                        </label>
+                    </div>
+                </div>
                 <div>
                     <label class="lbl">Portada URL <button onclick="window.openGallery('db-img', 'image', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar Media</button></label>
                     <div class="flex gap-2 items-center">
@@ -561,10 +577,6 @@
                         </div>
                     </div>
                 </div>
-                <label class="flex items-center gap-2 mt-2 cursor-pointer">
-                    <input type="checkbox" id="db-master" class="w-4 h-4 rounded accent-cyan-400" ${(d.isMasterclass!==false)?'checked':''}/>
-                    <span class="text-[11px] text-white font-medium">Masterclass Premium</span>
-                </label>
             `;
         } else if (type === 'testimonial_video' || type === 'testimonial_text') {
             title = type === 'testimonial_video' ? 'Editar Testimonio Video' : 'Editar Testimonio Texto';
@@ -622,7 +634,8 @@
                 schedule: document.getElementById('db-schedule').value, 
                 price: document.getElementById('db-price').value, 
                 image: document.getElementById('db-img').value, 
-                isMasterclass: document.getElementById('db-master').checked 
+                isMasterclass: document.getElementById('db-master').checked,
+                modality: document.getElementById('db-modality').value
             }; 
         }
         else if(t === 'testimonial_video') { 
