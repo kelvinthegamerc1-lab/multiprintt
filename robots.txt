@@ -1,4 +1,4 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://multiprintt.web.app/sitemap.xml
+Allow: /$
+Disallow: /admin.html
+Disallow: /index.html
