@@ -60,6 +60,18 @@
     --color-bg: #070709;
     --color-panel: #101014;
   }
+
+
+    /* Elimina únicamente la barra/franja de scroll visual de la sección Nosotros */
+    #view-about .slide-scroll {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    #view-about .slide-scroll::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
 </style>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -246,15 +258,14 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   </section>
 
   <!-- SECCIÓN "NOSOTROS" - EXPERIENCIA CINEMATOGRÁFICA DUAL (PC & MÓVIL SCROLL VERTICAL CON FLECHA) -->
-  <section id="view-about" class="view-slide flex flex-col overflow-hidden bg-[#070709] select-none">
+  <section id="view-about" class="view-slide flex flex-col overflow-hidden bg-[#070709] select-none !p-0">
     <div class="hero-glow w-[300px] h-[300px] lg:w-[450px] lg:h-[450px] bg-violet-600/15 right-0 md:right-10 top-10 lg:top-20"></div>
     <div class="hero-glow w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] bg-pink-500/10 left-[-50px] top-[40vh]"></div>
     
     <!-- CONTENEDOR ESCRITORIO (PC) -->
-    <div class="hidden lg:flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-col justify-center items-center relative z-10 h-full py-0 editable-section shrink-0" id="about-history-zone">
+    <div class="hidden lg:flex max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-col justify-center items-center relative z-10 h-full py-0 pt-[76px] editable-section shrink-0" id="about-history-zone">
         <div class="grid grid-cols-[auto_1fr] items-center justify-center gap-10 w-full max-w-5xl mx-auto my-auto">
-            
-            <div class="relative w-[280px] xl:w-[310px] h-[62vh] aspect-[9/16] shrink-0 rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-[0_10px_30px_rgba(115,92,255,0.25)] border border-white/15 shrink-0" data-resizable="true">
+            <div class="relative w-[280px] xl:w-[310px] h-[62vh] aspect-[9/16] shrink-0 rounded-[32px] overflow-hidden bg-[#0e0e12] mx-auto shadow-[0_10px_30px_rgba(115,92,255,0.25)] border border-white/15" data-resizable="true">
                 <video id="about-cinematic-video" 
                        src="https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01" 
                        class="w-full h-full object-cover relative z-10 cursor-pointer"
@@ -291,39 +302,39 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         </div>
     </div>
 
-    <!-- CONTENEDOR MÓVIL - VERTICAL CINEMATIC STORY (VIDEO LIMPIO CON BLEND Y FLECHA ESTÁTICA SIN ANIMACIÓN) -->
+    <!-- CONTENEDOR MÓVIL - VERTICAL CINEMATIC STORY (AJUSTE 100% PANTALLA) -->
     <div class="flex lg:hidden absolute inset-0 z-20 w-full h-full overflow-y-auto slide-scroll flex-col bg-[#070709]">
         
-        <!-- PANTALLA 1: VIDEO CINEMATOGRÁFICO LIMPIO CON BLEND SUAVE -->
-        <div class="relative w-full h-[calc(100dvh-121px)] min-h-[480px] shrink-0 bg-[#070709] flex flex-col items-center justify-center overflow-hidden">
+        <!-- PANTALLA 1: VIDEO CINEMATOGRÁFICO FULL SCREEN (100dvh) SIN FRANJAS NEGRAS -->
+        <div class="relative w-full h-[100dvh] shrink-0 bg-[#070709] flex flex-col items-center justify-center overflow-hidden">
             <video id="mobile-cinematic-video" 
                    src="https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01" 
                    class="absolute inset-0 w-full h-full object-cover"
                    playsinline crossorigin="anonymous"
                    onended="window.handleMobileVideoEnded()" onerror="window.handleVideoError(this)"></video>
 
-            <!-- Fundido / Degradado cinematográfico que une el video suavemente con el fondo -->
-            <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070709] via-[#070709]/80 to-transparent pointer-events-none"></div>
-            <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#070709] via-[#070709]/80 to-transparent pointer-events-none"></div>
+            <!-- Degradado cinematográfico que une el video suavemente con el fondo superior e inferior -->
+            <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#070709] via-[#070709]/80 to-transparent pointer-events-none"></div>
+            <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#070709] via-[#070709]/90 to-transparent pointer-events-none"></div>
 
             <!-- Botón Play Central Móvil -->
             <div class="relative z-20 my-auto flex items-center justify-center">
-                <button id="mobile-play-btn" onclick="window.toggleMobileVideo()" class="w-18 h-18 rounded-full bg-white/20 border border-white/40 backdrop-blur-md flex items-center justify-center text-white text-2xl shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-90 transition-transform cursor-pointer outline-none border-none">
+                <button id="mobile-play-btn" onclick="window.toggleMobileVideo()" class="w-20 h-20 rounded-full bg-white/20 border border-white/40 backdrop-blur-md flex items-center justify-center text-white text-3xl shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-90 transition-transform cursor-pointer outline-none border-none">
                     <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
                 </button>
             </div>
 
-            <!-- Indicador Minimalista SIN ANIMACIÓN (Texto + Flecha con blur) -->
-            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
-                <button onclick="document.getElementById('mobile-history-block').scrollIntoView({ behavior: 'smooth' })" class="flex items-center gap-2 px-4 py-2 rounded-full bg-black/50 backdrop-blur-xl border border-white/20 text-white shadow-[0_10px_25px_rgba(0,0,0,0.6)] cursor-pointer outline-none border-none">
-                    <span class="text-[9px] font-extrabold uppercase tracking-[0.2em]">Desliza</span>
-                    <i class="fa-solid fa-chevron-down text-xs text-cyan-400"></i>
+            <!-- Indicador Minimalista para deslizar -->
+            <div class="absolute bottom-[90px] left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+                <button onclick="document.getElementById('mobile-history-block').scrollIntoView({ behavior: 'smooth' })" class="flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/60 backdrop-blur-xl border border-white/20 text-white shadow-[0_10px_25px_rgba(0,0,0,0.6)] cursor-pointer outline-none border-none">
+                    <span class="text-[10px] font-extrabold uppercase tracking-[0.2em]">Desliza</span>
+                    <i class="fa-solid fa-chevron-down text-sm text-cyan-400"></i>
                 </button>
             </div>
         </div>
 
         <!-- PANTALLA 2: RESEÑA HISTÓRICA OFICIAL ABAJO -->
-        <div id="mobile-history-block" class="w-full min-h-[100dvh] bg-[#070709] px-6 pt-10 pb-28 flex flex-col justify-between relative z-20 border-t border-white/5">
+        <div id="mobile-history-block" class="w-full min-h-[100dvh] bg-[#070709] px-6 pt-16 pb-28 flex flex-col justify-between relative z-20 border-t border-white/5">
             <div class="flex flex-col gap-4 text-left">
                 <div class="flex flex-col items-start gap-1">
                     <span class="text-[9px] uppercase tracking-[0.3em] font-extrabold text-cyan-400">Manifiesto Oficial</span>
