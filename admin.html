@@ -44,11 +44,11 @@
     .device-mobile { width: 390px; height: 844px; border-radius: 20px; margin: 40px auto; flex-shrink: 0; border: 10px solid #141417; }
     #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit; }
 
-    .device-btn { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #71717a; transition: all 0.2s; cursor: pointer; font-size: 12px;}
+    .device-btn { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #71717a; transition: all 0.2s; cursor: pointer; font-size: 12px; border: none; background: transparent; padding: 0;}
     .device-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
     .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); }
 
-    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
+    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
     .tool-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
     .tool-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
 
@@ -68,7 +68,7 @@
     .lbl { font-size: 9px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: block; }
 
     .acc-item { border-bottom: 1px solid var(--border); }
-    .acc-header { padding: 10px 14px; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #71717a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; }
+    .acc-header { padding: 10px 14px; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #71717a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; width: 100%; text-align: left;}
     .acc-header:hover { color: #fff; }
     .acc-item.active .acc-header { color: #fff; background: rgba(255,255,255,0.02); }
     .acc-content { padding: 12px 14px; display: none; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.3); }
@@ -100,20 +100,20 @@
 
 <div id="auth-screen">
     <div class="glass-panel p-8 w-full max-w-sm text-center">
-        <h1 class="text-base font-bold mb-1 text-white">Multiprintt</h1>
-        <p class="text-zinc-500 text-[10px] mb-6">Panel Administrativo Pro</p>
-        <div class="space-y-3">
+        <h1 class="text-base font-bold mb-1 text-white m-0">Multiprintt</h1>
+        <p class="text-zinc-500 text-[10px] mb-6 mt-1">Panel Administrativo Pro</p>
+        <div class="space-y-3 flex flex-col gap-3">
             <input type="email" id="loginUser" placeholder="Correo" class="inp-field">
             <input type="password" id="loginPass" placeholder="Contraseña" class="inp-field">
-            <button onclick="window.attemptLogin()" id="btn-login" class="w-full btn-primary mt-3 py-2.5">Ingresar al Sistema</button>
+            <button onclick="window.attemptLogin()" id="btn-login" class="w-full btn-primary mt-1 py-2.5">Ingresar al Sistema</button>
         </div>
     </div>
 </div>
 
 <div id="db-modal" class="modal-overlay">
     <div class="modal-content">
-        <h3 id="db-modal-title" class="text-white font-semibold text-xs mb-3">Editor</h3>
-        <div id="db-modal-body" class="flex flex-col gap-3 mb-5"></div>
+        <h3 id="db-modal-title" class="text-white font-semibold text-xs mb-3 m-0">Editor</h3>
+        <div id="db-modal-body" class="flex flex-col gap-3 mb-5 mt-3"></div>
         <div class="flex gap-2 pt-2 border-t border-white/5">
             <button onclick="window.saveDbItem()" id="btn-save-db" class="flex-1 btn-primary py-2">Guardar</button>
             <button onclick="document.getElementById('db-modal').classList.remove('active')" class="px-4 btn-secondary py-2">Cancelar</button>
@@ -123,8 +123,8 @@
 
 <div id="icon-picker-modal" class="modal-overlay">
     <div class="modal-content">
-        <h3 class="text-white font-semibold text-xs mb-3">Añadir Red Social</h3>
-        <div class="grid grid-cols-3 gap-2 mb-3">
+        <h3 class="text-white font-semibold text-xs mb-3 m-0">Añadir Red Social</h3>
+        <div class="grid grid-cols-3 gap-2 mb-3 mt-3">
             <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-facebook-f mr-1"></i> FB</button>
             <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-instagram mr-1"></i> IG</button>
             <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-whatsapp mr-1"></i> WA</button>
@@ -141,13 +141,13 @@
 <div id="gallery-modal" class="modal-overlay z-[10000]">
     <div class="modal-content" style="max-width: 680px;">
         <div class="flex justify-between items-center mb-3">
-            <h3 class="text-white font-semibold text-xs" id="gallery-title">Explorador de Medios</h3>
-            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-white font-semibold text-xs m-0" id="gallery-title">Explorador de Medios</h3>
+            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs cursor-pointer bg-transparent border-none p-0"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="flex gap-2 mb-3" id="gallery-filters">
-            <button onclick="window.filterGallery('all')" class="tool-btn justify-center active cursor-pointer" id="gal-filt-all">Todos</button>
-            <button onclick="window.filterGallery('image')" class="tool-btn justify-center cursor-pointer" id="gal-filt-img">Imágenes</button>
-            <button onclick="window.filterGallery('video')" class="tool-btn justify-center cursor-pointer" id="gal-filt-vid">Videos</button>
+            <button onclick="window.filterGallery('all')" class="tool-btn justify-center active cursor-pointer w-auto" id="gal-filt-all">Todos</button>
+            <button onclick="window.filterGallery('image')" class="tool-btn justify-center cursor-pointer w-auto" id="gal-filt-img">Imágenes</button>
+            <button onclick="window.filterGallery('video')" class="tool-btn justify-center cursor-pointer w-auto" id="gal-filt-vid">Videos</button>
         </div>
         <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Multiprintt Media Cloud</div>
         <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[320px] overflow-y-auto pr-1 mb-4"></div>
@@ -165,29 +165,29 @@
             <span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">Core Admin</span>
         </div>
         <div class="flex items-center gap-1 bg-black p-0.5 border border-white/5 rounded-md">
-            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
-            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
-            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
+            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop pointer-events-none"></i></button>
+            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button pointer-events-none"></i></button>
+            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button pointer-events-none"></i></button>
         </div>
         <div class="flex items-center gap-2">
-            <button class="tool-btn active w-auto py-1.5 px-2.5 cursor-pointer" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="hidden sm:inline">Mover</span></button>
-            <button class="btn-warning py-1.5 px-2.5" onclick="window.resetTemplateConfirm()"><i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span></button>
+            <button class="tool-btn active w-auto py-1.5 px-2.5 cursor-pointer flex-row justify-center" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Mover</span></button>
+            <button class="btn-warning py-1.5 px-2.5 flex flex-row items-center gap-1.5" onclick="window.resetTemplateConfirm()"><i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span></button>
             <button class="btn-primary py-1.5 px-3 flex items-center gap-1.5" id="publish-btn" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span></button>
-            <button class="btn-secondary py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
+            <button class="btn-secondary py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer flex items-center justify-center" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
     
     <div class="workspace">
         <div class="sidebar-left hide-scrollbar">
             <div class="panel-title">Navegación</div>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4"></i> Tienda / Carrito</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4"></i> Academia</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4"></i> Nosotros</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4"></i> Contacto</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 pointer-events-none"></i> Tienda / Carrito</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4 pointer-events-none"></i> Academia</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 pointer-events-none"></i> Nosotros</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 pointer-events-none"></i> Contacto</button>
             <div class="divider"></div>
             <div class="panel-title">Base de Datos</div>
-            <button class="tool-btn text-pink-400 cursor-pointer" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4"></i> + Producto</button>
-            <button class="tool-btn text-cyan-400 cursor-pointer" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4"></i> + Curso</button>
+            <button class="tool-btn text-pink-400 cursor-pointer" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4 pointer-events-none"></i> + Producto</button>
+            <button class="tool-btn text-cyan-400 cursor-pointer" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4 pointer-events-none"></i> + Curso</button>
         </div>
         
         <div class="canvas-area">
@@ -198,7 +198,7 @@
         
         <div class="sidebar-right hide-scrollbar">
             <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 p-6 text-center">
-                <p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento<br>en el lienzo.</p>
+                <p class="font-medium text-[11px] text-zinc-500 m-0">Selecciona un elemento<br>en el lienzo.</p>
             </div>
         </div>
     </div>
@@ -289,13 +289,13 @@
     let isDragMode = true;
     window.toggleDragMode = function(btn) {
         isDragMode = !isDragMode;
-        if(isDragMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right"></i> Mover'; } 
-        else { btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-lock"></i> Fijo'; }
+        if(isDragMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Mover</span>'; } 
+        else { btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-lock pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Fijo</span>'; }
         document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
     }
 
     window.publishChanges = function() {
-        document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...';
+        document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="hidden sm:inline">Guardando...</span>';
         document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
     }
 
@@ -337,11 +337,8 @@
             else if (data.items && Array.isArray(data.items)) rawArray = data.items;
             else if (data.imagenes && Array.isArray(data.imagenes)) rawArray = data.imagenes;
             else if (data.images && Array.isArray(data.images)) rawArray = data.images;
-            else {
-                for (let k in data) {
-                    if (Array.isArray(data[k])) rawArray.push(...data[k]);
-                }
-            }
+            else { for (let k in data) { if (Array.isArray(data[k])) rawArray.push(...data[k]); } }
+            
             if(rawArray.length === 0) rawArray = defaultGalleryItems;
 
             const baseProdUrl = 'https://multiprintt.web.app/recursos/productos/';
@@ -362,14 +359,10 @@
                 }
 
                 if(u && !u.startsWith('http') && !u.startsWith('data:')) {
-                    if(url.includes('productos')) {
-                        u = baseProdUrl + u;
-                    } else {
-                        if(u.includes('testimonio/')) {
-                            u = 'https://multiprintt.web.app/recursos/' + u;
-                        } else {
-                            u = baseMediaUrl + u;
-                        }
+                    if(url.includes('productos')) u = baseProdUrl + u;
+                    else {
+                        if(u.includes('testimonio/')) u = 'https://multiprintt.web.app/recursos/' + u;
+                        else u = baseMediaUrl + u;
                     }
                 }
                 return { type: t, url: u, title: title };
@@ -421,6 +414,7 @@
         }, 150);
     }
 
+    // Prevención de cuelgues (Optimización Extrema)
     window.filterGallery = function(type) {
         document.querySelectorAll('#gallery-modal .tool-btn').forEach(b => b.classList.remove('active'));
         if(document.getElementById('gal-filt-' + (type==='all'?'all':type.substring(0,3)))) {
@@ -435,36 +429,33 @@
             return item;
         });
 
-        const filtered = normData.filter(item => type === 'all' || item.type === type);
+        // Limita a un máximo de 150 items y usa Lazy Loading para no congelar la UI
+        const filtered = normData.filter(item => type === 'all' || item.type === type).slice(0, 150); 
+        
         let html = '';
         filtered.forEach(item => {
             const isSelected = selectedMediaUrls.includes(item.url);
             const selClass = isSelected ? 'border-cyan-400 ring-2 ring-cyan-400/50' : 'border-white/10 hover:border-white/30';
             
             if(item.type === 'image') {
-                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group transition-all"><img src="${item.url}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"></div>`;
+                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group transition-all"><img src="${item.url}" loading="lazy" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"></div>`;
             } else {
-                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group flex items-center justify-center transition-all"><i class="fa-solid fa-video text-2xl text-white/40 group-hover:text-violet-400"></i></div>`;
+                html += `<div onclick="window.handleMediaClick('${item.url}', this)" data-url="${item.url}" class="aspect-square bg-black border ${selClass} rounded-lg overflow-hidden cursor-pointer relative group flex items-center justify-center transition-all"><i class="fa-solid fa-video text-2xl text-white/40 group-hover:text-violet-400 pointer-events-none"></i></div>`;
             }
         });
         grid.innerHTML = html || '<div class="col-span-full py-8 text-center text-xs text-zinc-500">Sin medios</div>';
     }
 
     window.handleMediaClick = function(url, el) {
-        if(!isMultiSelectMode) {
-            window.selectSingleMedia(url);
-            return;
-        }
+        if(!isMultiSelectMode) { window.selectSingleMedia(url); return; }
 
         const idx = selectedMediaUrls.indexOf(url);
         if(idx > -1) {
             selectedMediaUrls.splice(idx, 1);
-            el.classList.remove('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
-            el.classList.add('border-white/10');
+            el.classList.remove('border-cyan-400', 'ring-2', 'ring-cyan-400/50'); el.classList.add('border-white/10');
         } else {
             selectedMediaUrls.push(url);
-            el.classList.remove('border-white/10');
-            el.classList.add('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
+            el.classList.remove('border-white/10'); el.classList.add('border-cyan-400', 'ring-2', 'ring-cyan-400/50');
         }
 
         const confirmBtn = document.getElementById('gallery-confirm-btn');
@@ -473,11 +464,8 @@
 
     window.selectSingleMedia = function(url) {
         if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            const inp = document.getElementById(activeMediaInput);
-            inp.value = url;
-            if(activeMediaInput === 'db-img') {
-                window.updateImgPreview(url);
-            }
+            const inp = document.getElementById(activeMediaInput); inp.value = url;
+            if(activeMediaInput === 'db-img') window.updateImgPreview(url);
         }
         document.getElementById('gallery-modal').classList.remove('active');
     }
@@ -485,29 +473,20 @@
     window.confirmMultiMediaSelection = function() {
         if(selectedMediaUrls.length === 0) return window.showToast("Selecciona al menos una imagen.");
         if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            const inp = document.getElementById(activeMediaInput);
-            inp.value = selectedMediaUrls.join(', ');
-            if(activeMediaInput === 'db-img') {
-                window.updateImgPreview(inp.value);
-            }
+            const inp = document.getElementById(activeMediaInput); inp.value = selectedMediaUrls.join(', ');
+            if(activeMediaInput === 'db-img') window.updateImgPreview(inp.value);
         }
         document.getElementById('gallery-modal').classList.remove('active');
     }
 
     window.handleDiscountInput = function(val) {
-        const promoCheck = document.getElementById('db-promo');
-        if(!promoCheck) return;
+        const promoCheck = document.getElementById('db-promo'); if(!promoCheck) return;
         const num = parseFloat(val);
-        if(!isNaN(num) && num > 0) {
-            promoCheck.checked = true;
-        } else {
-            promoCheck.checked = false;
-        }
+        if(!isNaN(num) && num > 0) { promoCheck.checked = true; } else { promoCheck.checked = false; }
     }
 
     window.updateImgPreview = function(url) {
-        const preview = document.getElementById('db-img-preview');
-        if(!preview) return;
+        const preview = document.getElementById('db-img-preview'); if(!preview) return;
         const firstUrl = url.split(',')[0].trim();
         preview.innerHTML = `<img src="${firstUrl}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/60x60/101014/ffffff?text=img'">`;
     }
@@ -547,8 +526,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="lbl">URLs de Imágenes (Separadas por comas para Slider) <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar JSON</button></label>
-                    <div class="flex gap-2 items-start">
+                    <label class="lbl">URLs de Imágenes (Separadas por comas) <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0"><i class="fa-solid fa-folder-open pointer-events-none"></i> Explorar JSON</button></label>
+                    <div class="flex gap-2 items-start mt-1">
                         <textarea id="db-img" class="inp-field h-16 resize-none flex-1" placeholder="https://..., https://..." oninput="window.updateImgPreview(this.value)">${d.image||''}</textarea>
                         <div id="db-img-preview" class="w-16 h-16 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
                             <img src="${(d.image||'').split(',')[0].trim()}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/60x60/101014/ffffff?text=img'">
@@ -582,8 +561,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="lbl">Portada URL <button onclick="window.openGallery('db-img', 'image', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar Media</button></label>
-                    <div class="flex gap-2 items-center">
+                    <label class="lbl">Portada URL <button onclick="window.openGallery('db-img', 'image', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer bg-transparent border-none p-0"><i class="fa-solid fa-folder-open pointer-events-none"></i> Explorar Media</button></label>
+                    <div class="flex gap-2 items-center mt-1">
                         <input type="text" id="db-img" value="${d.image||''}" class="inp-field flex-1" oninput="window.updateImgPreview(this.value)">
                         <div id="db-img-preview" class="w-10 h-10 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
                             <img src="${d.image || ''}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/40x40/101014/ffffff?text=img'">
@@ -599,7 +578,7 @@
                 <div><label class="lbl">Frase / Cita</label><textarea id="db-quote" class="inp-field h-16 resize-none">${d.quote||''}</textarea></div>
             `;
             if(type === 'testimonial_video') {
-                formHtml += `<div><label class="lbl">Video URL (.mp4) <button onclick="window.openGallery('db-vid', 'video', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar Videos</button></label><input type="text" id="db-vid" value="${d.src||''}" class="inp-field"></div>`;
+                formHtml += `<div><label class="lbl">Video URL (.mp4) <button onclick="window.openGallery('db-vid', 'video', 'media')" class="ml-2 text-cyan-400 hover:text-white cursor-pointer bg-transparent border-none p-0"><i class="fa-solid fa-folder-open pointer-events-none"></i> Explorar Videos</button></label><input type="text" id="db-vid" value="${d.src||''}" class="inp-field mt-1"></div>`;
             }
             formHtml += `
                 <div>
@@ -707,13 +686,11 @@
     window.updateText = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*');
     window.updateHref = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*');
     window.updateStyle = (prop, val) => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop, value: val}, '*');
-    window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px]">Nodo Eliminado.</p>'; }
+    window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px] m-0">Nodo Eliminado.</p>'; }
     window.toggleAccordion = header => { const item = header.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
 
     window.addEventListener('message', async (event) => {
-        if (event.source !== document.getElementById('site-frame').contentWindow && event.origin !== window.location.origin) {
-            return;
-        }
+        if (event.source !== document.getElementById('site-frame').contentWindow && event.origin !== window.location.origin) return;
 
         const data = event.data;
         if (!data || !data.type) return;
@@ -722,11 +699,11 @@
             if (data.layoutData) {
                 try {
                     await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder || [], courseOrder: data.courseOrder || [] }, { merge: true });
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Desplegar';
+                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Desplegar</span>';
                     window.showToast('¡Desplegado correctamente!');
                 } catch(e) {
                     window.showToast('Error de despliegue. Revisa conexión.');
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Reintentar';
+                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Reintentar</span>';
                 }
             }
         }
@@ -743,7 +720,7 @@
             setTimeout(() => window.toggleDragMode(document.getElementById('btn-drag')), 800);
         }
         if (data.type === 'ELEMENT_SELECTED') renderPropertiesPanel(data);
-        if (data.type === 'CLEAR_SELECTION') document.getElementById('properties-panel').innerHTML = '<p class="font-medium text-[11px] text-zinc-500">Selecciona un elemento en el lienzo.</p>';
+        if (data.type === 'CLEAR_SELECTION') document.getElementById('properties-panel').innerHTML = '<p class="font-medium text-[11px] text-zinc-500 m-0">Selecciona un elemento en el lienzo.</p>';
         if (data.type === 'OPEN_ICON_PICKER') document.getElementById('icon-picker-modal').classList.add('active');
         if (data.type === 'OPEN_EDITOR') window.openDbEditor(data.editorType, data.itemId, data.itemData);
     });
@@ -755,14 +732,14 @@
         let html = `<div class="w-full bg-[#000] border-b border-white/5 p-3 mb-2 text-left"><span class="text-white font-bold text-[10px]">${cleanTag}</span></div>`;
         if (!['IMG', 'VIDEO', 'SECTION', 'DIV'].includes(data.tagName)) {
             let cleanText = String(data.text || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            html += `<div class="acc-item active"><div class="acc-header" onclick="window.toggleAccordion(this)">Texto</div><div class="acc-content"><textarea oninput="window.updateText(this.value)" class="inp-field min-h-[60px]">${cleanText}</textarea></div></div>`;
+            html += `<div class="acc-item active"><button class="acc-header" onclick="window.toggleAccordion(this)">Texto</button><div class="acc-content"><textarea oninput="window.updateText(this.value)" class="inp-field min-h-[60px]">${cleanText}</textarea></div></div>`;
         }
         if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
             let cleanHref = String(data.href || '').replace(/javascript:/gi, "").replace(/"/g, "&quot;");
-            html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Enlace / URL</div><div class="acc-content"><input type="text" oninput="window.updateHref(this.value)" value="${cleanHref}" class="inp-field"></div></div>`;
+            html += `<div class="acc-item"><button class="acc-header" onclick="window.toggleAccordion(this)">Enlace / URL</button><div class="acc-content"><input type="text" oninput="window.updateHref(this.value)" value="${cleanHref}" class="inp-field"></div></div>`;
         }
         if (data.hasTheme) {
-            html += `<div class="acc-item"><div class="acc-header" onclick="window.toggleAccordion(this)">Tema de Color</div><div class="acc-content"><select onchange="window.updateStyle('theme', this.value)" class="inp-field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option></select></div></div>`;
+            html += `<div class="acc-item"><button class="acc-header" onclick="window.toggleAccordion(this)">Tema de Color</button><div class="acc-content"><select onchange="window.updateStyle('theme', this.value)" class="inp-field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option></select></div></div>`;
         }
         html += `<div class="p-4 mt-auto"><button onclick="window.deleteElement()" class="w-full btn-danger py-2">Eliminar Nodo</button></div>`;
         panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-[#09090b] p-0 text-left";
