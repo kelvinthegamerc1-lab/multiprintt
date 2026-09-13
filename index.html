@@ -112,7 +112,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
 .mask-edges { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
 @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.animate-marquee { animation: scrollMarquee 35s linear infinite; }
+.animate-marquee { animation: scrollMarquee 120s linear infinite; }
 .hover\:pause-marquee:hover { animation-play-state: paused; }
 </style>
 </head>
@@ -1202,6 +1202,11 @@ window.loadAcademyGallery = async function() {
     
     // Efecto bucle infinito para el carrusel
     container.innerHTML = html + html + html + html;
+    
+    // Ajuste dinámico de velocidad para que se vea como expositor real (Lento, suave y constante)
+    // Asigna 12 segundos por cada imagen única para mantener un ritmo súper elegante.
+    let duration = validImages.length * 12;
+    container.style.animationDuration = `${duration}s`;
 }
 
 window.initMap = function() {
