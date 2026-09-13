@@ -126,7 +126,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <header id="section-header" class="glass h-[56px] md:h-[76px] transition-all editable-section shrink-0 border-b-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
         <div class="flex items-center gap-6 md:gap-10">
-            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none cursor-pointer">
+            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none">
               <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1 cursor-pointer">
                 <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
               </div>
@@ -136,10 +136,10 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
               </div>
             </button>
             <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
-              <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active cursor-pointer" data-target="catalog">Catálogo</button>
-              <button onclick="window.navigate('courses')" data-editable="true" class="nav-link cursor-pointer" data-target="courses">Academia</button>
-              <button onclick="window.navigate('about')" data-editable="true" class="nav-link cursor-pointer" data-target="about">Nosotros</button>
-              <button onclick="window.navigate('contact')" data-editable="true" class="nav-link cursor-pointer" data-target="contact">Contacto</button>
+              <button onclick="window.navigate('catalog')" data-editable="true" class="nav-link active" data-target="catalog">Catálogo</button>
+              <button onclick="window.navigate('courses')" data-editable="true" class="nav-link" data-target="courses">Academia</button>
+              <button onclick="window.navigate('about')" data-editable="true" class="nav-link" data-target="about">Nosotros</button>
+              <button onclick="window.navigate('contact')" data-editable="true" class="nav-link" data-target="contact">Contacto</button>
             </nav>
         </div>
 
@@ -148,12 +148,12 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
                 <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
                 <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
             </div>
             
             <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
                 <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
                     <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none cursor-pointer">
@@ -300,7 +300,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
                 </div>
                 
-                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-pink-500/50 rounded-[32px] bg-pink-500/5 flex flex-col items-center justify-center text-pink-400 font-bold hover:bg-pink-500 hover:text-black hover:border-pink-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(255,45,168,0.1)] ignore-drag">
+                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-pink-500/50 rounded-[32px] bg-pink-500/5 flex flex-col items-center justify-center text-pink-400 font-bold hover:bg-cyan-500 hover:text-black hover:border-pink-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(255,45,168,0.1)] ignore-drag">
                     <i class="fa-solid fa-comment-dots text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Comentario</span>
                 </button>
             </div>
@@ -332,13 +332,19 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
                 <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
                     <div class="group" data-resizable="true">
-                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
+                        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp Principal</div>
                         <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer" id="contact-phone">+593 99 759 1021</button>
                     </div>
+                    
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
                         <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer">multiprintt@yahoo.com</button>
                     </div>
+
+                    <button onclick="window.cloneContactPhone(this)" class="admin-tool border border-dashed border-cyan-400/50 text-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_10px_rgba(37,216,255,0.15)] ignore-drag cursor-pointer">
+                        <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none">Añadir Número / Etiqueta</span>
+                    </button>
+
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone p-2 rounded-lg border border-transparent">
@@ -373,7 +379,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
     <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
         <h3 class="text-white font-extrabold text-lg flex items-center"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
-        <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/15 transition-colors cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
     <div id="cart-items-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
@@ -392,7 +398,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none">
             <i class="fa-brands fa-whatsapp text-xl"></i> 💰 Finalizar compra
         </button>
-        <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-white/5 hover:bg-rose-500/10 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none">
+        <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none">
             <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
         </button>
     </div>
@@ -401,7 +407,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <!-- MODAL DETALLE DE CURSO -->
 <div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
   <div class="relative w-full max-w-5xl bg-[#0a0a0c] border border-white/10 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-500 ignore-drag" id="courseModalContent">
-    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none cursor-pointer"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+    <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/15 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none cursor-pointer"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
 
     <div class="w-full md:w-5/12 h-56 sm:h-64 md:h-auto bg-black relative overflow-hidden group">
       <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0c] z-10 hidden md:block"></div>
@@ -434,7 +440,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   </div>
 </div>
 
-<!-- NUEVO VIDEO MODAL HORIZONTAL PREMIUM (RECTÁNGULO REDONDEADO) -->
+<!-- VIDEO MODAL -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         
@@ -492,7 +498,7 @@ const APP_ID = "multiprintt-web";
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
 let currentVideoCardRef = null;
 
-// Lógica de Carrito de Compras
+// Carrito
 window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
 
 window.saveCart = function() {
@@ -589,10 +595,10 @@ window.updateCartUI = function() {
         let lineTotal = finalPrice * item.qty;
         total += lineTotal;
 
+        // Soporte para múltiples imágenes (primer elemento o imagen única) con fondo transparente limpio
         let imgUrl = p.image ? (p.image.split(',')[0] || '').trim() : '';
         if(Array.isArray(p.images) && p.images.length > 0) imgUrl = p.images[0];
         
-        // Imagen transparente y limpia sin fondos pesados
         let imgHtml = imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-contain bg-transparent">` : `<div class="w-full h-full bg-transparent flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-white/30"></i></div>`;
 
         container.innerHTML += `
@@ -828,9 +834,13 @@ window.renderProducts = function(){
         const discountVal = Number(p.discount) || 0;
         const finalPrice = (p.isPromo && discountVal > 0) ? basePrice * (1 - discountVal / 100) : basePrice;
 
+        // Soporte robusto para múltiples imágenes separadas por comas o saltos de línea (Muestrario / Slider)
         let imgs = [];
-        if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images;
-        else if (p.image) imgs = p.image.split(',').map(s=>s.trim()).filter(s=>s);
+        if (p.image) {
+            imgs = p.image.split(/[\n,]+/).map(s=>s.trim()).filter(s=>s);
+        } else if (Array.isArray(p.images) && p.images.length > 0) {
+            imgs = p.images;
+        }
         
         if (imgs.length === 2) { imgs = [imgs[0], imgs[1], imgs[0], imgs[1]]; }
         
@@ -935,6 +945,20 @@ window.cloneCourseBadge = function(btn) {
     span.className = `flex items-center gap-2 bg-gradient-to-r from-${randomColor}-500/10 to-transparent border border-${randomColor}-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.15)]`;
     span.innerHTML = `<i class="fa-solid ${randomIcon} text-${randomColor}-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-${randomColor}-100 font-extrabold">Nueva Etiqueta</span>`;
     btn.parentNode.insertBefore(span, btn);
+    if(window.updateResizeBox) window.updateResizeBox();
+}
+
+window.cloneContactPhone = function(btn) {
+    if(!window.isAdminMode) return;
+    const parent = btn.parentElement;
+    const clone = document.createElement('div');
+    clone.className = 'group mt-3';
+    clone.setAttribute('data-resizable', 'true');
+    clone.innerHTML = `
+        <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Nuevo Teléfono</div>
+        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer">+593 99 000 0000</button>
+    `;
+    parent.insertBefore(clone, btn);
     if(window.updateResizeBox) window.updateResizeBox();
 }
 
