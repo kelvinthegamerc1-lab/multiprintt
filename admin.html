@@ -126,9 +126,9 @@
     <div class="modal-content">
         <h3 class="text-white font-semibold text-xs mb-3">Añadir Red Social</h3>
         <div class="grid grid-cols-3 gap-2 mb-3">
-            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs"><i class="fa-brands fa-facebook-f mr-1"></i> FB</button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs"><i class="fa-brands fa-instagram mr-1"></i> IG</button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs"><i class="fa-brands fa-whatsapp mr-1"></i> WA</button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-facebook-f mr-1"></i> FB</button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-instagram mr-1"></i> IG</button>
+            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-whatsapp mr-1"></i> WA</button>
         </div>
         <label class="lbl">URL de Destino</label>
         <input type="text" id="social-url-input" placeholder="https://..." class="inp-field mb-4">
@@ -139,23 +139,23 @@
     </div>
 </div>
 
-<!-- Modal Galería / Explorador de Medios con Selección Múltiple -->
+<!-- Modal Galería / Explorador de Medios con Selección Múltiple y Vista Previa -->
 <div id="gallery-modal" class="modal-overlay z-[10000]">
-    <div class="modal-content" style="max-width: 650px;">
+    <div class="modal-content" style="max-width: 680px;">
         <div class="flex justify-between items-center mb-3">
             <h3 class="text-white font-semibold text-xs" id="gallery-title">Explorador de Medios</h3>
-            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="flex gap-2 mb-3" id="gallery-filters">
-            <button onclick="window.filterGallery('all')" class="tool-btn justify-center active" id="gal-filt-all">Todos</button>
-            <button onclick="window.filterGallery('image')" class="tool-btn justify-center" id="gal-filt-img">Imágenes</button>
-            <button onclick="window.filterGallery('video')" class="tool-btn justify-center" id="gal-filt-vid">Videos</button>
+            <button onclick="window.filterGallery('all')" class="tool-btn justify-center active cursor-pointer" id="gal-filt-all">Todos</button>
+            <button onclick="window.filterGallery('image')" class="tool-btn justify-center cursor-pointer" id="gal-filt-img">Imágenes</button>
+            <button onclick="window.filterGallery('video')" class="tool-btn justify-center cursor-pointer" id="gal-filt-vid">Videos</button>
         </div>
         <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Multiprintt Media Cloud</div>
-        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[320px] overflow-y-auto pr-1 mb-4"></div>
+        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[320px] overflow-y-auto pr-1 mb-4"></div>
         <div id="gallery-footer-actions" class="flex justify-between items-center pt-3 border-t border-white/5">
             <span class="text-[10px] text-zinc-400" id="gallery-selection-count">Haz clic en las imágenes para seleccionarlas</span>
-            <button onclick="window.confirmMultiMediaSelection()" class="btn-primary py-2 px-5 hidden" id="gallery-confirm-btn">Confirmar Selección (0)</button>
+            <button onclick="window.confirmMultiMediaSelection()" class="btn-primary py-2 px-5 hidden cursor-pointer" id="gallery-confirm-btn">Confirmar Selección (0)</button>
         </div>
     </div>
 </div>
@@ -172,24 +172,24 @@
             <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button"></i></button>
         </div>
         <div class="flex items-center gap-2">
-            <button class="tool-btn active w-auto py-1.5 px-2.5" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="hidden sm:inline">Mover</span></button>
+            <button class="tool-btn active w-auto py-1.5 px-2.5 cursor-pointer" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right"></i> <span class="hidden sm:inline">Mover</span></button>
             <button class="btn-warning py-1.5 px-2.5" onclick="window.resetTemplateConfirm()"><i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span></button>
             <button class="btn-primary py-1.5 px-3 flex items-center gap-1.5" id="publish-btn" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span></button>
-            <button class="btn-secondary py-1.5 px-2 text-zinc-400 hover:text-white" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
+            <button class="btn-secondary py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
         </div>
     </div>
     
     <div class="workspace">
         <div class="sidebar-left hide-scrollbar">
             <div class="panel-title">Navegación</div>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4"></i> Tienda / Carrito</button>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4"></i> Academia</button>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4"></i> Nosotros</button>
-            <button class="tool-btn" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4"></i> Contacto</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4"></i> Tienda / Carrito</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4"></i> Academia</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4"></i> Nosotros</button>
+            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4"></i> Contacto</button>
             <div class="divider"></div>
             <div class="panel-title">Base de Datos</div>
-            <button class="tool-btn text-pink-400" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4"></i> + Producto</button>
-            <button class="tool-btn text-cyan-400" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4"></i> + Curso</button>
+            <button class="tool-btn text-pink-400 cursor-pointer" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4"></i> + Producto</button>
+            <button class="tool-btn text-cyan-400 cursor-pointer" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4"></i> + Curso</button>
         </div>
         
         <div class="canvas-area">
