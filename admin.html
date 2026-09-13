@@ -87,7 +87,7 @@
 
 <div id="toast-container"></div>
 
-<!-- Modal de Confirmación Personalizado (Sustituto seguro de confirm()) -->
+<!-- Modal de Confirmación Personalizado -->
 <div id="custom-confirm-modal" class="modal-overlay z-[11000]">
     <div class="modal-content text-center p-6">
         <h3 id="confirm-title" class="text-white font-bold text-sm mb-2">Confirmación</h3>
@@ -139,7 +139,7 @@
     </div>
 </div>
 
-<!-- Modal Galería / Explorador de Medios con Selección Múltiple y Vista Previa -->
+<!-- Modal Galería con Multi-selección Visual -->
 <div id="gallery-modal" class="modal-overlay z-[10000]">
     <div class="modal-content" style="max-width: 680px;">
         <div class="flex justify-between items-center mb-3">
@@ -534,7 +534,7 @@
                     </div>
                 </div>
                 <div>
-                    <label class="lbl">URLs de Imágenes (Separadas por comas para Muestrario / Slider) <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar JSON</button></label>
+                    <label class="lbl">URLs de Imágenes (Separadas por comas para Slider) <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-folder-open"></i> Explorar JSON</button></label>
                     <div class="flex gap-2 items-start">
                         <textarea id="db-img" class="inp-field h-16 resize-none flex-1" placeholder="https://..., https://..." oninput="window.updateImgPreview(this.value)">${d.image||''}</textarea>
                         <div id="db-img-preview" class="w-16 h-16 rounded bg-black border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
@@ -651,9 +651,9 @@
                 await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, currentDbItem.id), payload, { merge: true });
                 document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: t, id: currentDbItem.id, data: payload }, '*');
             } else if (t === 'testimonial_video') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', data: payload }, '*');
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
             } else if (t === 'testimonial_text') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', data: payload }, '*');
+                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
             }
 
             btnSave.innerHTML = originalText;
