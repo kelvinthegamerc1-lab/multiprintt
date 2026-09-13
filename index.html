@@ -223,7 +223,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
   </section>
 
-  <!-- SECCIÓN ACADEMIA (MASTERCLASS) -->
   <section id="view-courses" class="view-slide slide-scroll editable-section">
     <div class="hero-glow w-[400px] h-[400px] bg-cyan-600/10 left-[-100px] top-0"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 flex flex-col py-6 md:py-12 relative z-10">
@@ -375,7 +374,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
-<!-- CARRITO DE COMPRAS SIDEBAR -->
 <div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 ignore-drag cursor-pointer" onclick="window.toggleCart()"></div>
 <div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
     <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
@@ -405,7 +403,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
 </div>
 
-<!-- MODAL DETALLE DE CURSO -->
 <div id="courseModal" class="hidden fixed inset-0 z-[300] bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
   <div class="relative w-full max-w-5xl bg-[#0a0a0c] border border-white/10 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] flex flex-col md:flex-row overflow-hidden transform scale-95 transition-transform duration-500 ignore-drag" id="courseModalContent">
     <button onclick="window.closeCourseModal()" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/60 backdrop-blur-xl border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center transition-all shadow-xl ignore-drag outline-none cursor-pointer"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
@@ -414,8 +411,10 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
       <div class="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0c] z-10 hidden md:block"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] to-transparent z-10 block md:hidden"></div>
       <img id="cm-image" src="" alt="Curso" class="w-full h-full object-cover relative z-0 ignore-drag transition-transform duration-1000 group-hover:scale-105 opacity-80" onerror="this.src='https://placehold.co/600x800/101014/ffffff?text=Curso'">
-      <div class="absolute top-6 left-6 z-20">
-         <span class="bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.2)]"><i class="fa-solid fa-award mr-1"></i> Masterclass</span>
+      
+      <div class="absolute top-6 left-6 z-20 flex flex-wrap gap-2 pr-6" id="cm-badge-container">
+         <span id="cm-masterclass-badge" class="bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.2)]"><i class="fa-solid fa-award mr-1"></i> Masterclass</span>
+         <span id="cm-modality-badge" class="bg-black/60 backdrop-blur-md border border-white/10 text-white/90 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center"><i class="fa-solid fa-location-dot mr-1.5 text-white/50"></i> <span id="cm-modality-text">Presencial</span></span>
       </div>
     </div>
 
@@ -441,7 +440,6 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
   </div>
 </div>
 
-<!-- VIDEO MODAL -->
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         
@@ -656,7 +654,7 @@ window.checkoutWhatsApp = function() {
 
 const categoryColors = { 'mas-vendidos': '#e11d48', 'promocionales': '#ea580c', 'textil': '#0891b2', 'jarros': '#db2777', 'imp-general': '#7c3aed', 'packs': '#059669' };
 const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,image:'',icon:'fa-shirt'}];
-const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:"", isMasterclass: true}];
+const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:"", isMasterclass: true, modality: "Presencial"}];
 window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
 
 window.navigate = function(targetId) {
@@ -839,7 +837,6 @@ window.renderProducts = function(){
     
     if (window.currentFilter === 'mas-vendidos') { 
         safeProducts = allProducts.sort((a, b) => {
-            // Un producto marcado como manual recibe un empuje de 10,000 puntos
             let scoreA = (a.isBestSeller ? 10000 : 0) + (a.cartAdds || 0) + (a.checkoutIntents || 0);
             let scoreB = (b.isBestSeller ? 10000 : 0) + (b.cartAdds || 0) + (b.checkoutIntents || 0);
             return scoreB - scoreA;
@@ -949,22 +946,44 @@ window.renderCourses = function(){
         let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let delay = 100 + (i * 100);
-        let masterclassBadge = c.isMasterclass !== false ? `<div class="absolute top-5 left-5 z-20 pointer-events-none"><span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span></div>` : '';
+        let masterclassBadge = c.isMasterclass !== false ? `<span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>` : '';
+        
+        let modalityStr = c.modality || 'Presencial';
+        if(modalityStr.toLowerCase() === 'virtual') modalityStr = 'Online';
+
+        let modIcon = 'fa-location-dot';
+        let modColorClass = 'text-white/90 bg-black/60 border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]';
+        let modIconColor = 'text-white/50';
+
+        if(modalityStr.toLowerCase() === 'online') {
+            modIcon = 'fa-laptop';
+            modColorClass = 'text-red-100 bg-red-600/20 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
+            modIconColor = 'text-red-400';
+        } else if(modalityStr.toLowerCase() === 'híbrido') {
+            modIcon = 'fa-rotate';
+            modColorClass = 'text-violet-100 bg-violet-600/20 border-violet-500/30 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
+            modIconColor = 'text-violet-400';
+        }
+
+        let modalityBadge = `<span class="backdrop-blur-md border ${modColorClass} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0"><i class="fa-solid ${modIcon} text-[10px] ${modIconColor}"></i> ${modalityStr}</span>`;
         
         renderHTML += `
-        <article class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder}" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
+        <article onclick="window.openCourseModal('${c.id}')" class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder} cursor-pointer" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
             ${adminHtml}
             <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
                 <img src="${c.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/40 to-transparent z-10 pointer-events-none"></div>
-                ${masterclassBadge}
+                <div class="absolute top-5 left-5 z-20 pointer-events-none flex flex-wrap gap-2 pr-5">
+                    ${masterclassBadge}
+                    ${modalityBadge}
+                </div>
             </div>
             <div class="relative flex flex-col w-full flex-1 p-6 md:p-8 pt-4 z-20 bg-[#070709]">
                 <div class="w-12 h-1 rounded-full bg-gradient-to-r ${a.from} to-transparent mb-5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display">${c.title}</h3>
                 <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light">${c.desc}</p>
                 <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
-                    <button onclick="window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
+                    <button onclick="event.stopPropagation(); window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
                         Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
                     </button>
                 </div>
@@ -1451,10 +1470,36 @@ window.openCourseModal = function(id) {
     const c = window.appCourses.find(x => x.id === id); if(!c) return;
     document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc; document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
     
+    const masterBadge = document.getElementById('cm-masterclass-badge');
+    if(masterBadge) masterBadge.style.display = c.isMasterclass !== false ? 'inline-flex' : 'none';
+    
+    const modBadge = document.getElementById('cm-modality-badge');
+    let modalityStr = c.modality || 'Presencial';
+    if(modalityStr.toLowerCase() === 'virtual') modalityStr = 'Online';
+
+    if(modBadge) {
+        let modIcon = 'fa-location-dot';
+        let modColorClass = 'bg-black/60 border-white/10 text-white/90 shadow-[0_0_15px_rgba(0,0,0,0.5)]'; 
+        let modIconColor = 'text-white/50';
+
+        if (modalityStr.toLowerCase() === 'online') {
+            modIcon = 'fa-laptop';
+            modColorClass = 'bg-red-600/20 border-red-500/30 text-red-100 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
+            modIconColor = 'text-red-400';
+        } else if (modalityStr.toLowerCase() === 'híbrido') {
+            modIcon = 'fa-rotate';
+            modColorClass = 'bg-violet-600/20 border-violet-500/30 text-violet-100 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
+            modIconColor = 'text-violet-400';
+        }
+        
+        modBadge.className = `backdrop-blur-md border ${modColorClass} text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full flex items-center shrink-0`;
+        modBadge.innerHTML = `<i class="fa-solid ${modIcon} mr-1.5 ${modIconColor}"></i> <span id="cm-modality-text">${modalityStr}</span>`;
+    }
+
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
     
     const cUrl = 'https://multiprintt.web.app/';
-    const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}*\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
+    const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}* (${modalityStr})\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
     const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
     
     document.getElementById('cm-btn').onclick = () => window.open(waUrl, '_blank');
