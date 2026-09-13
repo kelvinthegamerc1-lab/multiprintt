@@ -247,8 +247,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag cursor-pointer bg-transparent"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
         </div>
         
-        <!-- Contenedor dinámico de Cursos -->
-        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal" style="transition-delay: 200ms;"></div>
+        <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal show" style="transition-delay: 200ms;"></div>
 
         <div class="reveal mb-12 w-full flex flex-col items-center justify-center relative overflow-hidden pb-10 border-b border-white/5" style="transition-delay: 300ms;">
             <div class="text-center mb-8 z-20" data-resizable="true">
@@ -258,7 +257,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             
             <div class="w-full relative flex items-center max-w-[100vw] overflow-hidden mask-edges py-2 z-20">
                 <div id="academy-gallery-marquee" class="flex gap-4 md:gap-6 items-center w-max animate-marquee hover:pause-marquee">
-                    <!-- Las imágenes se inyectan dinámicamente aquí -->
+                    <!-- Las imágenes se inyectan dinámicamente aquí tras cargar Firebase -->
                 </div>
             </div>
         </div>
@@ -953,13 +952,12 @@ window.renderCourses = function(){
         let masterclassBadge = c.isMasterclass !== false ? `<span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>` : '';
         
         let modalityStr = c.modality || 'Presencial';
-        if(modalityStr.toLowerCase() === 'virtual') modalityStr = 'Online';
-
         let modIcon = 'fa-location-dot';
         let modColorClass = 'text-white/90 bg-black/60 border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]';
         let modIconColor = 'text-white/50';
 
-        if(modalityStr.toLowerCase() === 'online') {
+        if(modalityStr.toLowerCase() === 'virtual' || modalityStr.toLowerCase() === 'online') {
+            modalityStr = 'Online';
             modIcon = 'fa-laptop';
             modColorClass = 'text-red-100 bg-red-600/20 border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
             modIconColor = 'text-red-400';
@@ -987,7 +985,7 @@ window.renderCourses = function(){
                 <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display m-0">${c.title}</h3>
                 <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light m-0">${c.desc}</p>
                 <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
-                    <button onclick="event.stopPropagation(); window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
+                    <button class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
                         Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
                     </button>
                 </div>
@@ -1124,6 +1122,9 @@ window.loadFirebaseData = async function() {
             if(data.courseOrder) window.courseOrderArray = data.courseOrder;
         }
 
+        // ES CLAVE CARGAR LA GALERÍA AQUÍ: Después de que Firebase restaure el DOM, para evitar que la borre.
+        window.loadAcademyGallery();
+
         onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
             window.appProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
             window.renderProducts();
@@ -1139,6 +1140,7 @@ window.loadFirebaseData = async function() {
         console.warn("Error Firebase, usando respaldo seguro.", error); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
         window.renderProducts(); window.renderCourses();
+        window.loadAcademyGallery(); // Asegurarse de que cargue incluso si hay error de DB.
     } 
     finally {
         window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
@@ -1150,6 +1152,56 @@ window.loadFirebaseData = async function() {
             if(window.parent && window.parent !== window) { window.parent.postMessage({ type: 'APP_READY' }, '*'); }
         }, 500); 
     }
+}
+
+window.loadAcademyGallery = async function() {
+    const container = document.getElementById('academy-gallery-marquee');
+    if(!container) return; // Si la sección fue borrada del template, salir para evitar error.
+    
+    const exclusions = ["polimacion.jpg", "impresion.jpg", "vidrio.jpg", "pedreria.jpg", "plotter.jpg", "sellos.jpg", "resina.jpg", "agenda.jpg", "serigrafia.jpg", "sublimacion.jpg"];
+    
+    // Imágenes premium de respaldo estilo Apple
+    const premiumBackups = [
+        "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1626786139474-124b8df2e6d6?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop&q=80"
+    ];
+    
+    let images = [];
+    try {
+        const res = await fetch('https://multiprintt.web.app/recursos/imagenes.json');
+        if (res.ok) {
+            const data = await res.json();
+            if(Array.isArray(data)) images = data;
+            else if(data.imagenes) images = data.imagenes;
+            else if(data.items) images = data.items;
+            else { for(let k in data) if(Array.isArray(data[k])) images.push(...data[k]); }
+        }
+    } catch(e) {
+        console.warn("Usando galería de respaldo premium por fallo o ausencia de json.");
+    }
+    
+    let validImages = images.map(item => typeof item === 'string' ? item : (item.url || item.src)).filter(url => {
+        if(!url) return false;
+        const filename = url.split('/').pop().toLowerCase();
+        return !exclusions.includes(filename) && !url.endsWith('.mp4');
+    }).map(url => url.startsWith('http') ? url : 'https://multiprintt.web.app/recursos/' + url);
+    
+    // Fallback inyectado: Si tu JSON está vacío o bloqueaste todo, mostramos las de stock.
+    if(validImages.length === 0) {
+        validImages = premiumBackups;
+    }
+    
+    let html = '';
+    validImages.forEach(img => {
+        html += `<div class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c]"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
+    });
+    
+    // Efecto bucle infinito para el carrusel
+    container.innerHTML = html + html + html + html;
 }
 
 window.initMap = function() {
@@ -1429,6 +1481,7 @@ window.addEventListener('message', async (event) => {
             
             const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
             const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
+            const gMarquee = clone.querySelector('#academy-gallery-marquee'); if(gMarquee) gMarquee.innerHTML = '';
             
             clone.querySelectorAll('#builder-resize-box').forEach(el => el.remove());
             
@@ -1560,60 +1613,8 @@ window.closeVideoModal = function(e) {
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
 }
 
-window.loadAcademyGallery = async function() {
-    const container = document.getElementById('academy-gallery-marquee');
-    if(!container) return;
-    
-    const exclusions = ["polimacion.jpg", "impresion.jpg", "vidrio.jpg", "pedreria.jpg", "plotter.jpg", "sellos.jpg", "resina.jpg", "agenda.jpg", "serigrafia.jpg", "sublimacion.jpg"];
-    
-    // Imágenes premium de respaldo en caso de que el json falle o se excluyan todas
-    const premiumBackups = [
-        "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1626786139474-124b8df2e6d6?w=800&auto=format&fit=crop&q=80",
-        "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop&q=80"
-    ];
-    
-    let images = [];
-    try {
-        const res = await fetch('https://multiprintt.web.app/recursos/imagenes.json');
-        if (!res.ok) throw new Error("HTTP status " + res.status);
-        const data = await res.json();
-        
-        if(Array.isArray(data)) images = data;
-        else if(data.imagenes) images = data.imagenes;
-        else if(data.items) images = data.items;
-        else { for(let k in data) if(Array.isArray(data[k])) images.push(...data[k]); }
-        
-    } catch(e) {
-        console.warn("Usando galería de respaldo premium por fallo o ausencia de json.");
-    }
-    
-    let validImages = images.map(item => typeof item === 'string' ? item : (item.url || item.src)).filter(url => {
-        if(!url) return false;
-        const filename = url.split('/').pop().toLowerCase();
-        return !exclusions.includes(filename) && !url.endsWith('.mp4');
-    }).map(url => url.startsWith('http') ? url : 'https://multiprintt.web.app/recursos/' + url);
-    
-    // FIX: Si filtraste TODAS tus imágenes, forzamos la de respaldo para que la sección NUNCA desaparezca
-    if(validImages.length === 0) {
-        validImages = premiumBackups;
-    }
-    
-    let html = '';
-    validImages.forEach(img => {
-        html += `<div class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c]"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
-    });
-    
-    // Cuadruplicamos el HTML para que el efecto carrusel (Marquee) sea infinito y nunca se vea el final de golpe
-    container.innerHTML = html + html + html + html;
-}
-
 document.addEventListener('DOMContentLoaded', () => { 
     window.loadFirebaseData(); 
-    window.loadAcademyGallery();
 });
 </script>
 </body>
