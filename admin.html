@@ -48,7 +48,7 @@
     .device-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
     .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); }
 
-    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
+    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
     .tool-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
     .tool-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
 
@@ -87,7 +87,6 @@
 
 <div id="toast-container"></div>
 
-<!-- Modal de Confirmación Personalizado -->
 <div id="custom-confirm-modal" class="modal-overlay z-[11000]">
     <div class="modal-content text-center p-6">
         <h3 id="confirm-title" class="text-white font-bold text-sm mb-2">Confirmación</h3>
@@ -139,7 +138,6 @@
     </div>
 </div>
 
-<!-- Modal Galería con Multi-selección Visual -->
 <div id="gallery-modal" class="modal-overlay z-[10000]">
     <div class="modal-content" style="max-width: 680px;">
         <div class="flex justify-between items-center mb-3">
@@ -258,19 +256,28 @@
     });
 
     window.attemptLogin = async function() {
-        const email = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value;
+        const email = document.getElementById('loginUser').value; 
+        const pass = document.getElementById('loginPass').value;
         const btn = document.getElementById('btn-login');
-        if (!email || !pass) return window.showToast("Datos incompletos.");
         
         let originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
         
         try { 
-            await setPersistence(auth, browserSessionPersistence);
-            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
-            else await signInWithEmailAndPassword(auth, email, pass); 
+            try { await setPersistence(auth, browserSessionPersistence); } catch(e) { console.warn("Persistence fallback", e); }
+            
+            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                if (!email || !pass) {
+                    btn.innerHTML = originalText;
+                    return window.showToast("Datos incompletos.");
+                }
+                await signInWithEmailAndPassword(auth, email, pass); 
+            }
         } catch (error) { 
-            window.showToast("Error de acceso.");
+            console.error("Auth error:", error);
+            window.showToast("Error de acceso. Verifica las credenciales.");
             btn.innerHTML = originalText;
         }
     };
@@ -384,6 +391,7 @@
         const confirmBtn = document.getElementById('gallery-confirm-btn');
         
         modal.classList.add('active');
+        grid.style.opacity = '1';
         grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando medios...</div>';
         
         if(isMultiSelectMode) {
@@ -405,7 +413,12 @@
             galleryDataCache = defaultGalleryItems;
         }
 
-        window.filterGallery(mode === 'product' ? 'image' : filter);
+        grid.style.opacity = '0';
+        setTimeout(() => {
+            window.filterGallery(mode === 'product' ? 'image' : filter);
+            grid.style.opacity = '1';
+            grid.style.transition = 'opacity 0.3s ease';
+        }, 150);
     }
 
     window.filterGallery = function(type) {
@@ -557,7 +570,7 @@
                         <label class="lbl">Modalidad</label>
                         <select id="db-modality" class="inp-field">
                             <option value="Presencial" ${d.modality==='Presencial'?'selected':''}>Presencial</option>
-                            <option value="Virtual" ${d.modality==='Virtual'?'selected':''}>Virtual</option>
+                            <option value="Online" ${(d.modality==='Online' || d.modality==='Virtual')?'selected':''}>Online</option>
                             <option value="Híbrido" ${d.modality==='Híbrido'?'selected':''}>Híbrido</option>
                         </select>
                     </div>
@@ -635,7 +648,7 @@
                 price: document.getElementById('db-price').value, 
                 image: document.getElementById('db-img').value, 
                 isMasterclass: document.getElementById('db-master').checked,
-                modality: document.getElementById('db-modality').value
+                modality: document.getElementById('db-modality') ? document.getElementById('db-modality').value : 'Presencial'
             }; 
         }
         else if(t === 'testimonial_video') { 
