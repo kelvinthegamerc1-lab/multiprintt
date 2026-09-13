@@ -494,6 +494,15 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
 </div>
 
+<div id="imageModal" class="hidden fixed inset-0 z-[99999] bg-[#050507]/95 backdrop-blur-xl p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag" onclick="window.closeImageModal()">
+    <button onclick="window.closeImageModal()" class="absolute top-4 right-4 md:top-8 md:right-8 z-[310] w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all shadow-lg cursor-pointer outline-none">
+        <i class="fa-solid fa-xmark text-xl pointer-events-none"></i>
+    </button>
+    <div class="relative max-w-6xl max-h-[90vh] w-full h-full flex items-center justify-center transform scale-95 transition-transform duration-500" id="imageModalContent">
+        <img id="im-full-image" src="" class="max-w-full max-h-full object-contain rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)]" onclick="event.stopPropagation()">
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 
 <script type="module">
@@ -1197,7 +1206,7 @@ window.loadAcademyGallery = async function() {
     
     let html = '';
     validImages.forEach(img => {
-        html += `<div class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c]"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
+        html += `<div onclick="window.openImageModal('${img}')" class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c] cursor-pointer"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
     });
     
     // Efecto bucle infinito para el carrusel
@@ -1616,6 +1625,37 @@ window.closeVideoModal = function(e) {
     let content = document.getElementById('videoModalContent'); if(!content) content = document.querySelector('#videoModal > div');
     modal.classList.add('opacity-0'); if(!window.isAdminMode && content) content.classList.add('scale-95'); 
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
+}
+
+window.openImageModal = function(src) {
+    if(document.body.classList.contains('builder-mode')) return; // No abrir en modo edición
+    const modal = document.getElementById('imageModal');
+    const content = document.getElementById('imageModalContent');
+    const imgEl = document.getElementById('im-full-image');
+    
+    imgEl.src = src;
+    
+    modal.classList.remove('hidden'); 
+    modal.classList.add('flex'); 
+    setTimeout(() => { 
+        modal.classList.remove('opacity-0'); 
+        if(content) content.classList.remove('scale-95'); 
+    }, 10);
+}
+
+window.closeImageModal = function() {
+    const modal = document.getElementById('imageModal');
+    const content = document.getElementById('imageModalContent');
+    const imgEl = document.getElementById('im-full-image');
+    
+    modal.classList.add('opacity-0'); 
+    if(content) content.classList.add('scale-95'); 
+    
+    setTimeout(() => { 
+        modal.classList.add('hidden'); 
+        modal.classList.remove('flex'); 
+        imgEl.src = ""; // Limpiar imagen
+    }, 300);
 }
 
 document.addEventListener('DOMContentLoaded', () => { 
