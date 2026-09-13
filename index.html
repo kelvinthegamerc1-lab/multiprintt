@@ -814,9 +814,20 @@ window.renderProducts = function(){
     let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
     let safeProducts = [];
     
-    if (window.currentFilter === 'mas-vendidos') { safeProducts = allProducts.sort((a, b) => (b.clicks || 0) - (a.clicks || 0)).slice(0, 8); } 
-    else if (window.currentFilter === 'promocionales') { safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true || (p.discount && p.discount > 0)); } 
-    else { safeProducts = allProducts.filter(p => p.category === window.currentFilter); }
+    if (window.currentFilter === 'mas-vendidos') { 
+        safeProducts = allProducts.sort((a, b) => {
+            // Un producto marcado como manual recibe un empuje de 10,000 puntos
+            let scoreA = (a.isBestSeller ? 10000 : 0) + (a.cartAdds || 0) + (a.checkoutIntents || 0);
+            let scoreB = (b.isBestSeller ? 10000 : 0) + (b.cartAdds || 0) + (b.checkoutIntents || 0);
+            return scoreB - scoreA;
+        }).slice(0, 8); 
+    } 
+    else if (window.currentFilter === 'promocionales') { 
+        safeProducts = allProducts.filter(p => p.category === 'promocionales' || p.isPromo === true || (p.discount && p.discount > 0)); 
+    } 
+    else { 
+        safeProducts = allProducts.filter(p => p.category === window.currentFilter); 
+    }
 
     if (window.currentFilter !== 'mas-vendidos') {
         let safeOrder = Array.isArray(window.productOrderArray) ? window.productOrderArray : [];
