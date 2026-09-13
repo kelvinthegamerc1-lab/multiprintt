@@ -109,6 +109,11 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 .rh-nw { top: -6px; left: -6px; cursor: nwse-resize; } .rh-n { top: -6px; left: calc(50% - 5px); cursor: ns-resize; } .rh-ne { top: -6px; right: -6px; cursor: nesw-resize; }
 .rh-e { top: calc(50% - 5px); right: -6px; cursor: ew-resize; } .rh-se { bottom: -6px; right: -6px; cursor: nwse-resize; } .rh-s { bottom: -6px; left: calc(50% - 5px); cursor: ns-resize; }
 .rh-sw { bottom: -6px; left: -6px; cursor: nesw-resize; } .rh-w { top: calc(50% - 5px); left: -6px; cursor: ew-resize; }
+
+.mask-edges { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+@keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.animate-marquee { animation: scrollMarquee 35s linear infinite; }
+.hover\:pause-marquee:hover { animation-play-state: paused; }
 </style>
 </head>
 
@@ -126,7 +131,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     <header id="section-header" class="glass h-[56px] md:h-[76px] transition-all editable-section shrink-0 border-b-0">
       <div class="max-w-7xl mx-auto px-4 sm:px-5 lg:px-8 h-full flex items-center justify-between">
         <div class="flex items-center gap-6 md:gap-10">
-            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none cursor-pointer">
+            <button onclick="window.navigate('catalog')" class="flex items-center gap-2 md:gap-3 text-left group shrink-0 outline-none cursor-pointer bg-transparent border-none p-0">
               <div class="w-8 h-8 md:w-11 md:h-11 rounded-full bg-black border border-white/15 overflow-hidden shadow-[0_0_20px_rgba(115,92,255,.2)] group-hover:scale-105 transition-transform shrink-0 p-1 cursor-pointer">
                 <img src="https://multiprintt.web.app/recursos/logo_mejorado.png" alt="Multiprintt" class="w-full h-full object-contain" onerror="this.src='https://placehold.co/100x100/101014/ffffff?text=Logo'">
               </div>
@@ -145,30 +150,29 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
         <div class="flex items-center relative">
             <div id="social-nav-mobile" class="flex md:hidden items-center gap-3.5 text-zinc-400 pr-1 sortable-zone">
-                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
-                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
-                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none cursor-pointer"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
-                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors outline-none cursor-pointer bg-transparent border-none p-0"><i class="fa-brands fa-facebook-f text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors outline-none cursor-pointer bg-transparent border-none p-0"><i class="fa-brands fa-instagram text-lg pointer-events-none"></i></button>
+                <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors outline-none cursor-pointer bg-transparent border-none p-0"><i class="fa-brands fa-whatsapp text-lg pointer-events-none"></i></button>
+                <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer bg-transparent"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
             </div>
             
             <div class="hidden md:flex relative items-center z-[110] group h-9 ml-4 w-9">
                 <div id="social-nav-pc" class="absolute right-0 flex items-center justify-end h-9 w-max min-w-[36px] max-w-[36px] group-hover:max-w-[400px] bg-[#111115] hover:bg-[#16161c] backdrop-blur-md rounded-full transition-all duration-500 ease-in-out overflow-hidden shadow-lg border border-white/5 hover:border-white/10 sortable-zone">
-                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer">
+                    <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer bg-transparent">
                         <i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none cursor-pointer">
+                    <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#1877F2] outline-none cursor-pointer bg-transparent border-none p-0">
                         <i class="fa-brands fa-facebook-f text-[18px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none cursor-pointer">
+                    <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-500 transition-colors shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 hover:text-[#E1306C] outline-none cursor-pointer bg-transparent border-none p-0">
                         <i class="fa-brands fa-instagram text-[18px] pointer-events-none"></i>
                     </button>
-                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 hover:text-[#25D366] outline-none cursor-pointer">
+                    <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 hover:text-[#25D366] outline-none cursor-pointer bg-transparent border-none">
                         <i class="fa-brands fa-whatsapp text-[18px] pointer-events-none"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Botón del Carrito -->
             <button onclick="window.toggleCart()" class="relative ml-5 w-9 h-9 flex items-center justify-center rounded-full bg-black/50 border border-white/10 text-white/90 hover:text-[#25d366] hover:bg-[#25d366]/10 hover:border-[#25d366]/30 transition-all duration-300 outline-none cursor-pointer ignore-drag">
                 <i class="fa-solid fa-cart-shopping text-sm pointer-events-none"></i>
                 <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-[#25d366] text-black text-[9px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center transition-all transform scale-0 pointer-events-none shadow-[0_0_10px_rgba(37,211,102,0.4)]">0</span>
@@ -179,12 +183,12 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
     <div id="catalog-subnav" class="w-full bg-[#070709]/95 backdrop-blur-xl border-b border-white/5 transition-all duration-300 overflow-hidden h-[34px] md:h-[45px] opacity-100 shrink-0">
         <div class="flex items-center justify-between md:justify-center w-full px-0">
-            <button onclick="window.setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span></button>
-            <button onclick="window.setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span></button>
-            <button onclick="window.setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer">Textil</button>
-            <button onclick="window.setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span></button>
-            <button onclick="window.setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer"><span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span></button>
-            <button onclick="window.setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer">Packs</button>
+            <button onclick="window.setFilter('mas-vendidos')" id="filter-mas-vendidos" class="filter-btn cat-mas-vendidos active flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer border-none"><span class="md:hidden">Top</span><span class="hidden md:inline">Más Vendidos</span></button>
+            <button onclick="window.setFilter('promocionales')" id="filter-promocionales" class="filter-btn cat-promocionales flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer border-none"><span class="md:hidden">Promos</span><span class="hidden md:inline">Promocionales</span></button>
+            <button onclick="window.setFilter('textil')" id="filter-textil" class="filter-btn cat-textil flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer border-none">Textil</button>
+            <button onclick="window.setFilter('jarros')" id="filter-jarros" class="filter-btn cat-jarros flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer border-none"><span class="md:hidden">Jarros</span><span class="hidden md:inline">Jarros & Thermos</span></button>
+            <button onclick="window.setFilter('imp-general')" id="filter-imp-general" class="filter-btn cat-imp-general flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer border-none"><span class="md:hidden">General</span><span class="hidden md:inline">Imp. General</span></button>
+            <button onclick="window.setFilter('packs')" id="filter-packs" class="filter-btn cat-packs flex-1 md:flex-none flex items-center justify-center h-[34px] md:h-[45px] text-[8px] md:text-[10px] uppercase tracking-wider md:px-8 text-white/50 hover:text-white transition-all whitespace-nowrap cursor-pointer border-none">Packs</button>
         </div>
     </div>
 </div>
@@ -216,7 +220,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             </div>
 
             <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
-                <button data-editable="true" onclick="window.navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-transform hover:-translate-y-1 cursor-pointer">Ver catálogo</button>
+                <button data-editable="true" onclick="window.navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-transform hover:-translate-y-1 cursor-pointer border-none">Ver catálogo</button>
                 <button data-editable="true" onclick="window.navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-transform hover:-translate-y-1 cursor-pointer">Nuestra academia</button>
             </div>
         </div>
@@ -240,10 +244,24 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <span class="flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.15)]"><i class="fa-solid fa-award text-amber-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-amber-100 font-extrabold">Práctica Garantizada</span></span>
             <span class="flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-transparent border border-cyan-500/30 px-5 py-2.5 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.15)]"><i class="fa-solid fa-infinity text-cyan-400 text-sm pointer-events-none"></i> <span data-editable="true" class="text-cyan-100 font-extrabold">Acompañamiento de por vida</span></span>
             
-            <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag cursor-pointer"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
+            <button onclick="window.cloneCourseBadge(this)" class="admin-tool border border-dashed border-white/40 text-white/50 hover:text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-[10px] transition-colors ignore-drag cursor-pointer bg-transparent"><i class="fa-solid fa-plus pointer-events-none"></i> Añadir Etiqueta</button>
         </div>
         
+        <!-- Contenedor dinámico de Cursos -->
         <div id="courses-grid" class="w-full pb-12 mb-12 border-b border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto sortable-zone reveal" style="transition-delay: 200ms;"></div>
+
+        <div class="reveal mb-12 w-full flex flex-col items-center justify-center relative overflow-hidden pb-10 border-b border-white/5" style="transition-delay: 300ms;">
+            <div class="text-center mb-8 z-20" data-resizable="true">
+                <h3 data-editable="true" class="display text-2xl md:text-3xl font-extrabold tracking-tight text-white"><span class="text-amber-400">Momentos</span> Multiprintt</h3>
+                <p data-editable="true" class="text-[11px] md:text-sm text-zinc-400 mt-2 font-light">Un vistazo a nuestras clases y talleres prácticos.</p>
+            </div>
+            
+            <div class="w-full relative flex items-center max-w-[100vw] overflow-hidden mask-edges py-2 z-20">
+                <div id="academy-gallery-marquee" class="flex gap-4 md:gap-6 items-center w-max animate-marquee hover:pause-marquee">
+                    <!-- Las imágenes se inyectan dinámicamente aquí -->
+                </div>
+            </div>
+        </div>
 
         <div class="reveal mt-4 mb-8 text-center md:text-left">
             <h3 data-editable="true" class="display text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-white">Experiencias de <span class="text-cyan-400">Alumnos</span></h3>
@@ -273,8 +291,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
 
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: this.closest('.video-testimonial-card').getAttribute('data-card-id'), itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
-                        <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: this.closest('.video-testimonial-card').getAttribute('data-card-id'), itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+                        <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
 
@@ -290,18 +308,18 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <div class="flex items-center gap-4 pt-4 border-t border-white/5">
                         <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">M</span></div>
                         <div class="flex flex-col">
-                            <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide txt-name">María F.</h4>
-                            <span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role">Curso de Sublimación</span>
+                            <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide txt-name m-0">María F.</h4>
+                            <span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role block mt-1">Curso de Sublimación</span>
                         </div>
                     </div>
                     
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
-                        <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
+                        <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
+                        <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
                 
-                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-pink-500/50 rounded-[32px] bg-pink-500/5 flex flex-col items-center justify-center text-pink-400 font-bold hover:bg-pink-500 hover:text-black hover:border-pink-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(255,45,168,0.1)] ignore-drag">
+                <button onclick="window.cloneTextTestimonial(this)" class="admin-tool w-full min-h-[150px] border-2 border-dashed border-pink-500/50 rounded-[32px] bg-pink-500/5 flex flex-col items-center justify-center text-pink-400 font-bold hover:bg-pink-500 hover:text-black hover:border-pink-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(255,45,168,0.1)] ignore-drag bg-transparent">
                     <i class="fa-solid fa-comment-dots text-2xl mb-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Comentario</span>
                 </button>
             </div>
@@ -325,8 +343,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <div id="leaflet-map" class="absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events"></div>
                     <div class="absolute bottom-2 left-2 md:bottom-4 md:left-4 flex justify-between items-end pointer-events-none z-10 max-w-[80%] md:max-w-[70%]">
                         <div class="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 md:px-4 md:py-3 rounded-lg md:rounded-xl text-left pointer-events-auto shadow-lg w-full">
-                            <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
-                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate">Luis Vernaza y José Mascote.</p>
+                            <p class="text-[9px] md:text-[11px] font-bold text-white flex items-center m-0"><i class="fa-solid fa-location-dot text-violet-400 mr-2"></i> Matriz Guayaquil</p>
+                            <p data-editable="true" class="text-[7px] md:text-[9px] text-zinc-400 mt-0.5 md:mt-1 truncate m-0">Luis Vernaza y José Mascote.</p>
                         </div>
                     </div>
                 </div>
@@ -334,25 +352,25 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
-                        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer" id="contact-phone">+593 99 759 1021</button>
+                        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer bg-transparent border-none p-0" id="contact-phone">+593 99 759 1021</button>
                     </div>
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
-                        <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer">multiprintt@yahoo.com</button>
+                        <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer bg-transparent border-none p-0">multiprintt@yahoo.com</button>
                     </div>
                     
-                    <button onclick="window.cloneContactPhone(this)" class="admin-tool border border-dashed border-cyan-400/50 text-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_10px_rgba(37,216,255,0.15)] ignore-drag cursor-pointer">
+                    <button onclick="window.cloneContactPhone(this)" class="admin-tool border border-dashed border-cyan-400/50 text-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_10px_rgba(37,216,255,0.15)] ignore-drag cursor-pointer bg-transparent">
                         <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none">Añadir Número / Etiqueta</span>
                     </button>
 
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-1 sm:mb-3 block">Síguenos</div>
                         <div id="social-footer-links" class="flex items-center justify-center lg:justify-start gap-5 sm:gap-6 sortable-zone p-2 rounded-lg border border-transparent">
-                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
-                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
-                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none cursor-pointer"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="facebook" onclick="window.open('https://facebook.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#1877F2] transition-colors text-xl sm:text-2xl outline-none cursor-pointer bg-transparent border-none p-0"><i class="fa-brands fa-facebook-f pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="instagram" onclick="window.open('https://instagram.com/multiprintt', '_blank')" class="text-zinc-400 hover:text-[#E1306C] transition-colors text-xl sm:text-2xl outline-none cursor-pointer bg-transparent border-none p-0"><i class="fa-brands fa-instagram pointer-events-none"></i></button>
+                            <button data-editable="true" data-network="whatsapp" onclick="window.open('https://wa.me/593997591021', '_blank')" class="text-zinc-400 hover:text-[#25D366] transition-colors text-xl sm:text-2xl outline-none cursor-pointer bg-transparent border-none p-0"><i class="fa-brands fa-whatsapp pointer-events-none"></i></button>
                             
-                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none cursor-pointer"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
+                            <button onclick="window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')" class="admin-tool w-8 h-8 rounded-full border border-dashed border-cyan-400/50 flex items-center justify-center text-cyan-400 hover:bg-cyan-400 hover:text-black transition-colors ignore-drag shadow-[0_0_10px_rgba(37,216,255,0.2)] outline-none cursor-pointer bg-transparent"><i class="fa-solid fa-plus text-xs pointer-events-none"></i></button>
                         </div>
                     </div>
                 </div>
@@ -368,16 +386,16 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
 <nav id="bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-nav-mobile flex justify-around items-center h-[65px] px-2 pb-[env(safe-area-bottom)]">
     <div class="absolute top-0 left-0 right-0 h-[2px] gradient-line"></div>
-    <button onclick="window.navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white cursor-pointer"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
-    <button onclick="window.navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
-    <button onclick="window.navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
-    <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
+    <button onclick="window.navigate('catalog')" id="bot-catalog" class="bot-nav-item active flex flex-col items-center justify-center w-full h-full gap-1 text-white cursor-pointer bg-transparent border-none"><i class="fa-solid fa-store text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Tienda</span></button>
+    <button onclick="window.navigate('courses')" id="bot-courses" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer bg-transparent border-none"><i class="fa-solid fa-graduation-cap text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Academia</span></button>
+    <button onclick="window.navigate('about')" id="bot-about" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer bg-transparent border-none"><i class="fa-solid fa-circle-info text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Nosotros</span></button>
+    <button onclick="window.navigate('contact')" id="bot-contact" class="bot-nav-item flex flex-col items-center justify-center w-full h-full gap-1 text-zinc-500 cursor-pointer bg-transparent border-none"><i class="fa-regular fa-envelope text-[18px]"></i><span class="text-[9px] font-semibold tracking-wide">Contacto</span></button>
 </nav>
 
 <div id="cart-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] opacity-0 pointer-events-none transition-opacity duration-300 ignore-drag cursor-pointer" onclick="window.toggleCart()"></div>
 <div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
     <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
-        <h3 class="text-white font-extrabold text-lg flex items-center"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
+        <h3 class="text-white font-extrabold text-lg flex items-center m-0"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
         <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
@@ -394,7 +412,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <span>Total</span>
             <span id="cart-total" class="text-[#25d366]">$0.00</span>
         </div>
-        <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none">
+        <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none border-none">
             <i class="fa-brands fa-whatsapp text-xl"></i> 💰 Finalizar compra
         </button>
         <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none">
@@ -414,13 +432,13 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
       
       <div class="absolute top-6 left-6 z-20 flex flex-wrap gap-2 pr-6" id="cm-badge-container">
          <span id="cm-masterclass-badge" class="bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-cyan-300 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(37,216,255,0.2)]"><i class="fa-solid fa-award mr-1"></i> Masterclass</span>
-         <span id="cm-modality-badge" class="bg-black/60 backdrop-blur-md border border-white/10 text-white/90 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center"><i class="fa-solid fa-location-dot mr-1.5 text-white/50"></i> <span id="cm-modality-text">Presencial</span></span>
+         <span id="cm-modality-badge" class="bg-black/60 backdrop-blur-md border border-white/10 text-white/90 text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)]"><i class="fa-solid fa-location-dot mr-1 text-white/50"></i> <span id="cm-modality-text">Presencial</span></span>
       </div>
     </div>
 
     <div class="w-full md:w-7/12 p-6 sm:p-8 md:p-12 flex flex-col relative z-20 justify-center bg-[#0a0a0c]">
-      <h3 id="cm-title" class="display text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white ignore-drag leading-tight drop-shadow-md"></h3>
-      <p id="cm-desc" class="text-sm md:text-base text-zinc-400 leading-relaxed mb-8 flex-1 ignore-drag font-light"></p>
+      <h3 id="cm-title" class="display text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white ignore-drag leading-tight drop-shadow-md m-0"></h3>
+      <p id="cm-desc" class="text-sm md:text-base text-zinc-400 leading-relaxed mb-8 flex-1 ignore-drag font-light m-0"></p>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 ignore-drag bg-[#101014] p-5 rounded-2xl border border-white/5 shadow-inner">
         <div class="flex items-center text-zinc-300">
@@ -433,7 +451,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         </div>
       </div>
 
-      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag outline-none cursor-pointer">
+      <button id="cm-btn" onclick="" class="flex items-center justify-center w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-400 text-black text-sm md:text-base font-extrabold transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(37,216,255,0.3)] hover:shadow-[0_15px_40px_rgba(37,216,255,0.4)] ignore-drag outline-none cursor-pointer border-none">
         <i class="fa-brands fa-whatsapp text-xl mr-2 pointer-events-none"></i> 🎓 Reserva tu cupo
       </button>
     </div>
@@ -461,7 +479,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <i data-editable="true" id="vm-quote-icon" class="fa-solid fa-quote-left text-[36px] md:text-[48px] drop-shadow-md transition-colors duration-300 text-cyan-400 mb-6 pointer-events-auto"></i>
             
             <div class="overflow-y-auto hide-scrollbar max-h-[160px] md:max-h-[220px] mb-8 pointer-events-none">
-                <p data-editable="true" id="vm-quote" class="text-white/95 text-base md:text-xl leading-relaxed font-light italic drop-shadow-md pr-2 pointer-events-auto">"..."</p>
+                <p data-editable="true" id="vm-quote" class="text-white/95 text-base md:text-xl leading-relaxed font-light italic drop-shadow-md pr-2 pointer-events-auto m-0">"..."</p>
             </div>
             
             <div class="border-t border-white/10 pt-6 md:pt-8 shrink-0 flex items-center gap-5 pointer-events-none mt-auto">
@@ -469,8 +487,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     <span class="font-bold text-xl md:text-2xl text-cyan-400" id="vm-initial">C</span>
                 </div>
                 <div class="flex flex-col justify-center pointer-events-none">
-                    <h4 data-editable="true" id="vm-name" class="text-white text-lg md:text-xl font-bold tracking-wide drop-shadow-sm pointer-events-auto">Carlos P.</h4>
-                    <span data-editable="true" id="vm-role" class="text-[10px] md:text-xs uppercase tracking-[0.2em] font-extrabold drop-shadow-sm mt-1 transition-colors duration-300 text-cyan-400 pointer-events-auto">Caso de Éxito</span>
+                    <h4 data-editable="true" id="vm-name" class="text-white text-lg md:text-xl font-bold tracking-wide drop-shadow-sm pointer-events-auto m-0">Carlos P.</h4>
+                    <span data-editable="true" id="vm-role" class="text-[10px] md:text-xs uppercase tracking-[0.2em] font-extrabold drop-shadow-sm mt-1 transition-colors duration-300 text-cyan-400 pointer-events-auto block">Caso de Éxito</span>
                 </div>
             </div>
         </div>
@@ -527,11 +545,7 @@ window.addToCart = function(productId, e) {
     if(window.isAdminMode) return;
     
     const existing = window.multiprinttCart.find(item => item.id === productId);
-    if(existing) {
-        existing.qty += 1;
-    } else {
-        window.multiprinttCart.push({ id: productId, qty: 1 });
-    }
+    if(existing) { existing.qty += 1; } else { window.multiprinttCart.push({ id: productId, qty: 1 }); }
     
     try { setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'products', productId), { cartAdds: increment(1) }, { merge: true }); } catch (err) {}
     
@@ -603,13 +617,13 @@ window.updateCartUI = function() {
                 ${imgHtml}
             </div>
             <div class="flex-1 flex flex-col justify-center min-w-0">
-                <h4 class="text-white text-[11px] font-bold truncate">${p.name}</h4>
+                <h4 class="text-white text-[11px] font-bold truncate m-0">${p.name}</h4>
                 <div class="text-[#25d366] text-xs font-extrabold mt-0.5">$${finalPrice.toFixed(2)}</div>
             </div>
             <div class="flex items-center gap-2 bg-black rounded-lg p-1 border border-white/10 shrink-0">
-                <button onclick="window.updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                <button onclick="window.updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer border-none"><i class="fa-solid fa-minus text-[10px]"></i></button>
                 <span class="text-white text-xs font-bold w-4 text-center">${item.qty}</span>
-                <button onclick="window.updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                <button onclick="window.updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-white/50 hover:text-white bg-white/5 hover:bg-white/10 rounded-md transition-colors cursor-pointer border-none"><i class="fa-solid fa-plus text-[10px]"></i></button>
             </div>
         </div>`;
     });
@@ -711,28 +725,18 @@ window.updateSliderOpacities = function(sliderId) {
             const slideRect = slide.getBoundingClientRect();
             const slideCenter = slideRect.left + (slideRect.width / 2);
             const distance = Math.abs(sliderCenter - slideCenter);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIdx = idx;
-            }
-            slide.classList.remove('opacity-100', 'scale-100', 'z-20');
-            slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
+            if (distance < minDistance) { minDistance = distance; closestIdx = idx; }
+            slide.classList.remove('opacity-100', 'scale-100', 'z-20'); slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
         });
         
         if (slides[closestIdx]) {
-            slides[closestIdx].classList.remove('opacity-40', 'scale-[0.70]', 'z-10');
-            slides[closestIdx].classList.add('opacity-100', 'scale-100', 'z-20');
+            slides[closestIdx].classList.remove('opacity-40', 'scale-[0.70]', 'z-10'); slides[closestIdx].classList.add('opacity-100', 'scale-100', 'z-20');
         }
 
         const dots = document.querySelectorAll(`.dot-${sliderId}`);
         dots.forEach((dot, idx) => {
-            if (idx === closestIdx) {
-                dot.classList.remove('bg-white/40', 'w-1.5');
-                dot.classList.add('bg-cyan-400', 'w-3');
-            } else {
-                dot.classList.remove('bg-cyan-400', 'w-3');
-                dot.classList.add('bg-white/40', 'w-1.5');
-            }
+            if (idx === closestIdx) { dot.classList.remove('bg-white/40', 'w-1.5'); dot.classList.add('bg-cyan-400', 'w-3'); } 
+            else { dot.classList.remove('bg-cyan-400', 'w-3'); dot.classList.add('bg-white/40', 'w-1.5'); }
         });
     });
 };
@@ -770,13 +774,13 @@ window.syncSocialNetworks = function() {
 
     const btnAdminPc = document.createElement('button');
     btnAdminPc.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
-    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer";
+    btnAdminPc.className = "admin-tool w-0 group-hover:w-7 h-7 rounded-full border border-dashed border-white/40 flex items-center justify-center text-white/50 hover:text-white hover:border-white transition-all duration-500 ignore-drag shrink-0 opacity-0 group-hover:opacity-100 overflow-hidden group-hover:mr-2 outline-none cursor-pointer bg-transparent";
     btnAdminPc.innerHTML = `<i class="fa-solid fa-plus text-[10px] pointer-events-none"></i>`;
     navPcContainer.appendChild(btnAdminPc);
 
     const btnAdminMob = document.createElement('button');
     btnAdminMob.setAttribute('onclick', "window.parent.postMessage({type:'OPEN_ICON_PICKER'}, '*')");
-    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer";
+    btnAdminMob.className = "admin-tool w-8 h-8 rounded-full border border-dashed border-white/40 items-center justify-center text-white/50 hover:text-white hover:border-white transition-colors ignore-drag shrink-0 outline-none cursor-pointer bg-transparent";
     btnAdminMob.innerHTML = `<i class="fa-solid fa-plus text-xs pointer-events-none"></i>`;
     navMobileContainer.appendChild(btnAdminMob);
 
@@ -793,8 +797,8 @@ window.syncSocialNetworks = function() {
         btnPc.setAttribute('data-network', network);
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
         
-        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer"; } 
-        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer"; }
+        if (isLast) { btnPc.className = "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer bg-transparent border-none"; } 
+        else { btnPc.className = "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer bg-transparent border-none p-0"; }
         
         if(network === 'facebook') btnPc.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') btnPc.classList.add('hover:text-[#e1306c]');
@@ -813,7 +817,7 @@ window.syncSocialNetworks = function() {
         btnMob.setAttribute('data-editable', 'true');
         btnMob.setAttribute('data-network', network);
         btnMob.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none cursor-pointer";
+        btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none cursor-pointer bg-transparent border-none p-0";
         
         if(network === 'facebook') btnMob.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') btnMob.classList.add('hover:text-[#e1306c]');
@@ -884,7 +888,7 @@ window.renderProducts = function(){
                 const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
                 
                 let dotClass = isActive ? 'bg-cyan-400 w-3' : 'bg-white/40 w-1.5';
-                dotsHtml += `<button onclick="window.scrollToSlide('${sliderId}', ${idx}, event)" class="dot-${sliderId} h-1.5 ${dotClass} rounded-full transition-all duration-300 pointer-events-auto outline-none cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.8)] ignore-drag"></button>`;
+                dotsHtml += `<button onclick="window.scrollToSlide('${sliderId}', ${idx}, event)" class="dot-${sliderId} h-1.5 ${dotClass} rounded-full transition-all duration-300 pointer-events-auto outline-none cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.8)] ignore-drag border-none p-0"></button>`;
 
                 return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
             }).join('');
@@ -911,7 +915,7 @@ window.renderProducts = function(){
         let promoBadgeContainer = badgesHtml ? `<div class="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">${badgesHtml}</div>` : '';
 
         let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let priceHtml = `<span class="text-sm md:text-base font-extrabold text-white">$${finalPrice.toFixed(2)}</span>`;
         if (p.isPromo && discountVal > 0) {
@@ -920,7 +924,7 @@ window.renderProducts = function(){
 
         let delay = (i % 8) * 50;
 
-        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${p.id}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button onclick="window.addToCart('${p.id}', event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
+        renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${p.id}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight m-0">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button onclick="window.addToCart('${p.id}', event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
     });
     if(safeProducts.length > 0) grid.innerHTML = renderHTML;
 }
@@ -943,7 +947,7 @@ window.renderCourses = function(){
         let a = accents[i % accents.length]; 
         let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
         
-        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+        let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
         
         let delay = 100 + (i * 100);
         let masterclassBadge = c.isMasterclass !== false ? `<span class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>` : '';
@@ -968,7 +972,7 @@ window.renderCourses = function(){
         let modalityBadge = `<span class="backdrop-blur-md border ${modColorClass} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0"><i class="fa-solid ${modIcon} text-[10px] ${modIconColor}"></i> ${modalityStr}</span>`;
         
         renderHTML += `
-        <article onclick="window.openCourseModal('${c.id}')" class="card reveal relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder} cursor-pointer" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
+        <article onclick="window.openCourseModal('${c.id}')" class="card reveal show relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder} cursor-pointer" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
             ${adminHtml}
             <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
                 <img src="${c.image}" loading="lazy" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
@@ -980,8 +984,8 @@ window.renderCourses = function(){
             </div>
             <div class="relative flex flex-col w-full flex-1 p-6 md:p-8 pt-4 z-20 bg-[#070709]">
                 <div class="w-12 h-1 rounded-full bg-gradient-to-r ${a.from} to-transparent mb-5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display">${c.title}</h3>
-                <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light">${c.desc}</p>
+                <h3 class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display m-0">${c.title}</h3>
+                <p class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light m-0">${c.desc}</p>
                 <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
                     <button onclick="event.stopPropagation(); window.openCourseModal('${c.id}')" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
                         Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
@@ -1014,7 +1018,7 @@ window.cloneContactPhone = function(btn) {
     clone.setAttribute('data-resizable', 'true');
     clone.innerHTML = `
         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Nuevo Teléfono</div>
-        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer">+593 99 000 0000</button>
+        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer bg-transparent border-none p-0">+593 99 000 0000</button>
     `;
     parent.insertBefore(clone, btn);
     if(window.updateResizeBox) window.updateResizeBox();
@@ -1035,13 +1039,13 @@ window.cloneTextTestimonial = function(btnNode) {
         <div class="flex items-center gap-4 pt-4 border-t border-white/5">
             <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">N</span></div>
             <div class="flex flex-col">
-                <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide txt-name">Nuevo Alumno</h4>
-                <span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role">Curso General</span>
+                <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide txt-name m-0">Nuevo Alumno</h4>
+                <span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role block mt-1">Curso General</span>
             </div>
         </div>
         <div class="admin-video-edit-overlay ignore-drag">
-            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
-            <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
+            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
+            <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
         </div>
     `;
     grid.insertBefore(div, btnNode);
@@ -1064,19 +1068,19 @@ window.cloneVideoTestimonial = function(btnNode) {
             <i class="fa-solid fa-quote-left text-4xl text-cyan-400/50 mb-3"></i>
             <p data-editable="true" class="vt-quote text-white/95 text-base italic leading-relaxed font-light">"Escribe tu testimonio en video aquí..."</p>
         </div>
-        <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110 cursor-pointer">
+        <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110 cursor-pointer border-none">
             <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
         </button>
         <div class="absolute bottom-0 left-0 right-0 p-6 z-20 flex items-center gap-4 pointer-events-none border-t border-white/5 bg-black/30 backdrop-blur-xl">
             <div class="w-12 h-12 rounded-full bg-cyan-400/20 border border-cyan-400 flex items-center justify-center font-bold text-xl text-cyan-400 shadow-[0_0_10px_rgba(37,216,255,0.3)] shrink-0 vt-initial">N</div>
             <div class="flex flex-col">
-                <h4 data-editable="true" class="vt-name text-white font-bold text-sm tracking-wide drop-shadow-md pointer-events-auto w-max">Nuevo Alumno</h4>
-                <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-extrabold uppercase tracking-[0.2em] pointer-events-auto w-max drop-shadow-md mt-1">Caso de Éxito</span>
+                <h4 data-editable="true" class="vt-name text-white font-bold text-sm tracking-wide drop-shadow-md pointer-events-auto w-max m-0">Nuevo Alumno</h4>
+                <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-extrabold uppercase tracking-[0.2em] pointer-events-auto w-max drop-shadow-md mt-1 block">Caso de Éxito</span>
             </div>
         </div>
         <div class="admin-video-edit-overlay ignore-drag">
-            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
-            <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
+            <button onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: 'https://multiprintt.web.app/recursos/testimonio/testimonio0.mp4', name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+            <button onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
         </div>
     `;
     col.insertBefore(div, btnNode);
@@ -1282,7 +1286,7 @@ window.addEventListener('message', async (event) => {
         newBtn.setAttribute('data-editable', 'true');
         newBtn.setAttribute('data-network', network);
         newBtn.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none cursor-pointer";
+        newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none cursor-pointer bg-transparent border-none p-0";
         
         if(network === 'facebook') newBtn.classList.add('hover:text-[#1877f2]');
         else if(network === 'instagram') newBtn.classList.add('hover:text-[#e1306c]');
@@ -1333,18 +1337,9 @@ window.addEventListener('message', async (event) => {
                 const init = targetCard.querySelector('.vt-initial');
                 if(init) init.innerText = d.name.charAt(0).toUpperCase();
             }
-            if(d.role) {
-                const r = targetCard.querySelector('.vt-role');
-                if(r) r.innerText = d.role;
-            }
-            if(d.quote) {
-                const q = targetCard.querySelector('.vt-quote');
-                if(q) q.innerText = d.quote;
-            }
-            if(d.theme) {
-                window.applyThemeSwap(targetCard, d.theme);
-                targetCard.setAttribute('data-theme', d.theme);
-            }
+            if(d.role) { const r = targetCard.querySelector('.vt-role'); if(r) r.innerText = d.role; }
+            if(d.quote) { const q = targetCard.querySelector('.vt-quote'); if(q) q.innerText = d.quote; }
+            if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
             if (window.updateResizeBox) window.updateResizeBox();
         }
     }
@@ -1359,18 +1354,9 @@ window.addEventListener('message', async (event) => {
                 const init = targetCard.querySelector('.txt-initial');
                 if(init) init.innerText = d.name.charAt(0).toUpperCase();
             }
-            if(d.role) {
-                const r = targetCard.querySelector('.txt-role');
-                if(r) r.innerText = d.role;
-            }
-            if(d.quote) {
-                const q = targetCard.querySelector('p');
-                if(q) q.innerText = d.quote;
-            }
-            if(d.theme) {
-                window.applyThemeSwap(targetCard, d.theme);
-                targetCard.setAttribute('data-theme', d.theme);
-            }
+            if(d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.role; }
+            if(d.quote) { const q = targetCard.querySelector('p'); if(q) q.innerText = d.quote; }
+            if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
             if (window.updateResizeBox) window.updateResizeBox();
         }
     }
@@ -1423,9 +1409,7 @@ window.addEventListener('message', async (event) => {
         else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
     }
 
-    if (event.data.type === 'RESET_TEMPLATE') {
-        window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*');
-    }
+    if (event.data.type === 'RESET_TEMPLATE') { window.parent.postMessage({ type: 'RESET_TEMPLATE' }, '*'); }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
         if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
@@ -1474,18 +1458,20 @@ window.openCourseModal = function(id) {
     if(masterBadge) masterBadge.style.display = c.isMasterclass !== false ? 'inline-flex' : 'none';
     
     const modBadge = document.getElementById('cm-modality-badge');
+    const modText = document.getElementById('cm-modality-text');
     let modalityStr = c.modality || 'Presencial';
-    if(modalityStr.toLowerCase() === 'virtual') modalityStr = 'Online';
-
+    if(modText) modText.textContent = modalityStr;
     if(modBadge) {
         let modIcon = 'fa-location-dot';
         let modColorClass = 'bg-black/60 border-white/10 text-white/90 shadow-[0_0_15px_rgba(0,0,0,0.5)]'; 
         let modIconColor = 'text-white/50';
 
-        if (modalityStr.toLowerCase() === 'online') {
+        if (modalityStr.toLowerCase() === 'virtual' || modalityStr.toLowerCase() === 'online') {
+            modalityStr = 'Online';
             modIcon = 'fa-laptop';
             modColorClass = 'bg-red-600/20 border-red-500/30 text-red-100 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
             modIconColor = 'text-red-400';
+            if(modText) modText.textContent = modalityStr;
         } else if (modalityStr.toLowerCase() === 'híbrido') {
             modIcon = 'fa-rotate';
             modColorClass = 'bg-violet-600/20 border-violet-500/30 text-violet-100 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
@@ -1508,8 +1494,7 @@ window.openCourseModal = function(id) {
 }
 
 window.closeCourseModal = function() {
-    const modal = document.getElementById('courseModal');
-    const content = document.getElementById('courseModalContent');
+    const modal = document.getElementById('courseModal'); const content = document.getElementById('courseModalContent');
     if (modal) { modal.classList.add('opacity-0'); if(content) content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
 };
 
@@ -1560,11 +1545,7 @@ window.openVideoModal = function(btn) {
         video.muted = true;
         const playPromise = video.play(); 
         if (playPromise !== undefined) { 
-            playPromise.then(() => {
-                video.muted = false; 
-            }).catch(() => { 
-                video.muted = true; video.play(); 
-            }); 
+            playPromise.then(() => { video.muted = false; }).catch(() => { video.muted = true; video.play(); }); 
         }
 
         if(!window.isAdminMode) { video.loop = false; video.onended = () => window.closeVideoModal(); } else { video.loop = true; } 
@@ -1579,7 +1560,61 @@ window.closeVideoModal = function(e) {
     setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300); 
 }
 
-document.addEventListener('DOMContentLoaded', () => { window.loadFirebaseData(); });
+window.loadAcademyGallery = async function() {
+    const container = document.getElementById('academy-gallery-marquee');
+    if(!container) return;
+    
+    const exclusions = ["polimacion.jpg", "impresion.jpg", "vidrio.jpg", "pedreria.jpg", "plotter.jpg", "sellos.jpg", "resina.jpg", "agenda.jpg", "serigrafia.jpg", "sublimacion.jpg"];
+    
+    // Imágenes premium de respaldo en caso de que el json falle o se excluyan todas
+    const premiumBackups = [
+        "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1544816155-12df9643f363?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1626786139474-124b8df2e6d6?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop&q=80"
+    ];
+    
+    let images = [];
+    try {
+        const res = await fetch('https://multiprintt.web.app/recursos/imagenes.json');
+        if (!res.ok) throw new Error("HTTP status " + res.status);
+        const data = await res.json();
+        
+        if(Array.isArray(data)) images = data;
+        else if(data.imagenes) images = data.imagenes;
+        else if(data.items) images = data.items;
+        else { for(let k in data) if(Array.isArray(data[k])) images.push(...data[k]); }
+        
+    } catch(e) {
+        console.warn("Usando galería de respaldo premium por fallo o ausencia de json.");
+    }
+    
+    let validImages = images.map(item => typeof item === 'string' ? item : (item.url || item.src)).filter(url => {
+        if(!url) return false;
+        const filename = url.split('/').pop().toLowerCase();
+        return !exclusions.includes(filename) && !url.endsWith('.mp4');
+    }).map(url => url.startsWith('http') ? url : 'https://multiprintt.web.app/recursos/' + url);
+    
+    // FIX: Si filtraste TODAS tus imágenes, forzamos la de respaldo para que la sección NUNCA desaparezca
+    if(validImages.length === 0) {
+        validImages = premiumBackups;
+    }
+    
+    let html = '';
+    validImages.forEach(img => {
+        html += `<div class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c]"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
+    });
+    
+    // Cuadruplicamos el HTML para que el efecto carrusel (Marquee) sea infinito y nunca se vea el final de golpe
+    container.innerHTML = html + html + html + html;
+}
+
+document.addEventListener('DOMContentLoaded', () => { 
+    window.loadFirebaseData(); 
+    window.loadAcademyGallery();
+});
 </script>
 </body>
 </html>
