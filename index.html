@@ -154,7 +154,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
 .mask-edges { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
 @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-.animate-marquee { animation: scrollMarquee 120s linear infinite; }
+.animate-marquee { animation: scrollMarquee linear infinite; }
 .hover\:pause-marquee:hover { animation-play-state: paused; }
 </style>
 </head>
@@ -243,27 +243,65 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     </div>
   </section>
 
-  <section id="view-about" class="view-slide slide-scroll editable-section">
-    <div class="hero-glow w-[350px] h-[350px] bg-violet-600/20 right-0 md:right-20 top-20"></div>
-    <div class="hero-glow w-[300px] h-[300px] bg-pink-500/15 left-[-50px] bottom-10"></div>
+  <section id="view-about" class="view-slide slide-scroll editable-section flex flex-col justify-center overflow-x-hidden bg-[#070709]">
+    <div class="hero-glow w-[300px] h-[300px] lg:w-[450px] lg:h-[450px] bg-violet-600/15 right-0 md:right-10 top-10 lg:top-20"></div>
+    <div class="hero-glow w-[250px] h-[250px] lg:w-[350px] lg:h-[350px] bg-pink-500/10 left-[-50px] bottom-10"></div>
     
-    <div class="max-w-7xl mx-auto w-full px-4 sm:px-5 lg:px-8 flex flex-col min-h-full py-8 md:py-12 justify-center relative z-10">
-        <div class="m-auto w-full flex flex-col items-center text-center reveal relative z-20" data-resizable="true">
-            <h2 class="display flex flex-col items-center tracking-[-.04em] w-full gap-0 relative z-20">
-                <span data-editable="true" class="block text-sm sm:text-lg md:text-xl font-medium text-white/50 mb-1">Impresión & Publicidad,</span>
-                <span data-editable="true" class="relative z-10 block text-4xl sm:text-5xl md:text-[clamp(4rem,8vw,7rem)] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1">Tú Imagen Viva.</span>
-            </h2>
-            <p data-editable="true" class="mt-4 md:mt-6 text-zinc-400 text-[13px] md:text-base leading-relaxed max-w-2xl mx-auto px-2">Somos expertos en personalización, impresión gráfica y capacitación profesional. Diseñamos productos que destacan y te enseñamos a crear los tuyos con calidad inigualable.</p>
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center relative z-10 py-4 lg:py-0">
+        
+        <div class="flex flex-col lg:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-16 w-full h-full lg:max-h-[80vh]">
             
-            <div class="mt-6 flex flex-wrap justify-center gap-4 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] sortable-zone">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-box-open text-pink-400 pointer-events-none"></i> <span data-editable="true">Envíos Nacionales</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-award text-violet-400 pointer-events-none"></i> <span data-editable="true">Calidad Premium</span></span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-star text-cyan-400 pointer-events-none"></i> <span data-editable="true">Atención Única</span></span>
+            <div class="relative h-[35vh] min-h-[240px] max-h-[380px] lg:h-[70vh] lg:max-h-[700px] lg:min-h-[500px] aspect-[9/16] shrink-0 rounded-[20px] lg:rounded-[32px] overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(115,92,255,0.15)] bg-[#070709]" data-resizable="true">
+                
+                <video id="about-video" 
+                       src="https://drive.google.com/uc?export=download&id=1h4fMVIuvcROJKXlm9KBSLkphgLc2ru5C#t=0.01" 
+                       class="absolute inset-0 w-full h-full object-cover z-10 cursor-pointer" 
+                       playsinline 
+                       disablePictureInPicture 
+                       controlsList="nodownload nofullscreen noremoteplayback" 
+                       oncontextmenu="return false;"
+                       onclick="window.toggleAboutVideo()">
+                </video>
+
+                <div id="about-play-btn" onclick="window.toggleAboutVideo()" class="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 cursor-pointer">
+                    <div class="w-14 h-14 lg:w-20 lg:h-20 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shadow-[0_0_30px_rgba(0,0,0,0.5)] backdrop-blur-md text-white transition-transform duration-300 transform scale-100">
+                        <i class="fa-solid fa-play text-lg lg:text-2xl ml-1"></i>
+                    </div>
+                </div>
             </div>
 
-            <div class="mt-8 flex flex-col sm:flex-row gap-3 w-full sm:w-auto sortable-zone">
-                <button data-editable="true" onclick="window.navigate('catalog')" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-white text-black text-xs font-bold shadow-xl transition-transform hover:-translate-y-1 cursor-pointer border-none">Ver catálogo</button>
-                <button data-editable="true" onclick="window.navigate('courses')" class="w-full sm:w-auto px-8 py-3.5 rounded-full border border-white/15 bg-white/[.04] text-white text-xs font-bold hover:bg-white/10 transition-transform hover:-translate-y-1 cursor-pointer">Nuestra academia</button>
+            <div class="flex flex-col text-center lg:text-left items-center lg:items-start z-20 w-full shrink lg:shrink-0 lg:max-w-[50%]" data-resizable="true">
+                
+                <h2 class="display flex flex-col items-center lg:items-start tracking-tight w-full gap-0 relative z-20 mb-3 lg:mb-6">
+                    <span data-editable="true" class="block text-[8px] sm:text-[10px] lg:text-[12px] uppercase tracking-[0.3em] font-extrabold text-cyan-400 mb-1 lg:mb-2">Impresión & Publicidad,</span>
+                    <span data-editable="true" class="relative z-10 block text-[2.5rem] sm:text-[3.5rem] lg:text-7xl xl:text-[5.5rem] font-extrabold bg-gradient-to-r from-white via-[#d5d0ff] to-[#ff4bb8] bg-clip-text text-transparent pb-1 leading-none">Multiprintt</span>
+                </h2>
+                
+                <div class="flex flex-col gap-2.5 lg:gap-4 text-zinc-400 text-[10.5px] sm:text-[12px] lg:text-[14px] xl:text-[15px] leading-snug lg:leading-relaxed font-light w-full max-w-2xl mx-auto lg:mx-0">
+                    
+                    <p data-editable="true" class="text-white/95 text-[12px] sm:text-[13px] lg:text-lg font-medium leading-snug lg:leading-relaxed drop-shadow-md m-0">
+                        Multiprintt nació con una misión clara: dominar el arte de la personalización y transformar ideas simples en productos extraordinarios.
+                    </p>
+                    
+                    <p data-editable="true" class="m-0 hidden sm:block lg:block">
+                        Lo que comenzó en Guayaquil como un taller explorando las técnicas de personalizacion, la sublimación, la impresión, la serigrafía y el grabado en vidrio, se convirtió rápidamente en un referente de innovación y acabado profesional.
+                    </p>
+                    
+                    <div class="px-4 lg:px-5 border-l-2 lg:border-l-[3px] border-gradient-to-b border-pink-500/60 my-1 lg:my-2 py-1.5 lg:py-2 bg-gradient-to-r from-pink-500/5 to-transparent rounded-r-xl text-left">
+                        <p data-editable="true" class="italic text-white/80 m-0 leading-snug lg:leading-relaxed text-[10px] sm:text-[11px] lg:text-[14px]">
+                            "Con mas de 20 años en el camino entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca, acompañar momentos especiales y abrir puertas al crecimiento personal."
+                        </p>
+                    </div>
+                    
+                    <p data-editable="true" class="m-0">
+                        Tras años de ensayo, error y perfeccionamiento técnico, decidimos que nuestro conocimiento no debía quedarse encerrado en el taller. Hoy, Multiprintt es un espacio dual donde creamos productos de alto nivel y capacitamos a la nueva generación de emprendedores de la impresión.
+                    </p>
+                    
+                    <p data-editable="true" class="m-0 hidden lg:block">
+                        Este catálogo es el reflejo de años de dedicación, pruebas de calidad y una constante pasión por hacer las cosas bien desde el primer intento.
+                    </p>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -297,9 +335,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <p data-editable="true" class="text-[11px] md:text-sm text-zinc-400 mt-2 font-light">Un vistazo a nuestras clases y talleres prácticos.</p>
             </div>
             
-            <div class="w-full relative flex items-center max-w-[100vw] overflow-hidden mask-edges py-2 z-20">
+            <div class="w-full relative flex items-center max-w-[100vw] overflow-hidden mask-edges py-4 z-20">
                 <div id="academy-gallery-marquee" class="flex gap-4 md:gap-6 items-center w-max animate-marquee hover:pause-marquee">
-                    <!-- Las imágenes se inyectan dinámicamente aquí tras cargar Firebase -->
                 </div>
             </div>
         </div>
@@ -319,15 +356,15 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                         <p data-editable="true" class="vt-quote text-white/95 text-base italic leading-relaxed font-light">"Dejé mi empleo para ser mi propio jefe y manejar mis propios horarios. Hoy soy dueño de mi tiempo; fue la mejor decisión que pude tomar."</p>
                     </div>
 
-                    <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110 cursor-pointer">
+                    <button onclick="window.openVideoModal(this)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-400 text-xl backdrop-blur-md hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_20px_rgba(37,216,255,0.4)] z-30 ignore-drag outline-none group-hover:scale-110 cursor-pointer border-none">
                         <i class="fa-solid fa-play ml-1 pointer-events-none"></i>
                     </button>
 
                     <div class="absolute bottom-0 left-0 right-0 p-6 z-20 flex items-center gap-4 pointer-events-none border-t border-white/5 bg-black/30 backdrop-blur-xl">
                         <div class="w-12 h-12 rounded-full bg-cyan-400/20 border border-cyan-400 flex items-center justify-center font-bold text-xl text-cyan-400 shadow-[0_0_10px_rgba(37,216,255,0.3)] shrink-0 vt-initial">C</div>
                         <div class="flex flex-col">
-                            <h4 data-editable="true" class="vt-name text-white font-bold text-sm tracking-wide drop-shadow-md pointer-events-auto w-max">Carlos P.</h4>
-                            <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-extrabold uppercase tracking-[0.2em] pointer-events-auto w-max drop-shadow-md mt-1">Caso de Éxito</span>
+                            <h4 data-editable="true" class="vt-name text-white font-bold text-sm tracking-wide drop-shadow-md pointer-events-auto w-max m-0">Carlos P.</h4>
+                            <span data-editable="true" class="vt-role text-cyan-400 text-[10px] font-extrabold uppercase tracking-[0.2em] pointer-events-auto w-max drop-shadow-md mt-1 block">Caso de Éxito</span>
                         </div>
                     </div>
 
@@ -337,7 +374,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                     </div>
                 </div>
 
-                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-cyan-500/50 rounded-[32px] bg-cyan-500/5 flex items-center justify-center text-cyan-400 font-bold hover:bg-cyan-500 hover:text-black hover:border-cyan-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(37,216,255,0.1)] ignore-drag">
+                <button onclick="window.cloneVideoTestimonial(this)" class="admin-tool w-full min-h-[80px] border-2 border-dashed border-cyan-500/50 rounded-[32px] bg-cyan-500/5 flex items-center justify-center text-cyan-400 font-bold hover:bg-cyan-500 hover:text-black hover:border-cyan-500 cursor-pointer transition-all shadow-[0_0_15px_rgba(37,216,255,0.1)] ignore-drag bg-transparent">
                     <i class="fa-solid fa-video mr-2 pointer-events-none"></i> <span class="pointer-events-none">Añadir Nuevo Video</span>
                 </button>
             </div>
@@ -345,7 +382,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
             <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone h-max">
                 <div class="p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer" data-theme="pink" data-card-id="txt_default_1" data-resizable="true">
                     <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
-                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
+                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed m-0">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
                     <div class="flex items-center gap-4 pt-4 border-t border-white/5">
                         <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">M</span></div>
                         <div class="flex flex-col">
@@ -437,7 +474,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <div id="cart-sidebar" class="fixed top-0 right-0 bottom-0 w-[90%] max-w-sm bg-[#0a0a0c]/95 backdrop-blur-2xl border-l border-white/10 z-[10000] translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] flex flex-col shadow-[-20px_0_60px_rgba(0,0,0,0.8)] ignore-drag">
     <div class="p-5 border-b border-white/10 flex items-center justify-between shrink-0">
         <h3 class="text-white font-extrabold text-lg flex items-center m-0"><i class="fa-solid fa-cart-shopping text-[#25d366] mr-2"></i> 🛍️ Tu carrito</h3>
-        <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="window.toggleCart()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer outline-none border-none"><i class="fa-solid fa-xmark"></i></button>
     </div>
     
     <div id="cart-items-container" class="flex-1 overflow-y-auto hide-scrollbar p-5 flex flex-col gap-4">
@@ -456,7 +493,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         <button onclick="window.checkoutWhatsApp()" id="checkout-btn" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-[#25d366] text-black font-extrabold shadow-[0_10px_25px_rgba(37,211,102,0.3)] hover:shadow-[0_15px_35px_rgba(37,211,102,0.4)] transition-all hover:-translate-y-0.5 cursor-pointer outline-none border-none">
             <i class="fa-brands fa-whatsapp text-xl"></i> 💰 Finalizar compra
         </button>
-        <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none">
+        <button onclick="window.clearCart()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/15 border border-white/10 hover:border-rose-500/30 text-zinc-400 hover:text-rose-400 text-xs font-semibold transition-all cursor-pointer outline-none border-none">
             <i class="fa-solid fa-trash-can"></i> Vaciar Carrito
         </button>
     </div>
@@ -502,7 +539,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 <div id="videoModal" class="hidden fixed inset-0 z-[9999] bg-[#050507]/90 backdrop-blur-md p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag">
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         
-        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer">
+        <button onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer border-none">
             <i class="fa-solid fa-xmark text-lg pointer-events-none"></i>
         </button>
 
@@ -537,7 +574,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 </div>
 
 <div id="imageModal" class="hidden fixed inset-0 z-[99999] bg-[#050507]/95 backdrop-blur-xl p-4 items-center justify-center opacity-0 transition-all duration-500 ignore-drag" onclick="window.closeImageModal()">
-    <button onclick="window.closeImageModal()" class="absolute top-4 right-4 md:top-8 md:right-8 z-[310] w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all shadow-lg cursor-pointer outline-none">
+    <button onclick="window.closeImageModal()" class="absolute top-4 right-4 md:top-8 md:right-8 z-[310] w-12 h-12 rounded-full bg-white/5 hover:bg-white/15 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all shadow-lg cursor-pointer outline-none border-none">
         <i class="fa-solid fa-xmark text-xl pointer-events-none"></i>
     </button>
     <div class="relative max-w-6xl max-h-[90vh] w-full h-full flex items-center justify-center transform scale-95 transition-transform duration-500" id="imageModalContent">
@@ -1173,9 +1210,6 @@ window.loadFirebaseData = async function() {
             if(data.courseOrder) window.courseOrderArray = data.courseOrder;
         }
 
-        // ES CLAVE CARGAR LA GALERÍA AQUÍ: Después de que Firebase restaure el DOM, para evitar que la borre.
-        window.loadAcademyGallery();
-
         onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
             window.appProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
             window.renderProducts();
@@ -1191,11 +1225,10 @@ window.loadFirebaseData = async function() {
         console.warn("Error Firebase, usando respaldo seguro.", error); 
         window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; 
         window.renderProducts(); window.renderCourses();
-        window.loadAcademyGallery(); // Asegurarse de que cargue incluso si hay error de DB.
     } 
     finally {
         window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
-        try { window.setFilter('mas-vendidos'); window.syncSocialNetworks(); window.updateCartUI(); } catch(e) {}
+        try { window.setFilter('mas-vendidos'); window.syncSocialNetworks(); window.updateCartUI(); window.loadAcademyGallery(); } catch(e) {}
         
         setTimeout(() => { 
             const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden'); 
@@ -1207,11 +1240,10 @@ window.loadFirebaseData = async function() {
 
 window.loadAcademyGallery = async function() {
     const container = document.getElementById('academy-gallery-marquee');
-    if(!container) return; // Si la sección fue borrada del template, salir para evitar error.
+    if(!container) return;
     
     const exclusions = ["polimacion.jpg", "impresion.jpg", "vidrio.jpg", "pedreria.jpg", "plotter.jpg", "sellos.jpg", "resina.jpg", "agenda.jpg", "serigrafia.jpg", "sublimacion.jpg"];
     
-    // Imágenes premium de respaldo estilo Apple
     const premiumBackups = [
         "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
         "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=80",
@@ -1241,7 +1273,6 @@ window.loadAcademyGallery = async function() {
         return !exclusions.includes(filename) && !url.endsWith('.mp4');
     }).map(url => url.startsWith('http') ? url : 'https://multiprintt.web.app/recursos/' + url);
     
-    // Fallback inyectado: Si tu JSON está vacío o bloqueaste todo, mostramos las de stock.
     if(validImages.length === 0) {
         validImages = premiumBackups;
     }
@@ -1251,13 +1282,31 @@ window.loadAcademyGallery = async function() {
         html += `<div onclick="window.openImageModal('${img}')" class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c] cursor-pointer"><img src="${img}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy"></div>`;
     });
     
-    // Efecto bucle infinito para el carrusel
     container.innerHTML = html + html + html + html;
     
-    // Ajuste dinámico de velocidad para que se vea como expositor real (Lento, suave y constante)
-    // Asigna 12 segundos por cada imagen única para mantener un ritmo súper elegante.
-    let duration = validImages.length * 12;
+    let duration = validImages.length * 12; 
     container.style.animationDuration = `${duration}s`;
+}
+
+// Lógica de control custom para el video de Nosotros (Sin Hover, Sin Controles)
+window.toggleAboutVideo = function() {
+    const video = document.getElementById('about-video');
+    const btnOverlay = document.getElementById('about-play-btn');
+    if (!video) return;
+    
+    if (video.paused) {
+        video.play().then(() => {
+            btnOverlay.style.opacity = '0';
+            btnOverlay.style.pointerEvents = 'none';
+        }).catch(e => {
+            console.error("Video play blocked by browser or Google Drive CORS:", e);
+            if(window.showToast) window.showToast("No se pudo reproducir. Verifique el enlace.");
+        });
+    } else {
+        video.pause();
+        btnOverlay.style.opacity = '1';
+        btnOverlay.style.pointerEvents = 'auto';
+    }
 }
 
 window.initMap = function() {
@@ -1571,24 +1620,8 @@ window.openCourseModal = function(id) {
     let modalityStr = c.modality || 'Presencial';
     if(modText) modText.textContent = modalityStr;
     if(modBadge) {
-        let modIcon = 'fa-location-dot';
-        let modColorClass = 'bg-black/60 border-white/10 text-white/90 shadow-[0_0_15px_rgba(0,0,0,0.5)]'; 
-        let modIconColor = 'text-white/50';
-
-        if (modalityStr.toLowerCase() === 'virtual' || modalityStr.toLowerCase() === 'online') {
-            modalityStr = 'Online';
-            modIcon = 'fa-laptop';
-            modColorClass = 'bg-red-600/20 border-red-500/30 text-red-100 shadow-[0_0_15px_rgba(239,68,68,0.3)]';
-            modIconColor = 'text-red-400';
-            if(modText) modText.textContent = modalityStr;
-        } else if (modalityStr.toLowerCase() === 'híbrido') {
-            modIcon = 'fa-rotate';
-            modColorClass = 'bg-violet-600/20 border-violet-500/30 text-violet-100 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
-            modIconColor = 'text-violet-400';
-        }
-        
-        modBadge.className = `backdrop-blur-md border ${modColorClass} text-[10px] uppercase tracking-widest font-extrabold px-4 py-2 rounded-full flex items-center shrink-0`;
-        modBadge.innerHTML = `<i class="fa-solid ${modIcon} mr-1.5 ${modIconColor}"></i> <span id="cm-modality-text">${modalityStr}</span>`;
+        let modIcon = modalityStr.toLowerCase() === 'virtual' || modalityStr.toLowerCase() === 'online' ? 'fa-laptop' : (modalityStr.toLowerCase() === 'híbrido' ? 'fa-rotate' : 'fa-location-dot');
+        modBadge.querySelector('i').className = `fa-solid ${modIcon} mr-1 text-white/50`;
     }
 
     let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
@@ -1670,7 +1703,7 @@ window.closeVideoModal = function(e) {
 }
 
 window.openImageModal = function(src) {
-    if(document.body.classList.contains('builder-mode')) return; // No abrir en modo edición
+    if(document.body.classList.contains('builder-mode')) return; 
     const modal = document.getElementById('imageModal');
     const content = document.getElementById('imageModalContent');
     const imgEl = document.getElementById('im-full-image');
@@ -1696,7 +1729,7 @@ window.closeImageModal = function() {
     setTimeout(() => { 
         modal.classList.add('hidden'); 
         modal.classList.remove('flex'); 
-        imgEl.src = ""; // Limpiar imagen
+        imgEl.src = ""; 
     }, 300);
 }
 
