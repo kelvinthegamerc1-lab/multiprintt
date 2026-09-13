@@ -1176,7 +1176,7 @@ window.loadAcademyGallery = async function() {
     ];
     let images = [];
     try {
-        const res = await fetch('https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json');
+        const res = await fetch('https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json');
         if (res.ok) {
             const data = await res.json();
             if(Array.isArray(data)) images = data;
@@ -1190,7 +1190,7 @@ window.loadAcademyGallery = async function() {
         if(!url) return false;
         const filename = url.split('/').pop().toLowerCase();
         return !exclusions.includes(filename) && !url.endsWith('.mp4');
-    }).map(url => url.startsWith('http') ? url : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/' + url);
+    }).map(url => url.startsWith('http') ? url : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/' + url);
     
     if(validImages.length === 0) validImages = premiumBackups;
     let html = '';
