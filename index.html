@@ -1716,7 +1716,20 @@ function captureBuilderLayout(){
     document.querySelectorAll('.editable-section').forEach(zone=>{if(!zone.id)return;const clone=zone.cloneNode(true);clone.querySelectorAll('.builder-selected-el,.builder-selected-outline').forEach(e=>e.classList.remove('builder-selected-el','builder-selected-outline'));clone.querySelectorAll('.sortable-ghost,.sortable-chosen,.sortable-drag').forEach(e=>e.classList.remove('sortable-ghost','sortable-chosen','sortable-drag'));clone.querySelectorAll('#builder-resize-box').forEach(e=>e.remove());const map=clone.querySelector('#leaflet-map');if(map)map.innerHTML='';const pg=clone.querySelector('#product-grid');if(pg)pg.innerHTML='';const cg=clone.querySelector('#courses-grid');if(cg)cg.innerHTML='';const gm=clone.querySelector('#academy-gallery-marquee');if(gm){gm.innerHTML='';gm.setAttribute('data-gallery-ready','false');}const html=clone.innerHTML;if(html.trim().length>120)layoutData[zone.id]=html;});
     const modal=document.getElementById('videoModalContent')||document.querySelector('#videoModal > div');if(modal)layoutData.videoModalTpl=modal.cloneNode(true).outerHTML;return layoutData}
 
-function restoreBuilderLayout(layoutData,layoutModel=null){if(!layoutData||typeof layoutData!=='object')return;const safeData=validateLayoutAgainstModel(layoutData,layoutModel);Object.entries(safeData).forEach(([id,html])=>{if(id==='videoModalTpl')return;const zone=document.getElementById(id);if(!zone||typeof html!=='string'||html.length<120)return;try{zone.innerHTML=html}catch(e){console.warn('No se pudo restaurar',id,e)}});if(safeData.videoModalTpl){try{const old=document.getElementById('videoModalContent');const host=old?.parentElement;if(host){const tmp=document.createElement('div');tmp.innerHTML=safeData.videoModalTpl;const fresh=tmp.firstElementChild;if(old&&fresh)old.replaceWith(fresh)}}catch(e){}}}
+function restoreBuilderLayout(layoutData,layoutModel=null){
+    if(!layoutData||typeof layoutData!=='object')return;
+    const safeData=validateLayoutAgainstModel(layoutData,layoutModel);
+    Object.entries(safeData).forEach(([id,html])=>{
+        if(id==='videoModalTpl')return;
+        const zone=document.getElementById(id);
+        if(!zone||typeof html!=='string'||html.length<120)return;
+        // Nunca reemplazamos una zona local funcional por un HTML claramente incompleto.
+        if(id==='view-courses' && !/id=["']courses-grid["']/i.test(html))return;
+        if(id==='view-catalog' && !/id=["']product-grid["']/i.test(html))return;
+        try{zone.innerHTML=html}catch(e){console.warn('No se pudo restaurar',id,e)}
+    });
+    if(safeData.videoModalTpl){try{const old=document.getElementById('videoModalContent');const host=old?.parentElement;if(host){const tmp=document.createElement('div');tmp.innerHTML=safeData.videoModalTpl;const fresh=tmp.firstElementChild;if(old&&fresh)old.replaceWith(fresh)}}catch(e){}}
+}
 
 function emitLayers(){const selected=window.selectedEl;const nodes=[];document.querySelectorAll('[data-editable="true"],[data-resizable="true"],button,img,video,a,.card,section').forEach(el=>{if(!el||el.closest('.ignore-drag')||el.closest('#videoModalContent')||el.closest('#builder-resize-box'))return;const bid=ensureBuilderId(el);nodes.push({builderId:bid,tag:el.tagName,label:(el.id?'#'+el.id+' ': '')+((el.getAttribute('aria-label')||el.innerText||el.getAttribute('alt')||'Elemento').trim().slice(0,70)),icon:builderIconFor(el),selected:el===selected})});window.parent.postMessage({type:'LAYERS_DATA',layers:nodes.slice(0,300)},'*')}
 function findBuilderElement(id){return id?[...document.querySelectorAll('[data-builder-id]')].find(el=>el.getAttribute('data-builder-id')===id):null}
@@ -1754,14 +1767,33 @@ window.addEventListener('message', async (event) => {
     function builderSelectionTarget(raw, e) {
         if (!raw || raw.nodeType !== 1) return null;
         if (raw.closest('.ignore-drag, .admin-tool, #builder-resize-box, #videoModalContent')) return null;
-        const explicit = raw.closest('[data-editable="true"],[data-resizable="true"],a,button,img,video,.card,section');
+
+        // Controles especiales del editor: nunca seleccionar todo #view-courses
+        // cuando el usuario realmente está intentando editar la galería.
+        const galleryPart = raw.closest('#academy-gallery-marquee, #academy-gallery-section');
+        if (galleryPart) {
+            // La zona completa solo se selecciona con Alt/Option. Un clic normal
+            // sobre Momentos trabaja sobre el carrusel, que es el elemento que
+            // expone la duración del slideshow en el inspector.
+            if (e && e.altKey) return document.getElementById('academy-gallery-section') || galleryPart;
+            return document.getElementById('academy-gallery-marquee') || galleryPart;
+        }
+
+        // Primero resolvemos el elemento más específico bajo el puntero.
+        const explicit = raw.closest('[data-editable="true"],[data-resizable="true"],a,button,img,video,.card,h1,h2,h3,h4,h5,h6,p,li,label');
         if (!explicit) return null;
         if (explicit.closest('.ignore-drag, .admin-tool, #videoModalContent')) return null;
+
+        // Alt/Option = subir un nivel editable de forma intencional.
         if (e && e.altKey) {
-            const parent = explicit.parentElement?.closest('[data-editable="true"],[data-resizable="true"],a,button,.card,section');
+            const parent = explicit.parentElement?.closest('[data-editable="true"],[data-resizable="true"],a,button,.card,h1,h2,h3,h4,h5,h6,p,li,label,section');
             if (parent && !parent.closest('.ignore-drag, .admin-tool, #videoModalContent')) return parent;
         }
-        if (explicit.tagName === 'I' || explicit.tagName === 'SVG' || explicit.classList.contains('pointer-events-none')) return raw.closest('button,a') || explicit.parentElement || explicit;
+
+        // Iconos internos pertenecen al control que los contiene.
+        if (explicit.tagName === 'I' || explicit.tagName === 'SVG' || explicit.classList.contains('pointer-events-none')) {
+            return raw.closest('button,a') || explicit.parentElement || explicit;
+        }
         return explicit;
     }
     function captureBuilderModel() {
@@ -1771,27 +1803,39 @@ window.addEventListener('message', async (event) => {
             zone.querySelectorAll('[data-builder-id],[data-editable="true"],[data-resizable="true"],a,button,img,video,.card,section').forEach(el => {
                 if (el.closest('#builder-resize-box,.ignore-drag,.admin-tool')) return;
                 const builderId = ensureBuilderId(el), parent = el.parentElement?.closest('[data-builder-id]');
-                const record = {builderId,parentBuilderId:parent ? ensureBuilderId(parent) : null,tag:el.tagName,id:el.id||'',className:typeof el.className==='string'?el.className:'',editable:el.getAttribute('data-editable')==='true',resizable:el.getAttribute('data-resizable')==='true',style:el.getAttribute('style')||''};
-                if (el.id) requiredIds.push(el.id);
+                const isDynamic = !!el.closest('#product-grid,#courses-grid,#academy-gallery-marquee,#leaflet-map');
+                const record = {builderId,parentBuilderId:parent ? ensureBuilderId(parent) : null,tag:el.tagName,id:el.id||'',className:typeof el.className==='string'?el.className:'',editable:el.getAttribute('data-editable')==='true',resizable:el.getAttribute('data-resizable')==='true',style:el.getAttribute('style')||'',dynamic:isDynamic};
+                // IDs generados por productos/cursos/galería/mapa nunca son requisitos
+                // estructurales: esos contenidos se regeneran después del restore.
+                if (el.id && !isDynamic && !el.hasAttribute('data-dynamic-item')) requiredIds.push(el.id);
                 const href=el.getAttribute('href')||el.getAttribute('data-href')||el.getAttribute('data-social-url'), src=el.getAttribute('src');
                 if(href)record.href=href; if(src)record.src=src; elements.push(record);
             });
-            zones[zone.id]={id:zone.id,requiredIds:[...new Set(requiredIds)].slice(0,120),elementCount:elements.length,elements:elements.slice(0,500),dynamic:{productGrid:!!zone.querySelector('#product-grid'),courseGrid:!!zone.querySelector('#courses-grid'),academyGallery:!!zone.querySelector('#academy-gallery-marquee'),map:!!zone.querySelector('#leaflet-map')}};
+            zones[zone.id]={id:zone.id,requiredIds:[...new Set(requiredIds)].slice(0,120),elementCount:elements.length,elements:elements.filter(x=>!x.dynamic).slice(0,500),dynamic:{productGrid:!!zone.querySelector('#product-grid'),courseGrid:!!zone.querySelector('#courses-grid'),academyGallery:!!zone.querySelector('#academy-gallery-marquee'),map:!!zone.querySelector('#leaflet-map')}};
         });
         return {version:2,generatedAt:Date.now(),zones};
     }
     function validateLayoutAgainstModel(layoutData, layoutModel) {
-        if(!layoutModel || layoutModel.version!==2 || !layoutModel.zones) return layoutData||{};
+        if(!layoutData || typeof layoutData!=='object') return {};
+        if(!layoutModel || layoutModel.version!==2 || !layoutModel.zones) return layoutData;
         const safe={};
-        Object.entries(layoutData||{}).forEach(([id,html])=>{
-            if(id==='videoModalTpl'){safe[id]=html;return;}
+        Object.entries(layoutData).forEach(([id,html])=>{
+            if(id==='videoModalTpl'){ if(typeof html==='string' && html.trim().length>80) safe[id]=html; return; }
             if(typeof html!=='string'||html.trim().length<120)return;
-            const spec=layoutModel.zones[id]; if(!spec)return;
-            const missing=(spec.requiredIds||[]).filter(req=>{const safeId=String(req).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return !new RegExp(`id=["']${safeId}["']`,'i').test(html)});
-            if(missing.length>Math.max(3,Math.floor((spec.requiredIds||[]).length*0.35)))return;
+            const spec=layoutModel.zones[id];
+            if(!spec) return;
+            const required=Array.isArray(spec.requiredIds)?spec.requiredIds:[];
+            const missing=required.filter(req=>{
+                const safeId=String(req).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+                return !new RegExp(`id=["']${safeId}["']`,'i').test(html);
+            });
+            // El modelo es una señal de compatibilidad, no una barrera destructiva.
+            // Si la zona conserva la mayoría de sus IDs estructurales, se restaura.
+            // Si no hay IDs requeridos, también se acepta el HTML válido.
+            const ratio=required.length ? missing.length/required.length : 0;
+            if(required.length && ratio>0.65) return;
             safe[id]=html;
         });
-        if(typeof layoutData.videoModalTpl==='string')safe.videoModalTpl=layoutData.videoModalTpl;
         return safe;
     }
 
@@ -1799,6 +1843,14 @@ window.addEventListener('message', async (event) => {
         window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
         window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
         if (window.__builderClickHandler) document.removeEventListener('click', window.__builderClickHandler, true);
+        // Hacemos editables los textos estáticos que no tenían marcador explícito.
+        // No tocamos iconos, scripts, controles dinámicos de productos/cursos ni
+        // contenido generado por el backend: esos se editan por sus editores propios.
+        document.querySelectorAll('h1,h2,h3,h4,h5,h6,p,li,label,blockquote,figcaption').forEach(el => {
+            if (el.closest('.ignore-drag,.admin-tool,#product-grid,#courses-grid,#academy-gallery-marquee,#videoModalContent')) return;
+            if (!el.getAttribute('data-editable') && (el.textContent || '').trim()) el.setAttribute('data-editable','true');
+        });
+
         window.__builderClickHandler = function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active') || window.builderSelectionEnabled === false) return;
             window.parent.postMessage({type:'HIDE_CONTEXT_MENU'}, '*');
