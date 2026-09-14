@@ -340,8 +340,22 @@ if(d.type==='APP_READY'){iframe().contentWindow.postMessage({type:'ENABLE_BUILDE
 if(d.type==='ELEMENT_SELECTED'){renderInspector(d);if(window.innerWidth<760)document.getElementById('rightbar').classList.add('mobile-open')}
 if(d.type==='CLEAR_SELECTION')window.clearSelection();
 if(d.type==='LAYERS_DATA'){window.renderLayers(d.layers||[])}
-if(d.type==='LAYOUT_SNAPSHOT'){proSnapshotBusy=false;const layoutData=d.layoutData||{};const layoutModel=d.layoutModel||null;if(Object.keys(layoutData).length){const snapshot={layoutData,layoutModel};const sig=JSON.stringify(snapshot);if(sig!==proLastSnapshot&&!proRestoring){proLastSnapshot=sig;builderHistory.push(snapshot);if(builderHistory.length>40)builderHistory.shift();builderRedo=[];}}}
-if(d.type==='SAVE_FULL_LAYOUT'){const layoutData=d.layoutData||{};const layoutModel=d.layoutModel||null;const mode=d.saveMode||'manual';setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'),{zones:layoutData,layoutModel:layoutModel||null,layoutSchemaVersion:2,prodOrder:d.prodOrder||[],courseOrder:d.courseOrder||[]},{merge:true}).then(()=>{window.appState.dirty=false;setSaveState('ok','Guardado en Firebase');document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar';if(mode!=='auto')window.showToast('Sitio guardado correctamente')}).catch(()=>{setSaveState('err','Error al guardar');window.showToast('Error de sincronización')})}
+if(d.type==='LAYOUT_SNAPSHOT'){proSnapshotBusy=false;window.__lastSavedLayout=d.layoutData||window.__lastSavedLayout||{};const layoutData=d.layoutData||{};const layoutModel=d.layoutModel||null;if(Object.keys(layoutData).length){const snapshot={layoutData,layoutModel};const sig=JSON.stringify(snapshot);if(sig!==proLastSnapshot&&!proRestoring){proLastSnapshot=sig;builderHistory.push(snapshot);if(builderHistory.length>40)builderHistory.shift();builderRedo=[];}}}
+if(d.type==='SAVE_FULL_LAYOUT'){
+const incoming=JSON.parse(JSON.stringify(d.layoutData||{}));
+const layoutModel=d.layoutModel||null;
+const mode=d.saveMode||'manual';
+const existing=window.__lastSavedLayout||{};
+['view-catalog','view-courses'].forEach(id=>{
+  const html=typeof incoming[id]==='string'?incoming[id]:'';
+  const ok=id==='view-catalog'?/id=["']product-grid["']/i.test(html):/id=["']courses-grid["']/i.test(html);
+  if(!ok && typeof existing[id]==='string' && existing[id].length>120) incoming[id]=existing[id];
+});
+const payload={zones:incoming,layoutModel:layoutModel||null,layoutSchemaVersion:2,prodOrder:Array.isArray(d.prodOrder)?d.prodOrder:[],courseOrder:Array.isArray(d.courseOrder)?d.courseOrder:[]};
+setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'),payload,{merge:true}).then(()=>{
+window.__lastSavedLayout=incoming;window.appState.dirty=false;setSaveState('ok','Guardado en Firebase');document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar';if(mode!=='auto')window.showToast('Sitio guardado correctamente')
+}).catch(()=>{setSaveState('err','Error al guardar');window.showToast('Error de sincronización')})}
+if(d.type==='SAVE_FULL_LAYOUT_ERROR'){setSaveState('err','No se pudo preparar el guardado');if((d.message||'').trim())window.showToast(d.message)}
 if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
 if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
 if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?'))deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId)).then(()=>iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},'*'))}
