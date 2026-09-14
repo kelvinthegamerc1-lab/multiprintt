@@ -28,6 +28,18 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.glass{backgroun
 .media-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:400px;overflow:auto}.media-card{aspect-ratio:1;border:1px solid var(--line);background:#050608;border-radius:8px;overflow:hidden;position:relative;cursor:pointer}.media-card:hover{border-color:rgba(37,216,255,.42)}.media-card img{width:100%;height:100%;object-fit:cover}.media-card .media-video{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#737986;font-size:22px}
 #toast{position:fixed;right:18px;bottom:18px;z-index:3000;display:flex;flex-direction:column;gap:8px}.toast{padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:#111318;color:#fff;font-size:10px;box-shadow:0 15px 40px rgba(0,0,0,.55);opacity:0;transform:translateY(10px);transition:.22s}.toast.show{opacity:1;transform:translateY(0)}
 @media(max-width:1100px){.leftbar{width:210px;flex-basis:210px}.rightbar{width:330px;flex-basis:330px}}@media(max-width:900px){.leftbar{width:190px;flex-basis:190px}.rightbar{width:310px;flex-basis:310px}.canvas-toolbar .status-pill{display:none}}@media(max-width:760px){.leftbar{display:none}.rightbar{width:100%;position:absolute;right:0;top:58px;bottom:0;z-index:80;transform:translateX(100%);transition:.25s}.rightbar.mobile-open{transform:translateX(0)}#preview-stage{padding:12px}.device-tablet,.device-mobile{transform:scale(.78);transform-origin:top center;margin-bottom:-160px}}
+
+@media (max-width: 759px){
+  #auth-screen{padding:16px;overflow:auto;}
+  .auth-card{width:min(430px,calc(100vw - 32px));padding:22px;}
+  #builder-ui{min-width:0;}
+  .topbar{padding:0 8px;}
+  .leftbar{width:210px;flex-basis:210px;}
+  .rightbar{width:min(92vw,360px);flex-basis:min(92vw,360px);}
+  .canvas{min-width:0;}
+  .modal{padding:12px;}
+  .modal-card{max-height:calc(100dvh - 24px);width:min(96vw,760px);} 
+}
 </style>
 </head>
 <body>
@@ -77,12 +89,12 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.glass{backgroun
 <div id="gallery-modal" class="modal"><div class="modal-card"><div class="modal-head"><div><div id="gallery-title" class="font-extrabold text-white text-sm">Explorador de medios</div><div class="text-zinc-500 text-[9px] mt-1">Selecciona imágenes y videos desde tus fuentes.</div></div><button class="mini-btn" onclick="window.closeModal('gallery-modal')"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><div class="flex flex-wrap gap-2 mb-3"><button class="mini-btn active" onclick="window.filterGallery('all')">Todos</button><button class="mini-btn" onclick="window.filterGallery('image')">Imágenes</button><button class="mini-btn" onclick="window.filterGallery('video')">Videos</button></div><input id="gallery-search" class="field mb-3" placeholder="Filtrar por nombre o URL" oninput="window.renderGallery()"><div id="gallery-grid" class="media-grid"></div></div><div class="modal-foot"><span id="gallery-note" class="helper mr-auto">Fuente: recursos de Multiprintt</span><button class="secondary" onclick="window.closeModal('gallery-modal')">Cerrar</button></div></div></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
-const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});const APP_ID="multiprintt-web";
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);const APP_ID="multiprintt-web";
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[];
 window.appState={dirty:false};
@@ -106,9 +118,79 @@ function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.e
 function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*');history.push({before,after:{[prop]:value}});redoStack=[];if(commit)markDirty('Editando…')}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
-window.attemptLogin=async()=>{const email=document.getElementById('loginUser').value.trim(),pass=document.getElementById('loginPass').value,btn=document.getElementById('btn-login'),old=btn.innerHTML;if(!email||!pass)return window.showToast('Completa correo y contraseña');btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';try{await setPersistence(auth,browserSessionPersistence);if(typeof __initial_auth_token!=='undefined'&&__initial_auth_token)await signInWithCustomToken(auth,__initial_auth_token);else await signInWithEmailAndPassword(auth,email,pass)}catch(e){window.showToast('No se pudo iniciar sesión');btn.disabled=false;btn.innerHTML=old}};
-window.logout=async()=>{await signOut(auth);location.reload()};
-onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){document.getElementById('auth-screen').style.display='none';document.getElementById('builder-ui').style.display='flex';if(!iframe().src||iframe().src===location.href)iframe().src='index.html?t='+Date.now()}else{document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none'}});
+let loginInFlight=false;
+window.attemptLogin=async()=>{
+    if(loginInFlight) return;
+    const email=document.getElementById('loginUser')?.value.trim();
+    const pass=document.getElementById('loginPass')?.value || '';
+    const btn=document.getElementById('btn-login');
+    if(!btn) return;
+    const old=btn.innerHTML;
+    if(!email||!pass) return window.showToast('Completa correo y contraseña');
+    if(!/^\S+@\S+\.\S+$/.test(email)) return window.showToast('Introduce un correo válido');
+    loginInFlight=true;
+    btn.disabled=true;
+    btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';
+    try {
+        try {
+            await setPersistence(auth,browserSessionPersistence);
+        } catch(persistenceError) {
+            console.warn('Persistencia de sesión no disponible; continuando sin cambiar la sesión actual.', persistenceError);
+        }
+
+        // IMPORTANTE: el panel siempre autentica con las credenciales escritas en el formulario.
+        await signInWithEmailAndPassword(auth,email,pass);
+    } catch(e) {
+        console.error('Error de inicio de sesión Firebase:', e);
+        const code=e?.code||'';
+        const messages={
+            'auth/invalid-credential':'Correo o contraseña incorrectos.',
+            'auth/invalid-login-credentials':'Correo o contraseña incorrectos.',
+            'auth/invalid-email':'El correo no tiene un formato válido.',
+            'auth/user-not-found':'No existe una cuenta con ese correo.',
+            'auth/wrong-password':'La contraseña es incorrecta.',
+            'auth/user-disabled':'Esta cuenta administrativa está deshabilitada.',
+            'auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.',
+            'auth/network-request-failed':'No se pudo conectar con Firebase. Revisa tu conexión.',
+            'auth/operation-not-allowed':'El acceso por correo/contraseña no está habilitado en Firebase.',
+            'auth/invalid-api-key':'La configuración de Firebase es inválida.',
+            'auth/app-not-authorized':'Este dominio no está autorizado en Firebase.',
+            'auth/api-key-not-valid.-please-pass-a-valid-api-key.':'La clave API de Firebase no es válida.'
+        };
+        window.showToast(messages[code] || ('No se pudo iniciar sesión'+(code?` (${code})`:'')));
+    } finally {
+        loginInFlight=false;
+        btn.disabled=false;
+        btn.innerHTML=old;
+    }
+};
+document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
+document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
+window.logout=async()=>{
+    try { await signOut(auth); }
+    catch(e) { console.error('Error al cerrar sesión:',e); }
+    location.reload();
+};
+onAuthStateChanged(auth,user=>{
+    const authScreen=document.getElementById('auth-screen');
+    const builder=document.getElementById('builder-ui');
+    if(user&&!user.isAnonymous){
+        authScreen.style.display='none';
+        builder.style.display='flex';
+        const frame=iframe();
+        if(frame && (!frame.getAttribute('src') || frame.getAttribute('src')===location.href)) {
+            frame.src='index.html?t='+Date.now();
+        }
+    } else {
+        authScreen.style.display='flex';
+        builder.style.display='none';
+    }
+},error=>{
+    console.error('Firebase Auth observer:',error);
+    document.getElementById('auth-screen').style.display='flex';
+    document.getElementById('builder-ui').style.display='none';
+    window.showToast('No se pudo verificar la sesión con Firebase.');
+});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setSaveState('ok','Vista sincronizada')});
 
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
@@ -147,7 +229,7 @@ window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Dat
 if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','promocionales','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes</label><textarea id="db-img" class="field" placeholder="Una URL por línea">${esc(d.image||'')}</textarea><button class="mini-btn mt-2" onclick="window.openGallery('db-img','image','product')">Abrir explorador</button></div>`;
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" value="${esc(d.price||'')}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
 if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><input id="db-vid" class="field" value="${esc(d.src||'')}"><button class="mini-btn mt-2" onclick="window.openGallery('db-vid','video','media')">Elegir video</button></div>`:'')+`<div><label class="lbl">Tema</label><select id="db-theme" class="field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div>`;
-document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality)document.getElementById('db-modality')?.value=d.modality;if(d.theme)document.getElementById('db-theme')?.value=d.theme};
+document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}};
 window.saveDbItem=async()=>{const t=currentDbItem.type;let payload={};if(t==='product')payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:document.getElementById('db-img').value.trim(),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();try{const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;if(col){await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},'*')}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},'*');window.closeModal('db-modal');window.showToast('Cambios guardados correctamente');markDirty('Contenido sincronizado')}catch(e){window.showToast('No se pudo guardar el registro')}};
 
 window.openSocialModal=()=>{window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button class="social-opt" onclick="window.pickSocial(${JSON.stringify(n)},${JSON.stringify(c)},this)"><i class="${c} mr-1"></i>${n}</button>`).join('')};window.pickSocial=(name,icon,btn)=>{document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected');document.getElementById('social-name').value=name;document.getElementById('social-icon').value=icon};window.addSocial=()=>{const name=document.getElementById('social-name').value.trim()||'Red social';const icon=document.getElementById('social-icon').value.trim()||'fa-solid fa-link';const url=document.getElementById('social-url').value.trim();if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network:name.toLowerCase().replace(/\s+/g,'-')},'*');window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
@@ -170,5 +252,10 @@ if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'cours
 
 window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();window.publishChanges(false)}if(e.key==='Escape'){['social-modal','db-modal','gallery-modal'].forEach(window.closeModal)}});
 window.filterSocials('');
+
+// Cierre seguro de modales al pulsar el fondo.
+document.querySelectorAll('.modal').forEach(modal=>{
+    modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.remove('open'); });
+});
 </script>
 </body></html>
