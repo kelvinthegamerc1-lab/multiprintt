@@ -121,11 +121,12 @@ const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 let builderHistory=[],builderRedo=[];
 let changeLog=[];
+let saveRequestSeq=0,latestSaveRequestId=0,changeRevision=0;
 let responsiveDevice='desktop';
 window.appState={dirty:false};
 
 const socials=[
-['Facebook','fa-brands fa-facebook-f'],['Instagram','fa-brands fa-instagram'],['WhatsApp','fa-brands fa-whatsapp'],['YouTube','fa-brands fa-youtube'],['TikTok','fa-brands fa-tiktok'],['X / Twitter','fa-brands fa-x-twitter'],['LinkedIn','fa-brands fa-linkedin-in'],['Pinterest','fa-brands fa-pinterest-p'],['Threads','fa-brands fa-threads'],['Snapchat','fa-brands fa-snapchat'],['Telegram','fa-brands fa-telegram'],['Discord','fa-brands fa-discord'],['Twitch','fa-brands fa-twitch'],['Reddit','fa-brands fa-reddit-alien'],['GitHub','fa-brands fa-github'],['GitLab','fa-brands fa-gitlab'],['Behance','fa-brands fa-behance'],['Dribbble','fa-brands fa-dribbble'],['Vimeo','fa-brands fa-vimeo-v'],['Spotify','fa-brands fa-spotify'],['SoundCloud','fa-brands fa-soundcloud'],['Apple','fa-brands fa-apple'],['Google','fa-brands fa-google'],['Google Play','fa-brands fa-google-play'],['Pinterest','fa-brands fa-pinterest'],['Flickr','fa-brands fa-flickr'],['Tumblr','fa-brands fa-tumblr'],['VK','fa-brands fa-vk'],['Weibo','fa-brands fa-weibo'],['Mastodon','fa-brands fa-mastodon'],['Medium','fa-brands fa-medium'],['Telegram','fa-brands fa-telegram'],['Kick','fa-solid fa-bolt'],['Ko-fi','fa-solid fa-mug-hot'],['Patreon','fa-brands fa-patreon'],['OnlyFans','fa-solid fa-star'],['Linktree','fa-solid fa-link'],['Website','fa-solid fa-globe'],['Email','fa-solid fa-envelope'],['Phone','fa-solid fa-phone']
+['Facebook','fa-brands fa-facebook-f'],['Instagram','fa-brands fa-instagram'],['WhatsApp','fa-brands fa-whatsapp'],['YouTube','fa-brands fa-youtube'],['TikTok','fa-brands fa-tiktok'],['X / Twitter','fa-brands fa-x-twitter'],['LinkedIn','fa-brands fa-linkedin-in'],['Pinterest','fa-brands fa-pinterest-p'],['Threads','fa-brands fa-threads'],['Snapchat','fa-brands fa-snapchat'],['Discord','fa-brands fa-discord'],['Twitch','fa-brands fa-twitch'],['Reddit','fa-brands fa-reddit-alien'],['GitHub','fa-brands fa-github'],['GitLab','fa-brands fa-gitlab'],['Behance','fa-brands fa-behance'],['Dribbble','fa-brands fa-dribbble'],['Vimeo','fa-brands fa-vimeo-v'],['Spotify','fa-brands fa-spotify'],['SoundCloud','fa-brands fa-soundcloud'],['Apple','fa-brands fa-apple'],['Google','fa-brands fa-google'],['Google Play','fa-brands fa-google-play'],['Flickr','fa-brands fa-flickr'],['Tumblr','fa-brands fa-tumblr'],['VK','fa-brands fa-vk'],['Weibo','fa-brands fa-weibo'],['Mastodon','fa-brands fa-mastodon'],['Medium','fa-brands fa-medium'],['Kick','fa-solid fa-bolt'],['Ko-fi','fa-solid fa-mug-hot'],['Patreon','fa-brands fa-patreon'],['OnlyFans','fa-solid fa-star'],['Linktree','fa-solid fa-link'],['Website','fa-solid fa-globe'],['Email','fa-solid fa-envelope'],['Phone','fa-solid fa-phone']
 ];
 const defaultGallery=[
 {type:'image',url:'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=70',title:'Camiseta'},
@@ -158,7 +159,7 @@ function proEscapeName(v){return String(v||'').replace(/[<>&"']/g,'').slice(0,80
 window.refreshLayers=()=>{proPost('GET_LAYERS');};
 window.openLayers=()=>{window.openModal('layers-modal');window.refreshLayers()};
 window.renderLayers=(layers=[])=>{const host=document.getElementById('layer-list');if(!host)return;host.innerHTML=layers.map(x=>{const id=String(x.builderId||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');return `<div class="layer-row ${x.selected?'active':''}"><span class="layer-icon"><i class="${x.icon||'fa-regular fa-square'}"></i></span><span class="layer-text">${proEscapeName(x.label||x.tag||'Elemento')}</span><div class="layer-actions"><button type="button" data-id="${id}" onclick="window.selectLayer(this.dataset.id)" title="Seleccionar"><i class="fa-solid fa-arrow-pointer"></i></button><button type="button" data-id="${id}" onclick="window.focusLayer(this.dataset.id)" title="Enfocar"><i class="fa-solid fa-crosshairs"></i></button><button type="button" data-id="${id}" onclick="window.toggleLayerLock(this.dataset.id)" title="Bloquear"><i class="fa-solid fa-lock"></i></button></div></div>`}).join('')||'<div class="p-5 text-center text-zinc-600 text-[10px]">No hay capas editables aquí.</div>'};
-window.selectLayer=id=>proPost('SELECT_BY_BUILDER_ID',{builderId:id});window.focusLayer=id=>proPost('FOCUS_BY_BUILDER_ID',{builderId:id});window.toggleLayerLock=id=>proPost('TOGGLE_LAYER_LOCK',{builderId:id});
+window.selectLayer=id=>proPost('SELECT_BY_BUILDER_ID',{builderId:id});window.focusLayer=id=>proPost('FOCUS_BY_BUILDER_ID',{builderId:id});window.toggleLayerLock=id=>{proPost('TOGGLE_LAYER_LOCK',{builderId:id});markDirty('Bloqueo de capa actualizado');proScheduleSnapshot()};
 const commandDefs=[['Deshacer','Ctrl+Z',()=>window.undo()],['Rehacer','Ctrl+Y',()=>window.redo()],['Guardar','Ctrl+S',()=>window.publishChanges(false)],['Capas','',()=>window.openLayers()],['Ajustes globales','',()=>window.openGlobalSettings()],['Explorador de medios','',()=>window.openGallery('prop-href','all','media')],['Mover elemento','',()=>window.toggleDragMode()],['Enfocar selección','',()=>window.focusSelected()],['Duplicar selección','',()=>window.duplicateSelected()],['Eliminar selección','',()=>window.deleteElement()],['Preview móvil','',()=>document.querySelectorAll('.device-btn')[2]?.click()],['Preview escritorio','',()=>document.querySelectorAll('.device-btn')[0]?.click()]];
 window.renderCommands=q=>{q=String(q||'').toLowerCase();const host=document.getElementById('command-list');if(!host)return;host.innerHTML=commandDefs.filter(x=>!q||x[0].toLowerCase().includes(q)).map((x,n)=>`<button type="button" class="command-item" onclick="window.runCommand(${n})"><span>${x[0]}</span><span class="pro-kbd">${x[1]||'↵'}</span></button>`).join('')};window.runCommand=n=>{const fn=commandDefs[n]?.[2];if(fn)fn();window.closeModal('command-modal')};window.openCommandPalette=()=>{window.openModal('command-modal');const q=document.getElementById('command-search');if(q){q.value='';window.renderCommands('');setTimeout(()=>q.focus(),30)}};
 window.setCustomViewport=()=>{const v=prompt('Ancho del preview (px):',localStorage.getItem('multiprintt_custom_viewport_width')||'1440');const n=parseInt(v,10);if(!n||n<280||n>2400)return;const wrap=document.getElementById('preview-wrapper');if(!wrap)return;wrap.className='device-custom';wrap.style.width=n+'px';wrap.style.height='900px';wrap.style.flex='0 0 '+n+'px';wrap.style.transformOrigin='top center';document.getElementById('preview-hint').textContent='Vista previa · personalizado '+n+'px';const scale=Math.min(1,(document.getElementById('preview-stage').clientWidth-56)/n,.95);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;proPost('SET_PREVIEW_WIDTH',{width:n})};
@@ -169,12 +170,12 @@ window.showToast=(msg)=>{const host=document.getElementById('toast'),n=document.
 window.closeModal=id=>document.getElementById(id)?.classList.remove('open');
 window.openModal=id=>document.getElementById(id)?.classList.add('open');
 function setSaveState(state,label){const dot=document.getElementById('save-dot'),txt=document.getElementById('save-label');dot.className='dot '+(state==='ok'?'ok':state==='busy'?'busy':state==='err'?'err':'');txt.textContent=label||'Sin cambios'}
-function markDirty(label='Cambios sin guardar'){window.appState.dirty=true;setSaveState('busy',label);changeLog.unshift({label:String(label||'Cambio'),time:new Date().toLocaleString('es-EC',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})});if(changeLog.length>60)changeLog.pop();clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>window.publishChanges(true),1300)}
+function markDirty(label='Cambios sin guardar'){changeRevision++;window.appState.dirty=true;setSaveState('busy',label);changeLog.unshift({label:String(label||'Cambio'),time:new Date().toLocaleString('es-EC',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'})});if(changeLog.length>60)changeLog.pop();clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>window.publishChanges(true),1300)}
 window.renderHistory=()=>{const host=document.getElementById('history-list');if(!host)return;const entries=changeLog.slice(0,60);host.innerHTML=entries.length?entries.map((x,i)=>`<div class="command-item"><span><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i>${proEscapeName(x.label)}</span><span class="pro-kbd">${x.time}</span></div>`).join(''):'<div class="p-5 text-center text-zinc-600 text-[10px]">Todavía no hay cambios registrados en esta sesión.</div>'};
 window.openHistory=()=>{window.openModal('history-modal');window.renderHistory()};
 window.clearHistoryLog=()=>{changeLog=[];window.renderHistory();window.showToast('Historial visible limpiado')};
-window.undo=()=>{if(builderHistory.length>1){const current=builderHistory.pop();builderRedo.push(current);const target=builderHistory[builderHistory.length-1]||{};proRestoring=true;proPost('RESTORE_LAYOUT',{layoutData:target.layoutData||target,layoutModel:target.layoutModel||null});setTimeout(()=>{proRestoring=false;window.showToast('Estado anterior restaurado');setSaveState('busy','Cambio sin guardar')},180);return}const snap=history.pop();if(!snap)return window.showToast('No hay cambios para deshacer.');redoStack.push(snap);sendStyleSnapshot(snap.before);window.showToast('Cambio deshecho')};
-window.redo=()=>{if(builderRedo.length){const target=builderRedo.pop()||{};builderHistory.push(target);proRestoring=true;proPost('RESTORE_LAYOUT',{layoutData:target.layoutData||target,layoutModel:target.layoutModel||null});setTimeout(()=>{proRestoring=false;window.showToast('Cambio rehecho');setSaveState('busy','Cambio sin guardar')},180);return}const snap=redoStack.pop();if(!snap)return window.showToast('No hay cambios para rehacer.');history.push(snap);sendStyleSnapshot(snap.after);window.showToast('Cambio rehecho')};
+window.undo=()=>{if(builderHistory.length>1){const current=builderHistory.pop();builderRedo.push(current);const target=builderHistory[builderHistory.length-1]||{};proRestoring=true;proPost('RESTORE_LAYOUT',{layoutData:target.layoutData||target,layoutModel:target.layoutModel||null});setTimeout(()=>{proRestoring=false;window.showToast('Estado anterior restaurado');markDirty('Cambio deshecho')},180);return}const snap=history.pop();if(!snap)return window.showToast('No hay cambios para deshacer.');redoStack.push(snap);sendStyleSnapshot(snap.before);markDirty('Cambio deshecho');window.showToast('Cambio deshecho')};
+window.redo=()=>{if(builderRedo.length){const target=builderRedo.pop()||{};builderHistory.push(target);proRestoring=true;proPost('RESTORE_LAYOUT',{layoutData:target.layoutData||target,layoutModel:target.layoutModel||null});setTimeout(()=>{proRestoring=false;window.showToast('Cambio rehecho');markDirty('Cambio rehecho')},180);return}const snap=redoStack.pop();if(!snap)return window.showToast('No hay cambios para rehacer.');history.push(snap);sendStyleSnapshot(snap.after);markDirty('Cambio rehecho');window.showToast('Cambio rehecho')};
 
 function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.entries(styles).forEach(([prop,value])=>iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*'));}
 function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*');history.push({before,after:{[prop]:value}});redoStack=[];if(commit){markDirty('Editando…');proScheduleSnapshot()}}
@@ -196,7 +197,7 @@ setTimeout(updateDesktopPreviewScale,100);
 window.focusCanvas=()=>document.getElementById('preview-stage').scrollTo({top:0,behavior:'smooth'});
 window.reloadPreview=()=>{const src=iframe().src;iframe().src=src.split('?')[0]+'?t='+Date.now();setSaveState('busy','Recargando…')};
 window.toggleInspector=()=>document.getElementById('rightbar').classList.toggle('mobile-open');
-window.toggleDragMode=()=>{isDragMode=!isDragMode;const b=document.getElementById('drag-btn');b.classList.toggle('active',isDragMode);b.innerHTML=isDragMode?'<i class="fa-solid fa-up-down-left-right mr-1"></i>Mover':'<i class="fa-solid fa-lock mr-1"></i>Fijo';iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*');markDirty(isDragMode?'Mover habilitado':'Modo fijo')};
+window.toggleDragMode=()=>{isDragMode=!isDragMode;const b=document.getElementById('drag-btn');b.classList.toggle('active',isDragMode);b.innerHTML=isDragMode?'<i class="fa-solid fa-up-down-left-right mr-1"></i>Mover':'<i class="fa-solid fa-lock mr-1"></i>Fijo';iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*');};
 window.toggleSelectionLock=()=>{selectionLocked=!selectionLocked;const b=document.getElementById('select-btn');b.classList.toggle('active',!selectionLocked);b.innerHTML=selectionLocked?'<i class="fa-solid fa-lock mr-1"></i>Bloqueado':'<i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar';iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},'*')};
 window.clearSelection=()=>{currentSelection=null;document.getElementById('sel-name').textContent='Ningún elemento seleccionado';document.getElementById('sel-meta').textContent='Selecciona un elemento dentro del sitio';document.getElementById('properties-panel').innerHTML='<div class="p-5 text-center text-zinc-600 text-[10px]">Selecciona un elemento en el lienzo para editarlo.</div>'};
 
@@ -228,7 +229,7 @@ window.setGalleryDuration=val=>{const ms=Math.max(1000,Math.min(120000,Number(va
 
 window.resetSelectedStyles=()=>{if(!currentSelection)return;const props=['color','bg','fontSize','fontWeight','lineHeight','letterSpacing','textAlign','fontFamily','opacity','borderRadius','borderWidth','borderColor','borderStyle','boxShadow','width','height','padding','margin','animationName','animationDuration','animationDelay','animationIterationCount','animationTimingFunction'];props.forEach(p=>iframe().contentWindow.postMessage({type:'CLEAR_STYLE',prop:p},'*'));window.showToast('Estilos locales restablecidos');markDirty('Restableciendo estilos')};
 window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTED'},'*');
-window.duplicateSelected=()=>iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},'*');
+window.duplicateSelected=()=>{iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},'*');markDirty('Elemento duplicado');proScheduleSnapshot()};
 window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},'*');window.clearSelection();markDirty('Elemento eliminado');proScheduleSnapshot()};
 
 window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Date.now()),isNew:!id};const d=data||{};let h='';
@@ -332,7 +333,15 @@ window.loadMoreGallery=()=>{
 };
 window.selectMedia=url=>{if(activeMediaInput&&document.getElementById(activeMediaInput)){const el=document.getElementById(activeMediaInput);el.value=url;el.dispatchEvent(new Event('input',{bubbles:true}))}window.closeModal('gallery-modal')};
 
-window.publishChanges=async(auto=false)=>{if(!iframe().contentWindow)return;setSaveState('busy',auto?'Autoguardando…':'Guardando…');iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual'},'*')};
+window.publishChanges=async(auto=false)=>{
+  if(!iframe().contentWindow)return;
+  if(!auto) clearTimeout(autosaveTimer);
+  const saveRequestId=++saveRequestSeq;
+  const saveRevision=changeRevision;
+  latestSaveRequestId=saveRequestId;
+  setSaveState('busy',auto?'Autoguardando…':'Guardando…');
+  iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual',saveRequestId,saveRevision},'*');
+};
 window.resetTemplateConfirm=()=>{if(!confirm('¿Restaurar el layout guardado? Esto elimina el layout visual actual y recarga la plantilla base.'))return;deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout')).then(()=>{window.showToast('Layout restablecido');window.reloadPreview()}).catch(()=>window.showToast('No se pudo restablecer'))};
 
 window.addEventListener('message',event=>{if(event.source!==iframe().contentWindow || event.origin!==location.origin)return;const d=event.data||{};if(!d.type)return;
@@ -340,11 +349,16 @@ if(d.type==='APP_READY'){iframe().contentWindow.postMessage({type:'ENABLE_BUILDE
 if(d.type==='ELEMENT_SELECTED'){renderInspector(d);if(window.innerWidth<760)document.getElementById('rightbar').classList.add('mobile-open')}
 if(d.type==='CLEAR_SELECTION')window.clearSelection();
 if(d.type==='LAYERS_DATA'){window.renderLayers(d.layers||[])}
+if(d.type==='ELEMENT_REORDERED'||d.type==='ELEMENT_DUPLICATED'){markDirty(d.type==='ELEMENT_REORDERED'?'Elemento reordenado':'Elemento duplicado');proScheduleSnapshot()}
+if(d.type==='RESIZE_UPDATE'){markDirty('Elemento redimensionado');proScheduleSnapshot()}
+if(d.type==='APP_LAYOUT_RESTORED'){proRestoring=false;markDirty('Estado restaurado')}
 if(d.type==='LAYOUT_SNAPSHOT'){proSnapshotBusy=false;window.__lastSavedLayout=d.layoutData||window.__lastSavedLayout||{};const layoutData=d.layoutData||{};const layoutModel=d.layoutModel||null;if(Object.keys(layoutData).length){const snapshot={layoutData,layoutModel};const sig=JSON.stringify(snapshot);if(sig!==proLastSnapshot&&!proRestoring){proLastSnapshot=sig;builderHistory.push(snapshot);if(builderHistory.length>40)builderHistory.shift();builderRedo=[];}}}
 if(d.type==='SAVE_FULL_LAYOUT'){
 const incoming=JSON.parse(JSON.stringify(d.layoutData||{}));
 const layoutModel=d.layoutModel||null;
 const mode=d.saveMode||'manual';
+const saveRequestId=Number(d.saveRequestId)||0;
+const saveRevision=Number(d.saveRevision)||0;
 const existing=window.__lastSavedLayout||{};
 ['view-catalog','view-courses'].forEach(id=>{
   const html=typeof incoming[id]==='string'?incoming[id]:'';
@@ -353,9 +367,25 @@ const existing=window.__lastSavedLayout||{};
 });
 const payload={zones:incoming,layoutModel:layoutModel||null,layoutSchemaVersion:2,prodOrder:Array.isArray(d.prodOrder)?d.prodOrder:[],courseOrder:Array.isArray(d.courseOrder)?d.courseOrder:[]};
 setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'),payload,{merge:true}).then(()=>{
-window.__lastSavedLayout=incoming;window.appState.dirty=false;setSaveState('ok','Guardado en Firebase');document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar';if(mode!=='auto')window.showToast('Sitio guardado correctamente')
-}).catch(()=>{setSaveState('err','Error al guardar');window.showToast('Error de sincronización')})}
-if(d.type==='SAVE_FULL_LAYOUT_ERROR'){setSaveState('err','No se pudo preparar el guardado');if((d.message||'').trim())window.showToast(d.message)}
+  if(saveRequestId!==latestSaveRequestId)return;
+  window.__lastSavedLayout=incoming;
+  const stillDirty = saveRevision!==changeRevision;
+  window.appState.dirty=stillDirty;
+  if(stillDirty){
+    setSaveState('busy','Cambios pendientes');
+    clearTimeout(autosaveTimer);
+    autosaveTimer=setTimeout(()=>window.publishChanges(true),400);
+  }else{
+    setSaveState('ok','Guardado en Firebase');
+    document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar';
+    if(mode!=='auto')window.showToast('Sitio guardado correctamente');
+  }
+}).catch(()=>{
+  if(saveRequestId!==latestSaveRequestId)return;
+  setSaveState('err','Error al guardar');
+  window.showToast('Error de sincronización');
+})}
+if(d.type==='SAVE_FULL_LAYOUT_ERROR'){if((Number(d.saveRequestId)||0)!==latestSaveRequestId)return;setSaveState('err','No se pudo preparar el guardado');if((d.message||'').trim())window.showToast(d.message)}
 if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
 if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
 if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?'))deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId)).then(()=>iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},'*'))}
