@@ -495,7 +495,7 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
         </div>
 
         <div class="reveal show mt-4 mb-8 text-center md:text-left">
-            <h3 class="display text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-white"><span data-editable="true">Experiencias de </span><span data-editable="true" class="text-cyan-400">Alumnos</span></h3>
+            <h3 class="display text-3xl md:text-4xl font-extrabold tracking-tight mb-2 text-white"><span data-editable="true">Testimonios de </span><span data-editable="true" class="text-cyan-400 drop-shadow-[0_0_12px_rgba(37,216,255,0.55)]">Alumnos</span></h3>
         </div>
         
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal show w-full pb-20 md:pb-0">
@@ -583,11 +583,11 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
                 <div id="contact-info-zone" class="flex flex-col gap-3 sm:gap-6 justify-center w-full lg:w-1/2 text-center lg:text-left shrink-0 sortable-zone">
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">WhatsApp</div>
-                        <button data-editable="true" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer bg-transparent border-none p-0" id="contact-phone">+593 99 759 1021</button>
+                        <button data-editable="true" data-social-url="https://wa.me/593997591021" data-href="https://wa.me/593997591021" onclick="window.open('https://wa.me/593997591021', '_blank')" class="inline-block text-xl sm:text-2xl lg:text-3xl font-light tracking-wider text-white hover:text-pink-400 transition-colors cursor-pointer bg-transparent border-none p-0" id="contact-phone">+593 99 759 1021</button>
                     </div>
                     <div class="group" data-resizable="true">
                         <div data-editable="true" class="text-[8px] sm:text-[9px] uppercase tracking-[.4em] text-zinc-500 font-bold mb-0.5 sm:mb-1.5 block">Correo</div>
-                        <button data-editable="true" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer bg-transparent border-none p-0">multiprintt@yahoo.com</button>
+                        <button data-editable="true" data-href="mailto:multiprintt@yahoo.com" onclick="window.location.href='mailto:multiprintt@yahoo.com'" class="inline-block text-sm sm:text-base lg:text-xl font-light tracking-wide text-white hover:text-cyan-400 transition-colors cursor-pointer bg-transparent border-none p-0">multiprintt@yahoo.com</button>
                     </div>
                     
                     <button onclick="window.cloneContactPhone(this)" class="admin-tool border border-dashed border-cyan-400/50 text-cyan-400 hover:bg-cyan-400 hover:text-black px-4 py-2 rounded-xl text-[10px] font-bold flex items-center justify-center gap-2 transition-all shadow-[0_0_10px_rgba(37,216,255,0.15)] ignore-drag cursor-pointer bg-transparent">
@@ -727,6 +727,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const APP_ID = "multiprintt-web";
+let firebaseReady = true;
 
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos';
 window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
@@ -1241,24 +1242,66 @@ window.deleteTestimonialCard = function(btn) {
 let lastProductSnapshot = null;
 window.loadFirebaseData = async function() {
     try {
-        await auth.authStateReady();
-        if (!auth.currentUser) await signInAnonymously(auth);
-        const layoutSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
+        try {
+            await Promise.race([
+                auth.authStateReady(),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase Auth timeout')), 4500))
+            ]);
+            if (!auth.currentUser) {
+                await Promise.race([
+                    signInAnonymously(auth),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('Anonymous Auth timeout')), 4500))
+                ]);
+            }
+        } catch (authError) {
+            firebaseReady = false;
+            console.warn('Firebase Auth no estuvo disponible; el sitio continuará con datos locales.', authError);
+        }
+
+        let layoutSnap = { exists: () => false };
+        if (firebaseReady) {
+            try {
+                layoutSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
+            } catch (layoutError) {
+                console.warn('No se pudo leer el layout remoto; se conserva el diseño local.', layoutError);
+            }
+        }
 
         if (layoutSnap.exists()) {
             const data = layoutSnap.data();
-            if(data.zones) { 
-                document.querySelectorAll('.editable-section').forEach(zone => { if(data.zones[zone.id]) zone.innerHTML = data.zones[zone.id]; }); 
-                if(data.zones['videoModalTpl']) {
-                    let modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-                    if(modalContent) modalContent.outerHTML = data.zones['videoModalTpl'];
+            if(data.zones && typeof data.zones === 'object') {
+                const zoneValidators = {
+                    'view-catalog': html => /id=["']product-grid["']/.test(html),
+                    'view-courses': html => /id=["']courses-grid["']/.test(html),
+                    'view-about': html => /view-about|about-history-zone|mobile-history-block/.test(html),
+                    'view-contact': html => /id=["']contact-info-zone["']|id=["']contact-flex["']/.test(html)
+                };
+
+                document.querySelectorAll('.editable-section').forEach(zone => {
+                    const savedHtml = typeof data.zones[zone.id] === 'string' ? data.zones[zone.id] : '';
+                    const validator = zoneValidators[zone.id];
+                    const looksValid = savedHtml.trim().length > 120 && (!validator || validator(savedHtml));
+
+                    // Nunca sustituimos una sección funcional por HTML vacío/corrupto.
+                    if (looksValid) {
+                        try { zone.innerHTML = savedHtml; }
+                        catch (zoneError) { console.warn('Zona ignorada por HTML inválido:', zone.id, zoneError); }
+                    }
+                });
+
+                if(typeof data.zones['videoModalTpl'] === 'string' && data.zones['videoModalTpl'].trim().length > 80) {
+                    const modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
+                    if(modalContent) {
+                        try { modalContent.outerHTML = data.zones['videoModalTpl']; }
+                        catch(modalError) { console.warn('Plantilla de video ignorada:', modalError); }
+                    }
                 }
             }
-            if(data.prodOrder) window.productOrderArray = data.prodOrder;
-            if(data.courseOrder) window.courseOrderArray = data.courseOrder;
+            if(Array.isArray(data.prodOrder)) window.productOrderArray = data.prodOrder;
+            if(Array.isArray(data.courseOrder)) window.courseOrderArray = data.courseOrder;
         }
 
-        onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
+        if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
             const nextProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
             let structuralChange = lastProductSnapshot === null || nextProducts.length !== lastProductSnapshot.length;
             if (!structuralChange && lastProductSnapshot) {
@@ -1283,7 +1326,7 @@ window.loadFirebaseData = async function() {
             window.updateCartUI();
         });
 
-        onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
+        if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
             window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => ({id: d.id, ...d.data()}));
             window.renderCourses();
         });
@@ -1417,13 +1460,21 @@ window.updateResizeBox = function() {
 window.setEditableText = function(el, text) {
     if (!el || el.tagName === 'IMG' || el.tagName === 'VIDEO') return;
     const value = String(text ?? '');
-    const textNodes = Array.from(el.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
-    if (textNodes.length) {
-        textNodes[0].nodeValue = value;
-        for (let i = 1; i < textNodes.length; i++) textNodes[i].nodeValue = '';
-    } else {
-        el.appendChild(document.createTextNode(value));
+
+    // Si el elemento contiene otros elementos editables, no destruimos su estructura visual.
+    const directEditableChildren = Array.from(el.children || []).filter(child => child.getAttribute('data-editable') === 'true');
+    if (directEditableChildren.length) {
+        const directTextNodes = Array.from(el.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+        if (directTextNodes.length) {
+            directTextNodes[0].nodeValue = value;
+            for (let i = 1; i < directTextNodes.length; i++) i && (directTextNodes[i].nodeValue = '');
+        } else {
+            el.appendChild(document.createTextNode(value));
+        }
+        return;
     }
+
+    el.textContent = value;
 };
 
 window.addEventListener('message', async (event) => {
@@ -1620,13 +1671,16 @@ window.addEventListener('message', async (event) => {
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
+            clone.querySelectorAll('.ignore-drag.admin-overlay, .ignore-drag.admin-video-edit-overlay').forEach(e => e.remove());
             const mapInClone = clone.querySelector('#leaflet-map'); 
             if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; }
             const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
             const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
             const gMarquee = clone.querySelector('#academy-gallery-marquee'); if(gMarquee) gMarquee.innerHTML = '';
             clone.querySelectorAll('#builder-resize-box').forEach(el => el.remove());
-            layoutData[zone.id] = clone.innerHTML;
+
+            const html = clone.innerHTML;
+            if(html.trim().length > 120) layoutData[zone.id] = html;
         });
         
         let modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
