@@ -173,6 +173,109 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
     transform: translate3d(0,0,0);
 }
 .hover\:pause-marquee:hover { animation-play-state: paused; }
+
+/* MOBILE ONLY: correcciones de viewport/modal sin cambiar el diseño de escritorio */
+@media (max-width: 767px) {
+  html, body { width:100%; max-width:100%; overflow:hidden; overscroll-behavior-x:none; }
+  .view-slide { width:100%; max-width:100vw; min-width:0; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
+
+  #courseModal {
+    align-items:center !important;
+    justify-content:center !important;
+    padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom)) !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  #courseModalContent {
+    width:100% !important;
+    max-width:100% !important;
+    max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    height:auto !important;
+    min-height:0 !important;
+    margin:auto !important;
+    border-radius:24px !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior:contain;
+    transform-origin:center center !important;
+  }
+
+  #courseModalContent > button {
+    top:10px !important; right:10px !important;
+    width:38px !important; height:38px !important;
+    min-width:38px !important; min-height:38px !important;
+    z-index:50 !important;
+  }
+
+  #courseModalContent > div:first-of-type {
+    width:100% !important;
+    height:clamp(145px,31dvh,220px) !important;
+    min-height:145px !important; max-height:220px !important;
+    flex:0 0 auto !important;
+  }
+
+  #courseModalContent #cm-image { width:100% !important; height:100% !important; object-fit:cover !important; }
+
+  #cm-badge-container {
+    top:12px !important; left:12px !important; right:54px !important;
+    padding-right:0 !important; gap:6px !important;
+    max-height:72px !important; overflow:hidden !important;
+  }
+  #cm-badge-container > span {
+    max-width:100% !important; font-size:8px !important; line-height:1.1 !important;
+    letter-spacing:.12em !important; padding:7px 9px !important;
+    white-space:nowrap !important;
+  }
+
+  #courseModalContent > div:last-child {
+    width:100% !important;
+    padding:18px 16px calc(18px + env(safe-area-inset-bottom)) !important;
+    min-width:0 !important; flex:1 1 auto !important;
+    justify-content:flex-start !important; overflow:visible !important;
+  }
+
+  #cm-title {
+    font-size:clamp(22px,6vw,30px) !important;
+    line-height:1.12 !important; margin-bottom:10px !important;
+    padding-right:34px !important; overflow-wrap:anywhere;
+  }
+
+  #cm-desc {
+    font-size:13px !important; line-height:1.5 !important;
+    margin-bottom:14px !important; max-height:27dvh !important;
+    overflow-y:auto !important; -webkit-overflow-scrolling:touch;
+    flex:0 1 auto !important;
+  }
+
+  #courseModalContent > div:last-child > div.grid {
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important; padding:10px !important; margin-bottom:14px !important;
+  }
+  #courseModalContent > div:last-child > div.grid > div { min-width:0 !important; gap:8px !important; }
+  #courseModalContent > div:last-child > div.grid > div > div:first-child {
+    width:38px !important; height:38px !important;
+    min-width:38px !important; min-height:38px !important; margin-right:8px !important;
+  }
+  #courseModalContent > div:last-child > div.grid i { font-size:15px !important; }
+  #courseModalContent > div:last-child > div.grid span { min-width:0 !important; overflow-wrap:anywhere; }
+
+  #cm-btn {
+    width:100% !important; min-height:48px !important;
+    padding:11px 14px !important; font-size:12px !important;
+    line-height:1.25 !important; position:relative !important;
+    z-index:5 !important; flex-shrink:0 !important;
+  }
+
+  #courseModalContent.scale-95 { transform:scale(.985) !important; }
+
+  button, a, input, textarea, select { touch-action:manipulation; }
+  img, video { max-width:100%; }
+}
+
 </style>
 </head>
 
@@ -632,8 +735,17 @@ window.saveCart = function() { localStorage.setItem('multiprintt_cart', JSON.str
 window.toggleCart = function() {
     const overlay = document.getElementById('cart-overlay');
     const sidebar = document.getElementById('cart-sidebar');
-    if (overlay.classList.contains('pointer-events-none')) { overlay.classList.remove('pointer-events-none', 'opacity-0'); sidebar.classList.remove('translate-x-full'); window.updateCartUI(); } 
-    else { overlay.classList.add('opacity-0', 'pointer-events-none'); sidebar.classList.add('translate-x-full'); }
+    if (!overlay || !sidebar) return;
+    const opening = overlay.classList.contains('pointer-events-none');
+    if (opening) {
+        overlay.classList.remove('pointer-events-none', 'opacity-0');
+        sidebar.classList.remove('translate-x-full');
+        // El carrito ya se mantiene sincronizado por saveCart/updateCartQty.
+        // No reconstruimos el DOM al abrir para evitar repaints/saltos del catálogo.
+    } else {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        sidebar.classList.add('translate-x-full');
+    }
 }
 window.clearCart = function() { window.multiprinttCart = []; window.saveCart(); }
 
@@ -953,10 +1065,7 @@ window.renderProducts = function(){
                     const initialSlideIndex = Math.min(1, items.length - 1);
                     const initialSlide = items[initialSlideIndex];
                     if (initialSlide) {
-                        slider.scrollTo({
-                            left: initialSlide.offsetLeft - (slider.offsetWidth - initialSlide.offsetWidth) / 2,
-                            behavior: 'instant'
-                        });
+                        slider.scrollLeft = Math.max(0, initialSlide.offsetLeft - (slider.offsetWidth - initialSlide.offsetWidth) / 2);
                     }
                     window.updateSliderOpacities(sliderId);
                 } 
@@ -1129,6 +1238,7 @@ window.deleteTestimonialCard = function(btn) {
     if(card) { card.remove(); window.showToast("Testimonio eliminado."); }
 }
 
+let lastProductSnapshot = null;
 window.loadFirebaseData = async function() {
     try {
         await auth.authStateReady();
@@ -1149,8 +1259,28 @@ window.loadFirebaseData = async function() {
         }
 
         onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
-            window.appProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
-            window.renderProducts(); window.updateCartUI();
+            const nextProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => ({id: d.id, ...d.data()}));
+            let structuralChange = lastProductSnapshot === null || nextProducts.length !== lastProductSnapshot.length;
+            if (!structuralChange && lastProductSnapshot) {
+                const previousById = new Map(lastProductSnapshot.map(p => [p.id, p]));
+                structuralChange = nextProducts.some(p => {
+                    const prev = previousById.get(p.id);
+                    if (!prev) return true;
+                    const keys = new Set([...Object.keys(prev), ...Object.keys(p)]);
+                    keys.delete('cartAdds');
+                    keys.delete('checkoutIntents');
+                    for (const key of keys) {
+                        if (JSON.stringify(prev[key]) !== JSON.stringify(p[key])) return true;
+                    }
+                    return false;
+                });
+            }
+            window.appProducts = nextProducts;
+            lastProductSnapshot = nextProducts.map(p => ({...p}));
+            // Los contadores de carrito/checkout no fuerzan un rebuild de las tarjetas.
+            // Así los sliders con varias imágenes conservan su posición y no saltan.
+            if (structuralChange) window.renderProducts();
+            window.updateCartUI();
         });
 
         onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
@@ -1514,34 +1644,74 @@ window.addEventListener('message', async (event) => {
 
 window.openCourseModal = function(id) {
     if(document.body.classList.contains('builder-mode')) return;
-    const c = window.appCourses.find(x => x.id === id); if(!c) return;
-    document.getElementById('cm-title').textContent = c.title; document.getElementById('cm-desc').textContent = c.desc; document.getElementById('cm-schedule').textContent = c.schedule; document.getElementById('cm-price').textContent = c.price; document.getElementById('cm-image').src = c.image;
-    
+    const c = window.appCourses.find(x => x.id === id);
+    if(!c) return;
+
+    document.getElementById('cm-title').textContent = c.title || '';
+    document.getElementById('cm-desc').textContent = c.desc || '';
+    document.getElementById('cm-schedule').textContent = c.schedule || '';
+    document.getElementById('cm-price').textContent = c.price || '';
+    document.getElementById('cm-image').src = c.image || '';
+
     const masterBadge = document.getElementById('cm-masterclass-badge');
     if(masterBadge) masterBadge.style.display = c.isMasterclass !== false ? 'inline-flex' : 'none';
-    
+
     const modBadge = document.getElementById('cm-modality-badge');
     const modText = document.getElementById('cm-modality-text');
-    let modalityStr = c.modality || 'Presencial';
+    const modalityStr = c.modality || 'Presencial';
     if(modText) modText.textContent = modalityStr;
     if(modBadge) {
-        let modIcon = modalityStr.toLowerCase() === 'virtual' || modalityStr.toLowerCase() === 'online' ? 'fa-laptop' : (modalityStr.toLowerCase() === 'híbrido' ? 'fa-rotate' : 'fa-location-dot');
-        modBadge.querySelector('i').className = `fa-solid ${modIcon} mr-1 text-white/50`;
+        const low = modalityStr.toLowerCase();
+        const modIcon = (low === 'virtual' || low === 'online') ? 'fa-laptop' : (low === 'híbrido' ? 'fa-rotate' : 'fa-location-dot');
+        const icon = modBadge.querySelector('i');
+        if(icon) icon.className = `fa-solid ${modIcon} mr-1 text-white/50`;
     }
 
-    let phoneEl = document.getElementById('contact-phone'); let rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : "593997591021";
+    const phoneEl = document.getElementById('contact-phone');
+    const rawPhone = phoneEl ? phoneEl.textContent.replace(/\s+/g, '') : '593997591021';
     const cUrl = 'https://multiprintt.web.app/';
     const rawMsg = `¡Hola *Multiprintt Academy*! 🎓\n\nQuiero información detallada y separar mi cupo para el siguiente curso:\n\n📘 *${c.title}* (${modalityStr})\n\n🔗 *Vengo desde la tienda online:*\n${cUrl}\n\n¿Me ayudan con los requisitos? 🚀`;
     const waUrl = `https://wa.me/${rawPhone}?text=${encodeURIComponent(rawMsg)}`;
-    document.getElementById('cm-btn').onclick = () => window.open(waUrl, '_blank');
-    
-    document.getElementById('courseModal').classList.remove('hidden'); document.getElementById('courseModal').classList.add('flex'); setTimeout(() => { document.getElementById('courseModal').classList.remove('opacity-0'); document.getElementById('courseModalContent').classList.remove('scale-95'); }, 10);
+    const cta = document.getElementById('cm-btn');
+    if(cta) cta.onclick = () => window.open(waUrl, '_blank');
+
+    const modal = document.getElementById('courseModal');
+    const content = document.getElementById('courseModalContent');
+    if(!modal || !content) return;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    content.scrollTop = 0;
+    const desc = document.getElementById('cm-desc');
+    if(desc) desc.scrollTop = 0;
+
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        content.classList.remove('scale-95');
+    }, 10);
 }
 
 window.closeCourseModal = function() {
-    const modal = document.getElementById('courseModal'); const content = document.getElementById('courseModalContent');
-    if (modal) { modal.classList.add('opacity-0'); if(content) content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
-};
+    const modal = document.getElementById('courseModal');
+    const content = document.getElementById('courseModalContent');
+    if(!modal) return;
+    modal.classList.add('opacity-0');
+    if(content) content.classList.add('scale-95');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        if(content) content.scrollTop = 0;
+    }, 300);
+}
+
+document.getElementById('courseModal')?.addEventListener('click', (event) => {
+    if(event.target.id === 'courseModal') window.closeCourseModal();
+});
+
+document.addEventListener('keydown', (event) => {
+    const modal = document.getElementById('courseModal');
+    if(event.key === 'Escape' && modal && !modal.classList.contains('hidden')) window.closeCourseModal();
+});
 
 window.openVideoModal = function(btn) {
     if(!window.isAdminMode && document.body.classList.contains('builder-mode')) return;
