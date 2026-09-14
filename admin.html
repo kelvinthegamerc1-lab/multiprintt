@@ -280,20 +280,26 @@
         document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
     }
 
+    // Mejora: Actualización optimista de guardado del Layout
     window.publishChanges = function() {
-        document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="hidden sm:inline">Guardando...</span>';
+        const publishBtn = document.getElementById('publish-btn');
+        publishBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="hidden sm:inline">Guardando...</span>';
+        window.showToast("Preparando despliegue...");
         document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
     }
 
     window.resetTemplateConfirm = function() {
-        window.showConfirm("¿Restaurar diseño base de fábrica?", async () => {
+        window.showConfirm("¿Restaurar diseño base de fábrica?", () => {
             window.showToast("Restaurando UI...");
-            try {
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
-                window.showToast("Plantilla restablecida.");
+            deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'))
+            .then(() => {
+                window.showToast("Plantilla restablecida con éxito.");
                 const iframe = document.getElementById('site-frame');
                 if (iframe) iframe.src = 'index.html?t=' + Date.now();
-            } catch(e) { window.showToast("Error al restablecer."); }
+            })
+            .catch(e => {
+                window.showToast("Error al restablecer plantilla.");
+            });
         });
     }
 
@@ -308,7 +314,6 @@
         { type: 'video', url: 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4', title: 'Video' }
     ];
 
-    // Añadimos "mode" como parámetro para distinguir entre productos y multimedia normal
     async function fetchGalleryJson(url, mode) {
         try {
             const res = await fetch(url);
@@ -324,19 +329,16 @@
                 let u = typeof item === 'string' ? item : (item.url || item.src || '');
                 let t = u.endsWith('.mp4') ? 'video' : 'image';
                 
-                // Si la URL es relativa, le agregamos la ruta base dependiendo del modo (productos o cursos)
                 if (u && !u.startsWith('http') && !u.startsWith('data:')) {
                     let basePath = mode === 'product' 
                         ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/' 
                         : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';
                     u = basePath + u;
                 } else if (u.startsWith('http') && mode === 'product') {
-                    // Corrección automática: si la URL absoluta de un producto olvidó la carpeta "productos/"
                     if (u.includes('/recursos/') && !u.includes('/recursos/productos/')) {
                         u = u.replace('/recursos/', '/recursos/productos/');
                     }
                 }
-
                 return { type: t, url: u, title: u.split('/').pop() };
             });
         } catch (e) { return defaultGalleryItems; }
@@ -347,7 +349,6 @@
         const modal = document.getElementById('gallery-modal'); const grid = document.getElementById('gallery-grid');
         modal.classList.add('active'); grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando...</div>';
         
-        // Aquí pasamos el "mode" a la función fetchGalleryJson para que sepa cómo manejar las URLs
         galleryDataCache = await fetchGalleryJson(
             mode === 'product' ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json' : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json', 
             mode
@@ -426,7 +427,8 @@
         document.getElementById('db-modal').classList.add('active');
     }
 
-    window.saveDbItem = async function() {
+    // Mejora: Sincronización Inmediata y Actualización Optimista
+    window.saveDbItem = function() {
         let t = currentDbItem.type; let payload = {};
         const btnSave = document.getElementById('btn-save-db');
         if(t === 'product') { 
@@ -439,20 +441,26 @@
             payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, theme: document.getElementById('db-theme').value }; 
         }
         btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-        try {
-            if (t === 'product' || t === 'course') {
-                const col = t === 'product' ? 'products' : 'courses';
-                await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, currentDbItem.id), payload, { merge: true });
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: t, id: currentDbItem.id, data: payload }, '*');
-            } else if (t === 'testimonial_video') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
-            } else if (t === 'testimonial_text') {
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
-            }
-            document.getElementById('db-modal').classList.remove('active');
-            window.showToast("✅ Actualizado con éxito.");
-        } catch(e) { window.showToast("❌ Error al guardar."); } 
-        finally { btnSave.innerHTML = 'Guardar'; }
+        
+        // 1. Actualizar iframe INMEDIATAMENTE
+        if (t === 'product' || t === 'course') {
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: t, id: currentDbItem.id, data: payload }, '*');
+        } else if (t === 'testimonial_video') {
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
+        } else if (t === 'testimonial_text') {
+            document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
+        }
+        
+        document.getElementById('db-modal').classList.remove('active');
+        window.showToast("✅ Actualización aplicada.");
+        btnSave.innerHTML = 'Guardar';
+
+        // 2. Guardar en background
+        if (t === 'product' || t === 'course') {
+            const col = t === 'product' ? 'products' : 'courses';
+            setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, currentDbItem.id), payload, { merge: true })
+            .catch(e => window.showToast("❌ Error al guardar en la nube."));
+        } 
     }
 
     let selNet = '', selIcon = '';
@@ -480,19 +488,29 @@
 
         if (data.type === 'SAVE_FULL_LAYOUT') {
             if (data.layoutData) {
-                try {
-                    await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder || [], courseOrder: data.courseOrder || [] }, { merge: true });
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span>Desplegar</span>';
+                // Actualización optimista de Layout
+                window.showToast('Sincronizando con el servidor...');
+                setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder || [], courseOrder: data.courseOrder || [] }, { merge: true })
+                .then(() => {
+                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
                     window.showToast('¡Desplegado correctamente!');
-                } catch(e) { window.showToast('Error de despliegue.'); }
+                })
+                .catch(e => {
+                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
+                    window.showToast('Error de despliegue.');
+                });
             }
         }
         if (data.type === 'DELETE_DB_ITEM') {
-            window.showConfirm("¿Eliminar permanentemente?", async () => {
+            window.showConfirm("¿Eliminar permanentemente?", () => {
                 const col = data.itemType === 'product' ? 'products' : 'courses';
-                await deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.itemId));
+                
+                // Actualización optimista
                 document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
                 window.showToast("🗑 Eliminado.");
+                
+                // Borrar en background
+                deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.itemId)).catch(e => console.error("Error al eliminar", e));
             });
         }
         if (data.type === 'APP_READY') { 
