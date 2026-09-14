@@ -1748,22 +1748,7 @@ function applySeoRuntime(raw={}){const d={...SEO_RUNTIME_DEFAULTS,...raw};if(d.t
 
 try{applySeoRuntime(SEO_RUNTIME_DEFAULTS)}catch(e){console.warn('SEO inicial:',e)}
 
-window.addEventListener('message', async (event) => {
-    if (window.parent !== window && (event.source !== window.parent || event.origin !== window.location.origin)) return;
-    if (event.source !== window.parent || event.origin !== window.location.origin) return;
 
-    if (event.data.type === 'SET_GLOBAL_URLS') { applyGlobalUrls(event.data.urls||{}); }
-    if (event.data.type === 'SET_SEO_SETTINGS') { applySeoRuntime(event.data.seo||{}); }
-    if (event.data.type === 'SET_MEDIA_SOURCES') { applyMediaSources(event.data.sources||{}); try{window.loadAcademyGallery();}catch(e){} }
-    if (event.data.type === 'GET_LAYERS') { emitLayers(); }
-    if (event.data.type === 'SELECT_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){el.click();} }
-    if (event.data.type === 'FOCUS_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})}catch(e){}} }
-    if (event.data.type === 'TOGGLE_LAYER_LOCK') { const el=findBuilderElement(event.data.builderId); if(el){const id=event.data.builderId;if(proLayerLocks.has(id)){proLayerLocks.delete(id);el.removeAttribute('data-sortable-lock')}else{proLayerLocks.add(id);el.setAttribute('data-sortable-lock','true')}}emitLayers(); }
-    if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); window.parent.postMessage({type:'LAYOUT_SNAPSHOT',layoutData,layoutModel:captureBuilderModel(),reason:event.data.reason||''},'*'); }
-    if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
-    if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
-    if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
-    if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const ms=Math.max(500,Number(event.data.ms)||0); document.getElementById('academy-gallery-marquee').style.animationDuration=ms+'ms'; document.getElementById('academy-gallery-marquee').setAttribute('data-editor-duration',String(ms)); }
     function builderSelectionTarget(raw, e) {
         if (!raw || raw.nodeType !== 1) return null;
         if (raw.closest('.ignore-drag, .admin-tool, #builder-resize-box, #videoModalContent')) return null;
@@ -1839,6 +1824,23 @@ window.addEventListener('message', async (event) => {
         return safe;
     }
 
+
+window.addEventListener('message', async (event) => {
+    if (window.parent !== window && (event.source !== window.parent || event.origin !== window.location.origin)) return;
+    if (event.source !== window.parent || event.origin !== window.location.origin) return;
+
+    if (event.data.type === 'SET_GLOBAL_URLS') { applyGlobalUrls(event.data.urls||{}); }
+    if (event.data.type === 'SET_SEO_SETTINGS') { applySeoRuntime(event.data.seo||{}); }
+    if (event.data.type === 'SET_MEDIA_SOURCES') { applyMediaSources(event.data.sources||{}); try{window.loadAcademyGallery();}catch(e){} }
+    if (event.data.type === 'GET_LAYERS') { emitLayers(); }
+    if (event.data.type === 'SELECT_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){el.click();} }
+    if (event.data.type === 'FOCUS_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})}catch(e){}} }
+    if (event.data.type === 'TOGGLE_LAYER_LOCK') { const el=findBuilderElement(event.data.builderId); if(el){const id=event.data.builderId;if(proLayerLocks.has(id)){proLayerLocks.delete(id);el.removeAttribute('data-sortable-lock')}else{proLayerLocks.add(id);el.setAttribute('data-sortable-lock','true')}}emitLayers(); }
+    if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); window.parent.postMessage({type:'LAYOUT_SNAPSHOT',layoutData,layoutModel:captureBuilderModel(),reason:event.data.reason||''},'*'); }
+    if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
+    if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
+    if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
+    if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const ms=Math.max(500,Number(event.data.ms)||0); document.getElementById('academy-gallery-marquee').style.animationDuration=ms+'ms'; document.getElementById('academy-gallery-marquee').setAttribute('data-editor-duration',String(ms)); }
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
         window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
@@ -2004,41 +2006,26 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
-        if(document.body.classList.contains('dragging-active')) { window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; document.body.classList.remove('dragging-active'); }
-        if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; }
-        if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
+        // Captura estable: no modificamos el DOM vivo mientras guardamos.
+        // Los contenidos dinámicos se vacían solo dentro de la copia serializada.
+        try {
+            if(document.body.classList.contains('dragging-active')) {
+                (window.sortableInstances||[]).forEach(s => { try{s.destroy()}catch(e){} });
+                window.sortableInstances = [];
+                document.body.classList.remove('dragging-active');
+            }
+            if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; }
+            if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
 
-        const layoutData = {};
-        document.querySelectorAll('.editable-section').forEach(zone => {
-            if(!zone.id) return;
-            const clone = zone.cloneNode(true);
-            clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-            clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            // Los overlays del editor deben permanecer en el layout guardado.
-            // Permanecen ocultos fuera de la sesión admin mediante CSS y así no desaparecen
-            // después de guardar, recargar o volver a abrir el editor.
-            clone.querySelectorAll('.admin-video-edit-overlay').forEach(e => e.style.display = '');
-            const mapInClone = clone.querySelector('#leaflet-map'); 
-            if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; }
-            const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
-            const cGrid = clone.querySelector('#courses-grid'); if(cGrid) cGrid.innerHTML = '';
-            const gMarquee = clone.querySelector('#academy-gallery-marquee'); if(gMarquee) gMarquee.innerHTML = '';
-            clone.querySelectorAll('#builder-resize-box').forEach(el => el.remove());
-
-            const html = clone.innerHTML;
-            if(html.trim().length > 120) layoutData[zone.id] = html;
-        });
-        
-        let modalContent = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
-        if (modalContent) {
-            const modalClone = modalContent.cloneNode(true);
-            modalClone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
-            layoutData['videoModalTpl'] = modalClone.outerHTML; 
+            const layoutData = captureBuilderLayout();
+            const layoutModel = captureBuilderModel();
+            const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')).filter(Boolean);
+            const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id')).filter(Boolean);
+            window.parent.postMessage({ type:'SAVE_FULL_LAYOUT', layoutData, layoutModel, prodOrder, courseOrder, saveMode:event.data.saveMode||'manual' }, '*');
+        } catch (saveError) {
+            console.error('No se pudo capturar el layout para guardar:', saveError);
+            window.parent.postMessage({ type:'SAVE_FULL_LAYOUT_ERROR', message:'No se pudo preparar el layout' }, '*');
         }
-
-        const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')); 
-        const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id'));
-        window.parent.postMessage({ type:'SAVE_FULL_LAYOUT', layoutData, layoutModel:captureBuilderModel(), prodOrder, courseOrder }, '*');
     }
 });
 
