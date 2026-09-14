@@ -1502,8 +1502,10 @@ window.loadAcademyGallery = async function() {
     const exclusions = ["agenda.webp", "favicon.webp", "impresion.webp", "logomejorado.webp", "logo_mejorado.webp", "pedreria.webp", "plotter.webp", "polimacion.webp", "resina.webp", "sellos.webp", "serigrafia.webp", "sublimacion.webp", "vidrio.webp"];
     let mediaConfig = null;
     try { mediaConfig = JSON.parse(localStorage.getItem('multiprintt_media_sources') || 'null'); } catch(e) {}
-    const galleryJson = (mediaConfig && mediaConfig.generalJson) || 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json';
-    const galleryBase = (mediaConfig && mediaConfig.generalBase) || 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';
+    const galleryMode = mediaConfig?.generalMode || 'auto';
+    const galleryJson = mediaConfig?.generalJson || 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json';
+    const galleryBase = mediaConfig?.generalBase || 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';
+    if(galleryMode==='manual'){ const manual=parseMediaList(mediaConfig?.manualGeneral,galleryBase).map(x=>x.url); if(manual.length){ renderAcademyGallery(manual); return true; } }
 
     try {
         const controller = new AbortController();
@@ -1627,6 +1629,7 @@ window.setEditableText = function(el, text) {
     el.textContent = value;
 };
 
+let mediaConfig={generalMode:'auto',productMode:'auto',generalJson:'',generalBase:'',productJson:'',productBase:'',manualGeneral:'',manualProducts:''};
 const PRO_GLOBAL_URLS_KEY='multiprintt_builder_pro_v1';
 function resolveBuilderUrl(raw,kind){const v=String(raw||'').trim();if(!v)return'';if(/^(https?:|data:|blob:|mailto:|tel:|#|\/\/)/i.test(v))return v;const base=(document.documentElement.dataset[(kind||'media')+'Base']||document.documentElement.dataset.mediaBase||'').replace(/\/$/,'');return base?v.startsWith('/')?base+v:base+'/'+v:v}
 
@@ -1638,6 +1641,9 @@ function restoreBuilderLayout(layoutData){if(!layoutData||typeof layoutData!=='o
 function emitLayers(){const selected=window.selectedEl;const nodes=[];document.querySelectorAll('[data-editable="true"],[data-resizable="true"],button,img,video,a,.card,section').forEach(el=>{if(!el||el.closest('.ignore-drag')||el.closest('#videoModalContent')||el.closest('#builder-resize-box'))return;const bid=ensureBuilderId(el);nodes.push({builderId:bid,tag:el.tagName,label:(el.id?'#'+el.id+' ': '')+((el.getAttribute('aria-label')||el.innerText||el.getAttribute('alt')||'Elemento').trim().slice(0,70)),icon:builderIconFor(el),selected:el===selected})});window.parent.postMessage({type:'LAYERS_DATA',layers:nodes.slice(0,300)},'*')}
 function findBuilderElement(id){return id?[...document.querySelectorAll('[data-builder-id]')].find(el=>el.getAttribute('data-builder-id')===id):null}
 function applyGlobalUrls(urls){try{const clean={site:urls?.site||'',media:urls?.media||'',image:urls?.image||'',video:urls?.video||'',api:urls?.api||''};document.documentElement.dataset.siteBase=clean.site;document.documentElement.dataset.mediaBase=clean.media;document.documentElement.dataset.imageBase=clean.image;document.documentElement.dataset.videoBase=clean.video;document.documentElement.dataset.apiBase=clean.api;document.documentElement.style.setProperty('--mp-site-base',clean.site);document.documentElement.style.setProperty('--mp-media-base',clean.media);document.documentElement.style.setProperty('--mp-image-base',clean.image);document.documentElement.style.setProperty('--mp-video-base',clean.video);document.documentElement.style.setProperty('--mp-api-base',clean.api)}catch(e){}}
+function applyMediaSources(cfg){try{mediaConfig={...mediaConfig,...(cfg||{})}}catch(e){}}
+function parseMediaList(raw,base){const text=String(raw||'').trim();if(!text)return[];let items=[];try{const d=JSON.parse(text);items=Array.isArray(d)?d:(d.items||d.imagenes||[])}catch{items=text.split(/\r?\n|,\s*(?=https?:\/\/)/).map(v=>v.trim()).filter(Boolean)}return items.map((x,i)=>{const o=typeof x==='string'?{url:x}:x||{};let u=String(o.url||o.src||'');if(u&&!/^(https?:|data:|blob:|\/\/)/i.test(u))u=(base||'').replace(/\/$/,'/')+u.replace(/^\/+/,'');return{url:u,title:String(o.title||o.name||u.split('/').pop()||('Medio '+(i+1)))} }).filter(x=>x.url)}
+
 function applyResponsiveStyle(el,device,prop,value){if(!el)return;const id=ensureBuilderId(el);window.mpResponsiveRules=window.mpResponsiveRules||{};window.mpResponsiveRules[id]=window.mpResponsiveRules[id]||{};window.mpResponsiveRules[id][device]=window.mpResponsiveRules[id][device]||{};window.mpResponsiveRules[id][device][prop]=String(value??'').replace(/[;{}]/g,'');let st=document.getElementById('mp-responsive-overrides');if(!st){st=document.createElement('style');st.id='mp-responsive-overrides';document.head.appendChild(st)}const media={mobile:'(max-width: 640px)',tablet:'(min-width: 641px) and (max-width: 1024px)',laptop:'(min-width: 1025px) and (max-width: 1279px)',desktop:'(min-width: 1280px)'};let css='';Object.entries(window.mpResponsiveRules).forEach(([bid,devices])=>Object.entries(devices).forEach(([dev,props])=>{const selector=`[data-builder-id=\"${bid.replace(/[^a-zA-Z0-9_-]/g,'')}\"]`;const body=Object.entries(props).map(([k,v])=>`${k}:${v}!important`).join(';');if(!body)return;const rule=`${selector}{${body}}`;css+=media[dev]?`@media ${media[dev]}{${rule}}\n`:rule+'\n'}));st.textContent=css;el.setAttribute('data-responsive-'+device+'-'+prop,'true')}
 function mapAnimationName(name){const map={fadeIn:'mpFadeIn',slideUp:'mpSlideUp',slideDown:'mpSlideDown',slideLeft:'mpSlideLeft',slideRight:'mpSlideRight',pulse:'mpPulse',float:'mpFloat',zoomIn:'mpZoomIn',flipIn:'mpFlipIn'};return map[name]||name}
 
@@ -1645,6 +1651,7 @@ window.addEventListener('message', async (event) => {
     if (event.source !== window.parent && event.origin !== window.location.origin) return;
 
     if (event.data.type === 'SET_GLOBAL_URLS') { applyGlobalUrls(event.data.urls||{}); }
+    if (event.data.type === 'SET_MEDIA_SOURCES') { applyMediaSources(event.data.sources||{}); try{window.loadAcademyGallery();}catch(e){} }
     if (event.data.type === 'GET_LAYERS') { emitLayers(); }
     if (event.data.type === 'SELECT_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){el.click();} }
     if (event.data.type === 'FOCUS_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})}catch(e){}} }
