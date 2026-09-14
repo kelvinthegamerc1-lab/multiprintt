@@ -1574,7 +1574,13 @@ function renderAcademyGalleryImages(images) {
     container.innerHTML = html + html + html;
     container.setAttribute('data-gallery-ready','true');
     container.removeAttribute('data-gallery-loading');
-    if (!container.getAttribute('data-editor-duration') && !container.style.animationDuration) {
+    const savedControlMs = Number(container.getAttribute('data-editor-duration') || '0');
+    if (savedControlMs > 0) {
+        container.style.animationDuration = Math.round(savedControlMs * 100) + 'ms';
+        container.style.animationTimingFunction = 'linear';
+        container.style.animationIterationCount = 'infinite';
+        container.setAttribute('data-editor-css-duration', String(Math.round(savedControlMs * 100)));
+    } else if (!container.style.animationDuration) {
         container.style.animationDuration = Math.max(32, safeImages.length * 2.4) + 's';
     }
     return true;
@@ -1850,7 +1856,7 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
     if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
     if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
-    if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const ms=Math.max(500,Number(event.data.ms)||0); document.getElementById('academy-gallery-marquee').style.animationDuration=ms+'ms'; document.getElementById('academy-gallery-marquee').setAttribute('data-editor-duration',String(ms)); }
+    if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const controlMs=Math.max(1000,Math.min(120000,Number(event.data.ms)||15000)); const durationMs=Math.round(controlMs*100); const gallery=document.getElementById('academy-gallery-marquee'); gallery.style.animationDuration=durationMs+'ms'; gallery.style.animationTimingFunction='linear'; gallery.style.animationIterationCount='infinite'; gallery.setAttribute('data-editor-duration',String(controlMs)); gallery.setAttribute('data-editor-css-duration',String(durationMs)); }
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
         window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
