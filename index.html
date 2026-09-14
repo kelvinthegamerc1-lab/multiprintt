@@ -828,6 +828,21 @@ window.toggleCart = function() {
     }
 }
 window.clearCart = function() { window.multiprinttCart = []; window.saveCart(); }
+window.showToast = function(message) {
+    try {
+        let host = document.getElementById('mp-runtime-toast');
+        if (!host) {
+            host = document.createElement('div');
+            host.id = 'mp-runtime-toast';
+            host.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(12px);z-index:100000;padding:10px 16px;border:1px solid rgba(255,255,255,.12);border-radius:999px;background:rgba(8,8,12,.94);color:#fff;font:600 12px/1.2 system-ui,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.35);opacity:0;transition:opacity .2s ease,transform .2s ease;pointer-events:none';
+            document.body.appendChild(host);
+        }
+        host.textContent = String(message || 'Listo');
+        host.style.opacity = '1'; host.style.transform = 'translateX(-50%) translateY(0)';
+        clearTimeout(host._hideTimer);
+        host._hideTimer = setTimeout(() => { host.style.opacity='0'; host.style.transform='translateX(-50%) translateY(12px)'; }, 2200);
+    } catch(e) { console.info(message); }
+}
 
 window.toggleAboutVideo = function() {
     const vid = document.getElementById('about-cinematic-video');
@@ -1687,21 +1702,16 @@ window.updateResizeBox = function() {
 window.setEditableText = function(el, text) {
     if (!el || el.tagName === 'IMG' || el.tagName === 'VIDEO') return;
     const value = String(text ?? '');
-
-    // Si el elemento contiene otros elementos editables, no destruimos su estructura visual.
-    const directEditableChildren = Array.from(el.children || []).filter(child => child.getAttribute('data-editable') === 'true');
-    if (directEditableChildren.length) {
-        const directTextNodes = Array.from(el.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
-        if (directTextNodes.length) {
-            directTextNodes[0].nodeValue = value;
-            for (let i = 1; i < directTextNodes.length; i++) i && (directTextNodes[i].nodeValue = '');
-        } else {
-            el.appendChild(document.createTextNode(value));
-        }
-        return;
+    // Nunca usamos textContent sobre un control con iconos, spans o markup interno:
+    // eso destruiría su estructura visual. Editamos únicamente los nodos de texto
+    // directos del elemento; si no existe ninguno, insertamos uno sin tocar hijos.
+    const directTextNodes = Array.from(el.childNodes || []).filter(node => node.nodeType === Node.TEXT_NODE);
+    if (directTextNodes.length) {
+        directTextNodes[0].nodeValue = value;
+        for (let i = 1; i < directTextNodes.length; i++) directTextNodes[i].nodeValue = '';
+    } else {
+        el.appendChild(document.createTextNode(value));
     }
-
-    el.textContent = value;
 };
 
 let mediaConfig={generalMode:'auto',productMode:'auto',generalJson:'',generalBase:'',productJson:'',productBase:'',manualGeneral:'',manualProducts:''};
@@ -1972,12 +1982,15 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'DUPLICATE_SELECTED' && window.selectedEl && !window.selectedEl.matches('#builder-resize-box')) {
         const clone = window.selectedEl.cloneNode(true);
         clone.classList.remove('builder-selected-el');
+        clone.removeAttribute('data-builder-id');
         if(window.selectedEl.parentElement) {
             window.selectedEl.parentElement.insertBefore(clone, window.selectedEl.nextSibling);
             window.selectedEl = clone;
+            ensureBuilderId(clone);
             clone.classList.add('builder-selected-el');
             window.updateResizeBox();
             emitLayers();
+            window.parent.postMessage({type:'ELEMENT_DUPLICATED',builderId:clone.getAttribute('data-builder-id')||''},'*');
         }
     }
 
@@ -2006,25 +2019,28 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
-        // Captura estable: no modificamos el DOM vivo mientras guardamos.
-        // Los contenidos dinámicos se vacían solo dentro de la copia serializada.
+        // Guardado sin efectos secundarios: nunca desmontamos Sortable, selección,
+        // overlays ni cambiamos el modo del editor mientras se serializa.
+        // captureBuilderLayout() trabaja sobre clones, por lo que Catálogo/Academia
+        // se limpian únicamente dentro del snapshot que va a Firebase.
         try {
-            if(document.body.classList.contains('dragging-active')) {
-                (window.sortableInstances||[]).forEach(s => { try{s.destroy()}catch(e){} });
-                window.sortableInstances = [];
-                document.body.classList.remove('dragging-active');
-            }
-            if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; }
-            if(window.resizerOverlay) window.resizerOverlay.style.display = 'none';
-
             const layoutData = captureBuilderLayout();
             const layoutModel = captureBuilderModel();
             const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')).filter(Boolean);
             const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id')).filter(Boolean);
-            window.parent.postMessage({ type:'SAVE_FULL_LAYOUT', layoutData, layoutModel, prodOrder, courseOrder, saveMode:event.data.saveMode||'manual' }, '*');
+            window.parent.postMessage({
+                type:'SAVE_FULL_LAYOUT',
+                layoutData,
+                layoutModel,
+                prodOrder,
+                courseOrder,
+                saveMode:event.data.saveMode||'manual',
+                saveRequestId:event.data.saveRequestId||0,
+                saveRevision:event.data.saveRevision||0
+            }, '*');
         } catch (saveError) {
             console.error('No se pudo capturar el layout para guardar:', saveError);
-            window.parent.postMessage({ type:'SAVE_FULL_LAYOUT_ERROR', message:'No se pudo preparar el layout' }, '*');
+            window.parent.postMessage({ type:'SAVE_FULL_LAYOUT_ERROR', message:'No se pudo preparar el layout', saveRequestId:event.data.saveRequestId||0, saveRevision:event.data.saveRevision||0 }, '*');
         }
     }
 });
