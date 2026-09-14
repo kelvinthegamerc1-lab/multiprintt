@@ -164,6 +164,8 @@ body.is-admin-session.dragging-active #builder-resize-box { display: none !impor
 
 .mask-edges { -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
 @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes slideDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}@keyframes slideLeft{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}@keyframes slideRight{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+body.dragging-active .sortable-zone>*,body.dragging-active [data-editable="true"],body.dragging-active [data-resizable="true"],body.dragging-active .card,body.dragging-active img,body.dragging-active video{cursor:grab!important}body.dragging-active .sortable-ghost{opacity:.4!important;outline:2px dashed rgba(37,216,255,.8)!important}
 
 /* OPTIMIZACIÓN CINEMÁTICA: Velocidad Ultra Lenta y Aceleración por GPU */
 .animate-marquee { 
@@ -983,11 +985,13 @@ window.syncSocialNetworks = function() {
     navMobileContainer.appendChild(btnAdminMob);
 
     currentLinks.forEach((link, index) => {
+        const icon = link.querySelector('i'); if(icon) link.setAttribute('data-icon-class', icon.className);
         const isLast = index === currentLinks.length - 1; 
         const url = link.getAttribute('data-social-url') || ((link.getAttribute('onclick') || '').match(/['"]([^'"]+)['"]/ ) || [,'#'])[1];
         const iconElement = link.querySelector('i');
-        const iconClasses = iconElement ? iconElement.className.replace('pointer-events-none', '').trim() : 'fa-solid fa-link';
+        const iconClasses = link.getAttribute('data-icon-class') || (iconElement ? iconElement.className.replace('pointer-events-none', '').trim() : 'fa-solid fa-link');
         const network = link.getAttribute('data-network') || 'link';
+        link.setAttribute('data-icon-class', iconClasses);
 
         const btnPc = document.createElement('button');
         btnPc.setAttribute('data-editable', 'true'); btnPc.setAttribute('data-network', network);
@@ -1239,6 +1243,45 @@ window.deleteTestimonialCard = function(btn) {
     if(card) { card.remove(); window.showToast("Testimonio eliminado."); }
 }
 
+window.ensureTestimonialEditorOverlays = function() {
+    if(!window.isAdminMode) return;
+    const courses = document.getElementById('view-courses');
+    if(!courses) return;
+
+    courses.querySelectorAll('.video-testimonial-card[data-card-id]').forEach(card => {
+        if(card.querySelector(':scope > .admin-video-edit-overlay')) return;
+        const id = card.getAttribute('data-card-id');
+        const video = card.querySelector('video');
+        const name = card.querySelector('.vt-name')?.innerText?.trim() || 'Alumno';
+        const role = card.querySelector('.vt-role')?.innerText?.trim() || 'Caso de Éxito';
+        const quote = card.querySelector('.vt-quote')?.innerText?.trim() || 'Escribe tu testimonio en video aquí...';
+        const src = video?.getAttribute('src') || '';
+        const theme = card.getAttribute('data-theme') || 'cyan';
+        const overlay = document.createElement('div');
+        overlay.className = 'admin-video-edit-overlay ignore-drag';
+        overlay.innerHTML = `<button type="button" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
+        overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:id,itemData:{src,name,role,quote,theme}},'*'); });
+        overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
+        card.appendChild(overlay);
+    });
+
+    courses.querySelectorAll('.card[data-card-id]').forEach(card => {
+        if(card.classList.contains('video-testimonial-card') || card.querySelector('.video-testimonial-card') || card.querySelector(':scope > .admin-video-edit-overlay')) return;
+        if(!card.querySelector('.txt-name') || !card.querySelector('.txt-role')) return;
+        const id = card.getAttribute('data-card-id');
+        const name = card.querySelector('.txt-name')?.innerText?.trim() || 'Alumno';
+        const role = card.querySelector('.txt-role')?.innerText?.trim() || 'Curso General';
+        const quote = card.querySelector('p')?.innerText?.trim() || 'Escribe tu comentario aquí...';
+        const theme = card.getAttribute('data-theme') || 'pink';
+        const overlay = document.createElement('div');
+        overlay.className = 'admin-video-edit-overlay ignore-drag';
+        overlay.innerHTML = `<button type="button" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
+        overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:id,itemData:{name,role,quote,theme}},'*'); });
+        overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
+        card.appendChild(overlay);
+    });
+};
+
 let lastProductSnapshot = null;
 window.loadFirebaseData = async function() {
     try {
@@ -1360,7 +1403,11 @@ window.loadAcademyGallery = async function() {
     ];
     let images = [];
     try {
-        const res = await fetch('https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json');
+        let mediaConfig = null;
+        try { mediaConfig = JSON.parse(localStorage.getItem('multiprintt_media_sources') || 'null'); } catch(e) {}
+        const galleryJson = (mediaConfig && mediaConfig.generalJson) || 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json';
+        const galleryBase = (mediaConfig && mediaConfig.generalBase) || 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';
+        const res = await fetch(galleryJson, {cache:'no-store'});
         if (res.ok) {
             const data = await res.json();
             if(Array.isArray(data)) images = data;
@@ -1375,7 +1422,7 @@ window.loadAcademyGallery = async function() {
         const filename = url.split('/').pop().toLowerCase();
         // EXCLUYE ARCHIVOS DE LA LISTA Y CUALQUIER COSAS EN LA CARPETA /testimonios/ o .mp4
         return !exclusions.includes(filename) && !url.includes('/testimonios/') && !url.endsWith('.mp4');
-    }).map(url => url.startsWith('http') ? url : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/' + url);
+    }).map(url => url.startsWith('http') ? url : galleryBase.replace(/\/$/,'/') + url.replace(/^\/+/,''));
     
     if(validImages.length === 0) validImages = premiumBackups;
     let html = '';
@@ -1384,8 +1431,8 @@ window.loadAcademyGallery = async function() {
     });
     container.innerHTML = html + html + html + html;
     
-    // Ajuste de velocidad ultra lenta asegurada
-    container.style.animationDuration = Math.max(3200, validImages.length * 200) + 's'; 
+    // Ajuste automático solo si el editor no ha fijado manualmente una duración.
+    if(!container.style.animationDuration) container.style.animationDuration = Math.max(3200, validImages.length * 200) + 's';
 }
 
 window.initMap = function() {
@@ -1482,7 +1529,7 @@ window.addEventListener('message', async (event) => {
 
     if (event.data.type === 'ENABLE_BUILDER') {
         window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
-        window.renderProducts(); window.renderCourses(); initVisualResizer();
+        window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
         document.addEventListener('click', function(e) {
             if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active') || window.builderSelectionEnabled === false) return;
             window.parent.postMessage({ type: 'HIDE_CONTEXT_MENU' }, '*');
@@ -1525,7 +1572,7 @@ window.addEventListener('message', async (event) => {
                         borderColor: target.style.borderColor || computed.borderColor,
                         borderStyle: target.style.borderStyle || computed.borderStyle,
                         boxShadow: target.style.boxShadow || computed.boxShadow,
-                        display: target.style.display || computed.display
+                        display: target.style.display || computed.display, animationName: target.style.animationName || computed.animationName, animationDuration: target.style.animationDuration || computed.animationDuration, animationDelay: target.style.animationDelay || computed.animationDelay, animationIterationCount: target.style.animationIterationCount || computed.animationIterationCount, animationTimingFunction: target.style.animationTimingFunction || computed.animationTimingFunction
                     }
                 }, '*');
             } else {
@@ -1544,15 +1591,21 @@ window.addEventListener('message', async (event) => {
     }
 
     if (event.data.type === 'ADD_SOCIAL_ICON') {
-        const { url, iconClass, network } = event.data;
+        const url = String(event.data.url || '').trim();
+        const iconClass = String(event.data.iconClass || 'fa-solid fa-link').trim().replace(/[^a-zA-Z0-9_\- ]/g,'');
+        const network = String(event.data.network || 'custom').trim();
         const footerContainer = document.getElementById('social-footer-links');
+        if(!footerContainer || !url) return;
         const newBtn = document.createElement('button');
-        newBtn.setAttribute('data-editable', 'true'); newBtn.setAttribute('data-network', network || 'custom');
-        newBtn.setAttribute('data-social-url', url);
+        newBtn.setAttribute('type', 'button');
+        newBtn.setAttribute('data-editable', 'true'); newBtn.setAttribute('data-network', network);
+        newBtn.setAttribute('data-social-url', url); newBtn.setAttribute('data-icon-class', iconClass);
+        newBtn.setAttribute('data-href', url);
         newBtn.setAttribute('onclick', `window.open(${JSON.stringify(url)}, '_blank', 'noopener,noreferrer')`);
         newBtn.className = "text-zinc-400 transition-colors text-xl sm:text-2xl outline-none cursor-pointer bg-transparent border-none p-0";
         newBtn.innerHTML = `<i class="${iconClass} pointer-events-none"></i>`;
-        footerContainer.insertBefore(newBtn, footerContainer.querySelector('.admin-tool'));
+        const adminTool = footerContainer.querySelector('.admin-tool');
+        footerContainer.insertBefore(newBtn, adminTool || null);
         window.syncSocialNetworks(); window.updateResizeBox();
     }
     
@@ -1644,20 +1697,21 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'DELETE_SELECTED_NODE') { if(window.selectedEl) { window.selectedEl.remove(); window.selectedEl = null; window.updateResizeBox(); } }
 
     if (event.data.type === 'TOGGLE_DRAG') {
-        const enabled = event.data.state; const containers = document.querySelectorAll('.sortable-zone');
-        if (enabled) { 
-            document.body.classList.add('dragging-active'); 
-            if(window.selectedEl) { window.selectedEl.classList.remove('builder-selected-el'); window.selectedEl = null; } 
-            window.updateResizeBox();
-            containers.forEach(grid => { 
-                if(grid._sortable) grid._sortable.destroy(); 
-                grid._sortable = new Sortable(grid, { 
-                    animation: 200, ghostClass: 'sortable-ghost', filter: '.ignore-drag, .admin-tool', delay: 300, delayOnTouchOnly: true,
-                    onEnd: function(evt) { if(evt.to.id === 'social-footer-links') window.syncSocialNetworks(); }
-                }); 
-                window.sortableInstances.push(grid._sortable); 
-            }); 
-        } else { document.body.classList.remove('dragging-active'); window.sortableInstances.forEach(s => s.destroy()); window.sortableInstances = []; }
+        const enabled = event.data.state !== false;
+        window.destroyBuilderSortables = function(){ (window.sortableInstances||[]).forEach(s=>{try{s.destroy()}catch(e){}}); window.sortableInstances=[]; };
+        if(enabled){
+            document.body.classList.add('dragging-active');
+            if(window.selectedEl){window.selectedEl.classList.remove('builder-selected-el');window.selectedEl=null;}
+            window.updateResizeBox(); window.destroyBuilderSortables();
+            const parents=new Set();
+            document.querySelectorAll('.sortable-zone,.editable-section').forEach(p=>parents.add(p));
+            document.querySelectorAll('[data-editable="true"],[data-resizable="true"],.card,img,video,button').forEach(el=>{const p=el.parentElement;if(!p||p.closest('.ignore-drag')||p.closest('#videoModalContent'))return;if(p.children.length>=2)parents.add(p);});
+            parents.forEach(container=>{
+                if(!container||container.id==='videoModalContent'||container.classList.contains('admin-tool'))return;
+                const movable=Array.from(container.children).filter(ch=>!ch.classList.contains('ignore-drag')&&!ch.classList.contains('admin-tool')&&!ch.matches('script,style,link'));
+                if(movable.length<2)return;
+                try{const sortable=new Sortable(container,{animation:180,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',dragClass:'sortable-drag',filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',delay:120,delayOnTouchOnly:true,onEnd(evt){if(evt.to.id==='social-footer-links'||evt.from.id==='social-footer-links')window.syncSocialNetworks();window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item.id||'',fromId:evt.from.id||'',toId:evt.to.id||''},'*')}});container._sortable=sortable;window.sortableInstances.push(sortable)}catch(e){console.warn('Sortable',e)}});
+        }else{document.body.classList.remove('dragging-active');if(window.destroyBuilderSortables)window.destroyBuilderSortables();}
     }
 
     if (event.data.type === 'SAVE_FULL_LAYOUT') {
@@ -1671,7 +1725,10 @@ window.addEventListener('message', async (event) => {
             const clone = zone.cloneNode(true);
             clone.querySelectorAll('.builder-selected-el').forEach(e => e.classList.remove('builder-selected-el'));
             clone.querySelectorAll('.sortable-ghost, .sortable-chosen, .sortable-drag').forEach(e => e.classList.remove('sortable-ghost', 'sortable-chosen', 'sortable-drag'));
-            clone.querySelectorAll('.ignore-drag.admin-overlay, .ignore-drag.admin-video-edit-overlay').forEach(e => e.remove());
+            // Los overlays del editor deben permanecer en el layout guardado.
+            // Permanecen ocultos fuera de la sesión admin mediante CSS y así no desaparecen
+            // después de guardar, recargar o volver a abrir el editor.
+            clone.querySelectorAll('.admin-video-edit-overlay').forEach(e => e.style.display = '');
             const mapInClone = clone.querySelector('#leaflet-map'); 
             if(mapInClone) { mapInClone.innerHTML = ''; mapInClone.className = 'absolute inset-0 z-0 h-full w-full pointer-events-none admin-pointer-events'; }
             const pGrid = clone.querySelector('#product-grid'); if(pGrid) pGrid.innerHTML = '';
