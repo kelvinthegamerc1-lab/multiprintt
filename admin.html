@@ -2,545 +2,173 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<title>Multiprintt | Visual Builder Pro</title>
-
-<!-- Tailwind CSS v4 -->
-<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-<style type="text/tailwindcss">
-  @theme {
-    --color-bg: #070709;
-    --color-panel: #09090b;
-    --color-border: rgba(255,255,255,0.06);
-    --color-accent: #25d8ff;
-  }
-</style>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>Multiprintt | Visual Builder X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 <style>
-    :root { --bg-dark: #000000; --panel: #09090b; --border: rgba(255,255,255,0.06); --accent: #25d8ff; }
-    body { background-color: var(--bg-dark); color: #a1a1aa; font-family: 'Inter', sans-serif; overflow: hidden; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; }
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    .hide-scrollbar::-webkit-scrollbar { display: none; }
-
-    #auth-screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s; }
-    .glass-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
-
-    #builder-ui { display: none; height: 100vh; width: 100vw; flex-direction: column; }
-    .topbar { height: 50px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; z-index: 50; }
-    .workspace { display: flex; flex: 1; min-height: 0; width: 100%; overflow: hidden; }
-    .sidebar-left { width: 220px; background: var(--panel); border-right: 1px solid var(--border); padding: 12px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex-shrink: 0; z-index: 20;}
-    .sidebar-right { width: 280px; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; z-index: 20;}
-
-    .canvas-area { flex: 1; min-width: 0; background-color: #000; position: relative; overflow: auto; display: flex; align-items: center; justify-content: center; background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
-    #preview-wrapper { transition: all 0.3s ease; overflow: hidden; display: flex; flex-direction: column; background: var(--bg-dark); box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.6); }
-    .device-desktop { width: 100%; height: 100%; max-width: 100%; border-radius: 0; border: none; box-shadow: none !important;}
-    .device-tablet { width: 820px; height: 1180px; border-radius: 12px; margin: 40px auto; flex-shrink: 0; border: 8px solid #141417; }
-    .device-mobile { width: 390px; height: 844px; border-radius: 20px; margin: 40px auto; flex-shrink: 0; border: 10px solid #141417; }
-    #site-frame { width: 100%; height: 100%; border: none; flex-grow: 1; background: #070709; border-radius: inherit; }
-
-    .device-btn { width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #71717a; transition: all 0.2s; cursor: pointer; font-size: 12px; border: none; background: transparent; padding: 0;}
-    .device-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
-    .device-btn:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.03); }
-
-    .tool-btn { background: transparent; border: 1px solid transparent; padding: 7px 10px; border-radius: 6px; color: #a1a1aa; cursor: pointer; transition: 0.2s; display: flex; align-items: gap: 8px; font-size: 11px; font-weight: 500; width: 100%; text-align: left; }
-    .tool-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .tool-btn.active { background: rgba(37,216,255,0.1); color: var(--accent); }
-
-    .btn-primary { background: #fff; color: #000; font-weight: 600; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; border: none; cursor: pointer; }
-    .btn-primary:hover { opacity: 0.9; }
-    .btn-secondary { background: transparent; border: 1px solid rgba(255,255,255,0.08); color: #e5e5e5; font-weight: 500; border-radius: 6px; padding: 6px 14px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-secondary:hover { background: rgba(255,255,255,0.04); color: #fff; }
-    .btn-warning { background: transparent; border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; font-weight: 500; border-radius: 6px; padding: 6px 12px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-warning:hover { background: rgba(245, 158, 11, 0.1); }
-    .btn-danger { background: transparent; border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; font-weight: 500; border-radius: 6px; padding: 6px 12px; font-size: 11px; transition: all 0.2s; cursor: pointer; }
-    .btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
-
-    .panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 0.15em; color: #52525b; font-weight: 700; margin: 12px 4px 4px 4px; display: flex; align-items: center; gap: 6px; }
-    .divider { height: 1px; background: var(--border); width: 100%; margin: 6px 0; }
-    .inp-field { width: 100%; background: #000; border: 1px solid rgba(255,255,255,0.08); padding: 7px 10px; border-radius: 6px; color: #fff; outline: none; font-size: 11px; transition: border-color 0.2s; }
-    .inp-field:focus { border-color: var(--accent); }
-    .lbl { font-size: 9px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; display: block; }
-
-    .acc-item { border-bottom: 1px solid var(--border); }
-    .acc-header { padding: 10px 14px; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #71717a; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: transparent; border: none; width: 100%; text-align: left;}
-    .acc-header:hover { color: #fff; }
-    .acc-item.active .acc-header { color: #fff; background: rgba(255,255,255,0.02); }
-    .acc-content { padding: 12px 14px; display: none; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.3); }
-    .acc-item.active .acc-content { display: flex; }
-
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.2s; }
-    .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-content { background: var(--panel); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; padding: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
-
-    #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .custom-toast { background: #18181b; border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 10px 14px; border-radius: 6px; font-size: 11px; font-weight: 500; transform: translateY(15px); opacity: 0; transition: all 0.3s ease; pointer-events: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .custom-toast.show { transform: translateY(0); opacity: 1; }
+:root{--bg:#050507;--panel:#0a0a0d;--panel2:#0f1015;--panel3:#14151b;--line:rgba(255,255,255,.07);--line2:rgba(255,255,255,.12);--text:#f4f4f5;--muted:#8b8d97;--accent:#25d8ff;--accent2:#735cff;--danger:#f43f5e;--ok:#22c55e;--warn:#f59e0b}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.hide-scroll::-webkit-scrollbar{width:5px;height:5px}.hide-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:99px}.hide-scroll::-webkit-scrollbar-track{background:transparent}
+button,input,textarea,select{font:inherit}button{cursor:pointer}.glass{background:linear-gradient(180deg,rgba(18,19,24,.96),rgba(8,9,12,.96));border:1px solid var(--line);box-shadow:0 18px 60px rgba(0,0,0,.25)}
+#auth-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 15%,rgba(37,216,255,.08),transparent 34%),#030304;z-index:99999}.auth-card{width:min(430px,92vw);padding:28px;border:1px solid var(--line2);border-radius:22px;background:rgba(10,11,15,.88);backdrop-filter:blur(20px);box-shadow:0 30px 100px rgba(0,0,0,.75)}
+#builder-ui{display:none;flex-direction:column;width:100vw;height:100vh}.topbar{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid var(--line);background:#08090c;z-index:100}.brand{display:flex;align-items:center;gap:10px}.brand-mark{width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2),#ff2da8);box-shadow:0 0 25px rgba(37,216,255,.18)}
+.workspace{display:flex;min-height:0;flex:1;overflow:hidden}.leftbar{width:248px;flex:0 0 248px;border-right:1px solid var(--line);background:#090a0e;display:flex;flex-direction:column}.canvas{flex:1;min-width:0;position:relative;background:#020204;overflow:auto;background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1px);background-size:24px 24px}.rightbar{width:360px;flex:0 0 360px;border-left:1px solid var(--line);background:#090a0e;display:flex;flex-direction:column;min-width:0}
+.left-scroll,.inspector{overflow:auto;min-height:0}.left-scroll{padding:12px}.section-label{font-size:9px;text-transform:uppercase;letter-spacing:.18em;font-weight:800;color:#5e6270;padding:10px 6px 6px}.nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;color:#a6a8b2;background:transparent;border:1px solid transparent;border-radius:9px;font-size:11px;text-align:left}.nav-btn:hover{background:rgba(255,255,255,.035);color:#fff}.nav-btn.active{background:rgba(37,216,255,.08);border-color:rgba(37,216,255,.18);color:var(--accent)}.nav-btn .badge{margin-left:auto;font-size:9px;color:#60646f}
+.toolrow{display:grid;grid-template-columns:1fr 1fr;gap:7px}.mini-btn{border:1px solid var(--line);background:#0d0f14;color:#a6a8b2;border-radius:8px;padding:8px;font-size:10px}.mini-btn:hover{color:#fff;background:#11131a}.mini-btn.active{border-color:rgba(37,216,255,.25);color:var(--accent);background:rgba(37,216,255,.08)}.primary{border:1px solid rgba(37,216,255,.3);background:linear-gradient(180deg,#2edfff,#12a9ce);color:#041018;font-weight:800;border-radius:9px;padding:9px 13px;font-size:10px}.secondary{border:1px solid var(--line2);background:#101116;color:#ddd;border-radius:9px;padding:9px 13px;font-size:10px}.danger{border:1px solid rgba(244,63,94,.25);background:rgba(244,63,94,.06);color:#fb7185;border-radius:9px;padding:8px 10px;font-size:10px}.warning{border:1px solid rgba(245,158,11,.24);background:rgba(245,158,11,.06);color:#fbbf24;border-radius:9px;padding:8px 10px;font-size:10px}
+.top-actions{display:flex;align-items:center;gap:6px}.status-pill{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#0c0d11;border-radius:999px;padding:7px 10px;font-size:10px;color:#9397a3}.dot{width:7px;height:7px;border-radius:50%;background:#64748b}.dot.ok{background:var(--ok);box-shadow:0 0 10px rgba(34,197,94,.45)}.dot.busy{background:var(--warn);box-shadow:0 0 10px rgba(245,158,11,.4)}.dot.err{background:var(--danger);box-shadow:0 0 10px rgba(244,63,94,.4)}
+.canvas-toolbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:rgba(5,6,9,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.device-switch{display:flex;gap:4px;padding:3px;border:1px solid var(--line);background:#090a0d;border-radius:10px}.device-btn{width:34px;height:28px;border:0;background:transparent;color:#707480;border-radius:7px}.device-btn:hover{color:#fff}.device-btn.active{background:rgba(37,216,255,.1);color:var(--accent)}
+#preview-stage{min-height:calc(100% - 48px);display:flex;align-items:flex-start;justify-content:center;padding:28px}.device-desktop{width:min(100%,1440px);height:calc(100vh - 120px);border-radius:12px;overflow:hidden}.device-tablet{width:820px;height:1180px;border:10px solid #111217;border-radius:28px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.65)}.device-mobile{width:390px;height:844px;border:10px solid #111217;border-radius:28px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.65)}#site-frame{width:100%;height:100%;border:0;background:#070709}
+.inspector-head{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.selection-chip{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-size:11px;font-weight:800}.selection-sub{font-size:9px;color:#6c707b;margin-top:2px}.inspector-body{padding:0 0 18px}.acc{border-bottom:1px solid var(--line)}.acc-head{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 12px;background:transparent;border:0;color:#c9cbd2;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.acc-head:hover{color:#fff;background:rgba(255,255,255,.02)}.acc-body{display:none;padding:0 12px 12px}.acc.open .acc-body{display:flex;flex-direction:column;gap:9px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.lbl{display:block;font-size:8px;color:#777b86;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin:0 0 4px}.field{width:100%;border:1px solid var(--line2);background:#050608;color:#fff;border-radius:7px;padding:8px 9px;font-size:10px;outline:none}.field:focus{border-color:rgba(37,216,255,.42);box-shadow:0 0 0 2px rgba(37,216,255,.07)}textarea.field{resize:vertical;min-height:74px}.range-row{display:grid;grid-template-columns:1fr 56px;gap:7px;align-items:center}.range{width:100%;accent-color:var(--accent)}.swatch{width:34px;height:34px;padding:0;border:1px solid var(--line2);border-radius:8px;background:#111}.helper{font-size:8px;color:#646873;line-height:1.45}.style-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.style-chip{padding:7px 4px;border:1px solid var(--line);border-radius:7px;background:#0a0c10;color:#8b8f99;font-size:9px}.style-chip:hover{color:#fff;border-color:var(--line2)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}.modal.open{display:flex}.modal-card{width:min(760px,96vw);max-height:90vh;overflow:auto;border:1px solid var(--line2);border-radius:18px;background:#0a0b0f;box-shadow:0 40px 100px rgba(0,0,0,.85)}.modal-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.modal-body{padding:16px}.modal-foot{padding:12px 16px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.social-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;max-height:320px;overflow:auto}.social-opt{border:1px solid var(--line);background:#07080b;color:#9296a1;border-radius:8px;padding:8px 5px;font-size:9px}.social-opt:hover{color:#fff;border-color:var(--line2);background:#0d0f14}.social-opt.selected{color:var(--accent);border-color:rgba(37,216,255,.35);background:rgba(37,216,255,.07)}
+.media-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:400px;overflow:auto}.media-card{aspect-ratio:1;border:1px solid var(--line);background:#050608;border-radius:8px;overflow:hidden;position:relative;cursor:pointer}.media-card:hover{border-color:rgba(37,216,255,.42)}.media-card img{width:100%;height:100%;object-fit:cover}.media-card .media-video{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#737986;font-size:22px}
+#toast{position:fixed;right:18px;bottom:18px;z-index:3000;display:flex;flex-direction:column;gap:8px}.toast{padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:#111318;color:#fff;font-size:10px;box-shadow:0 15px 40px rgba(0,0,0,.55);opacity:0;transform:translateY(10px);transition:.22s}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1100px){.leftbar{width:210px;flex-basis:210px}.rightbar{width:330px;flex-basis:330px}}@media(max-width:900px){.leftbar{width:190px;flex-basis:190px}.rightbar{width:310px;flex-basis:310px}.canvas-toolbar .status-pill{display:none}}@media(max-width:760px){.leftbar{display:none}.rightbar{width:100%;position:absolute;right:0;top:58px;bottom:0;z-index:80;transform:translateX(100%);transition:.25s}.rightbar.mobile-open{transform:translateX(0)}#preview-stage{padding:12px}.device-tablet,.device-mobile{transform:scale(.78);transform-origin:top center;margin-bottom:-160px}}
 </style>
 </head>
 <body>
-
-<div id="toast-container"></div>
-
-<div id="custom-confirm-modal" class="modal-overlay z-[11000]">
-    <div class="modal-content text-center p-6">
-        <h3 id="confirm-title" class="text-white font-bold text-sm mb-2">Confirmación</h3>
-        <p id="confirm-msg" class="text-zinc-400 text-xs mb-6">¿Estás seguro de realizar esta acción?</p>
-        <div class="flex gap-3">
-            <button id="confirm-yes-btn" class="flex-1 btn-primary py-2.5 cursor-pointer">Sí, continuar</button>
-            <button onclick="document.getElementById('custom-confirm-modal').classList.remove('active')" class="flex-1 btn-secondary py-2.5 cursor-pointer">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<div id="auth-screen">
-    <div class="glass-panel p-8 w-full max-w-sm text-center">
-        <h1 class="text-base font-bold mb-1 text-white m-0">Multiprintt</h1>
-        <p class="text-zinc-500 text-[10px] mb-6 mt-1">Panel Administrativo Pro</p>
-        <div class="space-y-3 flex flex-col gap-3">
-            <input type="email" id="loginUser" placeholder="Correo" class="inp-field">
-            <input type="password" id="loginPass" placeholder="Contraseña" class="inp-field">
-            <button onclick="window.attemptLogin()" id="btn-login" class="w-full btn-primary mt-1 py-2.5 cursor-pointer">Ingresar al Sistema</button>
-        </div>
-    </div>
-</div>
-
-<div id="db-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 id="db-modal-title" class="text-white font-semibold text-xs mb-3 m-0">Editor</h3>
-        <div id="db-modal-body" class="flex flex-col gap-3 mb-5 mt-3"></div>
-        <div class="flex gap-2 pt-2 border-t border-white/5">
-            <button onclick="window.saveDbItem()" id="btn-save-db" class="flex-1 btn-primary py-2 cursor-pointer">Guardar</button>
-            <button onclick="document.getElementById('db-modal').classList.remove('active')" class="px-4 btn-secondary py-2 cursor-pointer">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<div id="icon-picker-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 class="text-white font-semibold text-xs mb-3 m-0">Añadir Red Social</h3>
-        <div class="grid grid-cols-3 gap-2 mb-3 mt-3">
-            <button onclick="window.selectSocialIcon('fa-brands fa-facebook-f', 'facebook', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-facebook-f mr-1"></i> FB</button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-instagram', 'instagram', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-instagram mr-1"></i> IG</button>
-            <button onclick="window.selectSocialIcon('fa-brands fa-whatsapp', 'whatsapp', this)" class="social-opt p-2.5 bg-black border border-white/10 rounded-lg text-zinc-400 hover:text-white text-xs cursor-pointer"><i class="fa-brands fa-whatsapp mr-1"></i> WA</button>
-        </div>
-        <label class="lbl">URL de Destino</label>
-        <input type="text" id="social-url-input" placeholder="https://..." class="inp-field mb-4">
-        <div class="flex gap-2">
-            <button onclick="window.confirmAddSocial()" class="flex-1 btn-primary py-2 cursor-pointer">Añadir</button>
-            <button onclick="document.getElementById('icon-picker-modal').classList.remove('active')" class="px-4 btn-secondary py-2 cursor-pointer">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<div id="gallery-modal" class="modal-overlay z-[10000]">
-    <div class="modal-content" style="max-width: 680px;">
-        <div class="flex justify-between items-center mb-3">
-            <h3 class="text-white font-semibold text-xs m-0" id="gallery-title">Explorador de Medios</h3>
-            <button onclick="document.getElementById('gallery-modal').classList.remove('active')" class="text-zinc-400 hover:text-white text-xs cursor-pointer bg-transparent border-none p-0"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="flex gap-2 mb-3" id="gallery-filters">
-            <button onclick="window.filterGallery('all')" class="tool-btn justify-center active cursor-pointer w-auto" id="gal-filt-all">Todos</button>
-            <button onclick="window.filterGallery('image')" class="tool-btn justify-center cursor-pointer w-auto" id="gal-filt-img">Imágenes</button>
-            <button onclick="window.filterGallery('video')" class="tool-btn justify-center cursor-pointer w-auto" id="gal-filt-vid">Videos</button>
-        </div>
-        <div id="gallery-source-note" class="text-[10px] text-cyan-400 mb-2 font-mono">Fuente: Multiprintt Media Cloud</div>
-        <div id="gallery-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 max-h-[320px] overflow-y-auto pr-1 mb-4"></div>
-        <div id="gallery-footer-actions" class="flex justify-between items-center pt-3 border-t border-white/5">
-            <span class="text-[10px] text-zinc-400" id="gallery-selection-count">Haz clic en las imágenes para seleccionarlas</span>
-            <button onclick="window.confirmMultiMediaSelection()" class="btn-primary py-2 px-5 hidden cursor-pointer" id="gallery-confirm-btn">Confirmar Selección (0)</button>
-        </div>
-    </div>
-</div>
+<div id="toast"></div>
+<div id="auth-screen"><div class="auth-card"><div class="flex items-center gap-3 mb-6"><div class="brand-mark"></div><div><div class="text-white font-extrabold text-lg">Multiprintt</div><div class="text-zinc-500 text-[10px] tracking-[.18em] uppercase">Visual Builder X</div></div></div><div class="grid gap-3"><input id="loginUser" class="field" type="email" placeholder="Correo administrativo"><input id="loginPass" class="field" type="password" placeholder="Contraseña"><button id="btn-login" class="primary w-full" onclick="window.attemptLogin()"><i class="fa-solid fa-right-to-bracket mr-2"></i>Ingresar al sistema</button></div><div class="helper mt-4">Editor visual conectado a Firebase y sincronizado con el sitio.</div></div></div>
 
 <div id="builder-ui">
-    <div class="topbar">
-        <div class="flex items-center gap-2">
-            <span class="font-bold text-[11px] text-white tracking-tight">Multiprintt</span>
-            <span class="text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">Core Admin</span>
-        </div>
-        <div class="flex items-center gap-1 bg-black p-0.5 border border-white/5 rounded-md">
-            <button class="device-btn active" onclick="window.setDevice('desktop', this)"><i class="fa-solid fa-desktop pointer-events-none"></i></button>
-            <button class="device-btn" onclick="window.setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button pointer-events-none"></i></button>
-            <button class="device-btn" onclick="window.setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen-button pointer-events-none"></i></button>
-        </div>
-        <div class="flex items-center gap-2">
-            <button class="tool-btn active w-auto py-1.5 px-2.5 cursor-pointer flex-row justify-center" id="btn-drag" onclick="window.toggleDragMode(this)"><i class="fa-solid fa-arrows-up-down-left-right pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Mover</span></button>
-            <button class="btn-warning py-1.5 px-2.5 flex flex-row items-center gap-1.5" onclick="window.resetTemplateConfirm()"><i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Reset</span></button>
-            <button class="btn-primary py-1.5 px-3 flex items-center gap-1.5" id="publish-btn" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span></button>
-            <button class="btn-secondary py-1.5 px-2 text-zinc-400 hover:text-white cursor-pointer flex items-center justify-center" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button>
-        </div>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark"></div><div><div class="text-white text-[12px] font-extrabold">Multiprintt Visual Builder</div><div class="text-zinc-500 text-[9px]">Editor técnico · Diseño · Contenido · Datos</div></div></div>
+  <div class="top-actions"><div id="save-status" class="status-pill"><span id="save-dot" class="dot"></span><span id="save-label">Sin cambios</span></div><button class="mini-btn" onclick="window.undo()" title="Deshacer"><i class="fa-solid fa-rotate-left"></i></button><button class="mini-btn" onclick="window.redo()" title="Rehacer"><i class="fa-solid fa-rotate-right"></i></button><button class="warning" onclick="window.resetTemplateConfirm()"><i class="fa-solid fa-rotate-left mr-1"></i>Reset</button><button id="publish-btn" class="primary" onclick="window.publishChanges()"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar</button><button class="secondary" onclick="window.logout()"><i class="fa-solid fa-power-off"></i></button></div>
+</header>
+<div class="workspace">
+  <aside class="leftbar">
+    <div class="left-scroll hide-scroll">
+      <div class="section-label">Página</div>
+      <button class="nav-btn active" data-view="catalog" onclick="window.navigateSection('catalog')"><i class="fa-solid fa-store w-4"></i>Catálogo<span class="badge">01</span></button>
+      <button class="nav-btn" data-view="courses" onclick="window.navigateSection('courses')"><i class="fa-solid fa-graduation-cap w-4"></i>Academia<span class="badge">02</span></button>
+      <button class="nav-btn" data-view="about" onclick="window.navigateSection('about')"><i class="fa-solid fa-circle-info w-4"></i>Nosotros<span class="badge">03</span></button>
+      <button class="nav-btn" data-view="contact" onclick="window.navigateSection('contact')"><i class="fa-solid fa-envelope w-4"></i>Contacto<span class="badge">04</span></button>
+      <div class="mt-4 section-label">Constructor</div>
+      <div class="toolrow"><button id="drag-btn" class="mini-btn active" onclick="window.toggleDragMode()"><i class="fa-solid fa-up-down-left-right mr-1"></i>Mover</button><button id="select-btn" class="mini-btn active" onclick="window.toggleSelectionLock()"><i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar</button></div>
+      <div class="toolrow mt-2"><button class="mini-btn" onclick="window.focusCanvas()"><i class="fa-solid fa-expand mr-1"></i>Encajar</button><button class="mini-btn" onclick="window.reloadPreview()"><i class="fa-solid fa-rotate mr-1"></i>Recargar</button></div>
+      <div class="mt-4 section-label">Contenido</div>
+      <button class="nav-btn" onclick="window.openDbEditor('product',null)"><i class="fa-solid fa-box-open w-4 text-pink-400"></i>Nuevo producto</button>
+      <button class="nav-btn" onclick="window.openDbEditor('course',null)"><i class="fa-solid fa-chalkboard-user w-4 text-cyan-400"></i>Nuevo curso</button>
+      <button class="nav-btn" onclick="window.openSocialModal()"><i class="fa-solid fa-share-nodes w-4 text-violet-400"></i>Redes sociales</button>
+      <button class="nav-btn" onclick="window.openGallery('db-img','all','media')"><i class="fa-solid fa-photo-film w-4 text-amber-400"></i>Explorador de medios</button>
+      <div class="mt-4 section-label">Consejo</div><div class="text-[9px] leading-relaxed text-zinc-600 px-2">Selecciona cualquier elemento del lienzo. El inspector derecho controla contenido, tipografía, apariencia, layout y enlaces sin destruir las clases CSS originales.</div>
     </div>
-    
-    <div class="workspace">
-        <div class="sidebar-left hide-scrollbar">
-            <div class="panel-title">Navegación</div>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'catalog')"><i class="fa-solid fa-store w-4 pointer-events-none"></i> Tienda / Carrito</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'courses')"><i class="fa-solid fa-graduation-cap w-4 pointer-events-none"></i> Academia</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'about')"><i class="fa-solid fa-circle-info w-4 pointer-events-none"></i> Nosotros</button>
-            <button class="tool-btn cursor-pointer" onclick="window.callIframeFunction('navigate', 'contact')"><i class="fa-regular fa-envelope w-4 pointer-events-none"></i> Contacto</button>
-            
-            <div class="divider"></div>
-            <div class="panel-title">Base de Datos</div>
-            <button class="tool-btn text-pink-400 cursor-pointer" onclick="window.openDbEditor('product', null)"><i class="fa-solid fa-box-open w-4 pointer-events-none"></i> + Producto</button>
-            <button class="tool-btn text-cyan-400 cursor-pointer" onclick="window.openDbEditor('course', null)"><i class="fa-solid fa-laptop-file w-4 pointer-events-none"></i> + Curso</button>
-        </div>
-        
-        <div class="canvas-area">
-            <div id="preview-wrapper" class="device-desktop">
-                <iframe id="site-frame" src=""></iframe>
-            </div>
-        </div>
-        
-        <div class="sidebar-right hide-scrollbar">
-            <div id="properties-panel" class="w-full h-full flex flex-col items-center justify-center text-zinc-500 p-6 text-center">
-                <p class="font-medium text-[11px] text-zinc-500 m-0">Selecciona un elemento<br>en el lienzo.</p>
-            </div>
-        </div>
-    </div>
-</div>
+  </aside>
+
+  <main class="canvas">
+    <div class="canvas-toolbar"><div class="device-switch"><button class="device-btn active" onclick="window.setDevice('desktop',this)"><i class="fa-solid fa-desktop"></i></button><button class="device-btn" onclick="window.setDevice('tablet',this)"><i class="fa-solid fa-tablet-screen-button"></i></button><button class="device-btn" onclick="window.setDevice('mobile',this)"><i class="fa-solid fa-mobile-screen-button"></i></button></div><div class="flex items-center gap-2"><span id="preview-hint" class="text-[9px] text-zinc-500">Vista previa en tiempo real</span><button class="mini-btn md:hidden" onclick="window.toggleInspector()"><i class="fa-solid fa-sliders"></i></button></div></div>
+    <div id="preview-stage"><div id="preview-wrapper" class="device-desktop"><iframe id="site-frame" title="Vista previa de Multiprintt"></iframe></div></div>
+  </main>
+
+  <aside id="rightbar" class="rightbar">
+    <div class="inspector-head"><div><div id="sel-name" class="selection-chip">Ningún elemento seleccionado</div><div id="sel-meta" class="selection-sub">Selecciona un elemento dentro del sitio</div></div><button class="mini-btn" onclick="window.clearSelection()"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="properties-panel" class="inspector hide-scroll"><div class="p-5 text-center text-zinc-600 text-[10px]">Selecciona un elemento en el lienzo para editarlo.</div></div>
+  </aside>
+</div></div>
+
+<div id="social-modal" class="modal"><div class="modal-card"><div class="modal-head"><div><div class="font-extrabold text-white text-sm">Redes sociales</div><div class="text-zinc-500 text-[9px] mt-1">Añade las que necesites. También puedes usar una clase de Font Awesome personalizada.</div></div><button class="mini-btn" onclick="window.closeModal('social-modal')"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><input id="social-search" class="field mb-3" placeholder="Buscar red social..." oninput="window.filterSocials(this.value)"><div id="social-grid" class="social-grid mb-4"></div><div class="grid2"><div><label class="lbl">Nombre / red</label><input id="social-name" class="field" placeholder="Mi red"></div><div><label class="lbl">Clase de icono</label><input id="social-icon" class="field" placeholder="fa-brands fa-..." value="fa-solid fa-link"></div></div><div class="mt-3"><label class="lbl">URL</label><input id="social-url" class="field" placeholder="https://..."></div><div class="helper mt-2">Puedes introducir literalmente cualquier clase de icono compatible con Font Awesome instalado.</div></div><div class="modal-foot"><button class="secondary" onclick="window.closeModal('social-modal')">Cancelar</button><button class="primary" onclick="window.addSocial()"><i class="fa-solid fa-plus mr-1"></i>Añadir red</button></div></div></div>
+
+<div id="db-modal" class="modal"><div class="modal-card"><div class="modal-head"><div id="db-modal-title" class="font-extrabold text-white text-sm">Editor</div><button class="mini-btn" onclick="window.closeModal('db-modal')"><i class="fa-solid fa-xmark"></i></button></div><div id="db-modal-body" class="modal-body grid gap-3"></div><div class="modal-foot"><button class="secondary" onclick="window.closeModal('db-modal')">Cancelar</button><button id="btn-save-db" class="primary" onclick="window.saveDbItem()">Guardar cambios</button></div></div></div>
+
+<div id="gallery-modal" class="modal"><div class="modal-card"><div class="modal-head"><div><div id="gallery-title" class="font-extrabold text-white text-sm">Explorador de medios</div><div class="text-zinc-500 text-[9px] mt-1">Selecciona imágenes y videos desde tus fuentes.</div></div><button class="mini-btn" onclick="window.closeModal('gallery-modal')"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><div class="flex flex-wrap gap-2 mb-3"><button class="mini-btn active" onclick="window.filterGallery('all')">Todos</button><button class="mini-btn" onclick="window.filterGallery('image')">Imágenes</button><button class="mini-btn" onclick="window.filterGallery('video')">Videos</button></div><input id="gallery-search" class="field mb-3" placeholder="Filtrar por nombre o URL" oninput="window.renderGallery()"><div id="gallery-grid" class="media-grid"></div></div><div class="modal-foot"><span id="gallery-note" class="helper mr-auto">Fuente: recursos de Multiprintt</span><button class="secondary" onclick="window.closeModal('gallery-modal')">Cerrar</button></div></div></div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signInWithCustomToken, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
-    const app = initializeApp(firebaseConfig); 
-    const auth = getAuth(app); 
-    const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
-    const APP_ID = "multiprintt-web";
+const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});const APP_ID="multiprintt-web";
+const iframe=()=>document.getElementById('site-frame');
+let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[];
+window.appState={dirty:false};
 
-    window.showToast = function(msg) {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'custom-toast'; toast.innerText = msg;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
-    }
+const socials=[
+['Facebook','fa-brands fa-facebook-f'],['Instagram','fa-brands fa-instagram'],['WhatsApp','fa-brands fa-whatsapp'],['YouTube','fa-brands fa-youtube'],['TikTok','fa-brands fa-tiktok'],['X / Twitter','fa-brands fa-x-twitter'],['LinkedIn','fa-brands fa-linkedin-in'],['Pinterest','fa-brands fa-pinterest-p'],['Threads','fa-brands fa-threads'],['Snapchat','fa-brands fa-snapchat'],['Telegram','fa-brands fa-telegram'],['Discord','fa-brands fa-discord'],['Twitch','fa-brands fa-twitch'],['Reddit','fa-brands fa-reddit-alien'],['GitHub','fa-brands fa-github'],['GitLab','fa-brands fa-gitlab'],['Behance','fa-brands fa-behance'],['Dribbble','fa-brands fa-dribbble'],['Vimeo','fa-brands fa-vimeo-v'],['Spotify','fa-brands fa-spotify'],['SoundCloud','fa-brands fa-soundcloud'],['Apple','fa-brands fa-apple'],['Google','fa-brands fa-google'],['Google Play','fa-brands fa-google-play'],['Pinterest','fa-brands fa-pinterest'],['Flickr','fa-brands fa-flickr'],['Tumblr','fa-brands fa-tumblr'],['VK','fa-brands fa-vk'],['Weibo','fa-brands fa-weibo'],['Mastodon','fa-brands fa-mastodon'],['Medium','fa-brands fa-medium'],['Telegram','fa-brands fa-telegram'],['Kick','fa-solid fa-bolt'],['Ko-fi','fa-solid fa-mug-hot'],['Patreon','fa-brands fa-patreon'],['OnlyFans','fa-solid fa-star'],['Linktree','fa-solid fa-link'],['Website','fa-solid fa-globe'],['Email','fa-solid fa-envelope'],['Phone','fa-solid fa-phone']
+];
+const defaultGallery=[
+{type:'image',url:'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=70',title:'Camiseta'},
+{type:'image',url:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=70',title:'Jarro'},
+{type:'video',url:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4',title:'Testimonio'}];
 
-    window.showConfirm = function(msg, callback) {
-        const modal = document.getElementById('custom-confirm-modal');
-        document.getElementById('confirm-msg').innerText = msg;
-        const yesBtn = document.getElementById('confirm-yes-btn');
-        yesBtn.onclick = () => { modal.classList.remove('active'); callback(); };
-        modal.classList.add('active');
-    }
+window.showToast=(msg)=>{const host=document.getElementById('toast'),n=document.createElement('div');n.className='toast';n.textContent=msg;host.appendChild(n);requestAnimationFrame(()=>n.classList.add('show'));setTimeout(()=>{n.classList.remove('show');setTimeout(()=>n.remove(),240)},2600)};
+window.closeModal=id=>document.getElementById(id)?.classList.remove('open');
+window.openModal=id=>document.getElementById(id)?.classList.add('open');
+function setSaveState(state,label){const dot=document.getElementById('save-dot'),txt=document.getElementById('save-label');dot.className='dot '+(state==='ok'?'ok':state==='busy'?'busy':state==='err'?'err':'');txt.textContent=label||'Sin cambios'}
+function markDirty(label='Cambios sin guardar'){window.appState.dirty=true;setSaveState('busy',label);clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>window.publishChanges(true),1300)}
+window.undo=()=>{const snap=history.pop();if(!snap)return window.showToast('No hay cambios para deshacer.');redoStack.push(snap);sendStyleSnapshot(snap.before);window.showToast('Cambio deshecho')};
+window.redo=()=>{const snap=redoStack.pop();if(!snap)return window.showToast('No hay cambios para rehacer.');history.push(snap);sendStyleSnapshot(snap.after);window.showToast('Cambio rehecho')};
+function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.entries(styles).forEach(([prop,value])=>iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*'));}
+function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*');history.push({before,after:{[prop]:value}});redoStack=[];if(commit)markDirty('Editando…')}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
-    onAuthStateChanged(auth, (user) => {
-        if (user && !user.isAnonymous) {
-            document.getElementById('auth-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('builder-ui').style.display = 'flex';
-                const iframe = document.getElementById('site-frame');
-                if (!iframe.src || iframe.src === window.location.href) iframe.src = 'index.html?t=' + Date.now();
-            }, 300);
-        } else {
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('auth-screen').style.opacity = '1';
-            document.getElementById('builder-ui').style.display = 'none';
-        }
-    });
+window.attemptLogin=async()=>{const email=document.getElementById('loginUser').value.trim(),pass=document.getElementById('loginPass').value,btn=document.getElementById('btn-login'),old=btn.innerHTML;if(!email||!pass)return window.showToast('Completa correo y contraseña');btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';try{await setPersistence(auth,browserSessionPersistence);if(typeof __initial_auth_token!=='undefined'&&__initial_auth_token)await signInWithCustomToken(auth,__initial_auth_token);else await signInWithEmailAndPassword(auth,email,pass)}catch(e){window.showToast('No se pudo iniciar sesión');btn.disabled=false;btn.innerHTML=old}};
+window.logout=async()=>{await signOut(auth);location.reload()};
+onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){document.getElementById('auth-screen').style.display='none';document.getElementById('builder-ui').style.display='flex';if(!iframe().src||iframe().src===location.href)iframe().src='index.html?t='+Date.now()}else{document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none'}});
+iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setSaveState('ok','Vista sincronizada')});
 
-    window.attemptLogin = async function() {
-        const email = document.getElementById('loginUser').value; 
-        const pass = document.getElementById('loginPass').value;
-        const btn = document.getElementById('btn-login');
-        let originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
-        try { 
-            try { await setPersistence(auth, browserSessionPersistence); } catch(e) {}
-            if(typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
-            else {
-                if (!email || !pass) { btn.innerHTML = originalText; return window.showToast("Datos incompletos."); }
-                await signInWithEmailAndPassword(auth, email, pass); 
-            }
-        } catch (error) { 
-            window.showToast("Error de acceso. Verifica las credenciales.");
-            btn.innerHTML = originalText;
-        }
-    };
+window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
+window.setDevice=(type,btn)=>{document.querySelectorAll('.device-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('preview-wrapper').className='device-'+type};
+window.focusCanvas=()=>document.getElementById('preview-stage').scrollTo({top:0,behavior:'smooth'});
+window.reloadPreview=()=>{const src=iframe().src;iframe().src=src.split('?')[0]+'?t='+Date.now();setSaveState('busy','Recargando…')};
+window.toggleInspector=()=>document.getElementById('rightbar').classList.toggle('mobile-open');
+window.toggleDragMode=()=>{isDragMode=!isDragMode;const b=document.getElementById('drag-btn');b.classList.toggle('active',isDragMode);b.innerHTML=isDragMode?'<i class="fa-solid fa-up-down-left-right mr-1"></i>Mover':'<i class="fa-solid fa-lock mr-1"></i>Fijo';iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*');markDirty(isDragMode?'Mover habilitado':'Modo fijo')};
+window.toggleSelectionLock=()=>{selectionLocked=!selectionLocked;const b=document.getElementById('select-btn');b.classList.toggle('active',!selectionLocked);b.innerHTML=selectionLocked?'<i class="fa-solid fa-lock mr-1"></i>Bloqueado':'<i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar';iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},'*')};
+window.clearSelection=()=>{currentSelection=null;document.getElementById('sel-name').textContent='Ningún elemento seleccionado';document.getElementById('sel-meta').textContent='Selecciona un elemento dentro del sitio';document.getElementById('properties-panel').innerHTML='<div class="p-5 text-center text-zinc-600 text-[10px]">Selecciona un elemento en el lienzo para editarlo.</div>'};
 
-    window.logout = async function() { await signOut(auth); location.reload(); };
-    window.setDevice = function(type, btn) { document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); document.getElementById('preview-wrapper').className = 'device-' + type; };
-    window.callIframeFunction = function(fnName, ...args) { const iframe = document.getElementById('site-frame'); if (iframe && iframe.contentWindow && typeof iframe.contentWindow[fnName] === 'function') iframe.contentWindow[fnName](...args); };
+function acc(title,body,open=true){return `<div class="acc ${open?'open':''}"><button class="acc-head" onclick="window.toggleAcc(this)"><span>${title}</span><i class="fa-solid fa-chevron-down text-[9px]"></i></button><div class="acc-body">${body}</div></div>`}
+window.toggleAcc=head=>head.parentElement.classList.toggle('open');
 
-    let isDragMode = true;
-    window.toggleDragMode = function(btn) {
-        isDragMode = !isDragMode;
-        if(isDragMode) { btn.classList.add('active'); btn.innerHTML = '<i class="fa-solid fa-arrows-up-down-left-right pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Mover</span>'; } 
-        else { btn.classList.remove('active'); btn.innerHTML = '<i class="fa-solid fa-lock pointer-events-none"></i> <span class="hidden sm:inline pointer-events-none">Fijo</span>'; }
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'TOGGLE_DRAG', state: isDragMode}, '*');
-    }
+function renderInspector(data){currentSelection=data;document.getElementById('sel-name').textContent=(data.id?`#${data.id} · `:'')+(data.tagName||'ELEMENTO');document.getElementById('sel-meta').textContent=(data.editable?'Editable':'Elemento')+' · '+(data.classes?String(data.classes).split(' ').slice(0,4).join(' '):'sin clase');
+let s=data.styles||{};let body='';
+if(!['IMG','VIDEO','SECTION','DIV'].includes(data.tagName)) body+=acc('Contenido',`<label class="lbl">Texto</label><textarea id="prop-text" class="field" oninput="window.updateText(this.value)">${esc(data.text||'')}</textarea>`+(data.tagName==='BUTTON'?`<div class="helper">La estructura interna del elemento se conserva al cambiar el texto.</div>`:''));
+if(['IMG','VIDEO','A','BUTTON'].includes(data.tagName)||data.href) body+=acc('Enlace / origen',`<label class="lbl">URL</label><input id="prop-href" class="field" value="${esc(data.href||'')}" oninput="window.updateHref(this.value)">${['IMG','VIDEO'].includes(data.tagName)?`<button class="mini-btn mt-2" onclick="window.openGallery('prop-href', '${data.tagName==='VIDEO'?'video':'image'}','media')"><i class="fa-solid fa-photo-film mr-1"></i>Elegir medio</button>`:''}`);
+body+=acc('Tipografía',`<div class="grid2"><div><label class="lbl">Tamaño</label><input class="field" value="${esc(s.fontSize||'')}" oninput="window.applyStyle('fontSize',this.value)"></div><div><label class="lbl">Peso</label><select class="field" onchange="window.applyStyle('fontWeight',this.value)"><option value="300" ${s.fontWeight==='300'?'selected':''}>300</option><option value="400" ${s.fontWeight==='400'?'selected':''}>400</option><option value="500" ${s.fontWeight==='500'?'selected':''}>500</option><option value="600" ${s.fontWeight==='600'?'selected':''}>600</option><option value="700" ${s.fontWeight==='700'?'selected':''}>700</option><option value="800" ${s.fontWeight==='800'?'selected':''}>800</option></select></div></div><div class="grid2"><div><label class="lbl">Interlineado</label><input class="field" value="${esc(s.lineHeight||'')}" oninput="window.applyStyle('lineHeight',this.value)"></div><div><label class="lbl">Tracking</label><input class="field" value="${esc(s.letterSpacing||'')}" oninput="window.applyStyle('letterSpacing',this.value)"></div></div><div class="grid2"><div><label class="lbl">Alineación</label><select class="field" onchange="window.applyStyle('textAlign',this.value)"><option ${s.textAlign==='left'?'selected':''}>left</option><option ${s.textAlign==='center'?'selected':''}>center</option><option ${s.textAlign==='right'?'selected':''}>right</option><option ${s.textAlign==='justify'?'selected':''}>justify</option></select></div><div><label class="lbl">Familia</label><input class="field" value="${esc(s.fontFamily||'')}" oninput="window.applyStyle('fontFamily',this.value)"></div></div>`);
+body+=acc('Colores',`<div class="grid2"><div><label class="lbl">Texto</label><div class="flex gap-2"><input type="color" class="swatch" value="${window.cssToHex(s.color)}" oninput="window.applyStyle('color',this.value)"><input class="field" value="${esc(s.color||'')}" oninput="window.applyStyle('color',this.value)"></div></div><div><label class="lbl">Fondo</label><div class="flex gap-2"><input type="color" class="swatch" value="${window.cssToHex(s.bg)}" oninput="window.applyStyle('backgroundColor',this.value)"><input class="field" value="${esc(s.bg||'')}" oninput="window.applyStyle('backgroundColor',this.value)"></div></div></div><div><label class="lbl">Opacidad</label><div class="range-row"><input class="range" type="range" min="0" max="1" step=".01" value="${parseFloat(s.opacity)||1}" oninput="window.applyStyle('opacity',this.value)"><input class="field" value="${esc(s.opacity||1)}" oninput="window.applyStyle('opacity',this.value)"></div></div>`);
+body+=acc('Bordes y sombras',`<div class="grid2"><div><label class="lbl">Radio</label><input class="field" value="${esc(s.radius||'')}" oninput="window.applyStyle('borderRadius',this.value)"></div><div><label class="lbl">Borde</label><input class="field" value="${esc(s.borderWidth||'')}" oninput="window.applyStyle('borderWidth',this.value)"></div></div><div class="grid2"><div><label class="lbl">Color borde</label><input class="field" value="${esc(s.borderColor||'')}" oninput="window.applyStyle('borderColor',this.value)"></div><div><label class="lbl">Estilo borde</label><select class="field" onchange="window.applyStyle('borderStyle',this.value)"><option value="solid">solid</option><option value="dashed">dashed</option><option value="dotted">dotted</option><option value="none">none</option></select></div></div><div><label class="lbl">Sombra</label><input class="field" value="${esc(s.boxShadow||'')}" oninput="window.applyStyle('boxShadow',this.value)"></div>`);
+body+=acc('Espaciado y tamaño',`<div class="grid2"><div><label class="lbl">Ancho</label><input class="field" value="${esc(s.width||'')}" oninput="window.applyStyle('width',this.value)"></div><div><label class="lbl">Alto</label><input class="field" value="${esc(s.height||'')}" oninput="window.applyStyle('height',this.value)"></div></div><div class="grid2"><div><label class="lbl">Padding</label><input class="field" value="${esc(s.padding||'')}" oninput="window.applyStyle('padding',this.value)"></div><div><label class="lbl">Margin</label><input class="field" value="${esc(s.margin||'')}" oninput="window.applyStyle('margin',this.value)"></div></div>`);
+body+=acc('Acciones',`<div class="style-grid"><button class="style-chip" onclick="window.resetSelectedStyles()"><i class="fa-solid fa-eraser"></i><br>Limpiar estilos</button><button class="style-chip" onclick="window.duplicateSelected()"><i class="fa-regular fa-copy"></i><br>Duplicar</button><button class="style-chip" onclick="window.focusSelected()"><i class="fa-solid fa-crosshairs"></i><br>Enfocar</button><button class="style-chip" onclick="window.deleteElement()"><i class="fa-solid fa-trash"></i><br>Eliminar</button></div>`);
+document.getElementById('properties-panel').innerHTML=body;
+}
+window.cssToHex=v=>{const m=String(v||'').match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);if(m)return '#'+[m[1],m[2],m[3]].map(x=>Number(x).toString(16).padStart(2,'0')).join('');if(/^#[0-9a-f]{6}$/i.test(v))return v;return '#111111'};
+window.applyStyle=(prop,val)=>{if(!currentSelection)return;const normalized=prop==='backgroundColor'?'bg':prop;setStyle(normalized,val)};
+window.updateText=val=>{iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',text:val},'*');if(currentSelection){currentSelection.text=val}markDirty('Texto editado')};
+window.updateHref=val=>{iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',href:val},'*');if(currentSelection)currentSelection.href=val;markDirty('Enlace actualizado')};
+window.resetSelectedStyles=()=>{if(!currentSelection)return;const props=['color','bg','fontSize','fontWeight','lineHeight','letterSpacing','textAlign','fontFamily','opacity','borderRadius','borderWidth','borderColor','borderStyle','boxShadow','width','height','padding','margin'];props.forEach(p=>iframe().contentWindow.postMessage({type:'CLEAR_STYLE',prop:p},'*'));window.showToast('Estilos locales restablecidos');markDirty('Restableciendo estilos')};
+window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTED'},'*');
+window.duplicateSelected=()=>iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},'*');
+window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},'*');window.clearSelection();markDirty('Elemento eliminado')};
 
-    // Mejora: Actualización optimista de guardado del Layout
-    window.publishChanges = function() {
-        const publishBtn = document.getElementById('publish-btn');
-        publishBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span class="hidden sm:inline">Guardando...</span>';
-        window.showToast("Preparando despliegue...");
-        document.getElementById('site-frame').contentWindow.postMessage({type: 'SAVE_FULL_LAYOUT'}, '*');
-    }
+window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Date.now()),isNew:!id};const d=data||{};let h='';
+if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','promocionales','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes</label><textarea id="db-img" class="field" placeholder="Una URL por línea">${esc(d.image||'')}</textarea><button class="mini-btn mt-2" onclick="window.openGallery('db-img','image','product')">Abrir explorador</button></div>`;
+if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" value="${esc(d.price||'')}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
+if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><input id="db-vid" class="field" value="${esc(d.src||'')}"><button class="mini-btn mt-2" onclick="window.openGallery('db-vid','video','media')">Elegir video</button></div>`:'')+`<div><label class="lbl">Tema</label><select id="db-theme" class="field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div>`;
+document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality)document.getElementById('db-modality')?.value=d.modality;if(d.theme)document.getElementById('db-theme')?.value=d.theme};
+window.saveDbItem=async()=>{const t=currentDbItem.type;let payload={};if(t==='product')payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:document.getElementById('db-img').value.trim(),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();try{const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;if(col){await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},'*')}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},'*');window.closeModal('db-modal');window.showToast('Cambios guardados correctamente');markDirty('Contenido sincronizado')}catch(e){window.showToast('No se pudo guardar el registro')}};
 
-    window.resetTemplateConfirm = function() {
-        window.showConfirm("¿Restaurar diseño base de fábrica?", () => {
-            window.showToast("Restaurando UI...");
-            deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'))
-            .then(() => {
-                window.showToast("Plantilla restablecida con éxito.");
-                const iframe = document.getElementById('site-frame');
-                if (iframe) iframe.src = 'index.html?t=' + Date.now();
-            })
-            .catch(e => {
-                window.showToast("Error al restablecer plantilla.");
-            });
-        });
-    }
+window.openSocialModal=()=>{window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button class="social-opt" onclick="window.pickSocial(${JSON.stringify(n)},${JSON.stringify(c)},this)"><i class="${c} mr-1"></i>${n}</button>`).join('')};window.pickSocial=(name,icon,btn)=>{document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));btn.classList.add('selected');document.getElementById('social-name').value=name;document.getElementById('social-icon').value=icon};window.addSocial=()=>{const name=document.getElementById('social-name').value.trim()||'Red social';const icon=document.getElementById('social-icon').value.trim()||'fa-solid fa-link';const url=document.getElementById('social-url').value.trim();if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network:name.toLowerCase().replace(/\s+/g,'-')},'*');window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
 
-    let currentDbItem = {};
-    let activeMediaInput = null;
-    let galleryDataCache = [];
-    let selectedMediaUrls = [];
-    let isMultiSelectMode = false;
-    const defaultGalleryItems = [
-        { type: 'image', url: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=600&auto=format&fit=crop&q=60', title: 'Camiseta' },
-        { type: 'image', url: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=600&auto=format&fit=crop&q=60', title: 'Jarro' },
-        { type: 'video', url: 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4', title: 'Video' }
-    ];
+async function fetchGallery(mode){try{const url=mode==='product'?'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json':'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json';const r=await fetch(url);if(!r.ok)throw 0;const d=await r.json();let arr=Array.isArray(d)?d:(d.items||d.imagenes||Object.values(d).find(Array.isArray)||[]);const base=mode==='product'?'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/':'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';return arr.map(x=>{let u=typeof x==='string'?x:(x.url||x.src||'');if(u&&!/^https?:|^data:/i.test(u))u=base+u;return{type:/\.mp4($|\?)/i.test(u)?'video':'image',url:u,title:u.split('/').pop()}})}catch(e){return defaultGallery}}
+window.openGallery=async(inputId,filter='all',mode='media')=>{activeMediaInput=inputId;currentGalleryMode=mode;currentGalleryType=filter;window.openModal('gallery-modal');document.getElementById('gallery-grid').innerHTML='<div class="col-span-full text-zinc-600 text-xs">Cargando medios…</div>';galleryDataCache=await fetchGallery(mode);window.renderGallery()};window.filterGallery=t=>{currentGalleryType=t;window.renderGallery()};window.renderGallery=()=>{const q=(document.getElementById('gallery-search')?.value||'').toLowerCase();const arr=galleryDataCache.filter(x=>(currentGalleryType==='all'||x.type===currentGalleryType)&&(!q||x.url.toLowerCase().includes(q)||x.title.toLowerCase().includes(q))).slice(0,250);document.getElementById('gallery-grid').innerHTML=arr.map(x=>x.type==='image'?`<button class="media-card" onclick="window.selectMedia(${JSON.stringify(x.url)})"><img src="${esc(x.url)}"><span class="absolute left-1.5 right-1.5 bottom-1.5 bg-black/70 rounded px-1 py-0.5 text-[7px] text-white truncate">${esc(x.title)}</span></button>`:`<button class="media-card" onclick="window.selectMedia(${JSON.stringify(x.url)})"><div class="media-video"><i class="fa-solid fa-circle-play"></i></div><span class="absolute left-1.5 right-1.5 bottom-1.5 bg-black/70 rounded px-1 py-0.5 text-[7px] text-white truncate">${esc(x.title)}</span></button>`).join('')||'<div class="col-span-full text-center text-zinc-600 text-xs py-8">Sin resultados</div>'};window.selectMedia=url=>{if(activeMediaInput&&document.getElementById(activeMediaInput)){const el=document.getElementById(activeMediaInput);el.value=activeMediaInput==='db-img'&&currentGalleryMode==='product'?'':url;el.value=url;el.dispatchEvent(new Event('input',{bubbles:true}))}window.closeModal('gallery-modal')};
 
-    async function fetchGalleryJson(url, mode) {
-        try {
-            const res = await fetch(url);
-            if (!res.ok) throw new Error("Error HTTP");
-            const data = await res.json();
-            let rawArray = [];
-            if (Array.isArray(data)) rawArray = data;
-            else if (data.items) rawArray = data.items;
-            else if (data.imagenes) rawArray = data.imagenes;
-            else { for (let k in data) if (Array.isArray(data[k])) rawArray.push(...data[k]); }
-            if(rawArray.length === 0) rawArray = defaultGalleryItems;
-            return rawArray.map(item => {
-                let u = typeof item === 'string' ? item : (item.url || item.src || '');
-                let t = u.endsWith('.mp4') ? 'video' : 'image';
-                
-                if (u && !u.startsWith('http') && !u.startsWith('data:')) {
-                    let basePath = mode === 'product' 
-                        ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/' 
-                        : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/';
-                    u = basePath + u;
-                } else if (u.startsWith('http') && mode === 'product') {
-                    if (u.includes('/recursos/') && !u.includes('/recursos/productos/')) {
-                        u = u.replace('/recursos/', '/recursos/productos/');
-                    }
-                }
-                return { type: t, url: u, title: u.split('/').pop() };
-            });
-        } catch (e) { return defaultGalleryItems; }
-    }
+window.publishChanges=async(auto=false)=>{if(!iframe().contentWindow)return;setSaveState('busy',auto?'Autoguardando…':'Guardando…');iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual'},'*')};
+window.resetTemplateConfirm=()=>{if(!confirm('¿Restaurar el layout guardado? Esto elimina el layout visual actual y recarga la plantilla base.'))return;deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout')).then(()=>{window.showToast('Layout restablecido');window.reloadPreview()}).catch(()=>window.showToast('No se pudo restablecer'))};
 
-    window.openGallery = async function(inputId, filter = 'all', mode = 'media') {
-        activeMediaInput = inputId; isMultiSelectMode = (mode === 'product'); selectedMediaUrls = [];
-        const modal = document.getElementById('gallery-modal'); const grid = document.getElementById('gallery-grid');
-        modal.classList.add('active'); grid.innerHTML = '<div class="col-span-full py-8 text-center text-zinc-500 text-xs"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando...</div>';
-        
-        galleryDataCache = await fetchGalleryJson(
-            mode === 'product' ? 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json' : 'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json', 
-            mode
-        );
-        window.filterGallery(mode === 'product' ? 'image' : filter);
-    }
+window.addEventListener('message',event=>{if(event.source!==iframe().contentWindow&&event.origin!==location.origin)return;const d=event.data||{};if(!d.type)return;
+if(d.type==='APP_READY'){iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*');iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},'*');iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*');setSaveState('ok','Sincronizado')}
+if(d.type==='ELEMENT_SELECTED'){renderInspector(d);if(window.innerWidth<760)document.getElementById('rightbar').classList.add('mobile-open')}
+if(d.type==='CLEAR_SELECTION')window.clearSelection();
+if(d.type==='SAVE_FULL_LAYOUT'){const layoutData=d.layoutData||{};const mode=d.saveMode||'manual';setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'),{zones:layoutData,prodOrder:d.prodOrder||[],courseOrder:d.courseOrder||[]},{merge:true}).then(()=>{window.appState.dirty=false;setSaveState('ok','Guardado en Firebase');document.getElementById('publish-btn').innerHTML='<i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar';if(mode!=='auto')window.showToast('Sitio guardado correctamente')}).catch(()=>{setSaveState('err','Error al guardar');window.showToast('Error de sincronización')})}
+if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
+if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
+if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?'))deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId)).then(()=>iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},'*'))}
+});
 
-    window.filterGallery = function(type) {
-        const grid = document.getElementById('gallery-grid');
-        const filtered = galleryDataCache.filter(item => type === 'all' || item.type === type).slice(0, 150);
-        let html = '';
-        filtered.forEach(item => {
-            if(item.type === 'image') html += `<div onclick="window.selectSingleMedia('${item.url}')" class="aspect-square bg-black border border-white/10 hover:border-cyan-400 rounded-lg overflow-hidden cursor-pointer relative group"><img src="${item.url}" loading="lazy" class="w-full h-full object-cover opacity-80 group-hover:opacity-100"></div>`;
-            else html += `<div onclick="window.selectSingleMedia('${item.url}')" class="aspect-square bg-black border border-white/10 hover:border-cyan-400 rounded-lg overflow-hidden cursor-pointer relative group flex items-center justify-center"><i class="fa-solid fa-video text-2xl text-white/40"></i></div>`;
-        });
-        grid.innerHTML = html || '<div class="col-span-full py-8 text-center text-xs text-zinc-500">Sin medios</div>';
-    }
-
-    window.selectSingleMedia = function(url) {
-        if(activeMediaInput && document.getElementById(activeMediaInput)) {
-            document.getElementById(activeMediaInput).value = url;
-            if(activeMediaInput === 'db-img') window.updateImgPreview(url);
-        }
-        document.getElementById('gallery-modal').classList.remove('active');
-    }
-
-    window.updateImgPreview = function(url) {
-        const preview = document.getElementById('db-img-preview'); if(!preview) return;
-        preview.innerHTML = `<img src="${url.split(',')[0].trim()}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/60x60/101014/ffffff?text=img'">`;
-    }
-
-    window.openDbEditor = function(type, itemId, itemData = null) {
-        currentDbItem = { type: type, id: itemId || 'new_' + Date.now() };
-        let title = itemId ? "Editar" : "Nuevo"; let d = itemData || {}; let formHtml = '';
-        if (type === 'product') {
-            formHtml = `
-                <div><label class="lbl">Nombre</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Categoría</label><select id="db-cat" class="inp-field"><option value="textil">Textil</option><option value="jarros">Jarros</option><option value="imp-general">General</option><option value="promocionales">Promocionales</option><option value="packs">Packs</option></select></div>
-                    <div><label class="lbl">Precio ($)</label><input type="number" step="0.01" id="db-price" value="${d.price||'0.00'}" class="inp-field"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Descuento (%)</label><input type="number" min="0" max="100" id="db-discount" value="${d.discount||'0'}" class="inp-field"></div>
-                    <div class="flex flex-col gap-1.5 mt-4">
-                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="db-promo" class="w-4 h-4 rounded accent-cyan-400" ${d.isPromo?'checked':''}/><span class="text-[11px] text-white">Promoción</span></label>
-                        <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="db-bestseller" class="w-4 h-4 rounded accent-rose-500" ${d.isBestSeller?'checked':''}/><span class="text-[11px] text-white">Más Vendido</span></label>
-                    </div>
-                </div>
-                <div><label class="lbl">Imágenes URL <button onclick="window.openGallery('db-img', 'image', 'product')" class="ml-2 text-cyan-400">Explorador</button></label><textarea id="db-img" class="inp-field h-16 resize-none" oninput="window.updateImgPreview(this.value)">${d.image||''}</textarea></div>
-            `;
-        } else if (type === 'course') {
-            formHtml = `
-                <div><label class="lbl">Título</label><input type="text" id="db-title" value="${d.title||''}" class="inp-field"></div>
-                <div><label class="lbl">Descripción</label><textarea id="db-desc" class="inp-field h-16 resize-none">${d.desc||''}</textarea></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Horario</label><input type="text" id="db-schedule" value="${d.schedule||''}" class="inp-field"></div>
-                    <div><label class="lbl">Precio</label><input type="text" id="db-price" value="${d.price||''}" class="inp-field"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label class="lbl">Modalidad</label><select id="db-modality" class="inp-field"><option value="Presencial" ${d.modality==='Presencial'?'selected':''}>Presencial</option><option value="Online" ${(d.modality==='Online'||d.modality==='Virtual')?'selected':''}>Online</option><option value="Híbrido" ${d.modality==='Híbrido'?'selected':''}>Híbrido</option></select></div>
-                    <div class="flex items-end pb-1"><label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="db-master" class="w-4 h-4 rounded accent-cyan-400" ${(d.isMasterclass!==false)?'checked':''}/><span class="text-[11px] text-white">Masterclass</span></label></div>
-                </div>
-                <div><label class="lbl">Portada URL <button onclick="window.openGallery('db-img', 'image', 'media')" class="ml-2 text-cyan-400">Explorador</button></label><input type="text" id="db-img" value="${d.image||''}" class="inp-field"></div>
-            `;
-        } else if (type === 'testimonial_video' || type === 'testimonial_text') {
-            formHtml = `
-                <div><label class="lbl">Nombre</label><input type="text" id="db-name" value="${d.name||''}" class="inp-field"></div>
-                <div><label class="lbl">Rol</label><input type="text" id="db-role" value="${d.role||''}" class="inp-field"></div>
-                <div><label class="lbl">Cita</label><textarea id="db-quote" class="inp-field h-16 resize-none">${d.quote||''}</textarea></div>
-            `;
-            if(type === 'testimonial_video') formHtml += `<div><label class="lbl">Video URL <button onclick="window.openGallery('db-vid', 'video', 'media')" class="ml-2 text-cyan-400">Videos</button></label><input type="text" id="db-vid" value="${d.src||''}" class="inp-field mt-1"></div>`;
-            formHtml += `<div><label class="lbl">Tema</label><select id="db-theme" class="inp-field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div>`;
-        }
-        document.getElementById('db-modal-title').innerHTML = title;
-        document.getElementById('db-modal-body').innerHTML = formHtml;
-        document.getElementById('db-modal').classList.add('active');
-    }
-
-    // Mejora: Sincronización Inmediata y Actualización Optimista
-    window.saveDbItem = function() {
-        let t = currentDbItem.type; let payload = {};
-        const btnSave = document.getElementById('btn-save-db');
-        if(t === 'product') { 
-            payload = { name: document.getElementById('db-name').value, category: document.getElementById('db-cat').value, price: parseFloat(document.getElementById('db-price').value), discount: parseFloat(document.getElementById('db-discount').value), image: document.getElementById('db-img').value, isPromo: document.getElementById('db-promo').checked, isBestSeller: document.getElementById('db-bestseller').checked }; 
-        } else if(t === 'course') { 
-            payload = { title: document.getElementById('db-title').value, desc: document.getElementById('db-desc').value, schedule: document.getElementById('db-schedule').value, price: document.getElementById('db-price').value, image: document.getElementById('db-img').value, isMasterclass: document.getElementById('db-master').checked, modality: document.getElementById('db-modality').value }; 
-        } else if(t === 'testimonial_video') { 
-            payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, src: document.getElementById('db-vid').value, theme: document.getElementById('db-theme').value }; 
-        } else if(t === 'testimonial_text') { 
-            payload = { name: document.getElementById('db-name').value, role: document.getElementById('db-role').value, quote: document.getElementById('db-quote').value, theme: document.getElementById('db-theme').value }; 
-        }
-        btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
-        
-        // 1. Actualizar iframe INMEDIATAMENTE
-        if (t === 'product' || t === 'course') {
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_UPDATED', itemType: t, id: currentDbItem.id, data: payload }, '*');
-        } else if (t === 'testimonial_video') {
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
-        } else if (t === 'testimonial_text') {
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'UPDATE_TEXT_TESTIMONIAL', itemId: currentDbItem.id, data: payload }, '*');
-        }
-        
-        document.getElementById('db-modal').classList.remove('active');
-        window.showToast("✅ Actualización aplicada.");
-        btnSave.innerHTML = 'Guardar';
-
-        // 2. Guardar en background
-        if (t === 'product' || t === 'course') {
-            const col = t === 'product' ? 'products' : 'courses';
-            setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, currentDbItem.id), payload, { merge: true })
-            .catch(e => window.showToast("❌ Error al guardar en la nube."));
-        } 
-    }
-
-    let selNet = '', selIcon = '';
-    window.selectSocialIcon = function(iconClass, network, btn) {
-        document.querySelectorAll('.social-opt').forEach(b => b.classList.remove('border-white', 'text-white'));
-        btn.classList.add('border-white', 'text-white'); selNet = network; selIcon = iconClass;
-    }
-    window.confirmAddSocial = function() {
-        const url = document.getElementById('social-url-input').value;
-        if(!url || !url.startsWith('http')) return window.showToast("URL inválida");
-        document.getElementById('site-frame').contentWindow.postMessage({ type: 'ADD_SOCIAL_ICON', url, iconClass: selIcon, network: selNet }, '*');
-        document.getElementById('icon-picker-modal').classList.remove('active');
-    }
-
-    window.updateText = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', text: val}, '*');
-    window.updateHref = val => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_ELEMENT', href: val}, '*');
-    window.updateStyle = (prop, val) => document.getElementById('site-frame').contentWindow.postMessage({type: 'UPDATE_STYLE', prop, value: val}, '*');
-    window.deleteElement = () => { document.getElementById('site-frame').contentWindow.postMessage({type: 'DELETE_SELECTED_NODE'}, '*'); document.getElementById('properties-panel').innerHTML = '<p class="text-zinc-500 text-[11px] m-0">Nodo Eliminado.</p>'; }
-    window.toggleAccordion = header => { const item = header.parentElement; const isActive = item.classList.contains('active'); document.querySelectorAll('.acc-item').forEach(el => el.classList.remove('active')); if(!isActive) item.classList.add('active'); }
-
-    window.addEventListener('message', async (event) => {
-        if (event.source !== document.getElementById('site-frame').contentWindow && event.origin !== window.location.origin) return;
-        const data = event.data;
-        if (!data || !data.type) return;
-
-        if (data.type === 'SAVE_FULL_LAYOUT') {
-            if (data.layoutData) {
-                // Actualización optimista de Layout
-                window.showToast('Sincronizando con el servidor...');
-                setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'), { zones: data.layoutData, prodOrder: data.prodOrder || [], courseOrder: data.courseOrder || [] }, { merge: true })
-                .then(() => {
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
-                    window.showToast('¡Desplegado correctamente!');
-                })
-                .catch(e => {
-                    document.getElementById('publish-btn').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Desplegar</span>';
-                    window.showToast('Error de despliegue.');
-                });
-            }
-        }
-        if (data.type === 'DELETE_DB_ITEM') {
-            window.showConfirm("¿Eliminar permanentemente?", () => {
-                const col = data.itemType === 'product' ? 'products' : 'courses';
-                
-                // Actualización optimista
-                document.getElementById('site-frame').contentWindow.postMessage({ type: 'DB_DELETED_SUCCESS', itemType: data.itemType, id: data.itemId }, '*');
-                window.showToast("🗑 Eliminado.");
-                
-                // Borrar en background
-                deleteDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', col, data.itemId)).catch(e => console.error("Error al eliminar", e));
-            });
-        }
-        if (data.type === 'APP_READY') { 
-            document.getElementById('site-frame').contentWindow.postMessage({ type: 'ENABLE_BUILDER' }, '*'); 
-            setTimeout(() => window.toggleDragMode(document.getElementById('btn-drag')), 800);
-        }
-        if (data.type === 'ELEMENT_SELECTED') renderPropertiesPanel(data);
-        if (data.type === 'CLEAR_SELECTION') document.getElementById('properties-panel').innerHTML = '<p class="font-medium text-[11px] text-zinc-500 m-0">Selecciona un elemento en el lienzo.</p>';
-        if (data.type === 'OPEN_ICON_PICKER') document.getElementById('icon-picker-modal').classList.add('active');
-        if (data.type === 'OPEN_EDITOR') window.openDbEditor(data.editorType, data.itemId, data.itemData);
-    });
-
-    function renderPropertiesPanel(data) {
-        const panel = document.getElementById('properties-panel');
-        let cleanTag = String(data.tagName || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        let html = `<div class="w-full bg-[#000] border-b border-white/5 p-3 mb-2 text-left"><span class="text-white font-bold text-[10px]">${cleanTag}</span></div>`;
-        if (!['IMG', 'VIDEO', 'SECTION', 'DIV'].includes(data.tagName)) {
-            let cleanText = String(data.text || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            html += `<div class="acc-item active"><button class="acc-header" onclick="window.toggleAccordion(this)">Texto</button><div class="acc-content"><textarea oninput="window.updateText(this.value)" class="inp-field min-h-[60px]">${cleanText}</textarea></div></div>`;
-        }
-        if (['IMG', 'VIDEO', 'A', 'BUTTON'].includes(data.tagName) || data.href) {
-            let cleanHref = String(data.href || '').replace(/javascript:/gi, "").replace(/"/g, "&quot;");
-            html += `<div class="acc-item"><button class="acc-header" onclick="window.toggleAccordion(this)">Enlace / URL</button><div class="acc-content"><input type="text" oninput="window.updateHref(this.value)" value="${cleanHref}" class="inp-field"></div></div>`;
-        }
-        if (data.hasTheme) {
-            html += `<div class="acc-item"><button class="acc-header" onclick="window.toggleAccordion(this)">Tema de Color</button><div class="acc-content"><select onchange="window.updateStyle('theme', this.value)" class="inp-field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div></div>`;
-        }
-        html += `<div class="p-4 mt-auto"><button onclick="window.deleteElement()" class="w-full btn-danger py-2">Eliminar Nodo</button></div>`;
-        panel.innerHTML = html; panel.className = "w-full flex-1 overflow-y-auto bg-[#09090b] p-0 text-left";
-    }
+window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();window.publishChanges(false)}if(e.key==='Escape'){['social-modal','db-modal','gallery-modal'].forEach(window.closeModal)}});
+window.filterSocials('');
 </script>
-</body>
-</html>
+</body></html>
