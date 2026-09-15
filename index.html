@@ -178,6 +178,57 @@ h1,h2,h3,h4,.display{font-family:"Manrope",sans-serif}
 
 .glass{background:rgba(7,7,9,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .glass-nav-mobile{background:rgba(10,10,14,.85);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+/* Mobile: keep social navigation inside its own compact lane without changing the menu design. */
+@media (max-width: 767px){
+  /* Reduce GPU cost on phones while preserving the same glass visual. */
+  .glass,.glass-nav-mobile{
+    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(8px);
+  }
+  #section-header{overflow:visible;}
+  #section-header > .max-w-7xl{min-width:0;}
+  #section-header > .max-w-7xl > div:first-child{min-width:0;flex:1 1 auto;}
+  #section-header > .max-w-7xl > div:first-child > button{min-width:0;max-width:100%;}
+  #section-header #brand-name,#section-header #brand-slogan{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #section-header > .max-w-7xl > div:last-child{flex:0 0 auto;min-width:0;max-width:44vw;}
+  #social-nav-mobile{
+    width:100%;
+    max-width:44vw;
+    min-width:58px;
+    justify-content:flex-end;
+    gap:10px;
+    padding-right:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-x;
+    contain:layout paint;
+  }
+  #social-nav-mobile::-webkit-scrollbar{display:none;}
+  #social-nav-mobile > button:not(.admin-tool){
+    flex:0 0 18px;
+    width:18px;
+    min-width:18px;
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    touch-action:manipulation;
+  }
+  #social-nav-mobile > button:not(.admin-tool) i{font-size:16px !important;}
+  #social-nav-mobile > .admin-tool{flex:0 0 32px;min-width:32px;}
+}
+
+@media (max-width: 380px){
+  #section-header > .max-w-7xl > div:last-child{max-width:38vw;}
+  #social-nav-mobile{max-width:38vw;gap:8px;min-width:52px;}
+  #social-nav-mobile > button:not(.admin-tool){flex-basis:17px;width:17px;min-width:17px;}
+  #social-nav-mobile > button:not(.admin-tool) i{font-size:15px !important;}
+}
+
 
 .filter-btn { transition: background-color 0.3s ease, color 0.3s ease, text-shadow 0.3s ease; font-weight: 600; cursor: pointer; }
 .filter-btn.active { color: white; box-shadow: inset 0 -2px 10px rgba(0,0,0,0.2); text-shadow: 0 0 1px rgba(255,255,255,0.5); } 
