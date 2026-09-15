@@ -157,6 +157,69 @@
 #social-nav-mobile>button:not(.admin-tool) i{font-size:13px!important;}
 }
 </style>
+
+<style id="mobile-contact-final">
+@media (max-width:767px){
+#view-contact{height:100dvh!important;max-height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important;padding-top:56px!important;padding-bottom:calc(75px + env(safe-area-inset-bottom))!important;}
+#view-contact>div{width:100%!important;min-height:max-content!important;height:auto!important;padding:10px 14px calc(18px + env(safe-area-inset-bottom))!important;}
+#view-contact>div>.flex-1{width:100%!important;min-height:0!important;height:auto!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:14px!important;}
+#view-contact>div>.flex-1>.reveal:first-child{margin:4px 0 0!important;}
+#view-contact>div>.flex-1>.reveal:first-child h2{font-size:clamp(28px,8vw,38px)!important;line-height:1.06!important;}
+#view-contact #contact-flex{width:100%!important;display:flex!important;flex-direction:column!important;gap:14px!important;align-items:stretch!important;justify-content:flex-start!important;margin:0!important;}
+#view-contact #contact-map-col{width:100%!important;height:clamp(170px,26dvh,220px)!important;min-height:170px!important;max-height:220px!important;flex:0 0 auto!important;border-radius:16px!important;}
+#view-contact #leaflet-map{width:100%!important;height:100%!important;min-height:0!important;}
+#view-contact #contact-info-zone{width:100%!important;display:flex!important;gap:14px!important;align-items:stretch!important;justify-content:flex-start!important;text-align:center!important;}
+#view-contact #contact-info-zone>.group{width:100%!important;min-width:0!important;}
+#view-contact #contact-info-zone button[data-href]{max-width:100%!important;overflow-wrap:anywhere!important;word-break:break-word!important;white-space:normal!important;line-height:1.2!important;}
+#view-contact #social-footer-links{width:100%!important;display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;gap:12px 18px!important;padding:6px 4px!important;overflow:visible!important;}
+#view-contact #social-footer-links>button:not(.admin-tool){flex:0 0 34px!important;width:34px!important;height:34px!important;min-width:34px!important;display:flex!important;align-items:center!important;justify-content:center!important;}
+#view-contact #social-footer-links>button:not(.admin-tool) i{font-size:19px!important;}
+#view-contact footer{margin-top:4px!important;padding-top:10px!important;padding-bottom:calc(10px + env(safe-area-inset-bottom))!important;}
+#view-contact .bg-black\/80{max-width:calc(100% - 16px)!important;}
+}
+@media (max-width:380px){
+#view-contact>div{padding-left:12px!important;padding-right:12px!important;}
+#view-contact #contact-map-col{height:175px!important;min-height:175px!important;max-height:175px!important;}
+#view-contact #contact-info-zone{gap:12px!important;}
+#view-contact #social-footer-links{gap:10px 14px!important;}
+#view-contact #social-footer-links>button:not(.admin-tool){flex-basis:32px!important;width:32px!important;height:32px!important;min-width:32px!important;}
+#view-contact #social-footer-links>button:not(.admin-tool) i{font-size:18px!important;}
+}
+
+@media (min-width:768px) and (min-height:800px){
+#view-contact>div{min-height:calc(100dvh - 24px)!important;display:flex!important;flex-direction:column!important;justify-content:center!important;}
+#view-contact>div>.flex-1{flex:0 1 auto!important;}
+#view-contact footer{flex:0 0 auto!important;}
+}
+@media (max-width:767px) and (min-height:760px){
+#view-contact>div{min-height:calc(100dvh - 131px)!important;display:flex!important;flex-direction:column!important;justify-content:center!important;}
+#view-contact>div>.flex-1{flex:0 1 auto!important;}
+#view-contact footer{flex:0 0 auto!important;}
+}
+</style>
+
+<style id="contact-mobile-precision-fix">
+@media (max-width:767px){
+  #view-contact>div>.flex-1{gap:10px!important;}
+  #view-contact>div>.flex-1>.reveal:first-child{margin:2px 0 0!important;}
+  #view-contact>div>.flex-1>.reveal:first-child h2{font-size:clamp(24px,7vw,32px)!important;line-height:1.05!important;}
+  #view-contact #contact-flex{gap:10px!important;}
+  #view-contact #contact-map-col{height:clamp(145px,20dvh,185px)!important;min-height:145px!important;max-height:185px!important;}
+  #view-contact #contact-info-zone{gap:10px!important;}
+  #view-contact #contact-info-zone .group{max-width:100%!important;}
+  #view-contact #contact-info-zone button[data-href]{font-size:clamp(14px,4.2vw,20px)!important;line-height:1.12!important;}
+  #view-contact #contact-info-zone #contact-phone{font-size:clamp(17px,5vw,23px)!important;line-height:1.08!important;}
+  #view-contact #social-footer-links{gap:9px 14px!important;padding:3px 4px!important;}
+  #view-contact footer{margin-top:2px!important;padding-top:7px!important;padding-bottom:calc(8px + env(safe-area-inset-bottom))!important;}
+}
+@media (max-width:380px){
+  #view-contact #contact-map-col{height:145px!important;min-height:145px!important;max-height:145px!important;}
+  #view-contact>div>.flex-1>.reveal:first-child h2{font-size:25px!important;}
+  #view-contact #contact-info-zone button[data-href]{font-size:14px!important;}
+  #view-contact #contact-info-zone #contact-phone{font-size:17px!important;}
+  #view-contact #social-footer-links{gap:8px 11px!important;}
+}
+</style>
 </head>
 <body class="transform-gpu">
 <div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
@@ -176,7 +239,7 @@
               </div>
               <div>
                 <h1 data-editable="true" class="font-extrabold tracking-[.16em] text-[10px] md:text-sm m-0 text-white" id="brand-name">MULTIPRINTT</h1>
-                <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors cursor-pointer" id="brand-slogan">Tú Imagen Viva</div>
+                <div data-editable="true" class="text-[6px] md:text-[9px] text-zinc-400 tracking-[.2em] uppercase font-semibold group-hover:text-pink-400 transition-colors cursor-pointer" id="brand-slogan">Tu Imagen Viva</div>
               </div>
             </button>
             <nav id="nav-pc-zone" class="hidden md:flex items-center sortable-zone">
@@ -311,7 +374,7 @@
                 </p>
             </div>
             <div class="pt-8 text-center border-t border-white/5 mt-12">
-                <span data-editable="true" class="text-[10px] text-zinc-500 uppercase tracking-widest font-extrabold block">Multiprintt • Tú Imagen Viva</span>
+                <span data-editable="true" class="text-[10px] text-zinc-500 uppercase tracking-widest font-extrabold block">Multiprintt • Tu Imagen Viva</span>
                 <span data-editable="true" class="text-[8px] text-zinc-600 mt-1 block">Guayaquil, Ecuador</span>
             </div>
         </div>
@@ -442,7 +505,7 @@
             </div>
         </div>
         <footer class="mt-2 sm:mt-8 pt-2 sm:pt-4 text-center text-[8px] sm:text-[10px] text-zinc-600 font-medium shrink-0 border-t border-white/5 flex flex-col items-center gap-1 sm:gap-2 relative z-20 pb-2 sm:pb-4">
-            <span data-editable="true">© 2026 Multiprintt. Tú Imagen Viva.</span>
+            <span data-editable="true">© 2026 Multiprintt. Tu Imagen Viva.</span>
         </footer>
     </div>
   </section>
@@ -1523,6 +1586,11 @@ try{applySeoRuntime(SEO_RUNTIME_DEFAULTS)}catch(e){console.warn('SEO inicial:',e
 function builderSelectionTarget(raw, e) {
 if (!raw || raw.nodeType !== 1) return null;
 if (raw.closest('.ignore-drag, .admin-tool, #builder-resize-box, #videoModalContent')) return null;
+// El mapa Leaflet es una capa dinámica: el elemento editable/resizable real es su contenedor.
+if (raw.closest('#leaflet-map')) {
+const mapBox = document.getElementById('contact-map-col');
+if (mapBox) return mapBox;
+}
 // Controles especiales del editor: nunca seleccionar todo #view-courses
 // cuando el usuario realmente está intentando editar la galería.
 const galleryPart = raw.closest('#academy-gallery-marquee, #academy-gallery-section');
