@@ -146,6 +146,11 @@
 
 /* Pro builder runtime */
 @keyframes mpFadeIn{from{opacity:0}to{opacity:1}}@keyframes mpSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes mpSlideDown{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:none}}@keyframes mpSlideLeft{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}@keyframes mpSlideRight{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}@keyframes mpZoomIn{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}@keyframes mpFlipIn{from{opacity:0;transform:perspective(700px) rotateY(70deg)}to{opacity:1;transform:none}}@keyframes mpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}@keyframes mpPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+
+/* Social hover colors: centralized so dynamically rebuilt icons keep their network color. */
+button[data-network], a[data-network]{ --social-hover-color:#25d8ff; }
+button[data-network]:hover, a[data-network]:hover{ color:var(--social-hover-color,#25d8ff) !important; }
+button[data-network]:focus-visible, a[data-network]:focus-visible{ outline:2px solid color-mix(in srgb,var(--social-hover-color,#25d8ff) 65%, white 35%); outline-offset:3px; }
 </style>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
@@ -1107,6 +1112,29 @@ window.scrollToSlide = function(sliderId, idx, e) {
     }
 };
 
+window.getSocialHoverColor = function(network){
+    const n = String(network || '').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
+    const colors = {
+        facebook:'#1877F2', instagram:'#E1306C', whatsapp:'#25D366', youtube:'#FF0000',
+        tiktok:'#00F2EA', twitter:'#1DA1F2', x:'#FFFFFF', linkedin:'#0A66C2',
+        telegram:'#229ED9', pinterest:'#E60023', snapchat:'#FFFC00', discord:'#5865F2',
+        twitch:'#9146FF', reddit:'#FF4500', github:'#F0F6FC', gitlab:'#FC6D26',
+        spotify:'#1DB954', messenger:'#00B2FF', vimeo:'#1AB7EA', slack:'#36C5F0',
+        dribbble:'#EA4C89', behance:'#1769FF', tumblr:'#36465D', vk:'#0077FF',
+        wechat:'#07C160', line:'#00C300', skype:'#00AFF0', medium:'#FFFFFF',
+        threads:'#FFFFFF', mastodon:'#6364FF', bluesky:'#1185FE', clubhouse:'#FFFFFF',
+        kick:'#53FC18', patreon:'#FF424D', buymeacoffee:'#FFDD00', paypal:'#003087'
+    };
+    return colors[n] || '#25D8FF';
+};
+window.applySocialHoverColor = function(el){
+    if(!el || !el.getAttribute) return;
+    el.style.setProperty('--social-hover-color', window.getSocialHoverColor(el.getAttribute('data-network')));
+};
+window.applyAllSocialHoverColors = function(root=document){
+    root.querySelectorAll('button[data-network],a[data-network]').forEach(window.applySocialHoverColor);
+};
+
 window.getSocialOrder = function() {
     const footer = document.getElementById('social-footer-links');
     if(!footer) return [];
@@ -1167,9 +1195,12 @@ window.syncSocialNetworks = function() {
         const iconClasses = link.getAttribute('data-icon-class') || (iconElement ? iconElement.className.replace('pointer-events-none', '').trim() : 'fa-solid fa-link');
         const network = link.getAttribute('data-network') || 'link';
         link.setAttribute('data-icon-class', iconClasses);
+        window.applySocialHoverColor(link);
 
         const btnPc = document.createElement('button');
         btnPc.setAttribute('data-editable', 'true'); btnPc.setAttribute('data-network', network);
+        btnPc.setAttribute('data-social-url', url);
+        window.applySocialHoverColor(btnPc);
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
         btnPc.className = isPrimary ? "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer bg-transparent border-none" : "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer bg-transparent border-none p-0";
         btnPc.innerHTML = `<i class="${iconClasses} text-[18px] pointer-events-none"></i>`;
@@ -1177,12 +1208,16 @@ window.syncSocialNetworks = function() {
 
         const btnMob = document.createElement('button');
         btnMob.setAttribute('data-editable', 'true'); btnMob.setAttribute('data-network', network);
+        btnMob.setAttribute('data-social-url', url);
+        window.applySocialHoverColor(btnMob);
         btnMob.setAttribute('onclick', `window.open('${url}', '_blank')`);
         btnMob.className = "text-zinc-400 transition-colors shrink-0 outline-none cursor-pointer bg-transparent border-none p-0";
         btnMob.innerHTML = `<i class="${iconClasses} text-lg pointer-events-none"></i>`;
         navMobileContainer.insertBefore(btnMob, navMobileContainer.querySelector('.admin-tool'));
     });
 }
+
+window.applyAllSocialHoverColors();
 
 window.renderProducts = function(){
     const grid = document.getElementById('product-grid'); if(!grid) return; grid.innerHTML = '';
