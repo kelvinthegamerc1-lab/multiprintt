@@ -160,7 +160,7 @@ window.refreshLayers=()=>{proPost('GET_LAYERS');};
 window.openLayers=()=>{window.openModal('layers-modal');window.refreshLayers()};
 window.renderLayers=(layers=[])=>{const host=document.getElementById('layer-list');if(!host)return;host.innerHTML=layers.map(x=>{const id=String(x.builderId||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');return `<div class="layer-row ${x.selected?'active':''}"><span class="layer-icon"><i class="${x.icon||'fa-regular fa-square'}"></i></span><span class="layer-text">${proEscapeName(x.label||x.tag||'Elemento')}</span><div class="layer-actions"><button type="button" data-id="${id}" onclick="window.selectLayer(this.dataset.id)" title="Seleccionar"><i class="fa-solid fa-arrow-pointer"></i></button><button type="button" data-id="${id}" onclick="window.focusLayer(this.dataset.id)" title="Enfocar"><i class="fa-solid fa-crosshairs"></i></button><button type="button" data-id="${id}" onclick="window.toggleLayerLock(this.dataset.id)" title="Bloquear"><i class="fa-solid fa-lock"></i></button></div></div>`}).join('')||'<div class="p-5 text-center text-zinc-600 text-[10px]">No hay capas editables aquí.</div>'};
 window.selectLayer=id=>proPost('SELECT_BY_BUILDER_ID',{builderId:id});window.focusLayer=id=>proPost('FOCUS_BY_BUILDER_ID',{builderId:id});window.toggleLayerLock=id=>{proPost('TOGGLE_LAYER_LOCK',{builderId:id});markDirty('Bloqueo de capa actualizado');proScheduleSnapshot()};
-const commandDefs=[['Deshacer','Ctrl+Z',()=>window.undo()],['Rehacer','Ctrl+Y',()=>window.redo()],['Guardar','Ctrl+S',()=>window.publishChanges(false)],['Capas','',()=>window.openLayers()],['Ajustes globales','',()=>window.openGlobalSettings()],['Explorador de medios','',()=>window.openGallery('prop-href','all','media')],['Mover elemento','',()=>window.toggleDragMode()],['Enfocar selección','',()=>window.focusSelected()],['Duplicar selección','',()=>window.duplicateSelected()],['Eliminar selección','',()=>window.deleteElement()],['Preview móvil','',()=>document.querySelectorAll('.device-btn')[2]?.click()],['Preview escritorio','',()=>document.querySelectorAll('.device-btn')[0]?.click()]];
+const commandDefs=[['Deshacer','Ctrl+Z',()=>window.undo()],['Rehacer','Ctrl+Y',()=>window.redo()],['Guardar','Ctrl+S',()=>window.publishChanges(false)],['Guardar plantilla base actual','BASE',()=>window.saveCurrentAsTemplateBase()],['Restaurar plantilla base','',()=>window.resetTemplateConfirm()],['Capas','',()=>window.openLayers()],['Ajustes globales','',()=>window.openGlobalSettings()],['Explorador de medios','',()=>window.openGallery('prop-href','all','media')],['Mover elemento','',()=>window.toggleDragMode()],['Enfocar selección','',()=>window.focusSelected()],['Duplicar selección','',()=>window.duplicateSelected()],['Eliminar selección','',()=>window.deleteElement()],['Preview móvil','',()=>document.querySelectorAll('.device-btn')[2]?.click()],['Preview escritorio','',()=>document.querySelectorAll('.device-btn')[0]?.click()]];
 window.renderCommands=q=>{q=String(q||'').toLowerCase();const host=document.getElementById('command-list');if(!host)return;host.innerHTML=commandDefs.filter(x=>!q||x[0].toLowerCase().includes(q)).map((x,n)=>`<button type="button" class="command-item" onclick="window.runCommand(${n})"><span>${x[0]}</span><span class="pro-kbd">${x[1]||'↵'}</span></button>`).join('')};window.runCommand=n=>{const fn=commandDefs[n]?.[2];if(fn)fn();window.closeModal('command-modal')};window.openCommandPalette=()=>{window.openModal('command-modal');const q=document.getElementById('command-search');if(q){q.value='';window.renderCommands('');setTimeout(()=>q.focus(),30)}};
 window.setCustomViewport=()=>{const v=prompt('Ancho del preview (px):',localStorage.getItem('multiprintt_custom_viewport_width')||'1440');const n=parseInt(v,10);if(!n||n<280||n>2400)return;const wrap=document.getElementById('preview-wrapper');if(!wrap)return;wrap.className='device-custom';wrap.style.width=n+'px';wrap.style.height='900px';wrap.style.flex='0 0 '+n+'px';wrap.style.transformOrigin='top center';document.getElementById('preview-hint').textContent='Vista previa · personalizado '+n+'px';const scale=Math.min(1,(document.getElementById('preview-stage').clientWidth-56)/n,.95);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;proPost('SET_PREVIEW_WIDTH',{width:n})};
 function proScheduleSnapshot(){clearTimeout(proSnapshotTimer);proSnapshotTimer=setTimeout(()=>{if(!window.appState.dirty||proSnapshotBusy||proRestoring)return;proSnapshotBusy=true;proPost('CAPTURE_LAYOUT',{reason:'autosnapshot'})},650)}
@@ -342,7 +342,25 @@ window.publishChanges=async(auto=false)=>{
   setSaveState('busy',auto?'Autoguardando…':'Guardando…');
   iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual',saveRequestId,saveRevision},'*');
 };
-window.resetTemplateConfirm=()=>{if(!confirm('¿Restaurar el layout guardado? Esto elimina el layout visual actual y recarga la plantilla base.'))return;deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout')).then(()=>{window.showToast('Layout restablecido');window.reloadPreview()}).catch(()=>window.showToast('No se pudo restablecer'))};
+window.resetTemplateConfirm=()=>{if(!confirm('¿Restaurar la plantilla base? Esto eliminará únicamente los cambios visuales actuales y volverá a la plantilla maestra guardada en Firebase.'))return;deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout')).then(()=>{window.showToast('Plantilla base restaurada');window.reloadPreview()}).catch(()=>window.showToast('No se pudo restablecer'))};
+window.saveCurrentAsTemplateBase=async()=>{
+  try{
+    const frame=iframe();
+    if(!frame?.contentWindow)return window.showToast('La vista previa no está lista');
+    const requestId=++saveRequestSeq;
+    window.__templateBaseRequestId=requestId;
+    const handler=event=>{
+      if(event.source!==frame.contentWindow || event.origin!==location.origin)return;
+      const d=event.data||{}; if(d.type!=='LAYOUT_SNAPSHOT')return;
+      window.removeEventListener('message',handler);
+      const payload={zones:d.layoutData||{},layoutModel:d.layoutModel||null,layoutSchemaVersion:2,prodOrder:[],courseOrder:[],socialOrder:Array.isArray(d.socialOrder)?d.socialOrder:[],templateVersion:Date.now(),updatedAt:Date.now()};
+      setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','templateBase'),payload,{merge:false}).then(()=>window.showToast('Plantilla base actual guardada en Firebase')).catch(()=>window.showToast('No se pudo guardar la plantilla base'));
+    };
+    window.addEventListener('message',handler);
+    frame.contentWindow.postMessage({type:'CAPTURE_LAYOUT',reason:'set-template-base'},'*');
+    setTimeout(()=>window.removeEventListener('message',handler),6000);
+  }catch(e){console.error(e);window.showToast('No se pudo preparar la plantilla base')}
+};
 
 window.addEventListener('message',event=>{if(event.source!==iframe().contentWindow || event.origin!==location.origin)return;const d=event.data||{};if(!d.type)return;
 if(d.type==='APP_READY'){iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*');iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},'*');iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*');iframe().contentWindow.postMessage({type:'SET_GLOBAL_URLS',urls:readGlobalSettings()},'*');syncMediaSourcesToFrame();setTimeout(()=>proPost('CAPTURE_LAYOUT',{reason:'initial'}),500);setSaveState('ok','Sincronizado')}
@@ -365,7 +383,7 @@ const existing=window.__lastSavedLayout||{};
   const ok=id==='view-catalog'?/id=["']product-grid["']/i.test(html):/id=["']courses-grid["']/i.test(html);
   if(!ok && typeof existing[id]==='string' && existing[id].length>120) incoming[id]=existing[id];
 });
-const payload={zones:incoming,layoutModel:layoutModel||null,layoutSchemaVersion:2,prodOrder:Array.isArray(d.prodOrder)?d.prodOrder:[],courseOrder:Array.isArray(d.courseOrder)?d.courseOrder:[]};
+const payload={zones:incoming,layoutModel:layoutModel||null,layoutSchemaVersion:2,prodOrder:Array.isArray(d.prodOrder)?d.prodOrder:[],courseOrder:Array.isArray(d.courseOrder)?d.courseOrder:[],socialOrder:Array.isArray(d.socialOrder)?d.socialOrder:[]};
 setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'),payload,{merge:true}).then(()=>{
   if(saveRequestId!==latestSaveRequestId)return;
   window.__lastSavedLayout=incoming;
