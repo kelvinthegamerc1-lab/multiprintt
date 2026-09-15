@@ -1056,12 +1056,41 @@ window.scrollToSlide = function(sliderId, idx, e) {
     }
 };
 
+window.getSocialOrder = function() {
+    const footer = document.getElementById('social-footer-links');
+    if(!footer) return [];
+    return Array.from(footer.querySelectorAll('button:not(.admin-tool)')).map((link,index)=>({
+        key: link.getAttribute('data-builder-id') || '',
+        network: link.getAttribute('data-network') || '',
+        url: link.getAttribute('data-social-url') || link.getAttribute('data-href') || '',
+        iconClass: link.getAttribute('data-icon-class') || link.querySelector('i')?.className?.replace('pointer-events-none','').trim() || '',
+        index
+    })).filter(x=>x.url || x.network || x.key);
+};
+window.applySocialOrder = function(order) {
+    const footer = document.getElementById('social-footer-links');
+    if(!footer || !Array.isArray(order) || !order.length) return;
+    const buttons = Array.from(footer.querySelectorAll('button:not(.admin-tool)'));
+    const used = new Set();
+    const findMatch = item => buttons.find(btn => {
+        if(used.has(btn)) return false;
+        const bid = btn.getAttribute('data-builder-id') || '';
+        const network = btn.getAttribute('data-network') || '';
+        const url = btn.getAttribute('data-social-url') || btn.getAttribute('data-href') || '';
+        return (item?.key && bid===item.key) || (!item?.key && item?.url && url===item.url) || (!item?.key && !item?.url && item?.network && network===item.network);
+    });
+    const ordered=[];
+    order.forEach(item => { const btn=findMatch(item); if(btn){used.add(btn);ordered.push(btn);} });
+    buttons.forEach(btn => { if(!used.has(btn)) ordered.push(btn); });
+    const marker=footer.querySelector('.admin-tool');
+    ordered.forEach(btn => footer.insertBefore(btn, marker || null));
+};
 window.syncSocialNetworks = function() {
     const footerLinksContainer = document.getElementById('social-footer-links');
     const navPcContainer = document.getElementById('social-nav-pc');
     const navMobileContainer = document.getElementById('social-nav-mobile');
     if(!footerLinksContainer || !navPcContainer || !navMobileContainer) return;
-    const currentLinks = footerLinksContainer.querySelectorAll('button:not(.admin-tool)');
+    const currentLinks = Array.from(footerLinksContainer.querySelectorAll('button:not(.admin-tool)'));
     navPcContainer.innerHTML = ''; navMobileContainer.innerHTML = '';
 
     const btnAdminPc = document.createElement('button');
@@ -1076,9 +1105,12 @@ window.syncSocialNetworks = function() {
     btnAdminMob.innerHTML = `<i class="fa-solid fa-plus text-xs pointer-events-none"></i>`;
     navMobileContainer.appendChild(btnAdminMob);
 
-    currentLinks.forEach((link, index) => {
-        const icon = link.querySelector('i'); if(icon) link.setAttribute('data-icon-class', icon.className);
-        const isLast = index === currentLinks.length - 1; 
+    const whatsappLink = currentLinks.find(link => (link.getAttribute('data-network') || '').toLowerCase() === 'whatsapp') || null;
+    const navLinks = currentLinks.filter(link => link !== whatsappLink);
+    if (whatsappLink) navLinks.push(whatsappLink);
+    navLinks.forEach((link, index) => {
+        const icon = link.querySelector('i'); if(icon) link.setAttribute('data-icon-class', icon.className.replace('pointer-events-none','').trim());
+        const isPrimary = whatsappLink ? link === whatsappLink : index === navLinks.length - 1;
         const url = link.getAttribute('data-social-url') || ((link.getAttribute('onclick') || '').match(/['"]([^'"]+)['"]/ ) || [,'#'])[1];
         const iconElement = link.querySelector('i');
         const iconClasses = link.getAttribute('data-icon-class') || (iconElement ? iconElement.className.replace('pointer-events-none', '').trim() : 'fa-solid fa-link');
@@ -1088,7 +1120,7 @@ window.syncSocialNetworks = function() {
         const btnPc = document.createElement('button');
         btnPc.setAttribute('data-editable', 'true'); btnPc.setAttribute('data-network', network);
         btnPc.setAttribute('onclick', `window.open('${url}', '_blank')`);
-        btnPc.className = isLast ? "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer bg-transparent border-none" : "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer bg-transparent border-none p-0";
+        btnPc.className = isPrimary ? "text-zinc-400 transition-colors shrink-0 flex items-center justify-center h-full aspect-square relative z-20 m-0 p-0 outline-none cursor-pointer bg-transparent border-none" : "text-zinc-500 transition-all shrink-0 w-0 group-hover:w-8 opacity-0 group-hover:opacity-100 duration-500 flex items-center justify-center h-8 overflow-hidden group-hover:mr-1 outline-none cursor-pointer bg-transparent border-none p-0";
         btnPc.innerHTML = `<i class="${iconClasses} text-[18px] pointer-events-none"></i>`;
         navPcContainer.appendChild(btnPc);
 
@@ -1396,6 +1428,38 @@ window.loadFirebaseData = async function() {
             console.warn('Firebase Auth no estuvo disponible; el sitio continuará con datos locales.', authError);
         }
 
+        // PLANTILLA MAESTRA / LAYOUT ACTUAL
+        // La plantilla base se crea una sola vez desde ESTE HTML ya corregido.
+        // Los cambios del editor viven aparte en settings/layout.
+        // Reset elimina únicamente settings/layout, por lo que vuelve siempre a
+        // esta plantilla maestra y después reconstruye productos/cursos/galería.
+        const TEMPLATE_BASE_VERSION = 1;
+        let templateBaseData = null;
+        try {
+            const localTemplateData = {
+                zones: captureBuilderLayout(),
+                layoutModel: captureBuilderModel(),
+                layoutSchemaVersion: 2,
+                prodOrder: [],
+                courseOrder: [],
+                socialOrder: typeof window.getSocialOrder === 'function' ? window.getSocialOrder() : []
+            };
+            if (firebaseReady) {
+                const templateRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'templateBase');
+                const templateSnap = await getDoc(templateRef);
+                if (!templateSnap.exists() || Number(templateSnap.data()?.templateVersion || 0) !== TEMPLATE_BASE_VERSION) {
+                    await setDoc(templateRef, { ...localTemplateData, templateVersion: TEMPLATE_BASE_VERSION, updatedAt: Date.now() }, { merge: false });
+                    templateBaseData = localTemplateData;
+                } else {
+                    templateBaseData = templateSnap.data();
+                }
+            } else {
+                templateBaseData = localTemplateData;
+            }
+        } catch (templateError) {
+            console.warn('No se pudo preparar la plantilla maestra; se conserva la plantilla local.', templateError);
+        }
+
         // Guardamos una copia local de la galería antes de aplicar un layout remoto.
         // Así, si una versión anterior del editor guardó `view-courses` sin su
         // contenido dinámico, podemos restaurar únicamente esa parte sin perder
@@ -1411,6 +1475,8 @@ window.loadFirebaseData = async function() {
             }
         }
 
+        // Si no existe un layout actual (por primera instalación o por Reset),
+        // restauramos la plantilla maestra almacenada en Firebase.
         if (layoutSnap.exists()) {
             const data = layoutSnap.data();
             if(data.zones && typeof data.zones === 'object') {
@@ -1466,6 +1532,21 @@ window.loadFirebaseData = async function() {
             }
             if(Array.isArray(data.prodOrder)) window.productOrderArray = data.prodOrder;
             if(Array.isArray(data.courseOrder)) window.courseOrderArray = data.courseOrder;
+            if(Array.isArray(data.socialOrder)) window.applySocialOrder(data.socialOrder);
+        } else if (templateBaseData && typeof templateBaseData === 'object' && templateBaseData.zones) {
+            try {
+                const safeTemplateZones = validateLayoutAgainstModel(templateBaseData.zones, templateBaseData.layoutModel || null);
+                document.querySelectorAll('.editable-section').forEach(zone => {
+                    const savedHtml = typeof safeTemplateZones[zone.id] === 'string' ? safeTemplateZones[zone.id] : '';
+                    if (!savedHtml || savedHtml.trim().length <= 120) return;
+                    if (zone.id === 'view-courses' && !/id=["']courses-grid["']/i.test(savedHtml)) return;
+                    if (zone.id === 'view-catalog' && !/id=["']product-grid["']/i.test(savedHtml)) return;
+                    try { zone.innerHTML = savedHtml; } catch (e) { console.warn('Plantilla maestra ignorada en', zone.id, e); }
+                });
+                if (Array.isArray(templateBaseData.socialOrder)) window.applySocialOrder(templateBaseData.socialOrder);
+            } catch (templateRestoreError) {
+                console.warn('No se pudo restaurar la plantilla maestra; se conserva el HTML local.', templateRestoreError);
+            }
         }
 
         if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
@@ -1852,7 +1933,7 @@ window.addEventListener('message', async (event) => {
     if (event.data.type === 'SELECT_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){el.click();} }
     if (event.data.type === 'FOCUS_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})}catch(e){}} }
     if (event.data.type === 'TOGGLE_LAYER_LOCK') { const el=findBuilderElement(event.data.builderId); if(el){const id=event.data.builderId;if(proLayerLocks.has(id)){proLayerLocks.delete(id);el.removeAttribute('data-sortable-lock')}else{proLayerLocks.add(id);el.setAttribute('data-sortable-lock','true')}}emitLayers(); }
-    if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); window.parent.postMessage({type:'LAYOUT_SNAPSHOT',layoutData,layoutModel:captureBuilderModel(),reason:event.data.reason||''},'*'); }
+    if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); const layoutModel=captureBuilderModel(); const socialOrder=typeof window.getSocialOrder==='function'?window.getSocialOrder():[]; window.parent.postMessage({type:'LAYOUT_SNAPSHOT',layoutData,layoutModel,socialOrder,reason:event.data.reason||''},'*'); }
     if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
     if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
     if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
@@ -2034,12 +2115,14 @@ window.addEventListener('message', async (event) => {
             const layoutModel = captureBuilderModel();
             const prodOrder = Array.from(document.querySelectorAll('#product-grid .card[data-id]')).map(el => el.getAttribute('data-id')).filter(Boolean);
             const courseOrder = Array.from(document.querySelectorAll('#courses-grid .card[data-id]')).map(el => el.getAttribute('data-id')).filter(Boolean);
+            const socialOrder = window.getSocialOrder();
             window.parent.postMessage({
                 type:'SAVE_FULL_LAYOUT',
                 layoutData,
                 layoutModel,
                 prodOrder,
                 courseOrder,
+                socialOrder,
                 saveMode:event.data.saveMode||'manual',
                 saveRequestId:event.data.saveRequestId||0,
                 saveRevision:event.data.saveRevision||0
