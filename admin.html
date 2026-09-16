@@ -109,7 +109,7 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
     <div class="imgbb-reminder"><i class="fa-solid fa-circle-info"></i><div><b>Recordatorio:</b> sube únicamente <b>.webp</b> optimizadas y con <b>transparencia</b>. Se recomienda mantenerlas ligeras (idealmente &lt; 1 MB) para que el catálogo cargue rápido.</div></div>
     <div class="grid2 mt-3">
       <div><label class="lbl">Nombre base</label><div class="flex items-center gap-2"><span class="imgbb-prefix">producto_</span><input id="imgbb-name" class="field" placeholder="camiseta_negra"></div><div class="helper mt-1">El nombre final se subirá como <b>producto_</b> + tu nombre.</div></div>
-      <div><label class="lbl">Categoría</label><select id="imgbb-category" class="field"><option value="textil">Textil</option><option value="jarros">Jarros</option><option value="promocionales">Promocionales</option><option value="packs">Packs</option><option value="papeleria">Papelería</option><option value="otros">Otros</option></select></div>
+      <div><label class="lbl">Categoría</label><select id="imgbb-category" class="field"><option value="textil">Textil</option><option value="jarros">Jarros &amp; Thermos</option><option value="imp-general">Imp. General</option><option value="packs">Packs</option></select></div>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-3">
       <input id="imgbb-files" type="file" accept=".webp,image/webp" multiple hidden onchange="window.handleImgBBFiles(this.files)">
@@ -123,11 +123,9 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
     <div class="flex flex-wrap items-center gap-2">
       <button type="button" class="mini-btn active" data-imgbb-filter="all" onclick="window.filterImgBBLibrary('all')">Todas</button>
       <button type="button" class="mini-btn" data-imgbb-filter="textil" onclick="window.filterImgBBLibrary('textil')">Textil</button>
-      <button type="button" class="mini-btn" data-imgbb-filter="jarros" onclick="window.filterImgBBLibrary('jarros')">Jarros</button>
-      <button type="button" class="mini-btn" data-imgbb-filter="promocionales" onclick="window.filterImgBBLibrary('promocionales')">Promocionales</button>
+      <button type="button" class="mini-btn" data-imgbb-filter="jarros" onclick="window.filterImgBBLibrary('jarros')">Jarros &amp; Thermos</button>
+      <button type="button" class="mini-btn" data-imgbb-filter="imp-general" onclick="window.filterImgBBLibrary('imp-general')">Imp. General</button>
       <button type="button" class="mini-btn" data-imgbb-filter="packs" onclick="window.filterImgBBLibrary('packs')">Packs</button>
-      <button type="button" class="mini-btn" data-imgbb-filter="papeleria" onclick="window.filterImgBBLibrary('papeleria')">Papelería</button>
-      <button type="button" class="mini-btn" data-imgbb-filter="otros" onclick="window.filterImgBBLibrary('otros')">Otros</button>
     </div>
     <input id="imgbb-search" class="field imgbb-search" placeholder="Buscar por nombre o categoría" oninput="window.renderImgBBLibrary()">
   </div>
@@ -280,28 +278,39 @@ window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTE
 window.duplicateSelected=()=>{iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},'*');markDirty('Elemento duplicado');proScheduleSnapshot()};
 window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},'*');window.clearSelection();markDirty('Elemento eliminado');proScheduleSnapshot()};
 window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Date.now()),isNew:!id};const d=data||{};let h='';
-if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','promocionales','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','product')">Abrir explorador</button></div>`;
+if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','product')">Abrir explorador</button></div>`;
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" value="${esc(d.price||'')}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
 if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><input id="db-vid" class="field" value="${esc(d.src||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-vid','video','media')">Elegir video</button></div>`:'')+`<div><label class="lbl">Tema</label><select id="db-theme" class="field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div>`;
 document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}};
 window.saveDbItem=async()=>{const t=currentDbItem.type;let payload={};if(t==='product')payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:document.getElementById('db-img').value.trim(),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();try{const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;if(col){await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},'*')}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},'*');window.closeModal('db-modal');window.showToast('Cambios guardados correctamente');markDirty('Contenido sincronizado')}catch(e){window.showToast('No se pudo guardar el registro')}};
 window.openSocialModal=()=>{selectedSocial={name:'',icon:'',network:''};const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value='';if(i)i.value='fa-solid fa-link';window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button type="button" class="social-opt" data-name="${n.replace(/"/g,'&quot;')}" data-icon="${c.replace(/"/g,'&quot;')}"><i class="${c} mr-1"></i>${n}</button>`).join('');document.querySelectorAll('#social-grid .social-opt').forEach(btn=>btn.addEventListener('click',()=>window.pickSocial(btn.dataset.name,btn.dataset.icon,btn)))};window.pickSocial=(name,icon,btn)=>{selectedSocial={name:String(name||''),icon:String(icon||''),network:String(name||'').toLowerCase().trim().replace(/\s+/g,'-')||'custom'};document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));if(btn)btn.classList.add('selected');const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value=selectedSocial.name;if(i)i.value=selectedSocial.icon;};window.addSocial=()=>{const typedName=document.getElementById('social-name')?.value.trim()||'';const typedIcon=document.getElementById('social-icon')?.value.trim()||'';const name=selectedSocial.name||typedName||'Red social';const icon=selectedSocial.icon||typedIcon||'fa-solid fa-link';const url=document.getElementById('social-url')?.value.trim()||'';if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');const network=selectedSocial.network||name.toLowerCase().trim().replace(/\s+/g,'-')||'custom';iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network},'*');selectedSocial={name:'',icon:'',network:''};window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
 function imgbbSlug(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,80)||'imagen'}
-function imgbbCategoryLabel(cat){return ({textil:'Textil',jarros:'Jarros',promocionales:'Promocionales',packs:'Packs',papeleria:'Papelería',otros:'Otros'})[cat]||String(cat||'Otros')}
+function imgbbCategoryLabel(cat){return ({textil:'TEXTIL',jarros:'JARROS & THERMOS','imp-general':'IMP. GENERAL',packs:'PACKS'})[cat]||String(cat||'Otros')}
 function imgbbFormatBytes(n){const v=Number(n)||0;if(v<1024)return v+' B';if(v<1024*1024)return (v/1024).toFixed(0)+' KB';return (v/1024/1024).toFixed(2)+' MB'}
 async function imgbbValidateWebp(file){
   if(!file)return {ok:false,error:'Archivo inválido'};
   if(!/^image\/webp$/i.test(file.type) && !/\.webp$/i.test(file.name)) return {ok:false,error:'Solo se permiten archivos .webp'};
+  const base={ok:true,width:0,height:0,transparent:null,warning:''};
   try{
     const bitmap=await createImageBitmap(file);
-    const w=bitmap.width,h=bitmap.height;
+    const w=bitmap.width,h=bitmap.height;base.width=w;base.height=h;
     const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-    const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(bitmap,0,0);bitmap.close?.();
-    const data=ctx.getImageData(0,0,w,h).data;let transparent=false;
-    for(let i=3;i<data.length;i+=4){if(data[i]<255){transparent=true;break;}}
-    if(!transparent)return {ok:false,error:'La imagen no contiene transparencia (canal alfa).'};
-    return {ok:true,width:w,height:h,transparent:true,warning:file.size>1024*1024?'Pesa más de 1 MB; conviene optimizarla.':''};
-  }catch(e){return {ok:false,error:'No se pudo validar la transparencia del WebP en este navegador.'}}
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});
+    if(ctx){
+      ctx.drawImage(bitmap,0,0);
+      const data=ctx.getImageData(0,0,w,h).data;let transparent=false;
+      for(let i=3;i<data.length;i+=4){if(data[i]<255){transparent=true;break;}}
+      base.transparent=transparent;
+      if(!transparent)base.warning='WebP sin transparencia detectada. Puedes subirla, pero se recomienda usar fondo transparente.';
+    }else{
+      base.warning='No se pudo comprobar la transparencia; revisa que el WebP sea transparente.';
+    }
+    bitmap.close?.();
+  }catch(e){
+    base.warning='No se pudo comprobar la transparencia en este navegador; se mantuvo habilitada la subida por ser un WebP.';
+  }
+  if(file.size>1024*1024)base.warning=(base.warning?base.warning+' ':'')+'Pesa más de 1 MB; conviene optimizarla.';
+  return base;
 }
 window.handleImgBBFiles=async(files)=>{
   const list=Array.from(files||[]);
@@ -329,7 +338,7 @@ async function uploadOneImgBB(file,displayName,category){
   let d=null;try{d=await r.json()}catch{}
   if(!r.ok||!d?.success)throw new Error(d?.error?.message||`ImgBB respondió HTTP ${r.status}`);
   const data=d.data||{};
-  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'otros'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.image?.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb'};
+  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'imp-general'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.image?.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb'};
   if(!record.url)throw new Error('ImgBB no devolvió una URL utilizable.');
   return record;
 }
@@ -337,7 +346,7 @@ window.uploadImgBBBatch=async()=>{
   const name=imgbbSlug(document.getElementById('imgbb-name')?.value||'imagen');
   const category=document.getElementById('imgbb-category')?.value||'otros';
   const items=window.imgbbUploadQueue.filter(x=>x.status==='ready');
-  if(!items.length)return window.showToast('Selecciona al menos un WebP transparente válido');
+  if(!items.length)return window.showToast('Selecciona al menos un archivo .webp');
   const btn=document.getElementById('imgbb-upload-btn'),status=document.getElementById('imgbb-upload-status');
   if(btn)btn.disabled=true;if(status)status.textContent=`Subiendo 0/${items.length}…`;
   let ok=0;
