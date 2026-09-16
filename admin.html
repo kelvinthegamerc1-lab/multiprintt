@@ -399,15 +399,51 @@ window.uploadImgBBBatch=async()=>{
 window.deleteImgBBRecord=async(id)=>{
   const x=window.imgbbLibrary.find(v=>v.id===id);
   if(!x)return;
-  if(!x.deleteUrl)return window.showToast('Esta imagen no tiene delete_url de ImgBB disponible.');
+  const deleteUrl=String(x.deleteUrl||'').trim();
+  if(!deleteUrl)return window.showToast('Esta imagen no tiene delete_url de ImgBB disponible.');
   const name=x.title||x.name||'esta imagen';
-  if(!window.confirm(`¿Eliminar "${name}" de ImgBB?\n\nSe abrirá el enlace de eliminación que ImgBB entregó para esta imagen.`))return;
-  const w=window.open(x.deleteUrl,'_blank','noopener,noreferrer');
-  if(!w){window.showToast('Permite ventanas emergentes para completar la eliminación en ImgBB.');return;}
-  window.imgbbLibrary=window.imgbbLibrary.filter(v=>v.id!==id);
-  saveImgBBLocalIndex();
-  window.renderImgBBLibrary(true);
-  window.showToast('Enlace de eliminación de ImgBB abierto; verifica la eliminación en esa pestaña.');
+  if(!window.confirm(`¿Eliminar definitivamente "${name}" de ImgBB?\n\nLa acción elimina la imagen alojada en ImgBB. Esta operación no afecta GitHub ni Firebase.`))return;
+  let parsed;
+  try{
+    const u=new URL(deleteUrl);
+    if(!/^(www\.)?ibb\.co$/i.test(u.hostname))throw new Error('delete_url no pertenece a ImgBB');
+    const parts=u.pathname.split('/').filter(Boolean);
+    if(parts.length<2)throw new Error('delete_url inválido');
+    parsed={imageId:parts[0],hash:parts[1],pathname:'/'+parts[0]+'/'+parts[1]};
+  }catch(e){
+    return window.showToast('No se pudo interpretar el enlace de eliminación de ImgBB.');
+  }
+  try{
+    // ImgBB no documenta un endpoint público de borrado; este formulario reproduce la acción que ejecuta su botón de eliminación.
+    const iframe=document.createElement('iframe');
+    iframe.name='mpImgBBDeleteFrame_'+Date.now();
+    iframe.style.cssText='position:fixed;width:1px;height:1px;left:-10000px;top:-10000px;border:0;opacity:0;pointer-events:none;';
+    iframe.setAttribute('aria-hidden','true');
+    document.body.appendChild(iframe);
+    const form=document.createElement('form');
+    form.method='POST';
+    form.action='https://ibb.co/json';
+    form.target=iframe.name;
+    form.style.display='none';
+    const fields={
+      pathname:parsed.pathname,
+      action:'delete',
+      delete:'image',
+      'deleting[id]':parsed.imageId,
+      'deleting[hash]':parsed.hash
+    };
+    Object.entries(fields).forEach(([k,v])=>{const input=document.createElement('input');input.type='hidden';input.name=k;input.value=v;form.appendChild(input);});
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(()=>{form.remove();iframe.remove();},8000);
+    window.imgbbLibrary=window.imgbbLibrary.filter(v=>v.id!==id);
+    saveImgBBLocalIndex();
+    window.renderImgBBLibrary(true);
+    window.showToast('Solicitud de eliminación enviada a ImgBB.');
+  }catch(e){
+    console.error('ImgBB delete:',e);
+    window.showToast('No se pudo enviar la eliminación a ImgBB.');
+  }
 };
 window.loadImgBBLibrary=async(refresh=false)=>{
   const host=document.getElementById('imgbb-library-grid'),count=document.getElementById('imgbb-library-count');if(!host)return;
