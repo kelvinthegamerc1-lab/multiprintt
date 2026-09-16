@@ -162,7 +162,7 @@ const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=in
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const IMGBB_API_KEY='e195da6dc21a1ff7454d2e86ae7719f2';
-const IMGBB_COLLECTION='imgbbMedia';
+const IMGBB_LOCAL_INDEX_KEY='multiprintt_imgbb_library_v2';
 window.imgbbLibrary=[];window.imgbbFiltered=[];window.imgbbCategoryFilter='all';window.imgbbPageSize=48;window.imgbbUploadQueue=[];
 let builderHistory=[],builderRedo=[];
 let changeLog=[];
@@ -320,16 +320,17 @@ window.renderImgBBQueue=()=>{
   }).join(''):'<div class="helper">No hay imágenes seleccionadas.</div>';
 };
 window.removeImgBBQueue=(i)=>{window.imgbbUploadQueue.splice(i,1);window.renderImgBBQueue()};
+function saveImgBBLocalIndex(){try{localStorage.setItem(IMGBB_LOCAL_INDEX_KEY,JSON.stringify(window.imgbbLibrary||[]))}catch(e){console.warn('No se pudo guardar el índice local de ImgBB:',e)}}
+function loadImgBBLocalIndex(){try{const raw=localStorage.getItem(IMGBB_LOCAL_INDEX_KEY);const arr=raw?JSON.parse(raw):[];window.imgbbLibrary=Array.isArray(arr)?arr:[]}catch(e){window.imgbbLibrary=[]}}
 async function uploadOneImgBB(file,displayName,category){
   const body=new FormData();body.append('key',IMGBB_API_KEY);body.append('image',file,displayName+'.webp');body.append('name',displayName);
   const r=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body});
   let d=null;try{d=await r.json()}catch{}
   if(!r.ok||!d?.success)throw new Error(d?.error?.message||`ImgBB respondió HTTP ${r.status}`);
   const data=d.data||{};
-  const record={title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'otros'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.image?.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb',uploadedBy:auth.currentUser?.email||auth.currentUser?.uid||'admin'};
+  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'otros'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.image?.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb'};
   if(!record.url)throw new Error('ImgBB no devolvió una URL utilizable.');
-  const ref=await addDoc(collection(db,'artifacts',APP_ID,'public','data',IMGBB_COLLECTION),record);
-  return {...record,id:ref.id};
+  return record;
 }
 window.uploadImgBBBatch=async()=>{
   const name=imgbbSlug(document.getElementById('imgbb-name')?.value||'imagen');
@@ -342,22 +343,22 @@ window.uploadImgBBBatch=async()=>{
   for(let i=0;i<items.length;i++){
     const q=items[i];q.status='uploading';window.renderImgBBQueue();
     const suffix=items.length>1?`_${String(i+1).padStart(2,'0')}`:'';
-    try{
-      const saved=await uploadOneImgBB(q.file,`producto_${name}${suffix}`,category);window.imgbbLibrary.unshift(saved);q.status='done';ok++;
-    }catch(e){q.status='error';q.validation={ok:false,error:e?.message||'Error al subir'};}
+    try{const saved=await uploadOneImgBB(q.file,`producto_${name}${suffix}`,category);window.imgbbLibrary.unshift(saved);q.status='done';ok++;saveImgBBLocalIndex();}
+    catch(e){q.status='error';q.validation={ok:false,error:e?.message||'Error al subir'};}
     if(status)status.textContent=`Subiendo ${i+1}/${items.length}…`;
     window.renderImgBBQueue();
   }
-  window.imgbbUploadQueue=[];const input=document.getElementById('imgbb-files');if(input)input.value='';window.renderImgBBQueue();window.renderImgBBLibrary(true);if(status)status.textContent=ok?`${ok} imagen${ok===1?'':'es'} subida${ok===1?'':'s'} correctamente.`:'No se pudo subir ninguna imagen.';window.showToast(ok?`${ok} imagen${ok===1?'':'es'} alojada${ok===1?'':'s'} en ImgBB`:'No se pudo subir el lote');
+  window.imgbbUploadQueue=[];const input=document.getElementById('imgbb-files');if(input)input.value='';window.renderImgBBQueue();saveImgBBLocalIndex();window.renderImgBBLibrary(true);if(status)status.textContent=ok?`${ok} imagen${ok===1?'':'es'} subida${ok===1?'':'s'} correctamente.`:'No se pudo subir ninguna imagen.';window.showToast(ok?`${ok} imagen${ok===1?'':'es'} alojada${ok===1?'':'s'} en ImgBB`:'No se pudo subir el lote');
 };
 window.loadImgBBLibrary=async(refresh=false)=>{
   const host=document.getElementById('imgbb-library-grid'),count=document.getElementById('imgbb-library-count');if(!host)return;
-  if(refresh||!window.imgbbLibrary.length){host.innerHTML='<div class="media-empty col-span-full"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Cargando biblioteca ImgBB…</div>';try{const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data',IMGBB_COLLECTION));window.imgbbLibrary=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));}catch(e){console.warn('ImgBB library:',e);window.imgbbLibrary=[];host.innerHTML='<div class="media-empty col-span-full">No se pudo leer la biblioteca. Revisa las reglas de Firestore para <b>imgbbMedia</b>.</div>';return;}}
-  if(count)count.textContent=`${window.imgbbLibrary.length} imagen${window.imgbbLibrary.length===1?'':'es'}`;window.imgbbPageSize=48;window.renderImgBBLibrary();
+  loadImgBBLocalIndex();
+  if(count)count.textContent=`${window.imgbbLibrary.length} imagen${window.imgbbLibrary.length===1?'':'es'} registradas en este navegador`;
+  window.imgbbPageSize=48;window.renderImgBBLibrary();
 };
 window.filterImgBBLibrary=(cat)=>{window.imgbbCategoryFilter=cat;document.querySelectorAll('[data-imgbb-filter]').forEach(b=>b.classList.toggle('active',b.dataset.imgbbFilter===cat));window.imgbbPageSize=48;window.renderImgBBLibrary()};
 window.renderImgBBLibrary=()=>{
-  const host=document.getElementById('imgbb-library-grid');if(!host)return;const q=(document.getElementById('imgbb-search')?.value||'').trim().toLowerCase();const cat=window.imgbbCategoryFilter||'all';window.imgbbFiltered=window.imgbbLibrary.filter(x=>(cat==='all'||String(x.category||'otros')===cat)&&(!q||String(x.title||x.name||'').toLowerCase().includes(q)||String(x.category||'').toLowerCase().includes(q)));if(!window.imgbbFiltered.length){host.innerHTML='<div class="media-empty col-span-full">No hay imágenes con ese filtro.</div>';document.getElementById('imgbb-more')?.classList.add('hidden');return;}
+  const host=document.getElementById('imgbb-library-grid');if(!host)return;const q=(document.getElementById('imgbb-search')?.value||'').trim().toLowerCase();const cat=window.imgbbCategoryFilter||'all';window.imgbbFiltered=window.imgbbLibrary.filter(x=>(cat==='all'||String(x.category||'otros')===cat)&&(!q||String(x.title||x.name||'').toLowerCase().includes(q)||String(x.category||'').toLowerCase().includes(q)));if(!window.imgbbFiltered.length){host.innerHTML='<div class="media-empty col-span-full">No hay imágenes registradas desde este navegador con ese filtro.</div>';document.getElementById('imgbb-more')?.classList.add('hidden');return;}
   const arr=window.imgbbFiltered.slice(0,window.imgbbPageSize);host.innerHTML=arr.map((x)=>{const url=x.displayUrl||x.url||x.thumbUrl||'';return `<article class="imgbb-card" data-id="${esc(x.id||'')}"><span class="imgbb-cat-badge">${esc(imgbbCategoryLabel(x.category))}</span><div class="imgbb-card-preview"><img loading="lazy" decoding="async" src="${esc(url)}" alt="${esc(x.title||x.name||'')}" onerror="this.style.opacity='.25'"></div><div class="imgbb-card-body"><div class="imgbb-card-name" title="${esc(x.title||x.name||'')}">${esc(x.title||x.name||'Sin nombre')}</div><div class="imgbb-card-cat">${esc(imgbbFormatBytes(x.size||0))}${x.width&&x.height?` · ${esc(String(x.width))}×${esc(String(x.height))}`:''}</div><div class="imgbb-card-actions"><button type="button" class="mini-btn" data-use-imgbb="${esc(x.id||'')}"><i class="fa-solid fa-check mr-1"></i>Usar</button><button type="button" class="mini-btn" data-copy-imgbb="${esc(x.id||'')}"><i class="fa-regular fa-copy"></i></button></div></div></article>`}).join('');
   const more=document.getElementById('imgbb-more');if(more)more.classList.toggle('hidden',window.imgbbPageSize>=window.imgbbFiltered.length);host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(x)window.selectMedia(x.url||x.displayUrl||x.thumbUrl)});host.querySelectorAll('[data-copy-imgbb]').forEach(btn=>btn.onclick=async()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.copyImgbb);if(!x)return;try{await navigator.clipboard.writeText(x.url||x.displayUrl||'');window.showToast('URL ImgBB copiada')}catch{window.showToast('No se pudo copiar la URL')}});
 };
