@@ -523,7 +523,7 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
             <button type="button" class="mini-btn" data-gallery-filter="video" onclick="window.filterGallery('video')"><i class="fa-solid fa-film"></i> Videos</button>
           </div>
           <div class="media-action-group">
-            <label class="media-check"><input id="gallery-multi-toggle" type="checkbox" class="accent-cyan-400" onchange="window.toggleGalleryMultiSelect()"><span>Selección múltiple</span></label>
+            <label class="media-check db-product-only" id="gallery-multi-toggle-wrap"><input id="gallery-multi-toggle" type="checkbox" class="accent-cyan-400" onchange="window.toggleGalleryMultiSelect()"><span>Selección múltiple</span></label>
             <span id="gallery-selection-count" class="helper">0 seleccionados</span>
             <button type="button" id="gallery-apply-selection" class="primary" onclick="window.applyGallerySelection()" disabled><i class="fa-solid fa-check mr-1"></i>Aplicar</button>
           </div>
@@ -624,7 +624,7 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
 <div class="pro-mobile-dock"><button type="button" class="mini-btn" onclick="window.undo()"><i class="fa-solid fa-rotate-left"></i></button><button type="button" class="mini-btn" onclick="window.redo()"><i class="fa-solid fa-rotate-right"></i></button><button type="button" class="mini-btn" onclick="window.openLayers()"><i class="fa-solid fa-layer-group"></i></button><button type="button" class="mini-btn" onclick="window.openCommandPalette()"><i class="fa-solid fa-wand-magic-sparkles"></i></button><button type="button" class="mini-btn" onclick="window.openHistory()"><i class="fa-solid fa-clock-rotate-left"></i></button><button type="button" class="mini-btn" onclick="window.openAudit()"><i class="fa-solid fa-user-clock"></i></button><button type="button" class="mini-btn" onclick="window.toggleInspector()"><i class="fa-solid fa-sliders"></i></button></div>
 <script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}const APP_ID="multiprintt-web";
 const iframe=()=>document.getElementById('site-frame');
@@ -703,7 +703,7 @@ window.attemptLogin=async()=>{if(loginInFlight)return;const email=document.getEl
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{if(window.loadImgBBLibrary)window.loadImgBBLibrary(true)},250)}else{authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
@@ -894,6 +894,15 @@ function loadImgBBLocalIndex(){
   return window.imgbbLibrary;
 }
 const IMGBB_SHARED_COLLECTION='imgbbLibrary';
+let imgbbSharedUnsubscribe=null;
+async function waitForAdminAuthReady(){
+  try{if(typeof auth?.authStateReady==='function')await Promise.race([auth.authStateReady(),new Promise(r=>setTimeout(r,2500))]);}catch(e){}
+  return !!auth?.currentUser;
+}
+function imgbbSharedDocId(record){
+  const raw=String(record?.id||record?.url||'').trim();
+  return raw.replace(/[\/\#?]/g,'_').slice(0,120) || ('imgbb_'+Date.now());
+}
 async function loadImgBBSharedIndex(){
   const state=document.getElementById('imgbb-shared-status');
   try{
@@ -909,48 +918,48 @@ async function loadImgBBSharedIndex(){
 }
 async function saveImgBBSharedRecord(record){
   try{
-    if(!db||!record?.id) return false;
-    const safe={...record};
-    delete safe.originalFile;
-    delete safe.file;
-    await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,String(record.id)),safe,{merge:true});
+    if(!db||!record)return false;
+    await waitForAdminAuthReady();
+    if(!auth?.currentUser)return false;
+    const id=String(record.id||record.url||'').trim();if(!id)return false;
+    const safe={...record};delete safe.originalFile;delete safe.file;delete safe.originalBlob;
+    await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId(record)),{...safe,id},{merge:true});
     return true;
   }catch(e){console.warn('No se pudo sincronizar ImgBB con Firebase:',e);return false;}
 }
 async function deleteImgBBSharedRecord(id){
-  try{if(db&&id)await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,String(id)))}catch(e){console.warn('No se pudo eliminar el registro compartido de ImgBB:',e)}}
+  try{if(db&&id)await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId({id})))}catch(e){console.warn('No se pudo eliminar el registro compartido de ImgBB:',e)}}
+function startImgBBSharedWatch(){
+  try{
+    if(imgbbSharedUnsubscribe)imgbbSharedUnsubscribe();
+    if(!db)return;
+    imgbbSharedUnsubscribe=onSnapshot(collection(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION),snap=>{
+      const incoming=snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x&&String(x.url||x.displayUrl||x.thumbUrl||'').trim());
+      const local=loadImgBBLocalIndex();const merged=[];const seen=new Set();
+      for(const item of [...incoming,...local]){const id=String(item?.id||item?.url||'').trim();if(!id||seen.has(id))continue;seen.add(id);merged.push({...item,id});}
+      merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
+      if(incoming.length||local.length){window.imgbbLibrary=merged;saveImgBBLocalIndex();}
+      if(document.getElementById('gallery-modal')?.classList.contains('open'))window.renderImgBBLibrary?.();
+    },err=>console.warn('Biblioteca ImgBB compartida en tiempo real:',err));
+  }catch(e){console.warn('No se pudo iniciar la sincronización en tiempo real de ImgBB:',e)}
+}
 async function syncImgBBSharedLibrary(){
   const local=loadImgBBLocalIndex();
-  const shared=await loadImgBBSharedIndex();
-  const merged=[];const seen=new Set();
-  for(const item of [...shared,...local]){
-    const id=String(item?.id||item?.url||'').trim(); if(!id||seen.has(id))continue;
-    seen.add(id); merged.push({...item,id});
-  }
-  merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
-  window.imgbbLibrary=merged;
-  saveImgBBLocalIndex();
-  // Migra los registros locales antiguos al índice compartido cuando el usuario está autenticado.
-  if(typeof auth!=='undefined' && auth?.currentUser && db){
-    const sharedIds=new Set(shared.map(x=>String(x.id||'')));
-    const legacy=local.filter(x=>x?.id&&!sharedIds.has(String(x.id)));
+  let shared=await loadImgBBSharedIndex();
+  await waitForAdminAuthReady();
+  if(auth?.currentUser&&db){
+    const sharedIds=new Set(shared.map(x=>String(x.id||x.url||'')));
+    const legacy=local.filter(x=>{const id=String(x?.id||x?.url||'').trim();return id&&!sharedIds.has(id)});
     if(legacy.length){
-      const migrated=await Promise.all(legacy.slice(0,100).map(saveImgBBSharedRecord));
-      if(migrated.some(Boolean)){
-        const refreshed=await loadImgBBSharedIndex();
-        const refreshedMap=new Map(refreshed.map(x=>[String(x.id),x]));
-        for(const item of refreshedMap.values()){
-          const idx=merged.findIndex(x=>String(x.id)===String(item.id));
-          if(idx>=0) merged[idx]={...merged[idx],...item};
-          else merged.push(item);
-        }
-        merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
-        window.imgbbLibrary=merged;
-        saveImgBBLocalIndex();
-      }
+      const results=await Promise.all(legacy.slice(0,200).map(saveImgBBSharedRecord));
+      if(results.some(Boolean))shared=await loadImgBBSharedIndex();
     }
   }
-  return window.imgbbLibrary;
+  const merged=[];const seen=new Set();
+  for(const item of [...shared,...local]){const id=String(item?.id||item?.url||'').trim();if(!id||seen.has(id))continue;seen.add(id);merged.push({...item,id});}
+  merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
+  window.imgbbLibrary=merged;saveImgBBLocalIndex();startImgBBSharedWatch();
+  return merged;
 }
 async function uploadOneImgBB(file,displayName,category){
   const body=new FormData();body.append('key',IMGBB_API_KEY);body.append('image',file,displayName+'.webp');body.append('name',displayName);
@@ -1231,7 +1240,7 @@ window.gallerySelectionOrder=[];
 window.galleryFiltered=[];
 window.galleryRowHeight=70;
 window.galleryRenderToken=0;
-window.updateGallerySelectionUI=()=>{const count=document.getElementById('gallery-selection-count');const apply=document.getElementById('gallery-apply-selection');const panel=document.getElementById('gallery-order-panel');const list=document.getElementById('gallery-order-list');const n=window.gallerySelectionOrder.length;if(count)count.textContent=`${n} seleccionado${n===1?'':'s'}`;if(apply){apply.disabled=n===0;apply.style.opacity=n?'1':'.5';}if(panel)panel.classList.toggle('hidden',!window.galleryMultiSelect||n===0);if(list){list.innerHTML='';window.gallerySelectionOrder.forEach((idx,pos)=>{const x=window.galleryFiltered[idx]||galleryDataCache[idx];if(!x)return;const row=document.createElement('div');row.className='gallery-order-item';row.innerHTML=`<b class="text-[9px] text-cyan-300">${pos+1}</b><span title="${esc(x.title||x.url)}">${esc(x.title||x.url)}</span><div class="flex gap-1"><button type="button" title="Subir" ${pos===0?'disabled':''}>↑</button><button type="button" title="Bajar" ${pos===n-1?'disabled':''}>↓</button></div>`;row.children[2].children[0].onclick=()=>window.moveGallerySelection(pos,-1);row.children[2].children[1].onclick=()=>window.moveGallerySelection(pos,1);list.appendChild(row);});}};
+window.updateGallerySelectionUI=()=>{const productOnly=document.getElementById('gallery-multi-toggle-wrap');if(productOnly)productOnly.style.display=currentGalleryMode==='product'?'flex':'none';const count=document.getElementById('gallery-selection-count');const apply=document.getElementById('gallery-apply-selection');const panel=document.getElementById('gallery-order-panel');const list=document.getElementById('gallery-order-list');const n=window.gallerySelectionOrder.length;if(count)count.textContent=`${n} seleccionado${n===1?'':'s'}`;if(apply){apply.disabled=n===0;apply.style.opacity=n?'1':'.5';}if(panel)panel.classList.toggle('hidden',!window.galleryMultiSelect||n===0);if(list){list.innerHTML='';window.gallerySelectionOrder.forEach((idx,pos)=>{const x=window.galleryFiltered[idx]||galleryDataCache[idx];if(!x)return;const row=document.createElement('div');row.className='gallery-order-item';row.innerHTML=`<b class="text-[9px] text-cyan-300">${pos+1}</b><span title="${esc(x.title||x.url)}">${esc(x.title||x.url)}</span><div class="flex gap-1"><button type="button" title="Subir" ${pos===0?'disabled':''}>↑</button><button type="button" title="Bajar" ${pos===n-1?'disabled':''}>↓</button></div>`;row.children[2].children[0].onclick=()=>window.moveGallerySelection(pos,-1);row.children[2].children[1].onclick=()=>window.moveGallerySelection(pos,1);list.appendChild(row);});}};
 window.moveGallerySelection=(pos,dir)=>{const next=pos+dir;if(pos<0||next<0||next>=window.gallerySelectionOrder.length)return;const a=window.gallerySelectionOrder;a.splice(next,0,a.splice(pos,1)[0]);window.renderGallery(false);window.updateGallerySelectionUI();};
 window.clearGallerySelection=()=>{window.gallerySelectionOrder=[];window.gallerySelected=-1;window.updateGallerySelectionUI();window.renderGallery(false);};
 window.applyGallerySelection=()=>{if(!window.gallerySelectionOrder.length)return window.showToast('Selecciona al menos una imagen');const urls=window.gallerySelectionOrder.map(i=>window.galleryFiltered[i]).filter(Boolean).map(x=>x.url);if(!urls.length)return;const input=document.getElementById(activeMediaInput);if(!input)return;input.value=urls.join('\n');input.dispatchEvent(new Event('input',{bubbles:true}));window.showToast(`${urls.length} recurso${urls.length===1?'':'s'} ordenado${urls.length===1?'':'s'} y aplicado`);window.markDirty?.('Orden de medios actualizado');};
