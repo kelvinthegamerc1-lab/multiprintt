@@ -273,6 +273,71 @@ document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(do
 })();
 </script>
 </style>
+
+<style id="mobile-final-polish-2026">
+@media (max-width: 767px){
+  #product-grid [id^="slider-"]{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+  #product-grid [id^="slider-"] > div.inset-y-0.left-0,
+  #product-grid [id^="slider-"] > div.inset-y-0.right-0{display:none!important;}
+  #product-grid [id^="slider-"] .slider-item img{padding:10px!important;}
+  #product-grid{gap:10px!important;}
+  #product-grid>.card{border-radius:10px!important;}
+  #product-grid>.card > div:last-child{padding:10px 11px!important;}
+
+  #mobile-history-block{padding-left:18px!important;padding-right:18px!important;padding-top:48px!important;padding-bottom:92px!important;min-height:auto!important;gap:28px!important;}
+  #mobile-history-block > div:first-child{gap:12px!important;}
+  #mobile-history-block h3{font-size:clamp(25px,7.6vw,30px)!important;line-height:1.08!important;}
+  #mobile-history-block p{font-size:12px!important;line-height:1.62!important;}
+  #mobile-history-block .border-l-2{padding:12px!important;margin:4px 0!important;border-radius:0 10px 10px 0!important;}
+  #mobile-play-btn{width:68px!important;height:68px!important;font-size:24px!important;}
+  #view-about > div.flex.lg\:hidden > div:first-child > div:last-child{bottom:78px!important;}
+  #view-about > div.flex.lg\:hidden > div:first-child > div:last-child button{min-height:40px!important;padding:9px 14px!important;font-size:9px!important;}
+
+  .view-slide{padding-bottom:calc(70px + env(safe-area-inset-bottom))!important;}
+  #bottom-nav{height:60px!important;padding-bottom:max(env(safe-area-inset-bottom),4px)!important;}
+  #bottom-nav .bot-nav-item{min-width:0!important;gap:2px!important;}
+  #bottom-nav .bot-nav-item i{font-size:16px!important;}
+  #bottom-nav .bot-nav-item span{font-size:8px!important;}
+  #catalog-subnav{height:32px!important;}
+  #catalog-subnav button{height:32px!important;padding-left:5px!important;padding-right:5px!important;font-size:7.5px!important;}
+  #view-catalog > div{padding-top:48px!important;padding-left:10px!important;padding-right:10px!important;}
+  #courses-grid{gap:14px!important;}
+  #view-courses > div{padding-left:14px!important;padding-right:14px!important;padding-top:18px!important;}
+}
+@media (max-width:380px){
+  #catalog-subnav button{font-size:7px!important;}
+  #product-grid>.card > div:last-child{padding:9px 10px!important;}
+  #mobile-history-block{padding-left:16px!important;padding-right:16px!important;}
+}
+</style>
+<script id="mobile-product-swipe">
+(()=>{
+  const state=new WeakMap();
+  const getSlider=(target)=>target?.closest?.('#product-grid [id^="slider-"]');
+  document.addEventListener('touchstart',(e)=>{
+    const slider=getSlider(e.target);
+    if(!slider||e.touches.length!==1)return;
+    const t=e.touches[0]; state.set(slider,{x:t.clientX,y:t.clientY,active:false});
+  },{passive:true});
+  document.addEventListener('touchmove',(e)=>{
+    const slider=getSlider(e.target),st=slider?state.get(slider):null;
+    if(!slider||!st||e.touches.length!==1)return;
+    const t=e.touches[0],dx=t.clientX-st.x,dy=t.clientY-st.y;
+    if(!st.active&&Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.15)st.active=true;
+    if(st.active&&e.cancelable)e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchend',(e)=>{
+    const slider=getSlider(e.target),st=slider?state.get(slider):null;
+    if(!slider||!st)return;
+    state.delete(slider);
+    if(!st.active)return;
+    const t=e.changedTouches[0],dx=t.clientX-st.x;
+    if(Math.abs(dx)<38)return;
+    if(typeof window.scrollSlider==='function')window.scrollSlider(slider.id,dx<0?1:-1,e);
+  },{passive:true});
+  document.addEventListener('touchcancel',(e)=>{const slider=getSlider(e.target);if(slider)state.delete(slider);},{passive:true});
+})();
+</script>
 </head>
 <body class="transform-gpu">
 <div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
@@ -383,6 +448,9 @@ document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(do
                             "Con más de 20 años en el camino entendimos que personalizar no es solo estampar un diseño sobre una superficie; es capturar la identidad de una marca y abrir puertas al crecimiento personal."
                         </p>
                     </div>
+                    <p data-editable="true" class="m-0 text-[11px] text-zinc-400">
+                        Tras años de ensayo, error y perfeccionamiento técnico, decidimos que nuestro conocimiento no debía quedarse encerrado en el taller. Hoy, Multiprintt es un espacio dual dirigido por <strong class="text-white font-medium">Alfredo Aguilar P.</strong> donde creamos productos de alto nivel y capacitamos a la nueva generación de emprendedores de la impresión. Este catálogo es el reflejo de años de dedicación y pasión por hacer las cosas bien desde el primer intento.
+                    </p>
                 </div>
             </div>
         </div>
@@ -659,7 +727,7 @@ const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const MP_BUILD_VERSION = '2026.09.17.04';
+const MP_BUILD_VERSION = '2026.09.17.06';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
 const APP_ID = "multiprintt-web";
 let firebaseReady = true;
