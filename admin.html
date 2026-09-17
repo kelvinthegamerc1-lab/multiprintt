@@ -549,9 +549,9 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
           <div class="imgbb-hosting-head">
             <div class="min-w-0">
               <div class="text-white font-extrabold text-[11px]"><i class="fa-solid fa-cloud-arrow-up text-cyan-300 mr-2"></i>Multiprintt Host</div>
-              <div class="helper">Alojamiento y biblioteca local de tus imágenes ImgBB.</div>
+              <div class="helper">Biblioteca compartida de imágenes alojadas en ImgBB.</div>
             </div>
-            <div class="flex items-center gap-2"><span id="imgbb-library-count" class="helper">0 imágenes</span><button type="button" class="mini-btn" onclick="window.loadImgBBLibrary(true)" title="Actualizar biblioteca" aria-label="Actualizar biblioteca"><i class="fa-solid fa-rotate"></i></button></div>
+            <div class="flex items-center gap-2"><span id="imgbb-library-count" class="helper">0 imágenes compartidas</span><span id="imgbb-shared-status" class="helper imgbb-shared-status" title="Estado de la biblioteca compartida"></span><button type="button" class="mini-btn" onclick="window.loadImgBBLibrary(true)" title="Actualizar biblioteca" aria-label="Actualizar biblioteca"><i class="fa-solid fa-rotate"></i></button></div>
           </div>
 
           <div class="imgbb-upload-box">
@@ -571,7 +571,7 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
               <div class="imgbb-db-picker-title"><i class="fa-solid fa-sort"></i><span>Orden del catálogo</span><small id="imgbb-db-picker-count">0 seleccionadas</small></div>
               <div id="imgbb-db-order" class="imgbb-db-order"></div>
             </div>
-            <button type="button" id="imgbb-db-apply" class="imgbb-db-apply" disabled><i class="fa-solid fa-plus"></i><span>Añadir seleccionadas</span></button>
+            <button type="button" id="imgbb-db-apply" class="imgbb-db-apply" disabled title="Agregar las imágenes seleccionadas al producto"><i class="fa-solid fa-plus"></i><span>Agregar al producto</span></button>
           </div>
 
           <div class="imgbb-library-toolbar">
@@ -581,9 +581,9 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
               <button type="button" class="mini-btn imgbb-filter-icon" data-imgbb-filter="jarros" onclick="window.filterImgBBLibrary('jarros')" title="Jarros & Thermos"><i class="fa-solid fa-mug-hot"></i> Jarros</button>
               <button type="button" class="mini-btn imgbb-filter-icon" data-imgbb-filter="imp-general" onclick="window.filterImgBBLibrary('imp-general')" title="Imp. General"><i class="fa-solid fa-print"></i> Imp. general</button>
               <button type="button" class="mini-btn imgbb-filter-icon" data-imgbb-filter="packs" onclick="window.filterImgBBLibrary('packs')" title="Packs"><i class="fa-solid fa-boxes-stacked"></i> Packs</button>
-              <span id="imgbb-selected-count" class="imgbb-selected-count" aria-live="polite">0</span>
-              <button type="button" class="mini-btn imgbb-filter-icon imgbb-select-all" onclick="window.toggleAllImgBBSelection()" title="Seleccionar visibles" aria-label="Seleccionar visibles"><i class="fa-solid fa-check-double"></i></button>
-              <button type="button" class="mini-btn imgbb-filter-icon imgbb-clear-selection" onclick="window.clearImgBBSelection()" title="Limpiar selección" aria-label="Limpiar selección"><i class="fa-solid fa-square-xmark"></i></button>
+              <span id="imgbb-selected-count" class="imgbb-selected-count imgbb-product-only" aria-live="polite">0</span>
+              <button type="button" class="mini-btn imgbb-filter-icon imgbb-select-all imgbb-product-only" onclick="window.toggleAllImgBBSelection()" title="Seleccionar visibles" aria-label="Seleccionar visibles"><i class="fa-solid fa-check-double"></i></button>
+              <button type="button" class="mini-btn imgbb-filter-icon imgbb-clear-selection imgbb-product-only" onclick="window.clearImgBBSelection()" title="Limpiar selección" aria-label="Limpiar selección"><i class="fa-solid fa-square-xmark"></i></button>
             </div>
             <input id="imgbb-search" class="field imgbb-search" placeholder="Buscar nombre o categoría" oninput="window.renderImgBBLibrary()">
           </div>
@@ -703,7 +703,7 @@ window.attemptLogin=async()=>{if(loginInFlight)return;const email=document.getEl
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now()}else{authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{if(window.loadImgBBLibrary)window.loadImgBBLibrary(true)},250)}else{authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
@@ -893,6 +893,65 @@ function loadImgBBLocalIndex(){
   }catch(e){console.warn('No se pudo recuperar la biblioteca ImgBB:',e);window.imgbbLibrary=[]}
   return window.imgbbLibrary;
 }
+const IMGBB_SHARED_COLLECTION='imgbbLibrary';
+async function loadImgBBSharedIndex(){
+  const state=document.getElementById('imgbb-shared-status');
+  try{
+    if(!db){if(state)state.textContent='Sin conexión a Firebase';return []}
+    const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION));
+    if(state){state.textContent='• compartida';state.style.color='#4ade80'}
+    return snap.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x&&String(x.url||x.displayUrl||x.thumbUrl||'').trim());
+  }catch(e){
+    console.warn('No se pudo leer la biblioteca ImgBB compartida:',e);
+    if(state){state.textContent='• revisar acceso';state.style.color='#fb7185'}
+    return [];
+  }
+}
+async function saveImgBBSharedRecord(record){
+  try{
+    if(!db||!record?.id) return false;
+    const safe={...record};
+    delete safe.originalFile;
+    delete safe.file;
+    await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,String(record.id)),safe,{merge:true});
+    return true;
+  }catch(e){console.warn('No se pudo sincronizar ImgBB con Firebase:',e);return false;}
+}
+async function deleteImgBBSharedRecord(id){
+  try{if(db&&id)await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,String(id)))}catch(e){console.warn('No se pudo eliminar el registro compartido de ImgBB:',e)}}
+async function syncImgBBSharedLibrary(){
+  const local=loadImgBBLocalIndex();
+  const shared=await loadImgBBSharedIndex();
+  const merged=[];const seen=new Set();
+  for(const item of [...shared,...local]){
+    const id=String(item?.id||item?.url||'').trim(); if(!id||seen.has(id))continue;
+    seen.add(id); merged.push({...item,id});
+  }
+  merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
+  window.imgbbLibrary=merged;
+  saveImgBBLocalIndex();
+  // Migra los registros locales antiguos al índice compartido cuando el usuario está autenticado.
+  if(typeof auth!=='undefined' && auth?.currentUser && db){
+    const sharedIds=new Set(shared.map(x=>String(x.id||'')));
+    const legacy=local.filter(x=>x?.id&&!sharedIds.has(String(x.id)));
+    if(legacy.length){
+      const migrated=await Promise.all(legacy.slice(0,100).map(saveImgBBSharedRecord));
+      if(migrated.some(Boolean)){
+        const refreshed=await loadImgBBSharedIndex();
+        const refreshedMap=new Map(refreshed.map(x=>[String(x.id),x]));
+        for(const item of refreshedMap.values()){
+          const idx=merged.findIndex(x=>String(x.id)===String(item.id));
+          if(idx>=0) merged[idx]={...merged[idx],...item};
+          else merged.push(item);
+        }
+        merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
+        window.imgbbLibrary=merged;
+        saveImgBBLocalIndex();
+      }
+    }
+  }
+  return window.imgbbLibrary;
+}
 async function uploadOneImgBB(file,displayName,category){
   const body=new FormData();body.append('key',IMGBB_API_KEY);body.append('image',file,displayName+'.webp');body.append('name',displayName);
   const r=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body});
@@ -925,6 +984,8 @@ window.uploadImgBBBatch=async()=>{
         saved.originalFile=q.file.name;
         saved.category=category;
         window.imgbbLibrary.unshift(saved);
+        const sharedOk=await saveImgBBSharedRecord(saved);
+        if(!sharedOk) q.validation={ok:true,warning:'Subida completada, pero no se pudo sincronizar la biblioteca compartida.'};
         q.status='done';ok++;
       }catch(e){
         q.status='error';failed++;q.validation={ok:false,error:e?.message||'Error al subir'};
@@ -985,6 +1046,7 @@ window.deleteImgBBRecord=async(id)=>{
     setTimeout(()=>{form.remove();iframe.remove();},8000);
     window.imgbbLibrary=window.imgbbLibrary.filter(v=>v.id!==id);
     window.imgbbSelectedIds?.delete?.(String(id));
+    await deleteImgBBSharedRecord(id);
     saveImgBBLocalIndex();
     window.renderImgBBLibrary(true);
     window.showToast('Solicitud de eliminación enviada a ImgBB.');
@@ -1006,6 +1068,8 @@ function imgbbImageCandidates(x){
 window.dbImgBBOrder=Array.isArray(window.dbImgBBOrder)?window.dbImgBBOrder:[];
 function updateImgBBSelectionUI(){
   const n=window.imgbbSelectedIds?.size||0;
+  const isProduct= currentGalleryMode==='product';
+  document.querySelectorAll('#imgbb-hosting-section .imgbb-product-only').forEach(el=>{el.style.display=isProduct?'':'none'});
   const count=document.getElementById('imgbb-selected-count');if(count)count.textContent=String(n);
   const clear=document.querySelector('#imgbb-hosting-section .imgbb-clear-selection');if(clear)clear.classList.toggle('active',n>0);
   const all=document.querySelector('#imgbb-hosting-section .imgbb-select-all');if(all){
@@ -1060,11 +1124,11 @@ window.loadImgBBLibrary=async(refresh=false)=>{
   const host=document.getElementById('imgbb-library-grid'),count=document.getElementById('imgbb-library-count'),tabCount=document.getElementById('imgbb-tab-count');
   if(!host)return;
   if(!host.dataset.loadingShown){host.dataset.loadingShown='1';host.innerHTML='<div class="media-empty col-span-full"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Cargando biblioteca ImgBB…</div>'}
-  const data=loadImgBBLocalIndex();
+  const data=await syncImgBBSharedLibrary();
   // Descarta selecciones de registros que ya no existen.
   const validIds=new Set(data.map(x=>String(x.id||'')));window.imgbbSelectedIds.forEach(id=>{if(!validIds.has(String(id)))window.imgbbSelectedIds.delete(id)});
   const n=data.length;
-  if(count)count.textContent=`${n} imagen${n===1?'':'es'} registrada${n===1?'':'s'} en este navegador`;
+  if(count)count.textContent=`${n} imagen${n===1?'':'es'} disponible${n===1?'':'s'}`;
   if(tabCount)tabCount.textContent=n>99?'99+':String(n);
   window.imgbbPageSize=Math.min(48,Math.max(48,n));
   window.renderImgBBLibrary();
@@ -1075,16 +1139,18 @@ window.renderImgBBLibrary=()=>{
   const host=document.getElementById('imgbb-library-grid');if(!host)return;
   const q=(document.getElementById('imgbb-search')?.value||'').trim().toLowerCase();
   const cat=window.imgbbCategoryFilter||'all';
+  const isProduct=currentGalleryMode==='product';
   window.imgbbFiltered=window.imgbbLibrary.filter(x=>(cat==='all'||String(x.category||'otros')===cat)&&(!q||String(x.title||x.name||'').toLowerCase().includes(q)||String(x.category||'').toLowerCase().includes(q)));
-  if(!window.imgbbFiltered.length){host.innerHTML='<div class="media-empty col-span-full">No hay imágenes registradas desde este navegador con ese filtro.</div>';document.getElementById('imgbb-more')?.classList.add('hidden');updateImgBBSelectionUI();return;}
+  if(!window.imgbbFiltered.length){host.innerHTML='<div class="media-empty col-span-full">No hay imágenes disponibles con este filtro.</div>';document.getElementById('imgbb-more')?.classList.add('hidden');updateImgBBSelectionUI();return;}
   const arr=window.imgbbFiltered.slice(0,window.imgbbPageSize);
   host.innerHTML=arr.map((x)=>{
     const candidates=imgbbImageCandidates(x);const url=candidates[0]||'';
     const noTransparency=x.transparent===false||x.transparencyDetected===false;
     const id=String(x.id||'');const selected=window.imgbbSelectedIds.has(id);
     const title=x.title||x.name||'Sin nombre';
+    const productCheck=isProduct ? `<label class="imgbb-select-check" title="Seleccionar imagen para el producto"><input type="checkbox" ${selected?'checked':''} data-imgbb-select="${esc(id)}" aria-label="Seleccionar ${esc(title)}"><span><i class="fa-solid fa-check"></i></span></label>` : '';
     return `<article class="imgbb-card ${noTransparency?'imgbb-card-warning ':''}${selected?'is-selected':''}" data-id="${esc(id)}">
-      <label class="imgbb-select-check" title="Seleccionar imagen"><input type="checkbox" ${selected?'checked':''} data-imgbb-select="${esc(id)}" aria-label="Seleccionar ${esc(title)}"><span><i class="fa-solid fa-check"></i></span></label>
+      ${productCheck}
       <span class="imgbb-cat-badge">${esc(imgbbCategoryLabel(x.category))}</span>
       <div class="imgbb-card-preview"><div class="imgbb-thumb-wrap" data-imgbb-thumb-wrap><div class="imgbb-thumb-loader"><i class="fa-solid fa-spinner"></i></div><img loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" src="${esc(url)}" alt="${esc(title)}" data-imgbb-candidates="${esc(JSON.stringify(candidates))}"></div></div>
       <div class="imgbb-card-body">
@@ -1092,7 +1158,7 @@ window.renderImgBBLibrary=()=>{
         <div class="imgbb-card-cat">${esc(imgbbFormatBytes(x.size||0))}${x.width&&x.height?` · ${esc(String(x.width))}×${esc(String(x.height))}`:''}</div>
         ${noTransparency?'<div class="imgbb-transparency-warning"><i class="fa-solid fa-triangle-exclamation"></i><span>SIN TRANSPARENCIA DETECTADA</span></div>':''}
         <div class="imgbb-card-actions">
-          <button type="button" class="mini-btn" data-use-imgbb="${esc(id)}" title="Seleccionar" aria-label="Seleccionar"><i class="fa-solid fa-check"></i></button>
+          <button type="button" class="mini-btn" data-use-imgbb="${esc(id)}" title="${isProduct?'Seleccionar para el producto':'Usar imagen'}" aria-label="${isProduct?'Seleccionar para el producto':'Usar imagen'}"><i class="fa-solid ${isProduct?(selected?'fa-check-double':'fa-check'):'fa-arrow-up-right-from-square'}"></i></button>
           <button type="button" class="mini-btn" data-copy-imgbb="${esc(id)}" title="Copiar URL" aria-label="Copiar URL"><i class="fa-regular fa-copy"></i></button>
           <button type="button" class="mini-btn imgbb-delete-btn" data-delete-imgbb="${esc(id)}" title="Borrar de ImgBB" aria-label="Borrar de ImgBB"><i class="fa-solid fa-trash"></i></button>
         </div>
@@ -1106,7 +1172,7 @@ window.renderImgBBLibrary=()=>{
     let pos=0;img.addEventListener('error',()=>{if(pos+1<list.length){pos++;img.src=list[pos]}}, {once:false});
   });
   host.querySelectorAll('[data-imgbb-select]').forEach(input=>input.addEventListener('change',()=>window.toggleImgBBSelection(input.dataset.imgbbSelect,input.checked)));
-  host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(!x)return;if(currentGalleryMode==='product'){const id=String(x.id||'');window.toggleImgBBSelection(id,!window.imgbbSelectedIds.has(id));return;}window.selectMedia(normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl))});
+  host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(!x)return;if(currentGalleryMode==='product'){const id=String(x.id||'');window.toggleImgBBSelection(id,!window.imgbbSelectedIds.has(id));window.renderImgBBLibrary();return;}window.selectMedia(normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl))});
   host.querySelectorAll('[data-copy-imgbb]').forEach(btn=>btn.onclick=async()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.copyImgbb);if(!x)return;const direct=normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'');try{await navigator.clipboard.writeText(direct);window.showToast('URL directa de ImgBB copiada')}catch{window.showToast('No se pudo copiar la URL')}});
   host.querySelectorAll('[data-delete-imgbb]').forEach(btn=>btn.onclick=()=>window.deleteImgBBRecord(btn.dataset.deleteImgbb));
   const more=document.getElementById('imgbb-more');if(more)more.classList.toggle('hidden',window.imgbbPageSize>=window.imgbbFiltered.length);
