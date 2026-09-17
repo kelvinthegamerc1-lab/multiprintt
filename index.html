@@ -665,7 +665,8 @@ const APP_ID = "multiprintt-web";
 let firebaseReady = true;
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos'; window.productsDataReady = false;
 window.MEDIA_PROXY_BASE='';
-window.protectMediaUrl=function(raw){const v=String(raw||'').trim();if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
+window.normalizeMediaUrl=function(raw){let v=String(raw??'').trim();if(!v)return'';v=v.replace(/^['"]+|['"]+$/g,'').trim();v=v.replace(/&amp;/gi,'&').replace(/&quot;/gi,'\"').replace(/&#39;/gi,"'").replace(/&#x27;/gi,"'");if(v.startsWith('//'))v='https:'+v;return v};
+window.protectMediaUrl=function(raw){const v=window.normalizeMediaUrl(raw);if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;try{const parsed=new URL(v,location.href);if(parsed.hostname==='i.ibb.co'||parsed.hostname==='ibb.co'){return parsed.href}}catch(e){}const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
 window.protectMediaList=list=>Array.isArray(list)?list.map(window.protectMediaUrl):list;
 window.protectExistingMedia=function(root=document){root.querySelectorAll('img[src],video[src],source[src],img[data-original-media-url],video[data-original-media-url],source[data-original-media-url]').forEach(el=>{const raw=el.getAttribute('data-original-media-url')||el.getAttribute('src')||'',safe=window.protectMediaUrl(raw);if(raw){el.setAttribute('data-original-media-url',raw);el.setAttribute('src',safe)}})};
 
@@ -1031,12 +1032,12 @@ const basePrice = Number(p.price) || 0;
 const discountVal = Number(p.discount) || 0;
 const finalPrice = (p.isPromo && discountVal > 0) ? basePrice * (1 - discountVal / 100) : basePrice;
 let imgs = [];
-if (p.image) imgs = p.image.split(/[\n,]+/).map(s=>s.trim()).filter(s=>s);
-else if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images;
+if (p.image) imgs = String(p.image).split(/[\n,]+/).map(s=>window.normalizeMediaUrl(s)).filter(Boolean);
+else if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images.map(s=>window.normalizeMediaUrl(s)).filter(Boolean);
 imgs = window.protectMediaList(imgs);
 let art = '';
 if (imgs.length <= 1) {
-art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
 } else {
 let sliderId = `slider-${p.id}`;
 let dotsHtml = '<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-30 pointer-events-none">';
@@ -1046,7 +1047,7 @@ const isActive = idx === initialSlideIndex;
 const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
 let dotClass = isActive ? 'bg-cyan-400 w-3' : 'bg-white/40 w-1.5';
 dotsHtml += `<button type="button" onclick="window.scrollToSlide('${sliderId}', ${idx}, event)" class="dot-${sliderId} h-1.5 ${dotClass} rounded-full transition-all duration-300 pointer-events-auto outline-none cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.8)] ignore-drag border-none p-0"></button>`;
-return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" decoding="async" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'"></div>`;
+return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}"></div>`;
 }).join('');
 dotsHtml += '</div>';
 art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button type="button" onclick="window.scrollSlider('${sliderId}', -1, event)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button type="button" onclick="window.scrollSlider('${sliderId}', 1, event)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}`;
@@ -1070,8 +1071,7 @@ let isTopSeller = p.isBestSeller || (window.currentFilter === 'mas-vendidos' && 
 if (isTopSeller) badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-rose-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm"><i class="fa-solid fa-fire text-amber-300 text-[9px]"></i> Más vendido</span>`;
 if (p.isPromo && discountVal > 0) badgesHtml += `<span class="inline-flex items-center gap-1 text-[8px] uppercase tracking-[.15em] text-white/95 font-bold bg-pink-600/90 backdrop-blur-md px-2 py-1 rounded-md border border-white/10 shadow-sm">-${discountVal}% OFF</span>`;
 let promoBadgeContainer = badgesHtml ? `<div class="absolute top-2 left-2 z-20 flex flex-col gap-1.5 pointer-events-none">${badgesHtml}</div>` : '';
-let safeData = JSON.stringify(p).replace(/"/g, '&quot;');
-let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'product', itemId: '${p.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'product', itemId: '${p.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button type="button" data-db-edit="product" data-db-id="${String(p.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button type="button" data-db-delete="product" data-db-id="${String(p.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
 let priceHtml = `<span data-editable="true" class="text-sm md:text-base font-extrabold text-white">$${finalPrice.toFixed(2)}</span>`;
 if (p.isPromo && discountVal > 0) priceHtml = `<div class="flex flex-col items-start"><span data-editable="true" class="text-[9px] text-zinc-500 line-through leading-none">$${basePrice.toFixed(2)}</span><span data-editable="true" class="text-sm md:text-base font-extrabold text-pink-400 leading-none mt-0.5">$${finalPrice.toFixed(2)}</span></div>`;
 let delay = (i % 8) * 50;
@@ -1093,8 +1093,7 @@ const accents = [
 let renderHTML = '';
 safeCourses.forEach((c, i)=>{
 let a = accents[i % accents.length];
-let safeData = JSON.stringify(c).replace(/"/g, '&quot;');
-let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag rounded-[24px]"><button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'course', itemId: '${c.id}', itemData: ${safeData}}, '*')" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'DELETE_DB_ITEM', itemType: 'course', itemId: '${c.id}'}, '*')" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
+let adminHtml = window.isAdminMode ? `<div class="admin-overlay ignore-drag"><button type="button" data-db-edit="course" data-db-id="${String(c.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" class="bg-cyan-500 text-black px-4 py-2 rounded-xl text-[10px] font-bold w-28 mb-2 pointer-events-auto transition-transform hover:scale-105 shadow-[0_0_15px_rgba(37,216,255,0.3)] cursor-pointer border-none"><i class="fa-solid fa-pen"></i> Editar BD</button><button type="button" data-db-delete="course" data-db-id="${String(c.id).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" class="bg-red-500 text-white px-4 py-2 rounded-xl text-[10px] font-bold w-28 pointer-events-auto transition-transform hover:scale-105 shadow-lg cursor-pointer border-none"><i class="fa-solid fa-trash"></i> Borrar</button></div>` : '';
 let delay = 100 + (i * 100);
 let masterclassBadge = c.isMasterclass !== false ? `<span data-editable="true" class="bg-black/40 backdrop-blur-md border border-white/10 ${a.text} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-gem text-[10px]"></i> Masterclass</span>` : '';
 let modalityStr = c.modality || 'Presencial';
@@ -1785,6 +1784,26 @@ safe[id]=html;
 });
 return safe;
 }
+
+// Stable admin DB controls: resolve the current record by ID and send it to the parent editor.
+document.addEventListener('click', (event) => {
+  const edit = event.target.closest?.('[data-db-edit]');
+  const del = event.target.closest?.('[data-db-delete]');
+  if (!edit && !del) return;
+  event.preventDefault();
+  event.stopPropagation();
+  const type = edit?.dataset.dbEdit || del?.dataset.dbDelete;
+  const id = edit?.dataset.dbId || del?.dataset.dbId || '';
+  if (!type || !id || window.isAdminMode !== true) return;
+  if (edit) {
+    const source = type === 'product' ? window.appProducts : window.appCourses;
+    const item = Array.isArray(source) ? source.find(x => String(x.id) === String(id)) : null;
+    window.parent.postMessage({type:'OPEN_EDITOR', editorType:type, itemId:id, itemData:item || {id}}, '*');
+  } else {
+    window.parent.postMessage({type:'DELETE_DB_ITEM', itemType:type, itemId:id}, '*');
+  }
+}, true);
+
 window.addEventListener('message', async (event) => {
 if (window.parent !== window && (event.source !== window.parent || event.origin !== window.location.origin)) return;
 if (event.source !== window.parent || event.origin !== window.location.origin) return;
