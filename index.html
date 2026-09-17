@@ -24,7 +24,8 @@
 <meta name="application-name" content="Multiprintt">
 <meta name="apple-mobile-web-app-title" content="Multiprintt">
 <meta name="theme-color" content="#070709">
-<meta name="mp-build-version" content="2026.09.16.01">
+<meta name="mp-build-version" content="2026.09.17.05">
+<meta name="mp-final-mobile-fix" content="mp-final-mobile-2026-09-17">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
 <meta property="og:site_name" content="Multiprintt">
@@ -230,6 +231,30 @@ document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(do
   #view-contact #social-footer-links{gap:8px 11px!important;}
 }
 </style>
+<style id="mobile-final-2026-fix">
+@media (max-width:767px){
+  #product-grid{gap:10px!important;}
+  #product-grid>.card{min-width:0!important;}
+  #product-grid .product-slider{touch-action:pan-y!important;-webkit-user-select:none!important;user-select:none!important;}
+  #product-grid .slider-nav-arrow{display:none!important;}
+  #product-grid .slider-item img{padding:12px!important;}
+  #product-grid .card .p-3\.5{padding:10px!important;}
+  #product-grid .card h3{font-size:11px!important;line-height:1.15!important;}
+  #product-grid .card .mt-auto{padding-top:8px!important;}
+  #product-grid .card .w-8.h-8{width:34px!important;height:34px!important;}
+  #view-about #mobile-history-block{padding-left:18px!important;padding-right:18px!important;padding-top:54px!important;padding-bottom:96px!important;}
+  #view-about #mobile-history-block>div{gap:14px!important;}
+  #view-about #mobile-history-block p{font-size:12px!important;line-height:1.55!important;}
+  #view-about #mobile-history-block>div:first-child{gap:14px!important;}
+  #view-about #mobile-history-block .p-4{padding:13px!important;margin:4px 0!important;}
+}
+@media (max-width:380px){
+  #product-grid{gap:8px!important;}
+  #product-grid .slider-item img{padding:10px!important;}
+  #view-about #mobile-history-block{padding-left:14px!important;padding-right:14px!important;}
+  #view-about #mobile-history-block p{font-size:11.5px!important;}
+}
+</style>
 <style id="mobile-performance-final">
 @media (max-width:767px){
   #product-grid>.card,#courses-grid>.card,#academy-gallery-section,[data-gallery-item]{content-visibility:auto;contain-intrinsic-size:1px 280px;}
@@ -249,7 +274,7 @@ document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(do
   #checkout-btn{min-height:50px!important;position:relative;}
   #cart-sidebar>div:last-child{padding:12px 14px calc(12px + env(safe-area-inset-bottom))!important;gap:8px!important;}
 }
-
+</style>
 <style id="media-protection">
 /* Protección de interfaz: evita menú contextual/arrastre directo de imágenes y vídeos.
    No sustituye un proxy/CDN: las URLs de recursos siguen siendo visibles para el navegador. */
@@ -270,72 +295,6 @@ document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(do
   document.addEventListener('auxclick', (e) => {
     if(e.button===2 && isProtectedMedia(e.target)){ e.preventDefault(); e.stopPropagation(); }
   }, true);
-})();
-</script>
-</style>
-
-<style id="mobile-final-polish-2026">
-@media (max-width: 767px){
-  #product-grid [id^="slider-"]{touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
-  #product-grid [id^="slider-"] > div.inset-y-0.left-0,
-  #product-grid [id^="slider-"] > div.inset-y-0.right-0{display:none!important;}
-  #product-grid [id^="slider-"] .slider-item img{padding:10px!important;}
-  #product-grid{gap:10px!important;}
-  #product-grid>.card{border-radius:10px!important;}
-  #product-grid>.card > div:last-child{padding:10px 11px!important;}
-
-  #mobile-history-block{padding-left:18px!important;padding-right:18px!important;padding-top:48px!important;padding-bottom:92px!important;min-height:auto!important;gap:28px!important;}
-  #mobile-history-block > div:first-child{gap:12px!important;}
-  #mobile-history-block h3{font-size:clamp(25px,7.6vw,30px)!important;line-height:1.08!important;}
-  #mobile-history-block p{font-size:12px!important;line-height:1.62!important;}
-  #mobile-history-block .border-l-2{padding:12px!important;margin:4px 0!important;border-radius:0 10px 10px 0!important;}
-  #mobile-play-btn{width:68px!important;height:68px!important;font-size:24px!important;}
-  #view-about > div.flex.lg\:hidden > div:first-child > div:last-child{bottom:78px!important;}
-  #view-about > div.flex.lg\:hidden > div:first-child > div:last-child button{min-height:40px!important;padding:9px 14px!important;font-size:9px!important;}
-
-  .view-slide{padding-bottom:calc(70px + env(safe-area-inset-bottom))!important;}
-  #bottom-nav{height:60px!important;padding-bottom:max(env(safe-area-inset-bottom),4px)!important;}
-  #bottom-nav .bot-nav-item{min-width:0!important;gap:2px!important;}
-  #bottom-nav .bot-nav-item i{font-size:16px!important;}
-  #bottom-nav .bot-nav-item span{font-size:8px!important;}
-  #catalog-subnav{height:32px!important;}
-  #catalog-subnav button{height:32px!important;padding-left:5px!important;padding-right:5px!important;font-size:7.5px!important;}
-  #view-catalog > div{padding-top:48px!important;padding-left:10px!important;padding-right:10px!important;}
-  #courses-grid{gap:14px!important;}
-  #view-courses > div{padding-left:14px!important;padding-right:14px!important;padding-top:18px!important;}
-}
-@media (max-width:380px){
-  #catalog-subnav button{font-size:7px!important;}
-  #product-grid>.card > div:last-child{padding:9px 10px!important;}
-  #mobile-history-block{padding-left:16px!important;padding-right:16px!important;}
-}
-</style>
-<script id="mobile-product-swipe">
-(()=>{
-  const state=new WeakMap();
-  const getSlider=(target)=>target?.closest?.('#product-grid [id^="slider-"]');
-  document.addEventListener('touchstart',(e)=>{
-    const slider=getSlider(e.target);
-    if(!slider||e.touches.length!==1)return;
-    const t=e.touches[0]; state.set(slider,{x:t.clientX,y:t.clientY,active:false});
-  },{passive:true});
-  document.addEventListener('touchmove',(e)=>{
-    const slider=getSlider(e.target),st=slider?state.get(slider):null;
-    if(!slider||!st||e.touches.length!==1)return;
-    const t=e.touches[0],dx=t.clientX-st.x,dy=t.clientY-st.y;
-    if(!st.active&&Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)*1.15)st.active=true;
-    if(st.active&&e.cancelable)e.preventDefault();
-  },{passive:false});
-  document.addEventListener('touchend',(e)=>{
-    const slider=getSlider(e.target),st=slider?state.get(slider):null;
-    if(!slider||!st)return;
-    state.delete(slider);
-    if(!st.active)return;
-    const t=e.changedTouches[0],dx=t.clientX-st.x;
-    if(Math.abs(dx)<38)return;
-    if(typeof window.scrollSlider==='function')window.scrollSlider(slider.id,dx<0?1:-1,e);
-  },{passive:true});
-  document.addEventListener('touchcancel',(e)=>{const slider=getSlider(e.target);if(slider)state.delete(slider);},{passive:true});
 })();
 </script>
 </head>
@@ -727,7 +686,7 @@ const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const MP_BUILD_VERSION = '2026.09.17.06';
+const MP_BUILD_VERSION = '2026.09.17.05';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
 const APP_ID = "multiprintt-web";
 let firebaseReady = true;
@@ -964,6 +923,27 @@ window.scrollToSlide = function(sliderId, idx, e) {
   const slides=slider.querySelectorAll('.slider-item'); if(idx<0||idx>=slides.length)return;
   slider.dataset.index=String(idx); window.updateSliderOpacities(sliderId);
 };
+
+// Móvil: cambio de imagen por gesto horizontal, sin flechas. El gesto no interfiere con el scroll vertical.
+(()=>{
+  if(window.mpTouchSliderBound) return;
+  window.mpTouchSliderBound=true;
+  let startX=0,startY=0,startSliderId='';
+  document.addEventListener('touchstart',(e)=>{
+    if(!e.touches||e.touches.length!==1)return;
+    const slider=e.target?.closest?.('.product-slider');
+    if(!slider || window.innerWidth>=768)return;
+    const t=e.touches[0]; startX=t.clientX; startY=t.clientY; startSliderId=slider.id||'';
+  },{passive:true});
+  document.addEventListener('touchend',(e)=>{
+    if(!startSliderId||!e.changedTouches||e.changedTouches.length!==1)return;
+    const t=e.changedTouches[0],dx=t.clientX-startX,dy=t.clientY-startY;
+    const id=startSliderId; startSliderId='';
+    if(Math.abs(dx)<42 || Math.abs(dx)<Math.abs(dy)*1.15)return;
+    const slider=document.getElementById(id); if(!slider)return;
+    window.scrollSlider(id,dx<0?1:-1);
+  },{passive:true});
+})();
 window.getSocialHoverColor = function(network){
 const n = String(network || '').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
 const colors = {
@@ -1110,7 +1090,7 @@ if (imgs.length <= 1) {
     return `<div class="slider-item absolute inset-0 flex items-center justify-center transition-opacity duration-200 ease-out ${active?'opacity-100 z-20':'opacity-0 z-10'}"><img src="${img}" loading="${idx===0?'eager':'lazy'}" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-contain p-4" draggable="false" alt="${String(p.name||'Producto').replace(/"/g,'&quot;')}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}"></div>`;
   }).join('');
   dotsHtml+='</div>';
-  art=`<div class="absolute inset-0 z-10 overflow-hidden" id="${sliderId}" data-index="0" aria-label="Galería de ${String(p.name||'producto').replace(/"/g,'&quot;')}">${slides}<div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center z-30"><button type="button" onclick="window.scrollSlider('${sliderId}',-1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen anterior"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-10 flex items-center justify-center z-30"><button type="button" onclick="window.scrollSlider('${sliderId}',1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen siguiente"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}</div>`;
+  art=`<div class="absolute inset-0 z-10 overflow-hidden product-slider" id="${sliderId}" data-index="0" aria-label="Galería de ${String(p.name||'producto').replace(/"/g,'&quot;')}">${slides}<div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center z-30 slider-nav-arrow"><button type="button" onclick="window.scrollSlider('${sliderId}',-1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen anterior"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-10 flex items-center justify-center z-30 slider-nav-arrow"><button type="button" onclick="window.scrollSlider('${sliderId}',1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen siguiente"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}</div>`;
   setTimeout(()=>window.updateSliderOpacities(sliderId),0);
 }
 const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
