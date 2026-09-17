@@ -867,41 +867,34 @@ setTimeout(() => { window.renderProducts(); grid.style.opacity = '1'; }, 300);
 };
 window.sliderFrames = window.sliderFrames || {};
 window.updateSliderOpacities = function(sliderId) {
-if(window.sliderFrames[sliderId]) cancelAnimationFrame(window.sliderFrames[sliderId]);
-window.sliderFrames[sliderId] = requestAnimationFrame(() => {
-const slider = document.getElementById(sliderId); if (!slider) return;
-const slides = slider.querySelectorAll('.slider-item'); if (slides.length === 0) return;
-const sliderRect = slider.getBoundingClientRect(); const sliderCenter = sliderRect.left + (sliderRect.width / 2);
-let closestIdx = 0; let minDistance = Infinity;
-slides.forEach((slide, idx) => {
-const slideRect = slide.getBoundingClientRect(); const slideCenter = slideRect.left + (slideRect.width / 2);
-/* SE ARREGLÓ EL CÁLCULO DE DISTANCIA */
-const distance = Math.abs(sliderCenter - slideCenter);
-if (distance < minDistance) { minDistance = distance; closestIdx = idx; }
-slide.classList.remove('opacity-100', 'scale-100', 'z-20'); slide.classList.add('opacity-40', 'scale-[0.70]', 'z-10');
-});
-if (slides[closestIdx]) { slides[closestIdx].classList.remove('opacity-40', 'scale-[0.70]', 'z-10'); slides[closestIdx].classList.add('opacity-100', 'scale-100', 'z-20'); }
-const dots = document.querySelectorAll(`.dot-${sliderId}`);
-dots.forEach((dot, idx) => {
-if (idx === closestIdx) { dot.classList.remove('bg-white/40', 'w-1.5'); dot.classList.add('bg-cyan-400', 'w-3'); }
-else { dot.classList.remove('bg-cyan-400', 'w-3'); dot.classList.add('bg-white/40', 'w-1.5'); }
-});
-});
+  if(window.sliderFrames[sliderId]) cancelAnimationFrame(window.sliderFrames[sliderId]);
+  window.sliderFrames[sliderId] = requestAnimationFrame(() => {
+    const slider=document.getElementById(sliderId); if(!slider) return;
+    const slides=slider.querySelectorAll('.slider-item'); if(!slides.length) return;
+    let idx=Number(slider.dataset.index||0); if(!Number.isFinite(idx)||idx<0)idx=0; if(idx>=slides.length)idx=0;
+    slider.dataset.index=String(idx);
+    slides.forEach((slide,i)=>{
+      slide.classList.remove('opacity-100','opacity-0','z-20','z-10');
+      slide.classList.add(i===idx?'opacity-100':'opacity-0',i===idx?'z-20':'z-10');
+      slide.setAttribute('aria-hidden',i===idx?'false':'true');
+    });
+    const dots=document.querySelectorAll(`.dot-${sliderId}`);
+    dots.forEach((dot,i)=>{dot.classList.toggle('bg-cyan-400',i===idx);dot.classList.toggle('w-3',i===idx);dot.classList.toggle('bg-white/40',i!==idx);dot.classList.toggle('w-1.5',i!==idx);});
+  });
 };
 window.scrollSlider = function(id, dir, e) {
-if(e) { e.preventDefault(); e.stopPropagation(); }
-const slider = document.getElementById(id); if(!slider) return;
-const width = slider.querySelector('div') ? slider.querySelector('div').offsetWidth : slider.offsetWidth;
-slider.scrollBy({ left: dir * width, behavior: 'smooth' });
+  if(e){e.preventDefault();e.stopPropagation();}
+  const slider=document.getElementById(id); if(!slider)return;
+  const slides=slider.querySelectorAll('.slider-item'); if(!slides.length)return;
+  let idx=Number(slider.dataset.index||0); if(!Number.isFinite(idx))idx=0;
+  idx=(idx+Number(dir||0)+slides.length)%slides.length;
+  slider.dataset.index=String(idx); window.updateSliderOpacities(id);
 };
 window.scrollToSlide = function(sliderId, idx, e) {
-if(e) { e.preventDefault(); e.stopPropagation(); }
-const slider = document.getElementById(sliderId); const slides = slider.querySelectorAll('.slider-item');
-if(slider && slides[idx]) {
-const slide = slides[idx];
-const scrollLeft = slide.offsetLeft - (slider.offsetWidth - slide.offsetWidth) / 2;
-slider.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-}
+  if(e){e.preventDefault();e.stopPropagation();}
+  const slider=document.getElementById(sliderId); if(!slider)return;
+  const slides=slider.querySelectorAll('.slider-item'); if(idx<0||idx>=slides.length)return;
+  slider.dataset.index=String(idx); window.updateSliderOpacities(sliderId);
 };
 window.getSocialHoverColor = function(network){
 const n = String(network || '').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
@@ -1037,33 +1030,20 @@ else if (Array.isArray(p.images) && p.images.length > 0) imgs = p.images.map(s=>
 imgs = window.protectMediaList(imgs);
 let art = '';
 if (imgs.length <= 1) {
-art = imgs.length === 1 ? `<img src="${imgs[0]}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">` : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+  art = imgs.length === 1
+    ? `<img src="${imgs[0]}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
+    : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
 } else {
-let sliderId = `slider-${p.id}`;
-let dotsHtml = '<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-30 pointer-events-none">';
-let slides = imgs.map((img, idx) => {
-const initialSlideIndex = Math.min(1, imgs.length - 1);
-const isActive = idx === initialSlideIndex;
-const activeClass = isActive ? 'opacity-100 scale-100 z-20' : 'opacity-40 scale-[0.70] z-10';
-let dotClass = isActive ? 'bg-cyan-400 w-3' : 'bg-white/40 w-1.5';
-dotsHtml += `<button type="button" onclick="window.scrollToSlide('${sliderId}', ${idx}, event)" class="dot-${sliderId} h-1.5 ${dotClass} rounded-full transition-all duration-300 pointer-events-auto outline-none cursor-pointer shadow-[0_1px_3px_rgba(0,0,0,0.8)] ignore-drag border-none p-0"></button>`;
-return `<div class="slider-item relative shrink-0 w-[60%] h-[95%] snap-center transition-all duration-500 ease-out flex items-center justify-center ${activeClass}" id="slide-${p.id}-${idx}"><img src="${img}" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}"></div>`;
-}).join('');
-dotsHtml += '</div>';
-art = `<div class="absolute inset-0 z-10 flex overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth group/slider items-center px-[20%]" id="${sliderId}" onscroll="window.updateSliderOpacities('${sliderId}')">${slides}</div><div class="absolute inset-y-0 left-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button type="button" onclick="window.scrollSlider('${sliderId}', -1, event)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-8 flex items-center justify-center opacity-0 md:group-hover:opacity-100 transition-opacity z-30 pointer-events-none"><button type="button" onclick="window.scrollSlider('${sliderId}', 1, event)" class="w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors backdrop-blur-sm border border-white/10 shadow-lg ignore-drag cursor-pointer"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}`;
-/* SE ARREGLÓ EL ENFOQUE DE INICIO DEL SLIDER */
-setTimeout(() => {
-const slider = document.getElementById(sliderId);
-if (slider) {
-const items = slider.querySelectorAll('.slider-item');
-const initialSlideIndex = Math.min(1, items.length - 1);
-const initialSlide = items[initialSlideIndex];
-if (initialSlide) {
-slider.scrollLeft = Math.max(0, initialSlide.offsetLeft - (slider.offsetWidth - initialSlide.offsetWidth) / 2);
-}
-window.updateSliderOpacities(sliderId);
-}
-}, 60);
+  const sliderId=`slider-${p.id}`;
+  let dotsHtml='<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-30 pointer-events-none">';
+  const slides=imgs.map((img,idx)=>{
+    const active=idx===0;
+    dotsHtml+=`<button type="button" onclick="window.scrollToSlide('${sliderId}',${idx},event)" class="dot-${sliderId} h-1.5 ${active?'bg-cyan-400 w-3':'bg-white/40 w-1.5'} rounded-full transition-all duration-200 pointer-events-auto outline-none cursor-pointer ignore-drag border-none p-0" aria-label="Imagen ${idx+1}"></button>`;
+    return `<div class="slider-item absolute inset-0 flex items-center justify-center transition-opacity duration-200 ease-out ${active?'opacity-100 z-20':'opacity-0 z-10'}"><img src="${img}" loading="${idx===0?'eager':'lazy'}" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-contain p-4" draggable="false" alt="${String(p.name||'Producto').replace(/"/g,'&quot;')}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}"></div>`;
+  }).join('');
+  dotsHtml+='</div>';
+  art=`<div class="absolute inset-0 z-10 overflow-hidden" id="${sliderId}" data-index="0" aria-label="Galería de ${String(p.name||'producto').replace(/"/g,'&quot;')}">${slides}<div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center z-30"><button type="button" onclick="window.scrollSlider('${sliderId}',-1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen anterior"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-10 flex items-center justify-center z-30"><button type="button" onclick="window.scrollSlider('${sliderId}',1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen siguiente"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}</div>`;
+  setTimeout(()=>window.updateSliderOpacities(sliderId),0);
 }
 const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
 let badgesHtml = '';
