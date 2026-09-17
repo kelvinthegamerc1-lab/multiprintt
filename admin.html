@@ -566,6 +566,14 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
             <div id="imgbb-upload-queue" class="imgbb-upload-queue"></div>
           </div>
 
+          <div class="imgbb-db-picker" id="imgbb-db-picker" aria-live="polite">
+            <div class="imgbb-db-picker-main">
+              <div class="imgbb-db-picker-title"><i class="fa-solid fa-sort"></i><span>Orden del catálogo</span><small id="imgbb-db-picker-count">0 seleccionadas</small></div>
+              <div id="imgbb-db-order" class="imgbb-db-order"></div>
+            </div>
+            <button type="button" id="imgbb-db-apply" class="imgbb-db-apply" disabled><i class="fa-solid fa-plus"></i><span>Añadir seleccionadas</span></button>
+          </div>
+
           <div class="imgbb-library-toolbar">
             <div>
               <button type="button" class="mini-btn imgbb-filter-icon active" data-imgbb-filter="all" onclick="window.filterImgBBLibrary('all')" title="Todas"><i class="fa-solid fa-border-all"></i> Todas</button>
@@ -739,7 +747,7 @@ window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTE
 window.duplicateSelected=()=>{iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},'*');markDirty('Elemento duplicado');proScheduleSnapshot()};
 window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},'*');window.clearSelection();markDirty('Elemento eliminado');proScheduleSnapshot()};
 window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Date.now()),isNew:!id};const d=data||{};let h='';
-if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','product')">Abrir explorador</button></div>`;
+if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><div class="flex items-center gap-2 mt-2"><button type="button" class="mini-btn" onclick="window.openGallery('db-img','image','product')"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Explorar ImgBB</button><span class="helper">Añade imágenes y ordénalas antes de aplicarlas.</span></div></div>`;
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" value="${esc(d.price||'')}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
 if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><input id="db-vid" class="field" value="${esc(d.src||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-vid','video','media')">Elegir video</button></div>`:'')+`<div><label class="lbl">Tema</label><select id="db-theme" class="field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div>`;
 document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}};
@@ -995,6 +1003,7 @@ function imgbbImageCandidates(x){
   }
   const seen=[];for(const u of expanded)if(u && !seen.includes(u))seen.push(u);return seen;
 }
+window.dbImgBBOrder=Array.isArray(window.dbImgBBOrder)?window.dbImgBBOrder:[];
 function updateImgBBSelectionUI(){
   const n=window.imgbbSelectedIds?.size||0;
   const count=document.getElementById('imgbb-selected-count');if(count)count.textContent=String(n);
@@ -1004,10 +1013,26 @@ function updateImgBBSelectionUI(){
     const selectedVisible=visible.filter(id=>window.imgbbSelectedIds.has(id)).length;
     all.classList.toggle('active',visible.length>0 && selectedVisible===visible.length);
   }
+  const picker=document.getElementById('imgbb-db-picker');
+  if(picker){picker.classList.toggle('is-context',currentGalleryMode==='product');picker.style.display=currentGalleryMode==='product'?'grid':'none';}
+  const pCount=document.getElementById('imgbb-db-picker-count');if(pCount)pCount.textContent=`${window.dbImgBBOrder.length} seleccionada${window.dbImgBBOrder.length===1?'':'s'}`;
+  const orderHost=document.getElementById('imgbb-db-order');
+  if(orderHost){
+    const items=window.dbImgBBOrder.map(id=>window.imgbbLibrary.find(x=>String(x.id)===String(id))).filter(Boolean);
+    orderHost.innerHTML=items.length?items.map((x,pos)=>{
+      const title=x.title||x.name||'Imagen';
+      return `<div class="imgbb-db-order-item" data-db-order-id="${esc(String(x.id))}"><span class="imgbb-db-order-index">${pos+1}</span><span class="imgbb-db-order-name" title="${esc(title)}">${esc(title)}</span><button type="button" class="imgbb-db-order-btn" data-db-order-up="${esc(String(x.id))}" ${pos===0?'disabled':''} title="Subir"><i class="fa-solid fa-chevron-up"></i></button><button type="button" class="imgbb-db-order-btn" data-db-order-down="${esc(String(x.id))}" ${pos===items.length-1?'disabled':''} title="Bajar"><i class="fa-solid fa-chevron-down"></i></button></div>`;
+    }).join(''):'<span class="imgbb-db-order-empty">Selecciona imágenes con el check para preparar su orden.</span>';
+    orderHost.querySelectorAll('[data-db-order-up]').forEach(btn=>btn.onclick=()=>moveDbImgBBOrder(btn.dataset.dbOrderUp,-1));
+    orderHost.querySelectorAll('[data-db-order-down]').forEach(btn=>btn.onclick=()=>moveDbImgBBOrder(btn.dataset.dbOrderDown,1));
+  }
+  const apply=document.getElementById('imgbb-db-apply');if(apply){apply.disabled=currentGalleryMode!=='product'||window.dbImgBBOrder.length===0;apply.onclick=window.applyDbImgBBSelection;}
 }
+function moveDbImgBBOrder(id,dir){const arr=window.dbImgBBOrder;const pos=arr.indexOf(String(id));if(pos<0)return;const next=pos+dir;if(next<0||next>=arr.length)return;[arr[pos],arr[next]]=[arr[next],arr[pos]];updateImgBBSelectionUI();}
 window.toggleImgBBSelection=(id,checked)=>{
   id=String(id||'');if(!id)return;
-  if(checked)window.imgbbSelectedIds.add(id);else window.imgbbSelectedIds.delete(id);
+  if(checked){window.imgbbSelectedIds.add(id);if(currentGalleryMode==='product'&&!window.dbImgBBOrder.includes(id))window.dbImgBBOrder.push(id);}
+  else{window.imgbbSelectedIds.delete(id);const pos=window.dbImgBBOrder.indexOf(id);if(pos>=0)window.dbImgBBOrder.splice(pos,1);}
   updateImgBBSelectionUI();
   const card=document.querySelector(`#imgbb-library-grid [data-id="${CSS.escape(id)}"]`);if(card)card.classList.toggle('is-selected',checked);
 };
@@ -1015,10 +1040,22 @@ window.toggleAllImgBBSelection=()=>{
   const visible=(window.imgbbFiltered||[]).slice(0,window.imgbbPageSize||48).map(x=>String(x.id||'')).filter(Boolean);
   if(!visible.length)return;
   const allSelected=visible.every(id=>window.imgbbSelectedIds.has(id));
-  visible.forEach(id=>allSelected?window.imgbbSelectedIds.delete(id):window.imgbbSelectedIds.add(id));
+  visible.forEach(id=>{if(allSelected){window.imgbbSelectedIds.delete(id);const pos=window.dbImgBBOrder.indexOf(id);if(pos>=0)window.dbImgBBOrder.splice(pos,1);}else{window.imgbbSelectedIds.add(id);if(currentGalleryMode==='product'&&!window.dbImgBBOrder.includes(id))window.dbImgBBOrder.push(id);}});
   window.renderImgBBLibrary();
 };
-window.clearImgBBSelection=()=>{window.imgbbSelectedIds.clear();window.renderImgBBLibrary();};
+window.clearImgBBSelection=()=>{window.imgbbSelectedIds.clear();window.dbImgBBOrder=[];window.renderImgBBLibrary();};
+window.applyDbImgBBSelection=()=>{
+  if(currentGalleryMode!=='product')return;
+  const input=document.getElementById(activeMediaInput);if(!input)return;
+  const urls=window.dbImgBBOrder.map(id=>window.imgbbLibrary.find(x=>String(x.id)===String(id))).filter(Boolean).map(x=>normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'')).filter(Boolean);
+  if(!urls.length)return window.showToast('Selecciona al menos una imagen de ImgBB');
+  const existing=String(input.value||'').split(/\r?\n|,/).map(normalizeSelectedMediaUrl).filter(Boolean);
+  const merged=[...existing];urls.forEach(u=>{if(!merged.includes(u))merged.push(u)});
+  input.value=merged.join('\n');input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));
+  window.showToast(`${urls.length} imagen${urls.length===1?'':'es'} añadida${urls.length===1?'':'s'} al orden del catálogo`);
+  window.dbImgBBOrder=[];window.imgbbSelectedIds.clear();updateImgBBSelectionUI();window.closeModal('gallery-modal');
+};
+
 window.loadImgBBLibrary=async(refresh=false)=>{
   const host=document.getElementById('imgbb-library-grid'),count=document.getElementById('imgbb-library-count'),tabCount=document.getElementById('imgbb-tab-count');
   if(!host)return;
@@ -1069,7 +1106,7 @@ window.renderImgBBLibrary=()=>{
     let pos=0;img.addEventListener('error',()=>{if(pos+1<list.length){pos++;img.src=list[pos]}}, {once:false});
   });
   host.querySelectorAll('[data-imgbb-select]').forEach(input=>input.addEventListener('change',()=>window.toggleImgBBSelection(input.dataset.imgbbSelect,input.checked)));
-  host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(x)window.selectMedia(normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl))});
+  host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(!x)return;if(currentGalleryMode==='product'){const id=String(x.id||'');window.toggleImgBBSelection(id,!window.imgbbSelectedIds.has(id));return;}window.selectMedia(normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl))});
   host.querySelectorAll('[data-copy-imgbb]').forEach(btn=>btn.onclick=async()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.copyImgbb);if(!x)return;const direct=normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'');try{await navigator.clipboard.writeText(direct);window.showToast('URL directa de ImgBB copiada')}catch{window.showToast('No se pudo copiar la URL')}});
   host.querySelectorAll('[data-delete-imgbb]').forEach(btn=>btn.onclick=()=>window.deleteImgBBRecord(btn.dataset.deleteImgbb));
   const more=document.getElementById('imgbb-more');if(more)more.classList.toggle('hidden',window.imgbbPageSize>=window.imgbbFiltered.length);
@@ -1099,7 +1136,27 @@ window.toggleMediaSources=()=>{window.switchMediaExplorerTab('sources');};
 window.saveMediaSources=()=>{const val=id=>document.getElementById(id)?.value||'';const m={generalMode:val('media-mode-general')||'auto',productMode:val('media-mode-products')||'auto',generalJson:val('media-json-general').trim()||DEFAULT_MEDIA_SOURCES.generalJson,generalBase:val('media-base-general').trim(),productJson:val('media-json-products').trim()||DEFAULT_MEDIA_SOURCES.productJson,productBase:val('media-base-products').trim(),manualGeneral:val('media-manual-general').trim(),manualProducts:val('media-manual-products').trim()};localStorage.setItem('multiprintt_media_sources',JSON.stringify(m));syncMediaSourcesToFrame();window.showToast('Fuentes de medios actualizadas');window.openGallery(activeMediaInput,currentGalleryType,currentGalleryMode)};
 window.resetMediaSources=()=>{localStorage.removeItem('multiprintt_media_sources');window.toggleMediaSources();syncMediaSourcesToFrame();window.showToast('Fuentes predeterminadas restauradas');window.openGallery(activeMediaInput,currentGalleryType,currentGalleryMode)};
 async function fetchGallery(mode){const cfg=sourceConfigFor(mode);if(cfg.mode==='manual') return parseManualMedia(cfg.manual,cfg.base);try{const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),7000);const r=await fetch(cfg.json,{cache:'no-store',signal:controller.signal});clearTimeout(timeout);if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();let arr=Array.isArray(d)?d:(d.items||d.imagenes||Object.values(d).find(Array.isArray)||[]);return arr.map((x,i)=>{const obj=typeof x==='string'?{url:x}:x||{};let u=String(obj.url||obj.src||'');if(u&&!/^(https?:|data:|blob:|\/\/)/i.test(u))u=(cfg.base||'').replace(/\/$/,'/')+u.replace(/^\/+/, '');return{type:/\.(mp4|webm|mov|m4v)($|\?)/i.test(u)?'video':'image',url:u,title:String(obj.title||obj.name||u.split('/').pop()||('Medio '+(i+1)))}}).filter(x=>x.url)}catch(e){console.warn('Galería:',e);return defaultGallery}}
-window.openGallery=async(inputId,filter='all',mode='media')=>{activeMediaInput=inputId;currentGalleryMode=mode;currentGalleryType=filter;window.gallerySelectionOrder=[];window.galleryMultiSelect=(mode==='product');window.openModal('gallery-modal');window.switchMediaExplorerTab('library');const multi=document.getElementById('gallery-multi-toggle');if(multi)multi.checked=window.galleryMultiSelect;window.updateGallerySelectionUI();const search=document.getElementById('gallery-search');if(search)search.value='';const more=document.getElementById('gallery-more');if(more)more.classList.add('hidden');const count=document.getElementById('gallery-count');if(count)count.textContent='Cargando…';document.getElementById('gallery-grid').innerHTML='<div class="col-span-full text-zinc-600 text-xs py-8 text-center"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Cargando catálogo…</div>';galleryDataCache=await fetchGallery(mode);window.renderGallery(true);window.loadImgBBLibrary(false)};
+window.openGallery=async(inputId,filter='all',mode='media')=>{
+  activeMediaInput=inputId;
+  currentGalleryMode=mode;
+  currentGalleryType=filter;
+  window.gallerySelectionOrder=[];
+  window.galleryMultiSelect=(mode==='product');
+  window.dbImgBBOrder=[];
+  if(window.imgbbSelectedIds?.clear)window.imgbbSelectedIds.clear();
+  window.openModal('gallery-modal');
+  window.switchMediaExplorerTab(mode==='product'?'imgbb':'library');
+  const multi=document.getElementById('gallery-multi-toggle');if(multi)multi.checked=window.galleryMultiSelect;
+  window.updateGallerySelectionUI();
+  const dbPicker=document.getElementById('imgbb-db-picker');if(dbPicker){dbPicker.classList.toggle('is-context',mode==='product');dbPicker.style.display=mode==='product'?'grid':'none';}
+  const search=document.getElementById('gallery-search');if(search)search.value='';
+  const more=document.getElementById('gallery-more');if(more)more.classList.add('hidden');
+  const count=document.getElementById('gallery-count');if(count)count.textContent='Cargando…';
+  const grid=document.getElementById('gallery-grid');if(grid)grid.innerHTML='<div class="col-span-full text-zinc-600 text-xs py-8 text-center"><i class="fa-solid fa-circle-notch fa-spin mr-2"></i>Cargando catálogo…</div>';
+  galleryDataCache=await fetchGallery(mode);
+  if(mode!=='product')window.renderGallery(true);
+  window.loadImgBBLibrary(true);
+};
 window.filterGallery=t=>{currentGalleryType=t;document.querySelectorAll('[data-gallery-filter]').forEach(b=>b.classList.toggle('active',b.dataset.galleryFilter===t));window.renderGallery(true)};
 window.galleryPageSize=40;
 window.gallerySelected=-1;
@@ -2102,5 +2159,18 @@ window.filterSocials('');</script>
   #gallery-modal #imgbb-hosting-section #imgbb-upload-queue{height:130px!important;min-height:130px!important;max-height:130px!important}
   #gallery-modal #imgbb-hosting-section .imgbb-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+</style>
+
+<style id="multiprintt-db-imgbb-picker-fix">
+#gallery-modal #imgbb-db-picker{display:none;position:absolute!important;left:0;right:300px;bottom:28px;min-height:54px;z-index:40;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:6px 8px;background:rgba(7,9,12,.98);border-top:1px solid rgba(37,216,255,.16);box-shadow:0 -8px 24px rgba(0,0,0,.22)}
+#gallery-modal #imgbb-db-picker.is-context{display:grid!important}
+#gallery-modal #imgbb-db-picker .imgbb-db-picker-main{min-width:0;display:flex;align-items:center;gap:10px}
+#gallery-modal #imgbb-db-picker .imgbb-db-picker-title{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:8px;font-weight:800;color:#d9dee5}.imgbb-db-picker-title i{color:#25d8ff}.imgbb-db-picker-title small{color:#69727d;font-size:6.5px;font-weight:700}
+#gallery-modal #imgbb-db-picker .imgbb-db-order{display:flex;align-items:center;gap:4px;min-width:0;overflow-x:auto;padding:1px 0}
+#gallery-modal #imgbb-db-picker .imgbb-db-order-item{display:flex;align-items:center;gap:4px;flex:0 0 auto;height:30px;padding:0 4px;background:#0b0e12;border:1px solid rgba(255,255,255,.07);border-radius:2px}
+#gallery-modal #imgbb-db-picker .imgbb-db-order-index{width:16px;height:16px;display:grid;place-items:center;background:#25d8ff;color:#061015;font-size:7px;font-weight:900}.imgbb-db-order-name{max-width:120px;color:#bcc4cd;font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.imgbb-db-order-btn{width:18px;height:18px;display:grid;place-items:center;padding:0;border:1px solid rgba(255,255,255,.08);background:#0f1318;color:#7f8a96;border-radius:2px;cursor:pointer}.imgbb-db-order-btn:hover:not(:disabled){color:#25d8ff;border-color:rgba(37,216,255,.28)}.imgbb-db-order-btn:disabled{opacity:.3;cursor:default}.imgbb-db-order-empty{font-size:7px;color:#59616b;white-space:nowrap}
+#gallery-modal #imgbb-db-picker .imgbb-db-apply{height:30px;padding:0 10px;border:1px solid rgba(37,216,255,.25);background:#25d8ff;color:#061015;font-size:7px;font-weight:900;display:inline-flex;align-items:center;gap:5px;border-radius:2px;cursor:pointer;white-space:nowrap}.imgbb-db-apply:disabled{opacity:.35;cursor:default}
+@media(max-width:900px){#gallery-modal #imgbb-db-picker{right:252px}}
+@media(max-width:720px){#gallery-modal #imgbb-db-picker{left:0;right:0;bottom:28px;grid-template-columns:minmax(0,1fr) auto}.imgbb-db-picker-title{display:none!important}.imgbb-db-order-name{max-width:90px!important}}
 </style>
 </body></html>
