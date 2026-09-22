@@ -627,7 +627,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.09.22.02';
+const MP_ADMIN_BUILD='2026.09.22.03';
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const IMGBB_API_KEY='e195da6dc21a1ff7454d2e86ae7719f2';
@@ -726,7 +726,7 @@ window.showToast(auditOk?'Sesión autenticada y permisos de edición verificados
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true);setTimeout(()=>{migrateProductImgBBVariants();migrateLegacyProductDemand()},900)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true);setTimeout(()=>{(async()=>{await migrateProductImgBBVariants();await migrateProductImgBBDirectUrls();await migrateLegacyProductDemand()})()},900)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
@@ -769,13 +769,45 @@ window.resetSelectedStyles=()=>{if(!currentSelection)return;const props=['color'
 window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTED'},'*');
 window.duplicateSelected=()=>{iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},'*');markDirty('Elemento duplicado');proScheduleSnapshot()};
 window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},'*');window.clearSelection();markDirty('Elemento eliminado');proScheduleSnapshot()};
+function mpAdminParseMoney(value,fallback=NaN){
+  if(typeof value==='number') return Number.isFinite(value)?value:fallback;
+  let s=String(value??'').trim(); if(!s)return fallback;
+  s=s.replace(/[^0-9,.-]/g,''); if(!s)return fallback;
+  if(s.includes(',')&&s.includes('.')){if(s.lastIndexOf(',')>s.lastIndexOf('.'))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(/,/g,'');}
+  else if(s.includes(',')){const parts=s.split(',');if(parts.length===2&&parts[1].length<=2)s=parts[0]+'.'+parts[1];else s=s.replace(/,/g,'');}
+  const n=Number(s);return Number.isFinite(n)?n:fallback;
+}
+function mpAdminProductPrice(d){
+  const direct=mpAdminParseMoney(d?.price,NaN),legacy=mpAdminParseMoney(d?.precio??d?.amount??d?.valor,NaN);
+  if(Number.isFinite(direct)&&!(direct===0&&Number.isFinite(legacy)&&legacy>0))return Math.max(0,direct);
+  return Number.isFinite(legacy)?Math.max(0,legacy):0;
+}
+function mpAdminProductDiscount(d){const n=mpAdminParseMoney(d?.discount??d?.descuento??d?.discountPercent,0);return Math.min(100,Math.max(0,n));}
+function mpAdminIsPromo(d){const cat=String(d?.category||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');return d?.isPromo===true||d?.promocional===true||d?.promo===true||d?.isPromotional===true||cat==='promocionales'||mpAdminProductDiscount(d)>0;}
 window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Date.now()),isNew:!id};const d=data||{};let h='';
-if(type==='product')h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${['textil','jarros','imp-general','packs'].map(x=>`<option value="${x}" ${d.category===x?'selected':''}>${x}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" step=".01" value="${esc(d.price??0)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" min="0" max="100" value="${esc(d.discount??0)}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${d.isPromo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><div class="flex items-center gap-2 mt-2"><button type="button" class="mini-btn" onclick="window.openGallery('db-img','image','product')"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Explorar ImgBB</button><span class="helper">Añade imágenes y ordénalas antes de aplicarlas.</span></div></div>`;
-if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" value="${esc(d.price||'')}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
+if(type==='product'){
+  const categories=['textil','jarros','imp-general','packs','promocionales'];
+  const currentCat=String(d.category||'').trim().toLowerCase(); if(currentCat && !categories.includes(currentCat)) categories.unshift(currentCat);
+  const price=mpAdminProductPrice(d), discount=mpAdminProductDiscount(d), promo=mpAdminIsPromo(d);
+  h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${categories.map(x=>`<option value="${esc(x)}" ${currentCat===x?'selected':''}>${esc(x==='promocionales'?'promocionales':x)}</option>`).join('')}</select></div><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" inputmode="decimal" step=".01" min="0" value="${price.toFixed(2)}"></div></div><div class="grid2"><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" inputmode="decimal" min="0" max="100" step=".01" value="${discount}"></div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${promo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><div class="flex items-center gap-2 mt-2"><button type="button" class="mini-btn" onclick="window.openGallery('db-img','image','product')"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Explorar ImgBB</button><span class="helper">Añade imágenes y ordénalas antes de aplicarlas.</span></div></div>`;
+}
+if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" inputmode="decimal" value="${esc(String(mpAdminParseMoney(d.price??d.precio,'') ?? ''))}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
 if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><input id="db-vid" class="field" value="${esc(d.src||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-vid','video','media')">Elegir video</button></div>`:'')+`<div><label class="lbl">Tema</label><select id="db-theme" class="field"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option></select></div>`;
 document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}};
 function normalizeProductImageField(raw){
   return String(raw??'').split(/\r?\n|,/).map(v=>normalizeSelectedMediaUrl(v)).filter(Boolean).join('\n');
+}
+function imgbbDirectUrl(record){
+  const vals=[record?.mediumUrl,record?.displayUrl,record?.url,record?.thumbUrl,record?.image?.url]
+    .map(normalizeSelectedMediaUrl).filter(Boolean);
+  return vals.find(u=>/^https?:\/\/i\.ibb\.co\//i.test(u)) || '';
+}
+function imgbbRecordMatchesUrl(record,original){
+  const target=normalizeSelectedMediaUrl(original);
+  if(!target)return false;
+  const candidates=[record?.url,record?.displayUrl,record?.mediumUrl,record?.thumbUrl,record?.viewerUrl,record?.url_viewer]
+    .map(normalizeSelectedMediaUrl).filter(Boolean);
+  return candidates.includes(target) || candidates.some(u=>u===target.replace(/^https?:\/\/www\.ibb\.co\//i,'https://ibb.co/'));
 }
 function buildProductImgBBVariants(raw){
   const variants={};
@@ -785,11 +817,12 @@ function buildProductImgBBVariants(raw){
   if(!library.length)return variants;
   for(const original of urls){
     if(!isImgBB(original))continue;
-    const rec=library.find(x=>[x?.url,x?.displayUrl,x?.mediumUrl,x?.thumbUrl].filter(Boolean).some(v=>normalizeSelectedMediaUrl(v)===original));
+    const rec=library.find(x=>imgbbRecordMatchesUrl(x,original));
     if(!rec)continue;
-    const medium=normalizeSelectedMediaUrl(rec.mediumUrl||rec.displayUrl||rec.url||'');
-    const display=normalizeSelectedMediaUrl(rec.displayUrl||rec.mediumUrl||rec.url||'');
-    const thumb=normalizeSelectedMediaUrl(rec.thumbUrl||rec.displayUrl||rec.mediumUrl||rec.url||'');
+    const direct=imgbbDirectUrl(rec);
+    const medium=normalizeSelectedMediaUrl(rec.mediumUrl||rec.displayUrl||direct||'');
+    const display=normalizeSelectedMediaUrl(rec.displayUrl||rec.mediumUrl||direct||'');
+    const thumb=normalizeSelectedMediaUrl(rec.thumbUrl||rec.displayUrl||rec.mediumUrl||direct||'');
     if(medium||display||thumb)variants[original]={mediumUrl:medium,displayUrl:display,thumbUrl:thumb};
   }
   return variants;
@@ -799,9 +832,9 @@ async function publishImgBBSpeedManifest(){
     await ensureAdminWriteSession();
     const items={};
     for(const r of (window.imgbbLibrary||[])){
-      const original=normalizeSelectedMediaUrl(r?.url||'');
+      const original=imgbbDirectUrl(r)||normalizeSelectedMediaUrl(r?.url||r?.displayUrl||r?.thumbUrl||'');
       if(!original)continue;
-      items[original]={mediumUrl:normalizeSelectedMediaUrl(r.mediumUrl||r.displayUrl||r.url||''),displayUrl:normalizeSelectedMediaUrl(r.displayUrl||r.mediumUrl||r.url||''),thumbUrl:normalizeSelectedMediaUrl(r.thumbUrl||r.displayUrl||r.mediumUrl||r.url||'')};
+      items[original]={mediumUrl:normalizeSelectedMediaUrl(r.mediumUrl||r.displayUrl||original||''),displayUrl:normalizeSelectedMediaUrl(r.displayUrl||r.mediumUrl||original||''),thumbUrl:normalizeSelectedMediaUrl(r.thumbUrl||r.displayUrl||r.mediumUrl||original||'')};
     }
     if(!Object.keys(items).length && (window.imgbbLibrary||[]).length) return;
     await setDoc(doc(db,'artifacts',APP_ID,'public','data','imgbbSpeedManifest','current'),{version:2,updatedAt:Date.now(),items},{merge:true});
@@ -852,10 +885,48 @@ async function migrateProductImgBBVariants(){
     try{localStorage.setItem('multiprintt_imgbb_product_variants_v2','1')}catch(e){}
   }catch(e){console.warn('Migración de variantes ImgBB:',e);}
 }
+async function migrateProductImgBBDirectUrls(){
+  try{
+    if(localStorage.getItem('multiprintt_imgbb_product_direct_urls_v3')==='1') return;
+    await ensureAdminWriteSession();
+    if(!Array.isArray(window.imgbbLibrary)||!window.imgbbLibrary.length)await syncImgBBSharedLibrary();
+    const library=Array.isArray(window.imgbbLibrary)?window.imgbbLibrary:[];
+    if(!library.length){console.warn('Migración v3 ImgBB pospuesta: biblioteca vacía.');return;}
+    const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data','products'));
+    const jobs=[];
+    for(const docSnap of snap.docs){
+      const p={id:docSnap.id,...docSnap.data()};
+      const raw=String(p.image??'');
+      if(!raw.trim()) continue;
+      const urls=normalizeProductImageField(raw).split(/\r?\n/).map(normalizeSelectedMediaUrl).filter(Boolean);
+      let changed=false;
+      const normalized=urls.map(u=>{
+        if(!/^https?:\/\/(?:i\.)?ibb\.co\//i.test(u)) return u;
+        const rec=library.find(x=>imgbbRecordMatchesUrl(x,u));
+        const direct=rec?imgbbDirectUrl(rec):'';
+        if(direct && direct!==u){changed=true;return direct;}
+        return u;
+      });
+      const nextImage=normalized.join('\n');
+      const variants={...(p.imageVariants&&typeof p.imageVariants==='object'?p.imageVariants:{})};
+      const addVariants=buildProductImgBBVariants(nextImage);
+      for(const [u,v] of Object.entries(addVariants)){
+        const prev=variants[u];
+        if(!prev||prev.mediumUrl!==v.mediumUrl||prev.displayUrl!==v.displayUrl||prev.thumbUrl!==v.thumbUrl){variants[u]=v;changed=true;}
+      }
+      if(changed){
+        jobs.push(setDoc(doc(db,'artifacts',APP_ID,'public','data','products',docSnap.id),{image:nextImage,imageVariants:variants},{merge:true}));
+      }
+      if(jobs.length>=8){await Promise.all(jobs.splice(0,jobs.length));}
+    }
+    if(jobs.length)await Promise.all(jobs);
+    localStorage.setItem('multiprintt_imgbb_product_direct_urls_v3','1');
+  }catch(e){console.warn('Migración de URLs directas ImgBB en productos:',e);}
+}
 window.saveDbItem=async()=>{
 const t=currentDbItem.type;let payload={};
-if(t==='product'){const imageField=normalizeProductImageField(document.getElementById('db-img').value);payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:imageField,imageVariants:buildProductImgBBVariants(imageField),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};}
-if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};
+if(t==='product'){const imageField=normalizeProductImageField(document.getElementById('db-img').value);const price=Math.max(0,mpAdminParseMoney(document.getElementById('db-price').value,0));const discount=Math.min(100,Math.max(0,mpAdminParseMoney(document.getElementById('db-discount').value,0)));const category=document.getElementById('db-cat').value;payload={name:document.getElementById('db-name').value.trim(),category,price,discount,image:imageField,imageVariants:buildProductImgBBVariants(imageField),isPromo:document.getElementById('db-promo').checked||category==='promocionales'||discount>0,isBestSeller:document.getElementById('db-bestseller').checked};}
+if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};const coursePrice=mpAdminParseMoney(payload.price,NaN);if(Number.isFinite(coursePrice))payload.price=String(coursePrice.toFixed(2));
 if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};
 if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();
 try{
@@ -1048,7 +1119,7 @@ async function saveImgBBSharedRecord(record){
     const id=String(record.id||record.url||'').trim();if(!id)return false;
     const safe={...record};delete safe.originalFile;delete safe.file;delete safe.originalBlob;delete safe.base64;delete safe.dataUrl;delete safe.blob;
     await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId(record)),{...safe,id},{merge:true});
-    const sourceUrl=String(record.url||record.displayUrl||record.thumbUrl||'').trim();
+    const sourceUrl=imgbbDirectUrl(record)||String(record.url||record.displayUrl||record.thumbUrl||'').trim();
     if(sourceUrl){
       await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_URL_INDEX_COLLECTION,imgbbUrlIndexId(sourceUrl)),{
         id, url:sourceUrl, displayUrl:String(record.displayUrl||''), thumbUrl:String(record.thumbUrl||''), mediumUrl:String(record.mediumUrl||''), updatedAt:Date.now()
@@ -1063,7 +1134,7 @@ async function deleteImgBBSharedRecord(recordOrId){
     const rec=typeof recordOrId==='string' ? (window.imgbbLibrary||[]).find(x=>String(x.id||'')===String(recordOrId)) : recordOrId;
     const id=String(rec?.id||recordOrId||'').trim();
     if(id) await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId({id})));
-    const sourceUrl=String(rec?.url||rec?.displayUrl||rec?.thumbUrl||'').trim();
+    const sourceUrl=imgbbDirectUrl(rec)||String(rec?.url||rec?.displayUrl||rec?.thumbUrl||'').trim();
     if(sourceUrl) await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_URL_INDEX_COLLECTION,imgbbUrlIndexId(sourceUrl)));
   }catch(e){console.warn('No se pudo eliminar el registro compartido de ImgBB:',e)}
 }
@@ -1109,8 +1180,12 @@ async function uploadOneImgBB(file,displayName,category){
   let d=null;try{d=await r.json()}catch{}
   if(!r.ok||!d?.success)throw new Error(d?.error?.message||`ImgBB respondió HTTP ${r.status}`);
   const data=d.data||{};
-  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'imp-general'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.medium?.url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.medium?.url||data.image?.url||''),mediumUrl:String(data.medium?.url||data.display_url||data.image?.url||data.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb',transparent:null,transparencyDetected:null};
-  if(!record.url)throw new Error('ImgBB no devolvió una URL utilizable.');
+  const directUrl=normalizeSelectedMediaUrl(data.image?.url||data.url||data.medium?.url||data.display_url||'');
+  const displayUrl=normalizeSelectedMediaUrl(data.display_url||data.medium?.url||directUrl||'');
+  const mediumUrl=normalizeSelectedMediaUrl(data.medium?.url||data.display_url||directUrl||'');
+  const thumbUrl=normalizeSelectedMediaUrl(data.thumb?.url||data.display_url||data.medium?.url||directUrl||'');
+  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'imp-general'),url:directUrl,displayUrl,thumbUrl,mediumUrl,viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb',transparent:null,transparencyDetected:null};
+  if(!/^https?:\/\/i\.ibb\.co\//i.test(record.url))throw new Error('ImgBB respondió sin una URL CDN directa utilizable.');
   return record;
 }
 window.uploadImgBBBatch=async()=>{
@@ -1210,7 +1285,7 @@ window.deleteImgBBRecord=async(id)=>{
 };
 window.imgbbSelectedIds=window.imgbbSelectedIds instanceof Set?window.imgbbSelectedIds:new Set();
 function imgbbImageCandidates(x){
-  const raw=[x?.url,x?.displayUrl,x?.thumbUrl].map(normalizeSelectedMediaUrl).filter(Boolean);
+  const raw=[imgbbDirectUrl(x),x?.url,x?.displayUrl,x?.thumbUrl].map(normalizeSelectedMediaUrl).filter(Boolean);
   const expanded=[];
   for(const u of raw){
     if(/^https?:\/\/(?:www\.)?ibb\.co\//i.test(u) && x?.displayUrl) expanded.push(normalizeSelectedMediaUrl(x.displayUrl));
@@ -1264,7 +1339,7 @@ window.clearImgBBSelection=()=>{window.imgbbSelectedIds.clear();window.dbImgBBOr
 window.applyDbImgBBSelection=()=>{
   if(currentGalleryMode!=='product')return;
   const input=document.getElementById(activeMediaInput);if(!input)return;
-  const urls=window.dbImgBBOrder.map(id=>window.imgbbLibrary.find(x=>String(x.id)===String(id))).filter(Boolean).map(x=>normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'')).filter(Boolean);
+  const urls=window.dbImgBBOrder.map(id=>window.imgbbLibrary.find(x=>String(x.id)===String(id))).filter(Boolean).map(x=>imgbbDirectUrl(x)||normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'')).filter(Boolean);
   if(!urls.length)return window.showToast('Selecciona al menos una imagen de ImgBB');
   const existing=String(input.value||'').split(/\r?\n|,/).map(normalizeSelectedMediaUrl).filter(Boolean);
   const merged=[...existing];urls.forEach(u=>{if(!merged.includes(u))merged.push(u)});
@@ -1297,7 +1372,7 @@ window.renderImgBBLibrary=()=>{
   if(!window.imgbbFiltered.length){host.innerHTML='<div class="media-empty col-span-full">No hay imágenes disponibles con este filtro.</div>';document.getElementById('imgbb-more')?.classList.add('hidden');updateImgBBSelectionUI();return;}
   const arr=window.imgbbFiltered.slice(0,window.imgbbPageSize);
   host.innerHTML=arr.map((x)=>{
-    const candidates=imgbbImageCandidates(x);const direct=normalizeSelectedMediaUrl(x.url||x.displayUrl||'');const url=normalizeSelectedMediaUrl(x.thumbUrl||x.displayUrl||x.url||'');
+    const candidates=imgbbImageCandidates(x);const direct=imgbbDirectUrl(x)||normalizeSelectedMediaUrl(x.url||x.displayUrl||'');const url=normalizeSelectedMediaUrl(x.thumbUrl||x.mediumUrl||x.displayUrl||direct||'');
     const noTransparency=x.transparent===false||x.transparencyDetected===false;
     const id=String(x.id||'');const selected=window.imgbbSelectedIds.has(id);
     const title=x.title||x.name||'Sin nombre';
@@ -1325,8 +1400,8 @@ window.renderImgBBLibrary=()=>{
     let pos=0;img.addEventListener('error',()=>{if(pos+1<list.length){pos++;img.src=list[pos]}}, {once:false});
   });
   host.querySelectorAll('[data-imgbb-select]').forEach(input=>input.addEventListener('change',()=>window.toggleImgBBSelection(input.dataset.imgbbSelect,input.checked)));
-  host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(!x)return;if(currentGalleryMode==='product'){const id=String(x.id||'');window.toggleImgBBSelection(id,!window.imgbbSelectedIds.has(id));window.renderImgBBLibrary();return;}window.selectMedia(normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl))});
-  host.querySelectorAll('[data-copy-imgbb]').forEach(btn=>btn.onclick=async()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.copyImgbb);if(!x)return;const direct=normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'');try{await navigator.clipboard.writeText(direct);window.showToast('URL directa de ImgBB copiada')}catch{window.showToast('No se pudo copiar la URL')}});
+  host.querySelectorAll('[data-use-imgbb]').forEach(btn=>btn.onclick=()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.useImgbb);if(!x)return;if(currentGalleryMode==='product'){const id=String(x.id||'');window.toggleImgBBSelection(id,!window.imgbbSelectedIds.has(id));window.renderImgBBLibrary();return;}window.selectMedia(imgbbDirectUrl(x)||normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl))});
+  host.querySelectorAll('[data-copy-imgbb]').forEach(btn=>btn.onclick=async()=>{const x=window.imgbbLibrary.find(v=>v.id===btn.dataset.copyImgbb);if(!x)return;const direct=imgbbDirectUrl(x)||normalizeSelectedMediaUrl(x.url||x.displayUrl||x.thumbUrl||'');try{await navigator.clipboard.writeText(direct);window.showToast('URL directa de ImgBB copiada')}catch{window.showToast('No se pudo copiar la URL')}});
   host.querySelectorAll('[data-delete-imgbb]').forEach(btn=>btn.onclick=()=>window.deleteImgBBRecord(btn.dataset.deleteImgbb));
   const more=document.getElementById('imgbb-more');if(more)more.classList.toggle('hidden',window.imgbbPageSize>=window.imgbbFiltered.length);
   updateImgBBSelectionUI();
