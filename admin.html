@@ -626,7 +626,7 @@ https://www.youtube.com/..."></textarea></div></div><div class="pro-divider"></d
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
-const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}const APP_ID="multiprintt-web";
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const IMGBB_API_KEY='e195da6dc21a1ff7454d2e86ae7719f2';
@@ -680,14 +680,33 @@ window.closeModal=id=>document.getElementById(id)?.classList.remove('open');
 window.openModal=id=>document.getElementById(id)?.classList.add('open');
 function setSaveState(state,label){const dot=document.getElementById('save-dot'),txt=document.getElementById('save-label');dot.className='dot '+(state==='ok'?'ok':state==='busy'?'busy':state==='err'?'err':'');txt.textContent=label||'Sin cambios'}
 let auditPendingChanges=[];let auditLastRevision=0;const auditSessionId=(crypto?.randomUUID?crypto.randomUUID():('sess-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)));let auditRows=[];
+async function ensureAdminWriteSession(){
+  try{ if(typeof auth?.authStateReady==='function') await auth.authStateReady(); }catch(e){ console.warn('Auth state ready:',e); }
+  const u=auth?.currentUser;
+  if(!u || u.isAnonymous) throw Object.assign(new Error('Sesión administrativa no disponible.'),{code:'auth/not-ready'});
+  try{ await u.getIdToken(true); }catch(e){ console.warn('No se pudo renovar el token; se continúa con la sesión actual.',e); }
+  return u;
+}
+async function writeAdminAudit(label,mode='db'){ 
+  try{
+    const u=await ensureAdminWriteSession();
+    await addDoc(collection(db,'artifacts',APP_ID,'public','data','auditLogs'),{
+      sessionId:auditSessionId,uid:u.uid,email:u.email||'Usuario autenticado',createdAt:Date.now(),mode,revisionFrom:changeRevision,revisionTo:changeRevision,changeCount:1,
+      changes:[{label:String(label||'Cambio'),time:new Date().toISOString(),localTime:new Date().toLocaleString('es-EC',{dateStyle:'short',timeStyle:'medium'}),element:'Base de datos',device:responsiveDevice||''}]
+    });
+    return true;
+  }catch(e){ console.warn('No se pudo registrar evento de auditoría:',e); return false; }
+}
 function currentAuditActor(){const u=auth?.currentUser;return {uid:u?.uid||'',email:u?.email||'Usuario autenticado'};}
 function queueAuditChange(label){const actor=currentAuditActor();auditPendingChanges.push({label:String(label||'Cambio'),revision:changeRevision,time:new Date().toISOString(),localTime:new Date().toLocaleString('es-EC',{dateStyle:'short',timeStyle:'medium'}),element:currentSelection?.label||currentSelection?.tag||'',device:responsiveDevice||'',uid:actor.uid,email:actor.email});if(auditPendingChanges.length>120)auditPendingChanges.splice(0,auditPendingChanges.length-120);}
 function formatAuditTime(ts){const d=new Date(Number(ts)||Date.parse(ts)||Date.now());return d.toLocaleString('es-EC',{dateStyle:'medium',timeStyle:'short'});}
 async function persistAuditForRevision(saveRevision,mode){const batch=auditPendingChanges.filter(x=>x.revision>auditLastRevision&&x.revision<=saveRevision);if(!batch.length)return;const actor=currentAuditActor();const rec={sessionId:auditSessionId,uid:actor.uid,email:actor.email,createdAt:Date.now(),mode:mode||'manual',revisionFrom:batch[0].revision,revisionTo:batch[batch.length-1].revision,changeCount:batch.length,changes:batch.map(x=>({label:x.label,time:x.time,localTime:x.localTime,element:x.element||'',device:x.device||''}))};try{await addDoc(collection(db,'artifacts',APP_ID,'public','data','auditLogs'),rec);auditLastRevision=saveRevision;auditPendingChanges=auditPendingChanges.filter(x=>x.revision>auditLastRevision);}catch(e){console.warn('No se pudo registrar auditoría:',e);}}
 function auditEscape(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function markDirty(label='Cambios sin guardar'){changeRevision++;window.appState.dirty=true;setSaveState('busy',label);const entry={label:String(label||'Cambio'),time:new Date().toLocaleString('es-EC',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}),revision:changeRevision};changeLog.unshift(entry);if(changeLog.length>60)changeLog.pop();queueAuditChange(label);clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>window.publishChanges(true),1300)}
+function markDirty(label='Cambios sin guardar',withAudit=true){changeRevision++;window.appState.dirty=true;setSaveState('busy',label);const entry={label:String(label||'Cambio'),time:new Date().toLocaleString('es-EC',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'}),revision:changeRevision};changeLog.unshift(entry);if(changeLog.length>60)changeLog.pop();if(withAudit)queueAuditChange(label);clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>window.publishChanges(true),1300)}
 window.renderHistory=()=>{const host=document.getElementById('history-list');if(!host)return;const entries=changeLog.slice(0,60);host.innerHTML=entries.length?entries.map((x,i)=>`<div class="command-item"><span><i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i>${proEscapeName(x.label)}</span><span class="pro-kbd">${x.time}</span></div>`).join(''):'<div class="p-5 text-center text-zinc-600 text-[10px]">Todavía no hay cambios registrados en esta sesión.</div>'};
-window.openHistory=()=>{window.openModal('history-modal');window.renderHistory()};window.openAudit=async()=>{window.openModal('audit-modal');await window.loadAuditLog();};
+window.openHistory=()=>{window.openModal('history-modal');window.renderHistory()};let auditUnsubscribe=null;
+function startAuditWatch(){try{if(auditUnsubscribe)auditUnsubscribe();auditUnsubscribe=onSnapshot(query(collection(db,'artifacts',APP_ID,'public','data','auditLogs'),orderBy('createdAt','desc'),limit(200)),snap=>{auditRows=snap.docs.map(d=>({id:d.id,...d.data()}));if(document.getElementById('audit-modal')?.classList.contains('open'))window.renderAuditLog();},err=>console.warn('Auditoría en tiempo real:',err));}catch(e){console.warn('No se pudo iniciar auditoría en tiempo real:',e)}}
+window.openAudit=async()=>{window.openModal('audit-modal');startAuditWatch();await window.loadAuditLog();};
 window.loadAuditLog=async()=>{const host=document.getElementById('audit-list');if(host)host.innerHTML='<div class="p-5 text-center text-zinc-600 text-[10px]"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Cargando auditoría…</div>';try{const snap=await getDocs(query(collection(db,'artifacts',APP_ID,'public','data','auditLogs'),orderBy('createdAt','desc'),limit(200)));auditRows=snap.docs.map(d=>({id:d.id,...d.data()}));window.renderAuditLog();}catch(e){console.warn('Auditoría no disponible:',e);auditRows=[];if(host)host.innerHTML='<div class="p-5 text-center text-amber-500 text-[10px]">No se pudo leer la auditoría. Revisa las reglas de Firestore para auditLogs.</div>';}};
 window.renderAuditLog=()=>{const host=document.getElementById('audit-list');if(!host)return;const uf=(document.getElementById('audit-user-filter')?.value||'').trim().toLowerCase();const vf=document.getElementById('audit-view-filter')?.value||'all';const rows=auditRows.filter(r=>(!uf||String(r.email||'').toLowerCase().includes(uf)||String(r.uid||'').toLowerCase().includes(uf))&&(vf==='all'||r.mode===vf));const summary=document.getElementById('audit-summary');if(summary)summary.textContent=`${rows.length} sesión${rows.length===1?'':'es'} · auditoría persistente`;host.innerHTML=rows.length?rows.map(r=>{const changes=Array.isArray(r.changes)?r.changes:[];return `<div class="command-item" style="display:block;padding:12px 0"><div class="flex items-center justify-between gap-3"><span class="font-bold text-white"><i class="fa-solid fa-user-clock text-cyan-300 mr-2"></i>${auditEscape(r.email||'Usuario')}</span><span class="pro-kbd">${auditEscape(formatAuditTime(r.createdAt))}</span></div><div class="helper mt-1">${auditEscape(r.mode==='manual'?'Guardado manual':'Autoguardado')} · ${Number(r.changeCount)||changes.length} cambio${(Number(r.changeCount)||changes.length)===1?'':'s'} · sesión ${auditEscape(String(r.sessionId||'').slice(0,12))}</div><div class="mt-2 grid gap-1">${changes.map(c=>`<div class="text-[9px] text-zinc-300"><span class="text-cyan-300 mr-2">${auditEscape(c.localTime||formatAuditTime(c.time))}</span>${auditEscape(c.label)}${c.element?` <span class="text-zinc-600">· ${auditEscape(c.element)}</span>`:''}${c.device?` <span class="text-zinc-600">· ${auditEscape(c.device)}</span>`:''}</div>`).join('')}</div></div>`}).join(''):'<div class="p-5 text-center text-zinc-600 text-[10px]">No hay registros para el filtro seleccionado.</div>'};
 window.clearAuditView=()=>{auditRows=[];window.renderAuditLog();window.showToast('Vista de auditoría limpiada; Firebase no se ha borrado')};
@@ -699,11 +718,14 @@ function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.e
 function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*');history.push({before,after:{[prop]:value}});redoStack=[];if(commit){markDirty('Editando…');proScheduleSnapshot()}}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 let loginInFlight=false;
-window.attemptLogin=async()=>{if(loginInFlight)return;const email=document.getElementById('loginUser')?.value.trim(),pass=document.getElementById('loginPass')?.value||'',btn=document.getElementById('btn-login');if(!btn)return;const old=btn.innerHTML;if(!email||!pass)return window.showToast('Completa correo y contraseña');if(!/^\S+@\S+\.\S+$/.test(email))return window.showToast('Introduce un correo válido');loginInFlight=true;btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';try{try{await setPersistence(auth,browserSessionPersistence)}catch(e){console.warn('Persistencia no disponible; continuando.',e)}await signInWithEmailAndPassword(auth,email,pass)}catch(e){console.error('Firebase Auth:',e);const code=e?.code||'';const messages={'auth/invalid-credential':'Correo o contraseña incorrectos.','auth/invalid-login-credentials':'Correo o contraseña incorrectos.','auth/invalid-email':'El correo no tiene un formato válido.','auth/user-not-found':'No existe una cuenta con ese correo.','auth/wrong-password':'La contraseña es incorrecta.','auth/user-disabled':'Esta cuenta está deshabilitada.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.','auth/network-request-failed':'No se pudo conectar con Firebase.','auth/operation-not-allowed':'Email/Password no está habilitado en Firebase.','auth/invalid-api-key':'La configuración de Firebase es inválida.','auth/app-not-authorized':'Este dominio no está autorizado en Firebase.'};window.showToast(messages[code]||('No se pudo iniciar sesión'+(code?` (${code})`:'')))}finally{loginInFlight=false;btn.disabled=false;btn.innerHTML=old}};
+window.attemptLogin=async()=>{if(loginInFlight)return;const email=document.getElementById('loginUser')?.value.trim(),pass=document.getElementById('loginPass')?.value||'',btn=document.getElementById('btn-login');if(!btn)return;const old=btn.innerHTML;if(!email||!pass)return window.showToast('Completa correo y contraseña');if(!/^\S+@\S+\.\S+$/.test(email))return window.showToast('Introduce un correo válido');loginInFlight=true;btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';try{try{await setPersistence(auth,browserSessionPersistence)}catch(e){console.warn('Persistencia no disponible; continuando.',e)}await signInWithEmailAndPassword(auth,email,pass);
+await ensureAdminWriteSession();
+const auditOk=await writeAdminAudit('Inicio de sesión en Visual Builder','session');
+window.showToast(auditOk?'Sesión autenticada y permisos de edición verificados':'Sesión autenticada, pero Firestore rechazó la escritura de auditoría. Revisa/publica las Rules.');}catch(e){console.error('Firebase Auth:',e);const code=e?.code||'';const messages={'auth/invalid-credential':'Correo o contraseña incorrectos.','auth/invalid-login-credentials':'Correo o contraseña incorrectos.','auth/invalid-email':'El correo no tiene un formato válido.','auth/user-not-found':'No existe una cuenta con ese correo.','auth/wrong-password':'La contraseña es incorrecta.','auth/user-disabled':'Esta cuenta está deshabilitada.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.','auth/network-request-failed':'No se pudo conectar con Firebase.','auth/operation-not-allowed':'Email/Password no está habilitado en Firebase.','auth/invalid-api-key':'La configuración de Firebase es inválida.','auth/app-not-authorized':'Este dominio no está autorizado en Firebase.'};window.showToast(messages[code]||('No se pudo iniciar sesión'+(code?` (${code})`:'')))}finally{loginInFlight=false;btn.disabled=false;btn.innerHTML=old}};
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
@@ -754,7 +776,26 @@ document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuev
 function normalizeProductImageField(raw){
   return String(raw??'').split(/\r?\n|,/).map(v=>normalizeSelectedMediaUrl(v)).filter(Boolean).join('\n');
 }
-window.saveDbItem=async()=>{const t=currentDbItem.type;let payload={};if(t==='product')payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:normalizeProductImageField(document.getElementById('db-img').value),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();try{const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;if(col){await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},'*')}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},'*');window.closeModal('db-modal');window.showToast('Cambios guardados correctamente');markDirty('Contenido sincronizado')}catch(e){window.showToast('No se pudo guardar el registro')}};
+window.saveDbItem=async()=>{
+const t=currentDbItem.type;let payload={};
+if(t==='product')payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:normalizeProductImageField(document.getElementById('db-img').value),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};
+if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};
+if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};
+if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();
+try{
+  await ensureAdminWriteSession();
+  const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;
+  if(col){
+    await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});
+    iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},'*');
+    await writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':'curso'}: ${payload.name||payload.title||id}`,'db');
+  }else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},'*');
+  window.closeModal('db-modal');window.showToast('Cambios guardados correctamente');markDirty('Contenido sincronizado',false);
+}catch(e){
+  console.error('Guardar BD:',e);const code=e?.code||'';
+const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Publica las Firestore Rules y verifica que esta cuenta esté autenticada.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
+window.showToast(msg);
+}};
 window.openSocialModal=()=>{selectedSocial={name:'',icon:'',network:''};const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value='';if(i)i.value='fa-solid fa-link';window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button type="button" class="social-opt" data-name="${n.replace(/"/g,'&quot;')}" data-icon="${c.replace(/"/g,'&quot;')}"><i class="${c} mr-1"></i>${n}</button>`).join('');document.querySelectorAll('#social-grid .social-opt').forEach(btn=>btn.addEventListener('click',()=>window.pickSocial(btn.dataset.name,btn.dataset.icon,btn)))};window.pickSocial=(name,icon,btn)=>{selectedSocial={name:String(name||''),icon:String(icon||''),network:String(name||'').toLowerCase().trim().replace(/\s+/g,'-')||'custom'};document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));if(btn)btn.classList.add('selected');const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value=selectedSocial.name;if(i)i.value=selectedSocial.icon;};window.addSocial=()=>{const typedName=document.getElementById('social-name')?.value.trim()||'';const typedIcon=document.getElementById('social-icon')?.value.trim()||'';const name=selectedSocial.name||typedName||'Red social';const icon=selectedSocial.icon||typedIcon||'fa-solid fa-link';const url=document.getElementById('social-url')?.value.trim()||'';if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');const network=selectedSocial.network||name.toLowerCase().trim().replace(/\s+/g,'-')||'custom';iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network},'*');selectedSocial={name:'',icon:'',network:''};window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
 function imgbbSlug(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,80)||'imagen'}
 function imgbbCategoryLabel(cat){return ({textil:'TEXTIL',jarros:'JARROS & THERMOS','imp-general':'IMP. GENERAL',packs:'PACKS'})[cat]||String(cat||'Otros')}
@@ -894,7 +935,14 @@ function loadImgBBLocalIndex(){
   return window.imgbbLibrary;
 }
 const IMGBB_SHARED_COLLECTION='imgbbLibrary';
+const IMGBB_URL_INDEX_COLLECTION='imgbbUrlIndex';
 let imgbbSharedUnsubscribe=null;
+function imgbbUrlIndexId(url){
+  const s=String(url||'').trim();let h=2166136261;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  return ('u_'+(h>>>0).toString(36)).slice(0,60);
+}
+
 async function waitForAdminAuthReady(){
   try{if(typeof auth?.authStateReady==='function')await Promise.race([auth.authStateReady(),new Promise(r=>setTimeout(r,2500))]);}catch(e){}
   return !!auth?.currentUser;
@@ -922,13 +970,27 @@ async function saveImgBBSharedRecord(record){
     await waitForAdminAuthReady();
     if(!auth?.currentUser)return false;
     const id=String(record.id||record.url||'').trim();if(!id)return false;
-    const safe={...record};delete safe.originalFile;delete safe.file;delete safe.originalBlob;
+    const safe={...record};delete safe.originalFile;delete safe.file;delete safe.originalBlob;delete safe.base64;delete safe.dataUrl;delete safe.blob;
     await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId(record)),{...safe,id},{merge:true});
+    const sourceUrl=String(record.url||record.displayUrl||record.thumbUrl||'').trim();
+    if(sourceUrl){
+      await setDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_URL_INDEX_COLLECTION,imgbbUrlIndexId(sourceUrl)),{
+        id, url:sourceUrl, displayUrl:String(record.displayUrl||''), thumbUrl:String(record.thumbUrl||''), mediumUrl:String(record.mediumUrl||''), updatedAt:Date.now()
+      },{merge:true});
+    }
     return true;
   }catch(e){console.warn('No se pudo sincronizar ImgBB con Firebase:',e);return false;}
 }
-async function deleteImgBBSharedRecord(id){
-  try{if(db&&id)await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId({id})))}catch(e){console.warn('No se pudo eliminar el registro compartido de ImgBB:',e)}}
+async function deleteImgBBSharedRecord(recordOrId){
+  try{
+    if(!db)return;
+    const rec=typeof recordOrId==='string' ? (window.imgbbLibrary||[]).find(x=>String(x.id||'')===String(recordOrId)) : recordOrId;
+    const id=String(rec?.id||recordOrId||'').trim();
+    if(id) await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_SHARED_COLLECTION,imgbbSharedDocId({id})));
+    const sourceUrl=String(rec?.url||rec?.displayUrl||rec?.thumbUrl||'').trim();
+    if(sourceUrl) await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',IMGBB_URL_INDEX_COLLECTION,imgbbUrlIndexId(sourceUrl)));
+  }catch(e){console.warn('No se pudo eliminar el registro compartido de ImgBB:',e)}
+}
 function startImgBBSharedWatch(){
   try{
     if(imgbbSharedUnsubscribe)imgbbSharedUnsubscribe();
@@ -959,6 +1021,10 @@ async function syncImgBBSharedLibrary(){
   for(const item of [...shared,...local]){const id=String(item?.id||item?.url||'').trim();if(!id||seen.has(id))continue;seen.add(id);merged.push({...item,id});}
   merged.sort((a,b)=>(Number(b.createdAt)||0)-(Number(a.createdAt)||0));
   window.imgbbLibrary=merged;saveImgBBLocalIndex();startImgBBSharedWatch();
+  if(auth?.currentUser&&db&&!localStorage.getItem('multiprintt_imgbb_url_index_v1')){
+    localStorage.setItem('multiprintt_imgbb_url_index_v1','1');
+    Promise.all(merged.slice(0,500).map(item=>saveImgBBSharedRecord(item))).catch(()=>{});
+  }
   return merged;
 }
 async function uploadOneImgBB(file,displayName,category){
@@ -967,7 +1033,7 @@ async function uploadOneImgBB(file,displayName,category){
   let d=null;try{d=await r.json()}catch{}
   if(!r.ok||!d?.success)throw new Error(d?.error?.message||`ImgBB respondió HTTP ${r.status}`);
   const data=d.data||{};
-  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'imp-general'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.image?.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb',transparent:null,transparencyDetected:null};
+  const record={id:String(data.id||('imgbb_'+Date.now()+'_'+Math.random().toString(36).slice(2,8))),title:String(data.title||displayName),name:String(data.image?.name||displayName),category:String(category||'imp-general'),url:String(data.image?.url||data.url||data.display_url||''),displayUrl:String(data.display_url||data.medium?.url||data.image?.url||data.url||''),thumbUrl:String(data.thumb?.url||data.display_url||data.medium?.url||data.image?.url||''),mediumUrl:String(data.medium?.url||data.display_url||data.image?.url||data.url||''),viewerUrl:String(data.url_viewer||''),deleteUrl:String(data.delete_url||''),mime:String(data.image?.mime||'image/webp'),extension:String(data.image?.extension||'webp'),width:Number(data.width||data.image?.width||0),height:Number(data.height||data.image?.height||0),size:Number(data.size||file.size||0),createdAt:Date.now(),source:'imgbb',transparent:null,transparencyDetected:null};
   if(!record.url)throw new Error('ImgBB no devolvió una URL utilizable.');
   return record;
 }
@@ -1153,7 +1219,7 @@ window.renderImgBBLibrary=()=>{
   if(!window.imgbbFiltered.length){host.innerHTML='<div class="media-empty col-span-full">No hay imágenes disponibles con este filtro.</div>';document.getElementById('imgbb-more')?.classList.add('hidden');updateImgBBSelectionUI();return;}
   const arr=window.imgbbFiltered.slice(0,window.imgbbPageSize);
   host.innerHTML=arr.map((x)=>{
-    const candidates=imgbbImageCandidates(x);const url=candidates[0]||'';
+    const candidates=imgbbImageCandidates(x);const direct=normalizeSelectedMediaUrl(x.url||x.displayUrl||'');const url=normalizeSelectedMediaUrl(x.thumbUrl||x.displayUrl||x.url||'');
     const noTransparency=x.transparent===false||x.transparencyDetected===false;
     const id=String(x.id||'');const selected=window.imgbbSelectedIds.has(id);
     const title=x.title||x.name||'Sin nombre';
@@ -1161,7 +1227,7 @@ window.renderImgBBLibrary=()=>{
     return `<article class="imgbb-card ${noTransparency?'imgbb-card-warning ':''}${selected?'is-selected':''}" data-id="${esc(id)}">
       ${productCheck}
       <span class="imgbb-cat-badge">${esc(imgbbCategoryLabel(x.category))}</span>
-      <div class="imgbb-card-preview"><div class="imgbb-thumb-wrap" data-imgbb-thumb-wrap><div class="imgbb-thumb-loader"><i class="fa-solid fa-spinner"></i></div><img loading="eager" decoding="async" fetchpriority="high" referrerpolicy="no-referrer" src="${esc(url)}" alt="${esc(title)}" data-imgbb-candidates="${esc(JSON.stringify(candidates))}"></div></div>
+      <div class="imgbb-card-preview"><div class="imgbb-thumb-wrap" data-imgbb-thumb-wrap><div class="imgbb-thumb-loader"><i class="fa-solid fa-spinner"></i></div><img loading="${arr.indexOf(x)<4?'eager':'lazy'}" decoding="async" fetchpriority="${arr.indexOf(x)<4?'high':'auto'}" referrerpolicy="no-referrer" src="${esc(url)}" alt="${esc(title)}" data-imgbb-direct="${esc(direct)}" data-imgbb-candidates="${esc(JSON.stringify(candidates))}"></div></div>
       <div class="imgbb-card-body">
         <div class="imgbb-card-name" title="${esc(title)}">${esc(title)}</div>
         <div class="imgbb-card-cat">${esc(imgbbFormatBytes(x.size||0))}${x.width&&x.height?` · ${esc(String(x.width))}×${esc(String(x.height))}`:''}</div>
@@ -1330,6 +1396,7 @@ window.selectMedia=url=>{
   window.closeModal('gallery-modal');
 };
 window.publishChanges=async(auto=false)=>{
+try{await ensureAdminWriteSession()}catch(e){setSaveState('err','Sesión no autorizada');window.showToast('La sesión de edición no está lista. Vuelve a autenticarte.');return;}
 if(!iframe().contentWindow)return;
 if(!auto) clearTimeout(autosaveTimer);
 const saveRequestId=++saveRequestSeq;
@@ -1338,9 +1405,9 @@ latestSaveRequestId=saveRequestId;
 setSaveState('busy',auto?'Autoguardando…':'Guardando…');
 iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual',saveRequestId,saveRevision},'*');
 };
-window.resetTemplateConfirm=()=>{if(!confirm('¿Restaurar la plantilla base? Esto eliminará únicamente los cambios visuales actuales y volverá a la plantilla maestra guardada en Firebase.'))return;deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout')).then(()=>{window.showToast('Plantilla base restaurada');window.reloadPreview()}).catch(()=>window.showToast('No se pudo restablecer'))};
+window.resetTemplateConfirm=async()=>{if(!confirm('¿Restaurar la plantilla base? Esto eliminará únicamente los cambios visuales actuales y volverá a la plantilla maestra guardada en Firebase.'))return;try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'));await writeAdminAudit('Restauró la plantilla base','manual');window.showToast('Plantilla base restaurada');window.reloadPreview();}catch(e){console.error('Restaurar plantilla:',e);window.showToast('No se pudo restablecer la plantilla.')}};
 window.saveCurrentAsTemplateBase=async()=>{
-try{
+try{await ensureAdminWriteSession();
 const frame=iframe();
 if(!frame?.contentWindow)return window.showToast('La vista previa no está lista');
 const requestId=++saveRequestSeq;
@@ -1402,7 +1469,7 @@ window.showToast('Error de sincronización');
 if(d.type==='SAVE_FULL_LAYOUT_ERROR'){if((Number(d.saveRequestId)||0)!==latestSaveRequestId)return;setSaveState('err','No se pudo preparar el guardado');if((d.message||'').trim())window.showToast(d.message)}
 if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
 if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
-if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?'))deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId)).then(()=>iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},'*'))}
+if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?')){(async()=>{try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId));await writeAdminAudit(`Eliminó ${d.itemType==='product'?'producto':'curso'} ${d.itemId}`,'db');iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},'*');window.showToast('Registro eliminado correctamente')}catch(e){console.error('Eliminar BD:',e);window.showToast('No se pudo eliminar: '+(e?.code||e?.message||'error'))}})()}}
 });
 document.addEventListener('keydown',e=>{if(document.getElementById('gallery-modal')?.classList.contains('open')){if(e.key==='1')window.switchMediaExplorerTab('library');if(e.key==='2')window.switchMediaExplorerTab('imgbb');if(e.key==='3')window.switchMediaExplorerTab('sources')}});window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();window.publishChanges(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();window.openCommandPalette()}if(e.key==='Escape'){['social-modal','db-modal','gallery-modal','layers-modal','history-modal','audit-modal','command-modal','global-modal','seo-modal'].forEach(window.closeModal)}});
 window.filterSocials('');</script>
