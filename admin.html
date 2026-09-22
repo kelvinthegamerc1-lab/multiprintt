@@ -627,6 +627,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
+const MP_ADMIN_BUILD='2026.09.21.06';
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const IMGBB_API_KEY='e195da6dc21a1ff7454d2e86ae7719f2';
@@ -725,7 +726,7 @@ window.showToast(auditOk?'Sesión autenticada y permisos de edición verificados
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true);setTimeout(()=>{migrateProductImgBBVariants()},900)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
@@ -776,9 +777,63 @@ document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuev
 function normalizeProductImageField(raw){
   return String(raw??'').split(/\r?\n|,/).map(v=>normalizeSelectedMediaUrl(v)).filter(Boolean).join('\n');
 }
+function buildProductImgBBVariants(raw){
+  const variants={};
+  const urls=normalizeProductImageField(raw).split(/\r?\n/).map(normalizeSelectedMediaUrl).filter(Boolean);
+  const library=Array.isArray(window.imgbbLibrary)?window.imgbbLibrary:[];
+  const isImgBB=u=>/^https?:\/\/(?:i\.)?ibb\.co\//i.test(String(u||''));
+  if(!library.length)return variants;
+  for(const original of urls){
+    if(!isImgBB(original))continue;
+    const rec=library.find(x=>[x?.url,x?.displayUrl,x?.mediumUrl,x?.thumbUrl].filter(Boolean).some(v=>normalizeSelectedMediaUrl(v)===original));
+    if(!rec)continue;
+    const medium=normalizeSelectedMediaUrl(rec.mediumUrl||rec.displayUrl||rec.url||'');
+    const display=normalizeSelectedMediaUrl(rec.displayUrl||rec.mediumUrl||rec.url||'');
+    const thumb=normalizeSelectedMediaUrl(rec.thumbUrl||rec.displayUrl||rec.mediumUrl||rec.url||'');
+    if(medium||display||thumb)variants[original]={mediumUrl:medium,displayUrl:display,thumbUrl:thumb};
+  }
+  return variants;
+}
+async function publishImgBBSpeedManifest(){
+  try{
+    await ensureAdminWriteSession();
+    const items={};
+    for(const r of (window.imgbbLibrary||[])){
+      const original=normalizeSelectedMediaUrl(r?.url||'');
+      if(!original)continue;
+      items[original]={mediumUrl:normalizeSelectedMediaUrl(r.mediumUrl||r.displayUrl||r.url||''),displayUrl:normalizeSelectedMediaUrl(r.displayUrl||r.mediumUrl||r.url||''),thumbUrl:normalizeSelectedMediaUrl(r.thumbUrl||r.displayUrl||r.mediumUrl||r.url||'')};
+    }
+    if(!Object.keys(items).length && (window.imgbbLibrary||[]).length) return;
+    await setDoc(doc(db,'artifacts',APP_ID,'public','data','imgbbSpeedManifest','current'),{version:2,updatedAt:Date.now(),items},{merge:true});
+  }catch(e){console.warn('No se pudo publicar el manifest rápido de ImgBB:',e);}
+}
+async function migrateProductImgBBVariants(){
+  try{
+    if(localStorage.getItem('multiprintt_imgbb_product_variants_v2')==='1'){await publishImgBBSpeedManifest();return;}
+    if(!Array.isArray(window.imgbbLibrary)||!window.imgbbLibrary.length)await syncImgBBSharedLibrary();
+    const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data','products'));
+    const jobs=[];
+    for(const docSnap of snap.docs){
+      const p={id:docSnap.id,...docSnap.data()};
+      const variants=buildProductImgBBVariants(p.image||'');
+      if(!Object.keys(variants).length)continue;
+      const current=p.imageVariants&&typeof p.imageVariants==='object'?p.imageVariants:{};
+      let changed=false;
+      for(const [u,v] of Object.entries(variants)){
+        const prev=current[u];
+        if(!prev||prev.mediumUrl!==v.mediumUrl||prev.displayUrl!==v.displayUrl||prev.thumbUrl!==v.thumbUrl){current[u]=v;changed=true;}
+      }
+      if(changed)jobs.push(setDoc(doc(db,'artifacts',APP_ID,'public','data','products',docSnap.id),{imageVariants:current},{merge:true}));
+      if(jobs.length>=8){await Promise.all(jobs.splice(0,jobs.length));}
+    }
+    if(jobs.length)await Promise.all(jobs);
+    await publishImgBBSpeedManifest();
+    try{localStorage.setItem('multiprintt_imgbb_product_variants_v2','1')}catch(e){}
+  }catch(e){console.warn('Migración de variantes ImgBB:',e);}
+}
 window.saveDbItem=async()=>{
 const t=currentDbItem.type;let payload={};
-if(t==='product')payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:normalizeProductImageField(document.getElementById('db-img').value),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};
+if(t==='product'){const imageField=normalizeProductImageField(document.getElementById('db-img').value);payload={name:document.getElementById('db-name').value.trim(),category:document.getElementById('db-cat').value,price:Number(document.getElementById('db-price').value)||0,discount:Number(document.getElementById('db-discount').value)||0,image:imageField,imageVariants:buildProductImgBBVariants(imageField),isPromo:document.getElementById('db-promo').checked,isBestSeller:document.getElementById('db-bestseller').checked};}
 if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};
 if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};
 if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();
@@ -1076,6 +1131,7 @@ window.uploadImgBBBatch=async()=>{
   window.imgbbUploadQueue=failedItems;
   const input=document.getElementById('imgbb-files');if(input)input.value='';
   window.renderImgBBQueue();saveImgBBLocalIndex();window.renderImgBBLibrary(true);
+  if(ok){publishImgBBSpeedManifest();}
   if(status)status.textContent=failed?`${ok} subidas, ${failed} con error.`:`${ok} imagen${ok===1?'':'es'} subida${ok===1?'':'s'} correctamente.`;
   window.showToast(failed?`${ok} subidas, ${failed} fallaron`:`${ok} imagen${ok===1?'':'es'} alojada${ok===1?'':'s'} en ImgBB`);
 };
@@ -1123,6 +1179,7 @@ window.deleteImgBBRecord=async(id)=>{
     window.imgbbSelectedIds?.delete?.(String(id));
     await deleteImgBBSharedRecord(id);
     saveImgBBLocalIndex();
+    await publishImgBBSpeedManifest();
     window.renderImgBBLibrary(true);
     window.showToast('Solicitud de eliminación enviada a ImgBB.');
   }catch(e){
