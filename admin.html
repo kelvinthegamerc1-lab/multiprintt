@@ -627,7 +627,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, setDoc, deleteDoc, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.09.22.01';
+const MP_ADMIN_BUILD='2026.09.22.02';
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const IMGBB_API_KEY='e195da6dc21a1ff7454d2e86ae7719f2';
@@ -726,7 +726,7 @@ window.showToast(auditOk?'Sesión autenticada y permisos de edición verificados
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true);setTimeout(()=>{migrateProductImgBBVariants()},900)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{startImgBBSharedWatch();if(window.loadImgBBLibrary)window.loadImgBBLibrary(true);setTimeout(()=>{migrateProductImgBBVariants();migrateLegacyProductDemand()},900)},250)}else{if(imgbbSharedUnsubscribe){try{imgbbSharedUnsubscribe()}catch(e){} imgbbSharedUnsubscribe=null}authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},'*'),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},'*'),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},'*');document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
@@ -806,6 +806,27 @@ async function publishImgBBSpeedManifest(){
     if(!Object.keys(items).length && (window.imgbbLibrary||[]).length) return;
     await setDoc(doc(db,'artifacts',APP_ID,'public','data','imgbbSpeedManifest','current'),{version:2,updatedAt:Date.now(),items},{merge:true});
   }catch(e){console.warn('No se pudo publicar el manifest rápido de ImgBB:',e);}
+}
+async function migrateLegacyProductDemand(){
+  try{
+    if(localStorage.getItem('multiprintt_product_demand_migrated_v2')==='1') return;
+    await ensureAdminWriteSession();
+    const [productsSnap,demandSnap]=await Promise.all([
+      getDocs(collection(db,'artifacts',APP_ID,'public','data','products')),
+      getDocs(collection(db,'artifacts',APP_ID,'public','data','productDemand'))
+    ]);
+    const existing=new Set(demandSnap.docs.map(d=>d.id));
+    const writes=[];
+    productsSnap.docs.forEach(d=>{
+      const data=d.data()||{};
+      const cart=Number(data.cartAdds)||0, checkout=Number(data.checkoutIntents)||0;
+      if((cart||checkout)&&!existing.has(d.id)){
+        writes.push(setDoc(doc(db,'artifacts',APP_ID,'public','data','productDemand',d.id),{cartAdds:cart,checkoutIntents:checkout,updatedAt:Date.now(),migratedFromProduct:true},{merge:true}));
+      }
+    });
+    if(writes.length) await Promise.all(writes);
+    localStorage.setItem('multiprintt_product_demand_migrated_v2','1');
+  }catch(e){console.warn('Migración de demanda de productos:',e);}
 }
 async function migrateProductImgBBVariants(){
   try{
@@ -1474,7 +1495,7 @@ if(event.source!==frame.contentWindow || event.origin!==location.origin)return;
 const d=event.data||{}; if(d.type!=='LAYOUT_SNAPSHOT')return;
 window.removeEventListener('message',handler);
 const payload={zones:d.layoutData||{},layoutModel:d.layoutModel||null,layoutSchemaVersion:2,prodOrder:[],courseOrder:[],socialOrder:Array.isArray(d.socialOrder)?d.socialOrder:[],templateVersion:Date.now(),updatedAt:Date.now()};
-setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','templateBase'),payload,{merge:false}).then(()=>window.showToast('Plantilla base actual guardada en Firebase')).catch(()=>window.showToast('No se pudo guardar la plantilla base'));
+setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','templateBase'),payload,{merge:false}).then(async()=>{await writeAdminAudit('Actualizó la plantilla base','template');window.showToast('Plantilla base actual guardada en Firebase')}).catch(()=>window.showToast('No se pudo guardar la plantilla base'));
 };
 window.addEventListener('message',handler);
 frame.contentWindow.postMessage({type:'CAPTURE_LAYOUT',reason:'set-template-base'},'*');
