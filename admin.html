@@ -940,7 +940,188 @@
 #gallery-modal #imgbb-db-picker .imgbb-db-apply{height:30px;padding:0 10px;border:1px solid rgba(37,216,255,.25);background:#25d8ff;color:#061015;font-size:7px;font-weight:900;display:inline-flex;align-items:center;gap:5px;border-radius:2px;cursor:pointer;white-space:nowrap}.imgbb-db-apply:disabled{opacity:.35;cursor:default}
 @media(max-width:900px){#gallery-modal #imgbb-db-picker{right:252px}}
 @media(max-width:720px){#gallery-modal #imgbb-db-picker{left:0;right:0;bottom:28px;grid-template-columns:minmax(0,1fr) auto}.imgbb-db-picker-title{display:none!important}.imgbb-db-order-name{max-width:90px!important}}
-</style></head>
+</style>
+<style id="multiprintt-imgbb-grid-stability-final">
+/* ImgBB Host — estabilidad visual final.
+   Evita compresión/colapso de tarjetas y mantiene preview + acciones visibles. */
+#gallery-modal #imgbb-hosting-section .imgbb-library-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  grid-auto-rows:max-content!important;
+  align-items:start!important;
+  align-content:start!important;
+  gap:10px!important;
+  padding:10px!important;
+  overflow:auto!important;
+  contain:none!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card{
+  position:relative!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:206px!important;
+  height:auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-self:start!important;
+  overflow:hidden!important;
+  contain:none!important;
+  content-visibility:visible!important;
+  background:#0a0d11!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  box-sizing:border-box!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card-preview{
+  position:relative!important;
+  width:100%!important;
+  height:150px!important;
+  min-height:150px!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  flex:0 0 150px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+  background:#05070a!important;
+  border-bottom:1px solid rgba(255,255,255,.06)!important;
+  box-sizing:border-box!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-thumb-wrap{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-thumb-wrap img{
+  position:static!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:10px!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  box-sizing:border-box!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card-body{
+  width:100%!important;
+  min-width:0!important;
+  min-height:55px!important;
+  flex:1 1 auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  padding:7px 8px 8px!important;
+  box-sizing:border-box!important;
+  background:#0a0d11!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card-name{
+  min-width:0!important;
+  width:100%!important;
+  height:14px!important;
+  line-height:14px!important;
+  font-size:8px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card-cat{
+  min-width:0!important;
+  width:100%!important;
+  height:11px!important;
+  line-height:11px!important;
+  font-size:6.5px!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-transparency-warning{
+  min-width:0!important;
+  max-width:100%!important;
+  margin-top:2px!important;
+  line-height:1.2!important;
+  overflow:hidden!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card-actions{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;
+  margin-top:auto!important;
+  padding-top:3px!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-card-actions button{
+  width:100%!important;
+  height:28px!important;
+  min-width:0!important;
+  min-height:28px!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-cat-badge{
+  z-index:10!important;
+}
+#gallery-modal #imgbb-hosting-section .imgbb-select-check{
+  z-index:20!important;
+}
+#gallery-modal #imgbb-pagination{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  min-height:34px!important;
+  height:34px!important;
+  flex:0 0 34px!important;
+  padding:3px 8px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  white-space:nowrap!important;
+}
+#gallery-modal #imgbb-pagination .imgbb-page-btn{
+  flex:0 0 auto!important;
+}
+
+@media(max-width:1100px){
+  #gallery-modal #imgbb-hosting-section .imgbb-library-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-preview{height:140px!important;min-height:140px!important;flex-basis:140px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card{min-height:196px!important}
+}
+@media(max-width:900px){
+  #gallery-modal #imgbb-hosting-section .imgbb-library-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-preview{height:145px!important;min-height:145px!important;flex-basis:145px!important}
+}
+@media(max-width:720px){
+  #gallery-modal #imgbb-hosting-section .imgbb-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:7px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card{min-height:190px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-preview{height:132px!important;min-height:132px!important;flex-basis:132px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-body{padding:6px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-actions button{height:26px!important;min-height:26px!important}
+}
+@media(max-width:440px){
+  #gallery-modal #imgbb-hosting-section .imgbb-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;padding:6px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card{min-height:174px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-preview{height:116px!important;min-height:116px!important;flex-basis:116px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-body{min-height:58px!important;padding:5px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-name{font-size:7px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-cat{font-size:6px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-actions{gap:4px!important}
+  #gallery-modal #imgbb-hosting-section .imgbb-card-actions button{height:24px!important;min-height:24px!important;font-size:8px!important}
+}
+</style>
+
+</head>
 <body>
 <div id="toast"></div>
 <div id="auth-screen"><div class="auth-card"><div class="flex items-center gap-3 mb-6"><div class="brand-mark"><img alt="Multiprintt" src="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp"/></div><div><div class="text-white font-extrabold text-lg">Multiprintt</div><div class="text-zinc-500 text-[10px] tracking-[.18em] uppercase">Visual Builder</div></div></div><div class="grid gap-3"><input class="field" id="loginUser" placeholder="Correo administrativo" type="email"/><input class="field" id="loginPass" placeholder="Contraseña" type="password"/><button class="primary w-full" id="btn-login" onclick="window.attemptLogin()" type="button"><i class="fa-solid fa-right-to-bracket mr-2"></i>Ingresar al sistema</button></div><div class="helper mt-4">Editor visual conectado a Firebase y sincronizado con el sitio.</div></div></div>
