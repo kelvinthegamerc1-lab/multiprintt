@@ -6,6 +6,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://i.ibb.co">
 <link rel="dns-prefetch" href="//i.ibb.co">
+<link rel="preconnect" href="https://b2.multiprintt.workers.dev" crossorigin>
+<link rel="dns-prefetch" href="//b2.multiprintt.workers.dev">
 <link rel="preconnect" href="https://ibb.co">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -4359,14 +4361,15 @@ const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const MP_BUILD_VERSION = '2026.09.22.04';
+const MP_BUILD_VERSION = '2026.09.24.06';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
 const APP_ID = "multiprintt-web";
 let firebaseReady = true;
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos'; window.productsDataReady = false; window.productDemandMap = {}; window.demandRenderTimer = null; window.lastDemandSignature = '';
+window.B2_MEDIA_BASE='https://b2.multiprintt.workers.dev';
 window.MEDIA_PROXY_BASE='';
 window.normalizeMediaUrl=function(raw){let v=String(raw??'').trim();if(!v)return'';v=v.replace(/^['"]+|['"]+$/g,'').trim();v=v.replace(/&amp;/gi,'&').replace(/&quot;/gi,'\"').replace(/&#39;/gi,"'").replace(/&#x27;/gi,"'");if(v.startsWith('//'))v='https:'+v;return v};
-window.protectMediaUrl=function(raw){const v=window.normalizeMediaUrl(raw);if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;try{const parsed=new URL(v,location.href);if(parsed.hostname==='i.ibb.co'||parsed.hostname==='ibb.co'){return parsed.href}}catch(e){}const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
+window.protectMediaUrl=function(raw){const v=window.normalizeMediaUrl(raw);if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;try{const parsed=new URL(v,location.href);if(parsed.hostname==='i.ibb.co'||parsed.hostname==='ibb.co'||parsed.hostname==='b2.multiprintt.workers.dev'){return parsed.href}}catch(e){}const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
 window.protectMediaList=list=>Array.isArray(list)?list.map(window.protectMediaUrl):list;
 window.protectExistingMedia=function(root=document){root.querySelectorAll('img[src],video[src],source[src],img[data-original-media-url],video[data-original-media-url],source[data-original-media-url]').forEach(el=>{const raw=el.getAttribute('data-original-media-url')||el.getAttribute('src')||'',safe=window.protectMediaUrl(raw);if(raw){el.setAttribute('data-original-media-url',raw);el.setAttribute('src',safe)}})};
 
@@ -4773,7 +4776,7 @@ navMobileContainer.insertBefore(btnMob, navMobileContainer.querySelector('.admin
 }
 window.applyAllSocialHoverColors();
 window.protectExistingMedia();
-window.mpIsImgBB=function(url){return /^https?:\/\/(?:i\.)?ibb\.co\//i.test(String(url||''));};
+window.mpIsImgBB=function(url){const s=String(url||'');return /^https?:\/\/(?:i\.)?ibb\.co\//i.test(s)||/^https?:\/\/b2\.multiprintt\.workers\.dev\//i.test(s);};
 window.mpImgBBVariantFor=function(product,url){
   const key=String(url||'').trim();
   if(!window.mpIsImgBB(key)) return {url:key,displayUrl:key,mediumUrl:key,thumbUrl:key};
@@ -4783,7 +4786,7 @@ window.mpImgBBVariantFor=function(product,url){
     const match=Object.entries(variants).find(([k,val])=>String(k||'').trim()===key||String(val?.displayUrl||'')===key||String(val?.mediumUrl||'')===key||String(val?.thumbUrl||'')===key);
     v=match?.[1]||{};
   }
-  const directCandidate=[v.mediumUrl,v.displayUrl,v.thumbUrl,key].map(x=>String(x||'').trim()).find(x=>/^https?:\/\/i\.ibb\.co\//i.test(x))||key;
+  const directCandidate=[v.mediumUrl,v.displayUrl,v.thumbUrl,key].map(x=>String(x||'').trim()).find(x=>/^https?:\/\/(?:(?:i\.)?ibb\.co|b2\.multiprintt\.workers\.dev)\//i.test(x))||key;
   return {url:key,displayUrl:String(v.displayUrl||v.mediumUrl||directCandidate||key),mediumUrl:String(v.mediumUrl||v.displayUrl||directCandidate||key),thumbUrl:String(v.thumbUrl||v.displayUrl||v.mediumUrl||directCandidate||key)};
 };
 window.mpImgBBTinyPlaceholder='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="#0a0a0c"/></svg>');
