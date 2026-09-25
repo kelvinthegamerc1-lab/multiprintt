@@ -1350,7 +1350,7 @@ async function mpDeleteCollectionDocs(collectionName,root=false){
   for(let i=0;i<docs.length;i+=400){const batch=writeBatch(db);for(const d of docs.slice(i,i+400)){batch.delete(d.ref);deleted++;}await batch.commit();}
   return deleted;
 }
-function mpKnownLegacyMediaIn(value,set=new Set()){const walk=v=>{if(typeof v==='string'){const u=normalizeSelectedMediaUrl(v);if(/^https?:\\/\\/(?:i\\.)?ibb\\.co\\//i.test(u))set.add(u);return;}if(Array.isArray(v)){v.forEach(walk);return;}if(v&&typeof v==='object')Object.values(v).forEach(walk)};walk(value);return set;}
+function mpKnownLegacyMediaIn(value,set=new Set()){const walk=v=>{if(typeof v==='string'){const u=normalizeSelectedMediaUrl(v);if(/^https?:\/\/(?:i\.)?ibb\.co\//i.test(u))set.add(u);return;}if(Array.isArray(v)){v.forEach(walk);return;}if(v&&typeof v==='object')Object.values(v).forEach(walk)};walk(value);return set;}
 async function mpNormalizeAndCleanActiveDocs(){
   const result={products:0,courses:0,demand:0,fields:0,legacyMediaRefs:0};
   const [products,courses,demand]=await Promise.all([
@@ -1454,14 +1454,80 @@ function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.e
 function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},'*');history.push({before,after:{[prop]:value}});redoStack=[];if(commit){markDirty('Editando…');proScheduleSnapshot()}}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 let loginInFlight=false;
-window.attemptLogin=async()=>{if(loginInFlight)return;const email=document.getElementById('loginUser')?.value.trim(),pass=document.getElementById('loginPass')?.value||'',btn=document.getElementById('btn-login');if(!btn)return;const old=btn.innerHTML;if(!email||!pass)return window.showToast('Completa correo y contraseña');if(!/^\S+@\S+\.\S+$/.test(email))return window.showToast('Introduce un correo válido');loginInFlight=true;btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';try{try{await setPersistence(auth,browserSessionPersistence)}catch(e){console.warn('Persistencia no disponible; continuando.',e)}await signInWithEmailAndPassword(auth,email,pass);
-await ensureAdminWriteSession();
-const auditOk=await writeAdminAudit('Inicio de sesión en Visual Builder','session');
-window.showToast(auditOk?'Sesión autenticada y permisos de edición verificados':'Sesión autenticada, pero Firestore rechazó la escritura de auditoría. Revisa/publica las Rules.');}catch(e){console.error('Firebase Auth:',e);const code=e?.code||'';const messages={'auth/invalid-credential':'Correo o contraseña incorrectos.','auth/invalid-login-credentials':'Correo o contraseña incorrectos.','auth/invalid-email':'El correo no tiene un formato válido.','auth/user-not-found':'No existe una cuenta con ese correo.','auth/wrong-password':'La contraseña es incorrecta.','auth/user-disabled':'Esta cuenta está deshabilitada.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.','auth/network-request-failed':'No se pudo conectar con Firebase.','auth/operation-not-allowed':'Email/Password no está habilitado en Firebase.','auth/invalid-api-key':'La configuración de Firebase es inválida.','auth/app-not-authorized':'Este dominio no está autorizado en Firebase.'};window.showToast(messages[code]||('No se pudo iniciar sesión'+(code?` (${code})`:'')))}finally{loginInFlight=false;btn.disabled=false;btn.innerHTML=old}};
+let adminUiReady=false;
+
+function showAdminWorkspace(user,notify=true){
+  if(!user || user.isAnonymous)return false;
+  const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');
+  if(!authScreen||!builder)return false;
+  authScreen.style.display='none';
+  builder.style.display='flex';
+  if(adminUiReady)return true;
+  adminUiReady=true;
+  try{startAuditWatch()}catch(e){console.warn('Auditoría inicial:',e)}
+  const fr=iframe();
+  if(fr && (!fr.getAttribute('src')||fr.getAttribute('src')===location.href))fr.src='index.html?t='+Date.now();
+  setTimeout(()=>{try{window.loadImgBBLibrary?.(true)}catch(e){console.warn('Multiprintt Host inicial:',e)}},250);
+  setTimeout(()=>{migrateLegacyProductDemand().catch(e=>console.warn('Migración demanda:',e))},1450);
+  if(notify)window.showToast('Sesión iniciada correctamente');
+  return true;
+}
+function showAuthScreen(){
+  adminUiReady=false;
+  const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');
+  if(authScreen)authScreen.style.display='flex';
+  if(builder)builder.style.display='none';
+}
+
+window.attemptLogin=async()=>{
+  if(loginInFlight)return;
+  const email=document.getElementById('loginUser')?.value.trim()||'';
+  const pass=document.getElementById('loginPass')?.value||'';
+  const btn=document.getElementById('btn-login');
+  if(!btn)return;
+  const old=btn.innerHTML;
+  if(!email||!pass)return window.showToast('Completa correo y contraseña');
+  if(!/^\S+@\S+\.\S+$/.test(email))return window.showToast('Introduce un correo válido');
+  loginInFlight=true;
+  btn.disabled=true;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';
+  try{
+    try{await setPersistence(auth,browserSessionPersistence)}catch(e){console.warn('Persistencia no disponible; se continuará con la sesión actual.',e)}
+    const credential=await signInWithEmailAndPassword(auth,email,pass);
+    const user=credential?.user||auth.currentUser;
+    if(!user || user.isAnonymous)throw Object.assign(new Error('Firebase no devolvió una sesión administrativa válida.'),{code:'auth/session-not-created'});
+    showAdminWorkspace(user,true);
+    writeAdminAudit('Inicio de sesión en Visual Builder','session').catch(e=>console.warn('Auditoría de inicio:',e));
+  }catch(e){
+    console.error('Firebase Auth:',e);
+    const code=e?.code||'';
+    const messages={
+      'auth/invalid-credential':'Correo o contraseña incorrectos.',
+      'auth/invalid-login-credentials':'Correo o contraseña incorrectos.',
+      'auth/invalid-email':'El correo no tiene un formato válido.',
+      'auth/user-not-found':'No existe una cuenta con ese correo.',
+      'auth/wrong-password':'La contraseña es incorrecta.',
+      'auth/user-disabled':'Esta cuenta está deshabilitada.',
+      'auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.',
+      'auth/network-request-failed':'No se pudo conectar con Firebase. Comprueba tu conexión.',
+      'auth/operation-not-allowed':'El acceso Email/Password no está habilitado en Firebase Authentication.',
+      'auth/invalid-api-key':'La configuración de Firebase es inválida.',
+      'auth/app-not-authorized':'Este dominio no está autorizado en Firebase Authentication.',
+      'auth/web-storage-unsupported':'El navegador bloqueó el almacenamiento necesario para la sesión.',
+      'auth/session-not-created':'Firebase no pudo crear la sesión administrativa.'
+    };
+    window.showToast(messages[code]||('No se pudo iniciar sesión'+(code?` (${code})`:'')));
+  }finally{
+    loginInFlight=false;
+    btn.disabled=false;
+    btn.innerHTML=old;
+  }
+};
+
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
-window.logout=async()=>{try{await signOut(auth)}catch(e){console.error(e)}location.reload()};
-onAuthStateChanged(auth,user=>{const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');if(user&&!user.isAnonymous){authScreen.style.display='none';builder.style.display='flex';startAuditWatch();const fr=iframe();if(!fr.getAttribute('src')||fr.getAttribute('src')===location.href)fr.src='index.html?t='+Date.now();setTimeout(()=>{if(window.loadImgBBLibrary)window.loadImgBBLibrary(true);setTimeout(()=>{(async()=>{await migrateLegacyProductDemand()})()},1200)},250)}else{authScreen.style.display='flex';builder.style.display='none'}},error=>{console.error('Firebase Auth observer:',error);document.getElementById('auth-screen').style.display='flex';document.getElementById('builder-ui').style.display='none';window.showToast('No se pudo verificar la sesión con Firebase.')});
+window.logout=async()=>{try{await signOut(auth)}catch(e){console.error('Firebase logout:',e)}location.reload()};
+onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){showAdminWorkspace(user,false)}else{showAuthScreen()}},error=>{console.error('Firebase Auth observer:',error);if(!auth.currentUser)showAuthScreen()});
 iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},location.origin),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},location.origin),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},location.origin);document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
