@@ -1,11 +1,13 @@
 {
   "hosting": {
-      "site": "multiprintt",
+    "site": "multiprintt",
     "public": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      ".github/**",
+      "recursos/**"
     ],
     "headers": [
       {
@@ -13,7 +15,7 @@
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "no-store, no-cache, must-revalidate, max-age=0, s-maxage=0"
+            "value": "no-cache, must-revalidate, max-age=0, s-maxage=0"
           },
           {
             "key": "Pragma",
@@ -22,6 +24,22 @@
           {
             "key": "Expires",
             "value": "0"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=()"
           }
         ]
       },
@@ -30,7 +48,7 @@
         "headers": [
           {
             "key": "Cache-Control",
-            "value": "no-store, no-cache, must-revalidate, max-age=0, s-maxage=0"
+            "value": "no-cache, must-revalidate, max-age=0, s-maxage=0"
           },
           {
             "key": "Pragma",
@@ -39,6 +57,22 @@
           {
             "key": "Expires",
             "value": "0"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=()"
           }
         ]
       },
@@ -48,24 +82,10 @@
           {
             "key": "Cache-Control",
             "value": "no-cache, must-revalidate, max-age=0"
-          }
-        ]
-      },
-      {
-        "source": "**/*.css",
-        "headers": [
+          },
           {
-            "key": "Cache-Control",
-            "value": "public, max-age=604800, immutable"
-          }
-        ]
-      },
-      {
-        "source": "**/*.{webp,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,otf}",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "public, max-age=2592000, immutable"
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
           }
         ]
       }
