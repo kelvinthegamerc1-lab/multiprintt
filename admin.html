@@ -1448,7 +1448,24 @@ function mpAdminProductPrice(d){
   return Number.isFinite(legacy)?Math.max(0,legacy):0;
 }
 function mpAdminProductDiscount(d){const n=mpAdminParseMoney(d?.discount??d?.descuento??d?.discountPercent,0);return Math.min(100,Math.max(0,n));}
-function mpAdminIsPromo(d){const cat=String(d?.category||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');return d?.isPromo===true||d?.promocional===true||d?.promo===true||d?.isPromotional===true||cat==='promocionales'||mpAdminProductDiscount(d)>0;}
+function mpAdminIsPromo(d){const discount=mpAdminProductDiscount(d);return d?.isPromo===true||d?.promocional===true||d?.promo===true||d?.isPromotional===true||discount>0;}
+function mpAdminNormalizeCategory(value){
+  const raw=String(value??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const map={
+    textil:'textil',
+    textiles:'textil',
+    jarros:'jarros',
+    'jarros & thermos':'jarros',
+    'jarros y thermos':'jarros',
+    'imp general':'imp-general',
+    'imp. general':'imp-general',
+    'imp-general':'imp-general',
+    'impresion general':'imp-general',
+    packs:'packs'
+  };
+  return map[raw]||(['textil','jarros','imp-general','packs'].includes(raw)?raw:'imp-general');
+}
+window.syncProductPromotionFromDiscount=function(){const discount=Math.max(0,Math.min(100,mpAdminParseMoney(document.getElementById('db-discount')?.value,0)));const promo=document.getElementById('db-promo');if(promo&&discount>0)promo.checked=true;};
 window.updateProductPriceMode=function(){
   const mode=document.getElementById('db-price-type')?.value||'unit';
   const minWrap=document.getElementById('db-wholesale-min-wrap');
@@ -1460,13 +1477,13 @@ window.updateProductPriceMode=function(){
 };
 window.openDbEditor=(type,id,data=null)=>{currentDbItem={type,id:id||('new_'+Date.now()),isNew:!id};const d=data||{};let h='';
 if(type==='product'){
-  const categories=['textil','jarros','imp-general','packs','promocionales'];
-  const currentCat=String(d.category||'').trim().toLowerCase(); if(currentCat && !categories.includes(currentCat)) categories.unshift(currentCat);
+  const categories=['textil','jarros','imp-general','packs'];
+  const currentCat=mpAdminNormalizeCategory(d.category);
   const price=mpAdminProductPrice(d), discount=mpAdminProductDiscount(d), promo=mpAdminIsPromo(d);
   const priceType=['unit','wholesale','set'].includes(String(d.priceType||''))?String(d.priceType):'unit';
   const wholesaleMin=Math.max(1,Math.round(mpAdminParseMoney(d.wholesaleMinQty,12))||12);
   const setQuantity=Math.max(1,Math.round(mpAdminParseMoney(d.setQuantity,1))||1);
-  h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${categories.map(x=>`<option value="${esc(x)}" ${currentCat===x?'selected':''}>${esc(x==='promocionales'?'promocionales':x)}</option>`).join('')}</select></div><div><label class="lbl">Modalidad de precio</label><select id="db-price-type" class="field" onchange="window.updateProductPriceMode()"><option value="unit" ${priceType==='unit'?'selected':''}>Precio por unidad</option><option value="wholesale" ${priceType==='wholesale'?'selected':''}>Precio al por mayor</option><option value="set" ${priceType==='set'?'selected':''}>Precio por set</option></select></div></div><div class="grid2"><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" inputmode="decimal" step=".01" min="0" value="${price.toFixed(2)}"></div><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" inputmode="decimal" min="0" max="100" step=".01" value="${discount}"></div></div><div class="grid2"><div id="db-wholesale-min-wrap" class="${priceType==='wholesale'?'':'hidden'}"><label class="lbl">Mínimo de unidades</label><input id="db-wholesale-min" class="field" type="number" inputmode="numeric" min="1" step="1" value="${wholesaleMin}"></div><div id="db-set-qty-wrap" class="${priceType==='set'?'':'hidden'}"><label class="lbl">Unidades por set</label><input id="db-set-qty" class="field" type="number" inputmode="numeric" min="1" step="1" value="${setQuantity}"></div></div><div id="db-price-mode-help" class="helper">${priceType==='wholesale'?'El precio indicado se aplica por unidad desde la cantidad mínima configurada.':priceType==='set'?'El precio indicado corresponde a un set completo. La cantidad del set se muestra en el catálogo.':'El precio indicado corresponde a una unidad.'}</div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${promo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><div class="flex items-center gap-2 mt-2"><button type="button" class="mini-btn" onclick="window.openGallery('db-img','image','product')"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Explorar Multiprintt Host</button><button type="button" class="mini-btn" onclick="window.migrateDbImagesToB2()" title="Convertir URLs ImgBB a Multiprintt Host"><i class="fa-solid fa-right-left"></i></button><span class="helper">Añade imágenes y ordénalas antes de aplicarlas.</span></div></div>`;
+  h=`<div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div class="grid2"><div><label class="lbl">Categoría</label><select id="db-cat" class="field">${categories.map(x=>`<option value="${esc(x)}" ${currentCat===x?'selected':''}>${esc(x==='promocionales'?'promocionales':x)}</option>`).join('')}</select></div><div><label class="lbl">Modalidad de precio</label><select id="db-price-type" class="field" onchange="window.updateProductPriceMode()"><option value="unit" ${priceType==='unit'?'selected':''}>Precio por unidad</option><option value="wholesale" ${priceType==='wholesale'?'selected':''}>Precio al por mayor</option><option value="set" ${priceType==='set'?'selected':''}>Precio por set</option></select></div></div><div class="grid2"><div><label class="lbl">Precio</label><input id="db-price" class="field" type="number" inputmode="decimal" step=".01" min="0" value="${price.toFixed(2)}"></div><div><label class="lbl">Descuento %</label><input id="db-discount" class="field" type="number" inputmode="decimal" min="0" max="100" step=".01" value="${discount}" oninput="window.syncProductPromotionFromDiscount()"></div></div><div class="grid2"><div id="db-wholesale-min-wrap" class="${priceType==='wholesale'?'':'hidden'}"><label class="lbl">Mínimo de unidades</label><input id="db-wholesale-min" class="field" type="number" inputmode="numeric" min="1" step="1" value="${wholesaleMin}"></div><div id="db-set-qty-wrap" class="${priceType==='set'?'':'hidden'}"><label class="lbl">Unidades por set</label><input id="db-set-qty" class="field" type="number" inputmode="numeric" min="1" step="1" value="${setQuantity}"></div></div><div id="db-price-mode-help" class="helper">${priceType==='wholesale'?'El precio indicado se aplica por unidad desde la cantidad mínima configurada.':priceType==='set'?'El precio indicado corresponde a un set completo. La cantidad del set se muestra en el catálogo.':'El precio indicado corresponde a una unidad.'}</div><div class="flex gap-4 items-end pb-1"><label class="text-[10px] text-white"><input id="db-promo" type="checkbox" ${promo?'checked':''}> Promoción</label><label class="text-[10px] text-white"><input id="db-bestseller" type="checkbox" ${d.isBestSeller?'checked':''}> Más vendido</label></div><div><label class="lbl">Imágenes / orden del catálogo</label><textarea id="db-img" class="field" placeholder="Una URL por línea, en el orden 1, 2, 3...">${esc(d.image||'')}</textarea><div class="flex items-center gap-2 mt-2"><button type="button" class="mini-btn" onclick="window.openGallery('db-img','image','product')"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Explorar Multiprintt Host</button><button type="button" class="mini-btn" onclick="window.migrateDbImagesToB2()" title="Convertir URLs ImgBB a Multiprintt Host"><i class="fa-solid fa-right-left"></i></button><span class="helper">Añade imágenes y ordénalas antes de aplicarlas.</span></div></div>`;
   setTimeout(()=>window.updateProductPriceMode(),0);
 }
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" inputmode="decimal" value="${esc(String(mpAdminParseMoney(d.price??d.precio,'') ?? ''))}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
@@ -1528,7 +1545,7 @@ async function migrateLegacyProductDemand(){
 }
 window.saveDbItem=async()=>{
 const t=currentDbItem.type;let payload={};
-if(t==='product'){const imageField=normalizeProductImageField(document.getElementById('db-img').value);const price=Math.max(0,mpAdminParseMoney(document.getElementById('db-price').value,0));const discount=Math.min(100,Math.max(0,mpAdminParseMoney(document.getElementById('db-discount').value,0)));const category=document.getElementById('db-cat').value;const priceType=['unit','wholesale','set'].includes(document.getElementById('db-price-type')?.value)?document.getElementById('db-price-type').value:'unit';const wholesaleMin=Math.max(1,Math.round(mpAdminParseMoney(document.getElementById('db-wholesale-min')?.value,12))||12);const setQuantity=Math.max(1,Math.round(mpAdminParseMoney(document.getElementById('db-set-qty')?.value,1))||1);const existingVariants=currentDbItem?.imageVariants&&typeof currentDbItem.imageVariants==='object'?currentDbItem.imageVariants:{};const built=buildProductImgBBVariants(imageField);payload={name:document.getElementById('db-name').value.trim(),category,price,priceType,wholesaleMinQty:priceType==='wholesale'?wholesaleMin:1,setQuantity:priceType==='set'?setQuantity:1,discount,image:imageField,imageVariants:{...existingVariants,...built},isPromo:document.getElementById('db-promo').checked||category==='promocionales'||discount>0,isBestSeller:document.getElementById('db-bestseller').checked};}
+if(t==='product'){const imageField=normalizeProductImageField(document.getElementById('db-img').value);const price=Math.max(0,mpAdminParseMoney(document.getElementById('db-price').value,0));const discount=Math.min(100,Math.max(0,mpAdminParseMoney(document.getElementById('db-discount').value,0)));const category=document.getElementById('db-cat').value;const priceType=['unit','wholesale','set'].includes(document.getElementById('db-price-type')?.value)?document.getElementById('db-price-type').value:'unit';const wholesaleMin=Math.max(1,Math.round(mpAdminParseMoney(document.getElementById('db-wholesale-min')?.value,12))||12);const setQuantity=Math.max(1,Math.round(mpAdminParseMoney(document.getElementById('db-set-qty')?.value,1))||1);const existingVariants=currentDbItem?.imageVariants&&typeof currentDbItem.imageVariants==='object'?currentDbItem.imageVariants:{};const built=buildProductImgBBVariants(imageField);payload={name:document.getElementById('db-name').value.trim(),category:mpAdminNormalizeCategory(category),price,priceType,wholesaleMinQty:priceType==='wholesale'?wholesaleMin:1,setQuantity:priceType==='set'?setQuantity:1,discount,image:imageField,imageVariants:{...existingVariants,...built},isPromo:document.getElementById('db-promo').checked||discount>0,isBestSeller:document.getElementById('db-bestseller').checked};}
 if(t==='course')payload={title:document.getElementById('db-title').value.trim(),desc:document.getElementById('db-desc').value.trim(),schedule:document.getElementById('db-schedule').value.trim(),price:document.getElementById('db-price').value.trim(),image:document.getElementById('db-img').value.trim(),isMasterclass:document.getElementById('db-master').checked,modality:document.getElementById('db-modality').value};const coursePrice=mpAdminParseMoney(payload.price,NaN);if(Number.isFinite(coursePrice))payload.price=String(coursePrice.toFixed(2));
 if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name').value.trim(),role:document.getElementById('db-role').value.trim(),quote:document.getElementById('db-quote').value.trim(),theme:document.getElementById('db-theme').value};
 if(t==='testimonial_video')payload.src=document.getElementById('db-vid').value.trim();
@@ -1811,24 +1828,148 @@ async function ensureB2CursorForPage(target){
   const size=b2PageSizeValue();for(let p=1;p<target;p++){if(window.imgbbPageCursors[p])continue;const cached=window.imgbbPageCache.get(p);if(cached){continue;}const data=await fetchB2Page(p,size);const records=(data.items||[]).map(b2RecordFromItem).filter(Boolean);window.imgbbPageCache.set(p,records);window.imgbbPageHasMore[p]=!!data.isTruncated;window.imgbbPageCursors[p+1]=data.nextContinuationToken||null;b2CacheRecords(records);}
 }
 async function loadB2RemotePage(page=1){
-  page=Math.max(1,Number(page)||1);const token=++b2PageRequestSeq;const size=b2PageSizeValue();
-  if(window.imgbbPageCache.has(page)){const records=window.imgbbPageCache.get(page)||[];window.imgbbPage=page;window.imgbbPageItems=records;b2CacheRecords(records);window.renderImgBBLibrary();window.renderImgBBPagination();return records;}
+  page=Math.max(1,Number(page)||1);const requestId=++b2PageRequestSeq;const size=b2PageSizeValue();
+  if(window.imgbbPageCache.has(page)){
+    const records=window.imgbbPageCache.get(page)||[];
+    window.imgbbPage=page;
+    window.imgbbPageItems=records;
+    b2CacheRecords(records);
+    window.renderImgBBLibrary();
+    window.renderImgBBPagination();
+    return records;
+  }
   await ensureB2CursorForPage(page);
-  const data=await fetchB2Page(page,size);if(token!==b2PageRequestSeq)return window.imgbbPageItems||[];const records=(data.items||[]).map(b2RecordFromItem).filter(Boolean);window.imgbbPage=page;window.imgbbPageItems=records;window.imgbbPageCache.set(page,records);window.imgbbPageHasMore[page]=!!data.isTruncated;window.imgbbPageCursors[page+1]=data.nextContinuationToken||null;b2CacheRecords(records);window.renderImgBBLibrary();window.renderImgBBPagination();return records;
+  const data=await fetchB2Page(page,size);
+  if(requestId!==b2PageRequestSeq)return window.imgbbPageItems||[];
+  const records=(data.items||[]).map(b2RecordFromItem).filter(Boolean);
+  window.imgbbPage=page;
+  window.imgbbPageItems=records;
+  window.imgbbPageCache.set(page,records);
+  window.imgbbPageHasMore[page]=!!data.isTruncated;
+  window.imgbbPageCursors[page+1]=data.nextContinuationToken||null;
+  b2CacheRecords(records);
+  window.renderImgBBLibrary();
+  window.renderImgBBPagination();
+  return records;
+}
+async function fetchB2ExactCount(category='all',force=false){
+  const cat=String(category||'all');
+  if(!force&&window.imgbbCountCache instanceof Map&&window.imgbbCountCache.has(cat))return Number(window.imgbbCountCache.get(cat))||0;
+  const params=new URLSearchParams();
+  if(cat!=='all')params.set('category',cat);
+  const data=await b2Fetch(`/api/count${params.toString()?`?${params.toString()}`:''}`,{method:'GET'});
+  const total=Math.max(0,Number(data?.count)||0);
+  if(!(window.imgbbCountCache instanceof Map))window.imgbbCountCache=new Map();
+  window.imgbbCountCache.set(cat,total);
+  return total;
+}
+function updateB2ExactCountUI(total){
+  const n=Math.max(0,Number(total)||0);
+  const count=document.getElementById('imgbb-library-count');
+  const tabCount=document.getElementById('imgbb-tab-count');
+  const status=document.getElementById('imgbb-shared-status');
+  if(count)count.textContent=`${n} imagen${n===1?'':'es'} disponibles`;
+  if(tabCount)tabCount.textContent=String(n);
+  if(status){status.textContent='B2 · conectado';status.style.color='#67e8f9';}
 }
 window.loadImgBBLibrary=async(refresh=false)=>{
-  const host=document.getElementById('imgbb-library-grid'),count=document.getElementById('imgbb-library-count'),tabCount=document.getElementById('imgbb-tab-count');if(!host)return;
+  const host=document.getElementById('imgbb-library-grid');
+  if(!host)return;
   if(!window.imgbbPageSize)window.imgbbPageSize=window.innerWidth<601?12:(window.innerWidth<901?15:20);
-  if(refresh||!window.imgbbPageCache.size){resetB2Pagination();window.__imgbbRecordCache=new Map();window.imgbbLibrary=[];window.imgbbSelectedIds.clear();window.dbImgBBOrder=[];host.innerHTML='<div class="media-empty col-span-full"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando Multiprintt Host…</div>';}
-  try{const data=await loadB2RemotePage(1);const loaded=Number(data?.length||0);const totalText=loaded+(window.imgbbPageHasMore[1]?' +':'');if(count)count.textContent=`${totalText} imágenes disponibles`;if(tabCount)tabCount.textContent=loaded+(window.imgbbPageHasMore[1]?' +':'');const status=document.getElementById('imgbb-shared-status');if(status){status.textContent='B2 · conectado';status.style.color='#67e8f9';}}
-  catch(e){console.error('Multiprintt Host:',e);if(count)count.textContent='Sin conexión';if(tabCount)tabCount.textContent='!';window.showToast('No se pudo cargar Multiprintt Host: '+(e?.message||'error'));}
+  if(refresh||!window.imgbbPageCache.size){
+    resetB2Pagination();
+    window.__imgbbRecordCache=new Map();
+    window.imgbbLibrary=[];
+    window.imgbbSelectedIds.clear();
+    window.dbImgBBOrder=[];
+    host.innerHTML='<div class="media-empty col-span-full"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando Multiprintt Host…</div>';
+  }
+  try{
+    const category=String(window.imgbbCategoryFilter||'all');
+    const [total]=await Promise.all([
+      fetchB2ExactCount(category,!!refresh),
+      loadB2RemotePage(1)
+    ]);
+    window.imgbbTotalCount=total;
+    updateB2ExactCountUI(total);
+  }catch(e){
+    console.error('Multiprintt Host:',e);
+    const count=document.getElementById('imgbb-library-count');
+    const tabCount=document.getElementById('imgbb-tab-count');
+    if(count)count.textContent='Sin conexión';
+    if(tabCount)tabCount.textContent='!';
+    const status=document.getElementById('imgbb-shared-status');
+    if(status){status.textContent='B2 · error';status.style.color='#fb7185';}
+    window.showToast('No se pudo cargar Multiprintt Host: '+(e?.message||'error'));
+  }
   window.renderImgBBLibrary();
 };
-window.filterImgBBLibrary=async cat=>{window.imgbbCategoryFilter=cat||'all';const search=document.getElementById('imgbb-search');if(search)search.value='';document.querySelectorAll('[data-imgbb-filter]').forEach(b=>b.classList.toggle('active',b.dataset.imgbbFilter===window.imgbbCategoryFilter));resetB2Pagination();window.__imgbbRecordCache=new Map();window.imgbbLibrary=[];window.imgbbSelectedIds.clear();window.dbImgBBOrder=[];window.renderImgBBLibrary();await loadB2RemotePage(1);window.renderImgBBLibrary();};
+window.filterImgBBLibrary=async cat=>{
+  window.imgbbCategoryFilter=cat||'all';
+  const search=document.getElementById('imgbb-search');if(search)search.value='';
+  document.querySelectorAll('[data-imgbb-filter]').forEach(b=>b.classList.toggle('active',b.dataset.imgbbFilter===window.imgbbCategoryFilter));
+  resetB2Pagination();
+  window.__imgbbRecordCache=new Map();
+  window.imgbbLibrary=[];
+  window.imgbbSelectedIds.clear();
+  window.dbImgBBOrder=[];
+  const host=document.getElementById('imgbb-library-grid');
+  if(host)host.innerHTML='<div class="media-empty col-span-full"><i class="fa-solid fa-circle-notch fa-spin"></i> Cargando…</div>';
+  try{
+    const [total]=await Promise.all([
+      fetchB2ExactCount(window.imgbbCategoryFilter,true),
+      loadB2RemotePage(1)
+    ]);
+    window.imgbbTotalCount=total;
+    updateB2ExactCountUI(total);
+  }catch(e){console.error('Filtro B2:',e);window.showToast('No se pudo actualizar el filtro: '+(e?.message||'error'));}
+  window.renderImgBBLibrary();
+};
 window.queueImgBBSearch=()=>{clearTimeout(window._b2SearchTimer);window._b2SearchTimer=setTimeout(()=>window.searchImgBBLibrary(),240);};
 window.searchImgBBLibrary=async()=>{const term=(document.getElementById('imgbb-search')?.value||'').trim().toLowerCase();const seq=++b2SearchSeq;if(!term){window.imgbbSearchMode=false;window.imgbbSearchResults=[];resetB2Pagination();await loadB2RemotePage(1);return;}if(term.length<2){window.imgbbSearchMode=true;window.imgbbSearchResults=[];window.imgbbPage=1;window.renderImgBBLibrary();window.renderImgBBPagination();return;}try{const params=new URLSearchParams();params.set('search',term);params.set('limit','500');if(window.imgbbCategoryFilter!=='all')params.set('category',window.imgbbCategoryFilter);const data=await b2Fetch(`/api/list?${params.toString()}`,{method:'GET'});if(seq!==b2SearchSeq)return;window.imgbbSearchMode=true;window.imgbbSearchResults=(data.items||[]).map(b2RecordFromItem).filter(Boolean);b2CacheRecords(window.imgbbSearchResults);window.imgbbPage=1;window.imgbbTotalCount=window.imgbbSearchResults.length;window.renderImgBBLibrary();window.renderImgBBPagination();}catch(e){if(seq!==b2SearchSeq)return;window.imgbbSearchResults=[];window.imgbbTotalCount=0;window.renderImgBBLibrary();window.renderImgBBPagination();window.showToast('No se pudo buscar en Multiprintt Host: '+(e?.message||'error'));}};
-window.goToImgBBPage=async page=>{page=Math.max(1,Number(page)||1);if(window.imgbbSearchMode){const pages=Math.max(1,Math.ceil((window.imgbbSearchResults||[]).length/b2PageSizeValue()));window.imgbbPage=Math.min(page,pages);window.renderImgBBLibrary();window.renderImgBBPagination();return;}if(page>1&&!window.imgbbPageCursors[page])await ensureB2CursorForPage(page);if(page>1&&window.imgbbPageHasMore[page-1]===false)return;await loadB2RemotePage(page);};
-window.renderImgBBPagination=()=>{const host=document.getElementById('imgbb-pagination');if(!host)return;const size=b2PageSizeValue();const p=Math.max(1,Number(window.imgbbPage)||1);if(window.imgbbSearchMode){const total=window.imgbbSearchResults?.length||0,pages=Math.max(1,Math.ceil(total/size));if(total<=size){host.innerHTML=total?`<span class="imgbb-page-status">${total} resultado${total===1?'':'s'}</span>`:'';return;}const nums=[];const push=n=>{if(n>=1&&n<=pages&&!nums.includes(n))nums.push(n)};push(1);push(p-2);push(p-1);push(p);push(p+1);push(p+2);push(pages);let html=`<button type="button" class="imgbb-page-btn" data-imgbb-page="${p-1}" ${p<=1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`;let prev=0;for(const n of nums){if(prev&&n>prev+1)html+='<span class="imgbb-page-ellipsis">…</span>';html+=`<button type="button" class="imgbb-page-btn ${n===p?'active':''}" data-imgbb-page="${n}">${n}</button>`;prev=n;}html+=`<button type="button" class="imgbb-page-btn" data-imgbb-page="${p+1}" ${p>=pages?'disabled':''}><i class="fa-solid fa-chevron-right"></i></button><span class="imgbb-page-status">${p}/${pages}</span>`;host.innerHTML=html;host.querySelectorAll('[data-imgbb-page]').forEach(btn=>btn.onclick=()=>window.goToImgBBPage(Number(btn.dataset.imgbbPage)));return;}const known=Math.max(1,window.imgbbPageCursors.length-1);const hasNext=window.imgbbPageHasMore[p]!==false;const maxButtons=Math.min(Math.max(known+(hasNext?1:0),p),12);const pages=[];for(let n=1;n<=maxButtons;n++)pages.push(n);let html=`<button type="button" class="imgbb-page-btn" data-imgbb-page="${p-1}" ${p<=1?'disabled':''}><i class="fa-solid fa-chevron-left"></i></button>`;for(const n of pages){html+=`<button type="button" class="imgbb-page-btn ${n===p?'active':''}" data-imgbb-page="${n}">${n}</button>`;}html+=`<button type="button" class="imgbb-page-btn" data-imgbb-page="${p+1}" ${hasNext?'':'disabled'}><i class="fa-solid fa-chevron-right"></i></button><span class="imgbb-page-status">Página ${p}${hasNext?' · hay más':''}</span>`;host.innerHTML=html;host.querySelectorAll('[data-imgbb-page]').forEach(btn=>btn.onclick=()=>window.goToImgBBPage(Number(btn.dataset.imgbbPage)));};
+window.goToImgBBPage=async page=>{
+  page=Math.max(1,Number(page)||1);
+  const size=b2PageSizeValue();
+  if(window.imgbbSearchMode){
+    const total=Math.max(0,Number(window.imgbbSearchResults?.length)||0);
+    const pages=Math.max(1,Math.ceil(total/size));
+    window.imgbbPage=Math.min(page,pages);
+    window.renderImgBBLibrary();
+    window.renderImgBBPagination();
+    return;
+  }
+  const total=Math.max(0,Number(window.imgbbTotalCount)||0);
+  const pages=Math.max(1,Math.ceil(total/size));
+  if(page>pages)return;
+  if(page===window.imgbbPage)return;
+  await loadB2RemotePage(page);
+};
+window.renderImgBBPagination=()=>{
+  const host=document.getElementById('imgbb-pagination');
+  if(!host)return;
+  const size=b2PageSizeValue();
+  const p=Math.max(1,Number(window.imgbbPage)||1);
+  const total=window.imgbbSearchMode?Math.max(0,Number(window.imgbbSearchResults?.length)||0):Math.max(0,Number(window.imgbbTotalCount)||0);
+  const pages=Math.max(1,Math.ceil(total/size));
+  if(total<=0){host.innerHTML='';return;}
+  if(p>pages){window.imgbbPage=pages;return window.renderImgBBPagination();}
+  const nums=[];
+  const push=n=>{if(n>=1&&n<=pages&&!nums.includes(n))nums.push(n);};
+  push(1);
+  push(p-2);push(p-1);push(p);push(p+1);push(p+2);
+  push(pages);
+  let html=`<button type="button" class="imgbb-page-btn" data-imgbb-page="${p-1}" ${p<=1?'disabled':''} aria-label="Página anterior"><i class="fa-solid fa-chevron-left"></i></button>`;
+  let prev=0;
+  for(const n of nums){
+    if(prev&&n>prev+1)html+='<span class="imgbb-page-ellipsis">…</span>';
+    html+=`<button type="button" class="imgbb-page-btn ${n===p?'active':''}" data-imgbb-page="${n}" ${n===p?'aria-current="page"':''}>${n}</button>`;
+    prev=n;
+  }
+  html+=`<button type="button" class="imgbb-page-btn" data-imgbb-page="${p+1}" ${p>=pages?'disabled':''} aria-label="Página siguiente"><i class="fa-solid fa-chevron-right"></i></button>`;
+  html+=`<span class="imgbb-page-status">Página ${p} de ${pages} · ${total} imagen${total===1?'':'es'}</span>`;
+  host.innerHTML=html;
+  host.querySelectorAll('[data-imgbb-page]').forEach(btn=>btn.onclick=()=>window.goToImgBBPage(Number(btn.dataset.imgbbPage)));
+};
 function updateImgBBSelectionUI(){const n=window.imgbbSelectedIds.size;const isProduct=currentGalleryMode==='product';document.querySelectorAll('#imgbb-hosting-section .imgbb-product-only').forEach(el=>el.style.display=isProduct?'':'none');const count=document.getElementById('imgbb-selected-count');if(count)count.textContent=String(n);const clear=document.querySelector('#imgbb-hosting-section .imgbb-clear-selection');if(clear)clear.classList.toggle('active',n>0);const all=document.querySelector('#imgbb-hosting-section .imgbb-select-all');if(all){const visible=(window.imgbbPageItems||[]).map(x=>String(x.id||''));const selected=visible.filter(id=>window.imgbbSelectedIds.has(id)).length;all.classList.toggle('active',visible.length>0&&selected===visible.length);}const picker=document.getElementById('imgbb-db-picker');if(picker){picker.classList.toggle('is-context',isProduct);picker.style.display=isProduct?'grid':'none';}const pCount=document.getElementById('imgbb-db-picker-count');if(pCount)pCount.textContent=`${window.dbImgBBOrder.length} seleccionada${window.dbImgBBOrder.length===1?'':'s'}`;const orderHost=document.getElementById('imgbb-db-order');if(orderHost){const items=window.dbImgBBOrder.map(id=>window.__imgbbRecordCache.get(String(id))||window.imgbbLibrary.find(x=>String(x.id)===String(id))).filter(Boolean);orderHost.innerHTML=items.length?items.map((x,pos)=>`<div class="imgbb-db-order-item" data-db-order-id="${esc(String(x.id))}"><span class="imgbb-db-order-index">${pos+1}</span><span class="imgbb-db-order-name" title="${esc(x.title||x.name||'Imagen')}">${esc(x.title||x.name||'Imagen')}</span><button type="button" class="imgbb-db-order-btn" data-db-order-up="${esc(String(x.id))}" ${pos===0?'disabled':''} title="Subir"><i class="fa-solid fa-chevron-up"></i></button><button type="button" class="imgbb-db-order-btn" data-db-order-down="${esc(String(x.id))}" ${pos===items.length-1?'disabled':''} title="Bajar"><i class="fa-solid fa-chevron-down"></i></button></div>`).join(''):'<span class="imgbb-db-order-empty">Selecciona imágenes con el check para preparar su orden.</span>';orderHost.querySelectorAll('[data-db-order-up]').forEach(btn=>btn.onclick=()=>moveDbImgBBOrder(btn.dataset.dbOrderUp,-1));orderHost.querySelectorAll('[data-db-order-down]').forEach(btn=>btn.onclick=()=>moveDbImgBBOrder(btn.dataset.dbOrderDown,1));}const apply=document.getElementById('imgbb-db-apply');if(apply){apply.disabled=!isProduct||!window.dbImgBBOrder.length;apply.onclick=window.applyDbImgBBSelection;}}
 function moveDbImgBBOrder(id,dir){const arr=window.dbImgBBOrder,pos=arr.indexOf(String(id)),next=pos+dir;if(pos<0||next<0||next>=arr.length)return;[arr[pos],arr[next]]=[arr[next],arr[pos]];updateImgBBSelectionUI();}
 window.toggleImgBBSelection=(id,checked)=>{id=String(id||'');if(!id)return;if(checked){window.imgbbSelectedIds.add(id);if(currentGalleryMode==='product'&&!window.dbImgBBOrder.includes(id))window.dbImgBBOrder.push(id);}else{window.imgbbSelectedIds.delete(id);const pos=window.dbImgBBOrder.indexOf(id);if(pos>=0)window.dbImgBBOrder.splice(pos,1);}updateImgBBSelectionUI();const card=document.querySelector(`#imgbb-library-grid [data-id="${CSS.escape(id)}"]`);if(card)card.classList.toggle('is-selected',checked);};
