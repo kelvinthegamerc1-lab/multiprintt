@@ -4625,9 +4625,8 @@ window.mpNormalizeProductName=function(value){
   }).join('')).join(' ');
 };
 window.mpProductIsPromo=function(p){
-  const category=String(p?.category||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   const discount=window.mpProductDiscount(p);
-  return p?.isPromo===true || p?.promocional===true || p?.promo===true || p?.isPromotional===true || category==='promocionales' || discount>0;
+  return p?.isPromo===true || p?.promocional===true || p?.promo===true || p?.isPromotional===true || discount>0;
 };
 window.mpNormalizeProductData=function(raw){
   const p={...(raw||{})};
