@@ -25,7 +25,7 @@
 <meta name="application-name" content="Multiprintt">
 <meta name="apple-mobile-web-app-title" content="Multiprintt">
 <meta name="theme-color" content="#070709">
-<meta name="mp-build-version" content="2026.09.24.02">
+<meta name="mp-build-version" content="2026.09.28.01">
 <meta name="mp-final-mobile-fix" content="mp-final-mobile-2026-09-24">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
@@ -3988,14 +3988,25 @@ html{color-scheme:dark;}
 @media (prefers-reduced-motion: reduce){
   .view-slide,.reveal,.card,.bot-nav-item,*{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
 }
+<style id="mp-final-loader-fix-2026">
+@keyframes mpGlobalLoaderSpin{to{transform:rotate(360deg)}}
+#global-loader .mp-global-loader-spinner{
+  animation:mpGlobalLoaderSpin .85s linear infinite !important;
+  animation-play-state:running !important;
+  transform-origin:50% 50% !important;
+  transform-box:fill-box;
+  backface-visibility:hidden;
+  display:block;
+  will-change:transform;
+}
 </style>
 
 </head>
 <body class="transform-gpu">
-<div id="global-loader" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
+<div id="global-loader" role="status" aria-live="polite" aria-label="Cargando Multiprintt" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
     <div class="relative flex items-center justify-center">
         <div class="absolute w-16 h-16 bg-gradient-to-r from-pink-500 to-cyan-500 rounded-full blur-[25px] opacity-30 animate-pulse"></div>
-        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));"><i class="fa-solid fa-circle-notch animate-spin text-4xl block"></i></div>
+        <div class="relative z-10 text-white/90" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));"><i class="fa-solid fa-circle-notch mp-global-loader-spinner text-4xl block" aria-hidden="true"></i></div>
     </div>
 </div>
 <div class="fixed top-0 left-0 right-0 z-[100] h-[2px] gradient-line"></div>
@@ -4381,12 +4392,36 @@ const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const MP_BUILD_VERSION = '2026.09.24.07';
+const MP_BUILD_VERSION = '2026.09.28.01';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
 const APP_ID = "multiprintt-web";
 let firebaseReady = true;
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos'; window.productsDataReady = false; window.productDemandMap = {}; window.demandRenderTimer = null; window.lastDemandSignature = '';
 window.MEDIA_PROXY_BASE='';
+// Loader inicial: no se cierra por tiempo arbitrario; se oculta cuando el catálogo ya está renderizado.
+window.__mpInitialLoaderStartedAt=Date.now();
+window.__mpInitialCatalogReady=false;
+window.__mpInitialLoaderHidden=false;
+window.__mpHideGlobalLoader=function(force=false){
+  if(window.__mpInitialLoaderHidden)return;
+  const loader=document.getElementById('global-loader');
+  if(!loader)return;
+  const elapsed=Date.now()-window.__mpInitialLoaderStartedAt;
+  const minVisible=620;
+  if(!force && !window.__mpInitialCatalogReady){
+    if(elapsed<minVisible){setTimeout(()=>window.__mpHideGlobalLoader(false),minVisible-elapsed);}
+    return;
+  }
+  const reveal=()=>requestAnimationFrame(()=>{
+    if(window.__mpInitialLoaderHidden)return;
+    window.__mpInitialLoaderHidden=true;
+    loader.classList.add('loader-hidden');
+    loader.setAttribute('aria-hidden','true');
+  });
+  if(elapsed<minVisible && !force){setTimeout(reveal,minVisible-elapsed);}else reveal();
+};
+window.__mpMarkCatalogReady=function(){window.__mpInitialCatalogReady=true;window.__mpHideGlobalLoader(false);};
+setTimeout(()=>window.__mpHideGlobalLoader(true),8000);
 window.normalizeMediaUrl=function(raw){let v=String(raw??'').trim();if(!v)return'';v=v.replace(/^['"]+|['"]+$/g,'').trim();v=v.replace(/&amp;/gi,'&').replace(/&quot;/gi,'\"').replace(/&#39;/gi,"'").replace(/&#x27;/gi,"'");if(v.startsWith('//'))v='https:'+v;return v};
 window.protectMediaUrl=function(raw){const v=window.normalizeMediaUrl(raw);if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;try{const parsed=new URL(v,location.href);if(parsed.hostname==='i.ibb.co'||parsed.hostname==='ibb.co'){return parsed.href}}catch(e){}const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
 window.protectMediaList=list=>Array.isArray(list)?list.map(window.protectMediaUrl):list;
@@ -5065,7 +5100,7 @@ renderHTML += `
 <article onclick="window.openCourseModal('${c.id}')" class="card reveal show relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder} cursor-pointer" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
 ${adminHtml}
 <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
-<img src="${window.protectMediaUrl(c.image)}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
+<img src="${window.protectMediaUrl(c.image) || 'https://placehold.co/600x400/101014/ffffff?text=Curso'}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
 <div class="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/40 to-transparent z-10 pointer-events-none"></div>
 <div class="absolute top-5 left-5 z-20 pointer-events-none flex flex-wrap gap-2 pr-5">
 ${masterclassBadge}
@@ -5362,32 +5397,51 @@ if (lastProductSnapshot) {
 }
 window.appProducts = nextProducts; window.productsDataReady = true;
 lastProductSnapshot = nextProducts.map(p => ({...p}));
-if (structuralChange || window.currentFilter==='mas-vendidos') { clearTimeout(window.demandRenderTimer); window.demandRenderTimer=setTimeout(()=>window.renderProducts(),180); }
+if (structuralChange || window.currentFilter==='mas-vendidos') {
+  clearTimeout(window.demandRenderTimer);
+  window.demandRenderTimer=setTimeout(()=>{try{window.renderProducts();}finally{window.__mpMarkCatalogReady();}},180);
+} else {
+  window.__mpMarkCatalogReady();
+}
 window.updateCartUI();
+}, (error) => {
+  console.warn('No se pudo sincronizar products; se mantiene el catálogo local.', error);
+  if(!window.productsDataReady){
+    window.appProducts=[...defaultProducts];
+    window.productsDataReady=true;
+    try{window.renderProducts();}catch(e){console.warn('Fallback products:',e)}
+    window.__mpMarkCatalogReady();
+    window.updateCartUI();
+  }
 });
 if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'productDemand'), (snap) => {
   const map={}; snap.forEach(d=>{map[d.id]=d.data()||{}}); window.productDemandMap=map;
   if(window.currentFilter==='mas-vendidos'){clearTimeout(window.demandRenderTimer);window.demandRenderTimer=setTimeout(()=>window.renderProducts(),120);}
+}, (error) => {
+  console.warn('No se pudo sincronizar productDemand; se usará demanda local si existe.', error);
+  window.productDemandMap=window.productDemandMap||{};
+  if(window.currentFilter==='mas-vendidos')window.renderProducts();
 });
 if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
 window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => window.mpNormalizeCourseData({id: d.id, ...d.data()}));
 window.renderCourses();
+}, (error) => {
+  console.warn('No se pudo sincronizar courses; se mantiene la academia local.', error);
+  if(!Array.isArray(window.appCourses)||!window.appCourses.length){window.appCourses=[...defaultCourses];try{window.renderCourses()}catch(e){console.warn('Fallback courses:',e)}}
 });
 } catch (error) {
 console.warn("Error cargando DB, cargando fallback", error);
 window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; window.productsDataReady = true;
-window.renderProducts(); window.renderCourses();
+window.renderProducts(); window.renderCourses(); window.__mpMarkCatalogReady();
 } finally {
 window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
 try { window.setFilter('mas-vendidos'); } catch(e) { console.warn('Filtro inicial:', e); }
 try { window.renderProducts(); window.syncSocialNetworks(); window.updateCartUI(); window.ensureAcademyGallery(); window.loadAcademyGallery(); } catch(e) { console.warn('Inicialización de galería:', e); }
-setTimeout(() => {
 try { window.ensureAcademyGallery(); } catch(e) {}
-const loader = document.getElementById('global-loader'); if(loader) loader.classList.add('loader-hidden');
 window.navigate('catalog');
 try { window.renderProducts(); } catch(e) { console.warn('Render inicial de productos:', e); }
+window.__mpHideGlobalLoader(false);
 if(window.parent && window.parent !== window) window.parent.postMessage({ type: 'APP_READY' }, location.origin === 'null' ? '*' : location.origin);
-}, 500);
 }
 }
 const MP_GALLERY_FALLBACK_IMAGES = [
@@ -5982,7 +6036,7 @@ document.getElementById('cm-title').textContent = c.title || '';
 document.getElementById('cm-desc').textContent = c.desc || '';
 document.getElementById('cm-schedule').textContent = c.schedule || '';
 const coursePrice=window.mpCoursePrice(c);document.getElementById('cm-price').textContent=Number.isFinite(coursePrice)?`$${coursePrice.toFixed(2)}`:String(c?.price??c?.precio??'').trim();
-document.getElementById('cm-image').src = window.protectMediaUrl(c.image || '');
+document.getElementById('cm-image').src = window.protectMediaUrl(c.image || '') || 'https://placehold.co/600x400/101014/ffffff?text=Curso';
 const masterBadge = document.getElementById('cm-masterclass-badge');
 if(masterBadge) masterBadge.style.display = c.isMasterclass !== false ? 'inline-flex' : 'none';
 const modBadge = document.getElementById('cm-modality-badge');
