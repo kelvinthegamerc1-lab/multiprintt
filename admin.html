@@ -1292,7 +1292,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, setDoc, deleteDoc, deleteField, writeBatch, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.09.24.07';
+const MP_ADMIN_BUILD='2026.09.28.01';
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const B2_MEDIA_API='https://b2.multiprintt.workers.dev';
@@ -1699,17 +1699,24 @@ async function migrateLegacyProductDemand(){
 let dbSaveInFlight=false;
 window.saveDbItem=async()=>{
 if(dbSaveInFlight)return;
-const t=currentDbItem?.type;let payload={};
+const t=currentDbItem?.type;
 if(!t)return window.showToast('No hay un elemento seleccionado.');
+dbSaveInFlight=true;
+try{
+let payload={};
 if(t==='product'){
   const imageField=normalizeProductImageField(document.getElementById('db-img')?.value||'');
   const name=mpAdminNormalizeProductName(document.getElementById('db-name')?.value||'');
-  const price=Math.max(0,mpAdminParseMoney(document.getElementById('db-price')?.value,0));
-  const discount=Math.min(100,Math.max(0,mpAdminParseMoney(document.getElementById('db-discount')?.value,0)));
+  const priceRaw=document.getElementById('db-price')?.value.trim()||'';
+  const discountRaw=document.getElementById('db-discount')?.value.trim()||'';
+  const price=priceRaw===''?NaN:mpAdminParseMoney(priceRaw,NaN);
+  const discount=discountRaw===''?0:mpAdminParseMoney(discountRaw,NaN);
   const category=mpAdminNormalizeCategory(document.getElementById('db-cat')?.value||'');
   const priceType=['unit','wholesale','set'].includes(document.getElementById('db-price-type')?.value)?document.getElementById('db-price-type').value:'unit';
-  const wholesaleMin=Math.max(1,Math.round(mpAdminParseMoney(document.getElementById('db-wholesale-min')?.value,12))||12);
-  const setQuantity=Math.max(1,Math.round(mpAdminParseMoney(document.getElementById('db-set-qty')?.value,1))||1);
+  const wholesaleRaw=document.getElementById('db-wholesale-min')?.value.trim()||'';
+  const setRaw=document.getElementById('db-set-qty')?.value.trim()||'';
+  const wholesaleMin=wholesaleRaw===''?NaN:mpAdminParseMoney(wholesaleRaw,NaN);
+  const setQuantity=setRaw===''?NaN:mpAdminParseMoney(setRaw,NaN);
   if(!name)return window.showToast('El producto necesita un nombre.');
   if(!['textil','jarros','imp-general','packs'].includes(category))return window.showToast('Selecciona una categoría válida.');
   if(!Number.isFinite(price)||price<0)return window.showToast('Introduce un precio válido. Usa 0 para «Consultar».');
@@ -1723,7 +1730,6 @@ if(t==='product'){
   const keep=new Set(rawImageUrls);
   const preservedVariants=Object.fromEntries(Object.entries(existingVariants).filter(([k])=>keep.has(normalizeSelectedMediaUrl(k))));
   const built=buildProductImgBBVariants(imageField);
-  // Evita duplicados evidentes sin convertir el guardado en una operación frágil.
   try{
     const currentName=mpAdminNormalizeProductName(currentDbItem?.name||'').toLocaleLowerCase('es');
     const sameIdentity=currentName===name.toLocaleLowerCase('es')&&mpAdminNormalizeCategory(currentDbItem?.category||'')===category;
@@ -1759,29 +1765,27 @@ if(t==='course'){
 }
 if(t==='testimonial_video'||t==='testimonial_text')payload={name:document.getElementById('db-name')?.value.trim()||'',role:document.getElementById('db-role')?.value.trim()||'',quote:document.getElementById('db-quote')?.value.trim()||'',theme:document.getElementById('db-theme')?.value||'pink'};
 if(t==='testimonial_video')payload.src=document.getElementById('db-vid')?.value.trim()||'';
-try{
-  dbSaveInFlight=true;
-  const saveBtn=document.getElementById('btn-save-db');
-  if(saveBtn){saveBtn.disabled=true;saveBtn.dataset.originalText=saveBtn.innerHTML;saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>Guardando…';}
-  await ensureAdminWriteSession();
-  
-  const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;
-  if(col){
-    await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});
-    iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},location.origin);
-    const changedFields=Object.keys(payload).filter(k=>!['imageVariants','createdAt','updatedAt'].includes(k));
-    void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':'curso'}: ${payload.name||payload.title||id}${changedFields.length?' · campos: '+changedFields.join(', '):''}`,'db');
-  }else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
-  window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty('Contenido sincronizado',false);
+const saveBtn=document.getElementById('btn-save-db');
+if(saveBtn){saveBtn.disabled=true;saveBtn.dataset.originalText=saveBtn.innerHTML;saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>Guardando…';}
+await ensureAdminWriteSession();
+const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;
+if(col){
+  await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});
+  iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},location.origin);
+  const changedFields=Object.keys(payload).filter(k=>!['imageVariants','createdAt','updatedAt'].includes(k));
+  void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':'curso'}: ${payload.name||payload.title||id}${changedFields.length?' · campos: '+changedFields.join(', '):''}`,'db');
+}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
+window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty('Contenido sincronizado',false);
 }catch(e){
   console.error('Guardar BD:',e);const code=e?.code||'';
-const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Publica las Firestore Rules y verifica que esta cuenta esté autenticada.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
-window.showToast(msg);
+  const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Publica las Firestore Rules y verifica que esta cuenta esté autenticada.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
+  window.showToast(msg);
 }finally{
   dbSaveInFlight=false;
   const saveBtn=document.getElementById('btn-save-db');
   if(saveBtn){saveBtn.disabled=false;saveBtn.innerHTML=saveBtn.dataset.originalText||'Guardar cambios';delete saveBtn.dataset.originalText;}
-}};
+}
+};
 window.openSocialModal=()=>{selectedSocial={name:'',icon:'',network:''};const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value='';if(i)i.value='fa-solid fa-link';window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button type="button" class="social-opt" data-name="${n.replace(/"/g,'&quot;')}" data-icon="${c.replace(/"/g,'&quot;')}"><i class="${c} mr-1"></i>${n}</button>`).join('');document.querySelectorAll('#social-grid .social-opt').forEach(btn=>btn.addEventListener('click',()=>window.pickSocial(btn.dataset.name,btn.dataset.icon,btn)))};window.pickSocial=(name,icon,btn)=>{selectedSocial={name:String(name||''),icon:String(icon||''),network:String(name||'').toLowerCase().trim().replace(/\s+/g,'-')||'custom'};document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));if(btn)btn.classList.add('selected');const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value=selectedSocial.name;if(i)i.value=selectedSocial.icon;};window.addSocial=()=>{const typedName=document.getElementById('social-name')?.value.trim()||'';const typedIcon=document.getElementById('social-icon')?.value.trim()||'';const name=selectedSocial.name||typedName||'Red social';const icon=selectedSocial.icon||typedIcon||'fa-solid fa-link';const url=document.getElementById('social-url')?.value.trim()||'';if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');const network=selectedSocial.network||name.toLowerCase().trim().replace(/\s+/g,'-')||'custom';iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network},location.origin);selectedSocial={name:'',icon:'',network:''};window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
 function imgbbSlug(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,80)||'imagen'}
 function imgbbFormatBytes(n){const v=Number(n)||0;if(v<1024)return v+' B';if(v<1024*1024)return (v/1024).toFixed(0)+' KB';return (v/1024/1024).toFixed(2)+' MB'}
