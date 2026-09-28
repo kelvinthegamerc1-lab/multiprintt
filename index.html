@@ -25,7 +25,7 @@
 <meta name="application-name" content="Multiprintt">
 <meta name="apple-mobile-web-app-title" content="Multiprintt">
 <meta name="theme-color" content="#070709">
-<meta name="mp-build-version" content="2026.09.28.01">
+<meta name="mp-build-version" content="2026.09.28.02">
 <meta name="mp-final-mobile-fix" content="mp-final-mobile-2026-09-24">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
@@ -4397,42 +4397,45 @@ const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const MP_BUILD_VERSION = '2026.09.28.01';
+const MP_BUILD_VERSION = '2026.09.28.02';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
 const APP_ID = "multiprintt-web";
 let firebaseReady = true;
 window.isAdminMode = false; window.sortableInstances = []; window.productOrderArray = []; window.courseOrderArray = []; window.currentFilter = 'mas-vendidos'; window.productsDataReady = false; window.productDemandMap = {}; window.demandRenderTimer = null; window.lastDemandSignature = '';
 window.MEDIA_PROXY_BASE='';
-// Loader inicial: no se cierra por tiempo arbitrario; se oculta cuando el catálogo ya está renderizado.
+// Loader inicial: breve y no bloqueante; Firebase hidrata el contenido en segundo plano.
 window.__mpInitialLoaderStartedAt=Date.now();
-window.__mpInitialCatalogReady=false;
 window.__mpInitialLoaderHidden=false;
+window.__mpInitialShellRendered=false;
 window.__mpHideGlobalLoader=function(force=false){
   if(window.__mpInitialLoaderHidden)return;
   const loader=document.getElementById('global-loader');
   if(!loader)return;
   const elapsed=Date.now()-window.__mpInitialLoaderStartedAt;
-  const minVisible=620;
-  if(!force && !window.__mpInitialCatalogReady){
-    if(elapsed<minVisible){setTimeout(()=>window.__mpHideGlobalLoader(false),minVisible-elapsed);}
-    return;
-  }
+  const minVisible=120;
   const reveal=()=>requestAnimationFrame(()=>{
     if(window.__mpInitialLoaderHidden)return;
     window.__mpInitialLoaderHidden=true;
     loader.classList.add('loader-hidden');
     loader.setAttribute('aria-hidden','true');
   });
-  if(elapsed<minVisible && !force){setTimeout(reveal,minVisible-elapsed);}else reveal();
+  if(!force && elapsed<minVisible){setTimeout(reveal,minVisible-elapsed);return;}
+  reveal();
 };
-window.__mpMarkCatalogReady=function(){window.__mpInitialCatalogReady=true;window.__mpHideGlobalLoader(false);};
-setTimeout(()=>window.__mpHideGlobalLoader(true),8000);
+window.__mpMarkCatalogReady=function(){window.__mpCatalogReady=true;window.__mpHideGlobalLoader(false);};
+setTimeout(()=>window.__mpHideGlobalLoader(true),1200);
+try{setTimeout(()=>window.__mpHideGlobalLoader(false),160)}catch(e){}
 window.normalizeMediaUrl=function(raw){let v=String(raw??'').trim();if(!v)return'';v=v.replace(/^['"]+|['"]+$/g,'').trim();v=v.replace(/&amp;/gi,'&').replace(/&quot;/gi,'\"').replace(/&#39;/gi,"'").replace(/&#x27;/gi,"'");if(v.startsWith('//'))v='https:'+v;return v};
 window.protectMediaUrl=function(raw){const v=window.normalizeMediaUrl(raw);if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;try{const parsed=new URL(v,location.href);if(parsed.hostname==='i.ibb.co'||parsed.hostname==='ibb.co'){return parsed.href}}catch(e){}const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
 window.protectMediaList=list=>Array.isArray(list)?list.map(window.protectMediaUrl):list;
+window.mpEscapeHtml=function(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))};
+window.mpEscapeAttr=window.mpEscapeHtml;
+window.mpJsString=function(value){return JSON.stringify(String(value??'')).replace(/</g,'\\u003C').replace(/>/g,'\\u003E').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029')};
+window.mpSafeMediaUrl=function(value,fallback=''){const v=window.normalizeMediaUrl(value);if(!v)return fallback;try{const u=new URL(v,location.href);if(u.protocol==='data:'&&!/^data:image\//i.test(v))return fallback;if(['http:','https:','blob:','data:'].includes(u.protocol))return v;if(!/^[a-z][a-z0-9+.-]*:/i.test(v)&&!v.startsWith('//'))return v}catch(e){}return fallback};
+window.mpSafeIcon=function(value,fallback='fa-box'){const v=String(value||'').trim();return /^[a-z0-9_-]+(?:\s+[a-z0-9_-]+){0,8}$/i.test(v)?v:fallback};
 window.protectExistingMedia=function(root=document){root.querySelectorAll('img[src],video[src],source[src],img[data-original-media-url],video[data-original-media-url],source[data-original-media-url]').forEach(el=>{const raw=el.getAttribute('data-original-media-url')||el.getAttribute('src')||'',safe=window.protectMediaUrl(raw);if(raw){el.setAttribute('data-original-media-url',raw);el.setAttribute('src',safe)}})};
 
-window.multiprinttCart = JSON.parse(localStorage.getItem('multiprintt_cart')) || [];
+try{const raw=localStorage.getItem('multiprintt_cart');const parsed=raw?JSON.parse(raw):[];window.multiprinttCart=Array.isArray(parsed)?parsed.filter(x=>x&&typeof x.id==='string'&&Number(x.qty)>0):[]}catch(e){console.warn('Carrito local corrupto; se inicia vacío.',e);window.multiprinttCart=[];}
 window.cartCheckoutBusy = false;
 window.escapeCartHtml = function(value) { return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch])); };
 window.removeCartItem = function(productId) { window.multiprinttCart = window.multiprinttCart.filter(item => item.id !== productId); window.saveCart(); };
@@ -5020,25 +5023,25 @@ let art = '';
 if (imgs.length <= 1) {
   art = imgs.length === 1
     ? (window.mpIsImgBB(imgs[0])
-      ? `<img src="${window.mpImgBBVariantFor(p,imgs[0]).mediumUrl||window.mpImgBBVariantFor(p,imgs[0]).displayUrl||imgs[0]}" data-mp-imgbb="${imgs[0]}" data-mp-img-original="${imgs[0]}" data-mp-imgbb-medium="${window.mpImgBBVariantFor(p,imgs[0]).mediumUrl||''}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
-      : `<img src="${imgs[0]}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`)
-    : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${p.icon||'fa-box'} text-2xl text-white/60 pointer-events-none"></i></div>`;
+      ? `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(window.mpImgBBVariantFor(p,imgs[0]).mediumUrl||window.mpImgBBVariantFor(p,imgs[0]).displayUrl||imgs[0],'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" data-mp-imgbb="${window.mpEscapeAttr(imgs[0])}" data-mp-img-original="${window.mpEscapeAttr(imgs[0])}" data-mp-imgbb-medium="${window.mpEscapeAttr(window.mpImgBBVariantFor(p,imgs[0]).mediumUrl||'')}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
+      : `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(imgs[0],'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`)
+    : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${window.mpEscapeAttr(window.mpSafeIcon(p.icon,'fa-box'))} text-2xl text-white/60 pointer-events-none"></i></div>`;
 } else {
-  const sliderId=`slider-${p.id}`;
+  const sliderId=`slider-${String(p.id||'product').replace(/[^a-zA-Z0-9_-]/g,'_')}`;
   let dotsHtml='<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-30 pointer-events-none">';
   const slides=imgs.map((img,idx)=>{
     const active=idx===0;
     dotsHtml+=`<button type="button" onclick="window.scrollToSlide('${sliderId}',${idx},event)" class="dot-${sliderId} h-1.5 ${active?'bg-cyan-400 w-3':'bg-white/40 w-1.5'} rounded-full transition-all duration-200 pointer-events-auto outline-none cursor-pointer ignore-drag border-none p-0" aria-label="Imagen ${idx+1}"></button>`;
-    const safeAlt=String(p.name||'Producto').replace(/"/g,'&quot;');
+    const safeAlt=window.mpEscapeAttr(p.name||'Producto');
     const mediaVariant=window.mpImgBBVariantFor(p,img);
     const mediaSrc=window.mpIsImgBB(img)?(mediaVariant.mediumUrl||mediaVariant.displayUrl||img):img;
     const imgTag=window.mpIsImgBB(img)
-      ? `<img src="${mediaSrc}" data-mp-imgbb="${img}" data-mp-img-original="${img}" data-mp-imgbb-medium="${mediaVariant.mediumUrl||''}" ${window.mpImgBBLoadAttrs(img, i + idx)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
-      : `<img src="${img}" ${window.mpImgBBLoadAttrs(img, i + idx)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`;
+      ? `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(mediaSrc,'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" data-mp-imgbb="${window.mpEscapeAttr(img)}" data-mp-img-original="${window.mpEscapeAttr(img)}" data-mp-imgbb-medium="${window.mpEscapeAttr(mediaVariant.mediumUrl||'')}" ${window.mpImgBBLoadAttrs(img, i + idx)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
+      : `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(img,'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" ${window.mpImgBBLoadAttrs(img, i + idx)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`;
     return `<div class="slider-item absolute inset-0 flex items-center justify-center transition-opacity duration-200 ease-out ${active?'opacity-100 z-20':'opacity-0 z-10'}">${imgTag}</div>`;
   }).join('');
   dotsHtml+='</div>';
-  art=`<div class="absolute inset-0 z-10 overflow-hidden product-slider" id="${sliderId}" data-index="0" aria-label="Galería de ${String(p.name||'producto').replace(/"/g,'&quot;')}">${slides}<div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center z-30 slider-nav-arrow"><button type="button" onclick="window.scrollSlider('${sliderId}',-1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen anterior"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-10 flex items-center justify-center z-30 slider-nav-arrow"><button type="button" onclick="window.scrollSlider('${sliderId}',1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen siguiente"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}</div>`;
+  art=`<div class="absolute inset-0 z-10 overflow-hidden product-slider" id="${sliderId}" data-index="0" aria-label="Galería de ${window.mpEscapeAttr(p.name||'producto')}">${slides}<div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center z-30 slider-nav-arrow"><button type="button" onclick="window.scrollSlider('${sliderId}',-1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen anterior"><i class="fa-solid fa-chevron-left text-[10px] pointer-events-none"></i></button></div><div class="absolute inset-y-0 right-0 w-10 flex items-center justify-center z-30 slider-nav-arrow"><button type="button" onclick="window.scrollSlider('${sliderId}',1,event)" class="w-7 h-7 rounded-full bg-black/55 text-white flex items-center justify-center pointer-events-auto hover:bg-black transition-colors border border-white/10 ignore-drag cursor-pointer" aria-label="Imagen siguiente"><i class="fa-solid fa-chevron-right text-[10px] pointer-events-none"></i></button></div>${dotsHtml}</div>`;
   if(!(window.matchMedia&&window.matchMedia('(max-width:767px)').matches))setTimeout(()=>window.updateSliderOpacities(sliderId),0);
 }
 const glowColor = categoryColors[p.category] || categoryColors['mas-vendidos'];
@@ -5058,7 +5061,7 @@ if (basePrice <= 0) {
   if (promoActive && discountVal > 0) priceHtml = `<div class="flex flex-col items-start"><span data-editable="true" class="text-[9px] text-zinc-500 line-through leading-none">$${basePrice.toFixed(2)}</span><span data-editable="true" class="text-sm md:text-base font-extrabold text-pink-400 leading-none mt-0.5">$${finalPrice.toFixed(2)}</span>${pricingLabelHtml}</div>`;
 }
 let delay = (i % 8) * 50;
-renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${p.id}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 data-editable="true" class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight m-0">${p.name}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button type="button" onclick="window.addToCart('${p.id}', event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
+renderHTML += `<article class="card overflow-hidden group flex flex-col h-full relative reveal show" data-id="${window.mpEscapeAttr(p.id)}" data-resizable="true" style="transition-delay: ${delay}ms;">${adminHtml}<div class="aspect-square relative flex items-center justify-center overflow-hidden bg-black/40"><div class="absolute inset-0 opacity-[0.15] pointer-events-none transition-opacity group-hover:opacity-30" style="background: radial-gradient(circle, ${glowColor} 0%, transparent 70%);"></div>${art}${promoBadgeContainer}</div><div class="p-3.5 border-t border-white/5 flex flex-col flex-1 z-10 bg-[#101014]/95"><div class="h-[34px] flex items-start"><h3 data-editable="true" class="font-bold text-[11px] md:text-xs line-clamp-2 leading-tight m-0">${window.mpEscapeHtml(p.name)}</h3></div><div class="mt-auto pt-3 flex items-center justify-between">${priceHtml}<button type="button" onclick="window.addToCart(${window.mpEscapeAttr(window.mpJsString(p.id))}, event)" class="w-8 h-8 rounded-lg bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] pointer-events-auto hover:bg-[#25D366] hover:text-black transition-all ignore-drag group-hover:scale-110 shadow-[0_0_10px_rgba(37,211,102,0.15)] outline-none cursor-pointer"><i class="fa-solid fa-cart-plus text-[13px] pointer-events-none"></i></button></div></div></article>`;
 });
 if(safeProducts.length > 0){
   grid.innerHTML = renderHTML;
@@ -5100,12 +5103,12 @@ modIconColor = 'text-red-400';
 modIcon = 'fa-rotate'; modColorClass = 'text-violet-100 bg-violet-600/20 border-violet-500/30 shadow-[0_0_15px_rgba(115,92,255,0.3)]';
 modIconColor = 'text-violet-400';
 }
-let modalityBadge = `<span data-editable="true" class="backdrop-blur-md border ${modColorClass} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0"><i class="fa-solid ${modIcon} text-[10px] ${modIconColor}"></i> ${modalityStr}</span>`;
+let modalityBadge = `<span data-editable="true" class="backdrop-blur-md border ${modColorClass} text-[9px] uppercase tracking-[0.25em] font-extrabold px-3 py-1.5 rounded-full flex items-center gap-1.5 shrink-0"><i class="fa-solid ${modIcon} text-[10px] ${modIconColor}"></i> ${window.mpEscapeHtml(modalityStr)}</span>`;
 renderHTML += `
-<article onclick="window.openCourseModal('${c.id}')" class="card reveal show relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder} cursor-pointer" data-id="${c.id}" data-resizable="true" style="transition-delay: ${delay}ms;">
+<article onclick="window.openCourseModal(${window.mpEscapeAttr(window.mpJsString(c.id))})" class="card reveal show relative overflow-hidden group bg-[#070709] border border-white/5 rounded-[24px] flex flex-col w-full h-full shadow-lg transition-all duration-500 hover:-translate-y-2 ${a.shadow} ${a.hoverBorder} cursor-pointer" data-id="${window.mpEscapeAttr(c.id)}" data-resizable="true" style="transition-delay: ${delay}ms;">
 ${adminHtml}
 <div class="w-full h-56 relative overflow-hidden bg-[#0a0a0c] z-10 shrink-0">
-<img src="${window.protectMediaUrl(c.image) || 'https://placehold.co/600x400/101014/ffffff?text=Curso'}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
+<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(window.protectMediaUrl(c.image),'https://placehold.co/600x400/101014/ffffff?text=Curso'))}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100" draggable="false" onerror="this.src='https://placehold.co/600x400/101014/ffffff?text=Curso'">
 <div class="absolute inset-0 bg-gradient-to-t from-[#070709] via-[#070709]/40 to-transparent z-10 pointer-events-none"></div>
 <div class="absolute top-5 left-5 z-20 pointer-events-none flex flex-wrap gap-2 pr-5">
 ${masterclassBadge}
@@ -5114,8 +5117,8 @@ ${modalityBadge}
 </div>
 <div class="relative flex flex-col w-full flex-1 p-6 md:p-8 pt-4 z-20 bg-[#070709]">
 <div class="w-12 h-1 rounded-full bg-gradient-to-r ${a.from} to-transparent mb-5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
-<h3 data-editable="true" class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display m-0">${c.title}</h3>
-<p data-editable="true" class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light m-0">${c.desc}</p>
+<h3 data-editable="true" class="font-extrabold text-xl md:text-2xl text-white mb-3 leading-tight drop-shadow-md group-hover:${a.text} transition-colors duration-300 display m-0">${window.mpEscapeHtml(c.title)}</h3>
+<p data-editable="true" class="text-[12px] md:text-[13px] text-zinc-400 line-clamp-3 leading-relaxed flex-1 font-light m-0">${window.mpEscapeHtml(c.desc)}</p>
 <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between">
 <button type="button" class="${a.text} text-[10px] md:text-xs font-extrabold tracking-widest uppercase pointer-events-auto transition-all group/btn flex items-center ignore-drag hover:text-white outline-none bg-transparent border-none p-0 cursor-pointer">
 Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-1 transition-transform pointer-events-none"></i>
@@ -5230,7 +5233,7 @@ const theme = card.getAttribute('data-theme') || 'cyan';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
 overlay.innerHTML = `<button type="button" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:id,itemData:{src,name,role,quote,theme}},'*'); });
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:id,itemData:{src,name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
@@ -5245,7 +5248,7 @@ const theme = card.getAttribute('data-theme') || 'pink';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
 overlay.innerHTML = `<button type="button" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:id,itemData:{name,role,quote,theme}},'*'); });
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:id,itemData:{name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
@@ -5253,6 +5256,8 @@ card.appendChild(overlay);
 let lastProductSnapshot = null;
 window.loadFirebaseData = async function() {
 try {
+try{if(!window.__mpInitialShellRendered){window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}}catch(e){console.warn('Render inicial local:',e)}
+window.__mpHideGlobalLoader(false);
 try {
 await Promise.race([
 auth.authStateReady(),
@@ -5268,16 +5273,20 @@ new Promise((_, reject) => setTimeout(() => reject(new Error('Anonymous Auth tim
 firebaseReady = false;
 console.warn('Firebase Auth no estuvo disponible; el sitio continuará con datos locales.', authError);
 }
-if (firebaseReady) {
-try {
-  const seoSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'seo'));
-  if (seoSnap.exists()) {
-    window.__mpSeoSettings = {...SEO_RUNTIME_DEFAULTS, ...seoSnap.data()};
+let remoteSeoSnap=null, remoteTemplateSnap=null, remoteLayoutSnap=null;
+if(firebaseReady){
+  const remoteReads=await Promise.allSettled([
+    getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'seo')),
+    getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'templateBase')),
+    getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'))
+  ]);
+  remoteSeoSnap=remoteReads[0].status==='fulfilled'?remoteReads[0].value:null;
+  remoteTemplateSnap=remoteReads[1].status==='fulfilled'?remoteReads[1].value:null;
+  remoteLayoutSnap=remoteReads[2].status==='fulfilled'?remoteReads[2].value:null;
+  if(remoteReads[0].status==='fulfilled'&&remoteSeoSnap?.exists()){
+    window.__mpSeoSettings={...SEO_RUNTIME_DEFAULTS,...remoteSeoSnap.data()};
     applySeoRuntime(window.__mpSeoSettings);
-  }
-} catch (seoError) {
-  console.warn('SEO remoto no disponible; se conserva el SEO integrado.', seoError);
-}
+  } else if(remoteReads[0].status==='rejected') console.warn('SEO remoto no disponible; se conserva el SEO integrado.',remoteReads[0].reason);
 }
 // PLANTILLA MAESTRA / LAYOUT ACTUAL
 // La plantilla base se crea una sola vez desde ESTE HTML ya corregido.
@@ -5296,9 +5305,7 @@ courseOrder: [],
 socialOrder: typeof window.getSocialOrder === 'function' ? window.getSocialOrder() : []
 };
 if (firebaseReady) {
-const templateRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'templateBase');
-const templateSnap = await getDoc(templateRef);
-templateBaseData = templateSnap.exists() ? templateSnap.data() : localTemplateData;
+templateBaseData = remoteTemplateSnap?.exists() ? remoteTemplateSnap.data() : localTemplateData;
 } else {
 templateBaseData = localTemplateData;
 }
@@ -5312,11 +5319,8 @@ console.warn('No se pudo preparar la plantilla maestra; se conserva la plantilla
 const academyGalleryFallbackHtml = document.getElementById('academy-gallery-section')?.outerHTML || '';
 let layoutSnap = { exists: () => false };
 if (firebaseReady) {
-try {
-layoutSnap = await getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'));
-} catch (layoutError) {
-console.warn('No se pudo leer el layout remoto; se conserva el diseño local.', layoutError);
-}
+if(remoteLayoutSnap) layoutSnap = remoteLayoutSnap;
+else console.warn('No se pudo leer el layout remoto; se conserva el diseño local.');
 }
 // Si no existe un layout actual (por primera instalación o por Reset),
 // restauramos la plantilla maestra almacenada en Firebase.
@@ -5429,6 +5433,7 @@ if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'dat
 });
 if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
 window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => window.mpNormalizeCourseData({id: d.id, ...d.data()}));
+window.__mpInitialCoursesReady=true;
 window.renderCourses();
 }, (error) => {
   console.warn('No se pudo sincronizar courses; se mantiene la academia local.', error);
@@ -5444,7 +5449,7 @@ try { window.setFilter('mas-vendidos'); } catch(e) { console.warn('Filtro inicia
 try { window.renderProducts(); window.syncSocialNetworks(); window.updateCartUI(); window.ensureAcademyGallery(); window.loadAcademyGallery(); } catch(e) { console.warn('Inicialización de galería:', e); }
 try { window.ensureAcademyGallery(); } catch(e) {}
 window.navigate('catalog');
-try { window.renderProducts(); } catch(e) { console.warn('Render inicial de productos:', e); }
+if(!window.__mpInitialShellRendered){try{window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}catch(e){console.warn('Render final de recuperación:',e)}}
 if (!firebaseReady) window.__mpMarkCatalogReady();
 window.__mpHideGlobalLoader(false);
 if(window.parent && window.parent !== window) window.parent.postMessage({ type: 'APP_READY' }, location.origin === 'null' ? '*' : location.origin);
@@ -5825,9 +5830,9 @@ document.addEventListener('click', (event) => {
   if (edit) {
     const source = type === 'product' ? window.appProducts : window.appCourses;
     const item = Array.isArray(source) ? source.find(x => String(x.id) === String(id)) : null;
-    window.parent.postMessage({type:'OPEN_EDITOR', editorType:type, itemId:id, itemData:item || {id}}, '*');
+    window.parent.postMessage({type:'OPEN_EDITOR', editorType:type, itemId:id, itemData:item || {id}}, location.origin === 'null' ? '*' : location.origin);
   } else {
-    window.parent.postMessage({type:'DELETE_DB_ITEM', itemType:type, itemId:id}, '*');
+    window.parent.postMessage({type:'DELETE_DB_ITEM', itemType:type, itemId:id}, location.origin === 'null' ? '*' : location.origin);
   }
 }, true);
 
@@ -5841,7 +5846,7 @@ if (event.data.type === 'GET_LAYERS') { emitLayers(); }
 if (event.data.type === 'SELECT_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){el.click();} }
 if (event.data.type === 'FOCUS_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})}catch(e){}} }
 if (event.data.type === 'TOGGLE_LAYER_LOCK') { const el=findBuilderElement(event.data.builderId); if(el){const id=event.data.builderId;if(proLayerLocks.has(id)){proLayerLocks.delete(id);el.removeAttribute('data-sortable-lock')}else{proLayerLocks.add(id);el.setAttribute('data-sortable-lock','true')}}emitLayers(); }
-if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); const layoutModel=captureBuilderModel(); const socialOrder=typeof window.getSocialOrder==='function'?window.getSocialOrder():[]; window.parent.postMessage({type:'LAYOUT_SNAPSHOT',layoutData,layoutModel,socialOrder,reason:event.data.reason||''},'*'); }
+if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); const layoutModel=captureBuilderModel(); const socialOrder=typeof window.getSocialOrder==='function'?window.getSocialOrder():[]; window.parent.postMessage({type:'LAYOUT_SNAPSHOT',captureId:event.data.captureId||'',layoutData,layoutModel,socialOrder,reason:event.data.reason||''},location.origin === 'null' ? '*' : location.origin); }
 if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
 if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
 if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
