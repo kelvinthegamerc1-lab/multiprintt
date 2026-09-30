@@ -6001,8 +6001,11 @@ document.addEventListener('click', (event) => {
 }, true);
 
 window.addEventListener('message', async (event) => {
-if (window.parent !== window && (event.source !== window.parent || event.origin !== window.location.origin)) return;
-if (event.source !== window.parent || event.origin !== window.location.origin) return;
+if (window.parent !== window) {
+  const allowedOrigin = window.location.origin === 'null' ? 'null' : window.location.origin;
+  if (event.source !== window.parent || event.origin !== allowedOrigin) return;
+}
+if (event.source !== window.parent) return;
 if (event.data.type === 'SET_GLOBAL_SETTINGS') { applyGlobalSettings(event.data.settings||{}); }
 if (event.data.type === 'SET_ANALYTICS_CONFIG') { applyAnalyticsConfig(event.data.config||{}); }
 if (event.data.type === 'SET_GLOBAL_URLS') { applyGlobalUrls(event.data.urls||{}); }
@@ -6025,7 +6028,7 @@ if (window.__builderClickHandler) document.removeEventListener('click', window._
 // Todo texto estático queda seleccionable/editable, incluidos spans, enlaces y textos anidados.
 markTextElementsEditable(document);
 window.__builderClickHandler = function(e) {
-if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active') || window.builderSelectionEnabled === false) return;
+if (!document.body.classList.contains('builder-mode') || window.builderSelectionEnabled === false) return;
 window.parent.postMessage({type:'HIDE_CONTEXT_MENU'}, '*');
 if(e.target.closest('.ignore-drag,.admin-tool')) return;
 const target=builderSelectionTarget(e.target,e);
