@@ -4421,7 +4421,7 @@ window.__mpHideGlobalLoader=function(force=false){
   const loader=document.getElementById('global-loader');
   if(!loader)return;
   const elapsed=Date.now()-window.__mpInitialLoaderStartedAt;
-  const minVisible=120;
+  const minVisible=170;
   const reveal=()=>requestAnimationFrame(()=>{
     if(window.__mpInitialLoaderHidden)return;
     window.__mpInitialLoaderHidden=true;
