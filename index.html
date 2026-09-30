@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VP3XV39H5M"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-VP3XV39H5M');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
@@ -4209,7 +4200,7 @@ html{color-scheme:dark;}
         </div>
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal show w-full pb-20 md:pb-0">
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
-                <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-card-id="t_default_1" data-resizable="true">
+                <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-card-id="t_default_1" data-testimonial-id="t_default_1" data-testimonial-type="testimonial_video" data-resizable="true">
                     <video data-editable="true" data-mp-src="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy90ZXN0aW1vbmlvL3Rlc3RpbW9uaW8wLm1wNA" crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none" loading="lazy"></video>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
                     <div class="absolute top-6 left-6 right-6 z-20 pointer-events-none drop-shadow-md">
@@ -4227,7 +4218,7 @@ html{color-scheme:dark;}
                         </div>
                     </div>
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: this.closest('.video-testimonial-card').getAttribute('data-card-id'), itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Video</button>
+                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: this.closest('.video-testimonial-card').getAttribute('data-testimonial-id') || this.closest('.video-testimonial-card').getAttribute('data-card-id'), itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, location.origin === 'null' ? '*' : location.origin)" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
                         <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
@@ -4236,9 +4227,9 @@ html{color-scheme:dark;}
                 </button>
             </div>
             <div id="testimonials-grid-right" class="w-full lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-5 sortable-zone h-max">
-                <div class="p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer" data-theme="pink" data-card-id="txt_default_1" data-resizable="true">
+                <div class="p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer" data-theme="pink" data-card-id="txt_default_1" data-testimonial-id="txt_default_1" data-testimonial-type="testimonial_text" data-resizable="true">
                     <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
-                    <p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed m-0">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
+                    <p data-editable="true" class="txt-quote text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed m-0">"Gracias a Multiprintt pude iniciar mi propio negocio de personalización. La paciencia y profesionalismo es increíble."</p>
                     <div class="flex items-center gap-4 pt-4 border-t border-white/5">
                         <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">M</span></div>
                         <div class="flex flex-col">
@@ -4247,7 +4238,7 @@ html{color-scheme:dark;}
                         </div>
                     </div>
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button>
+                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-testimonial-id') || this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, location.origin === 'null' ? '*' : location.origin)" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
                         <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
@@ -4421,7 +4412,7 @@ window.__mpHideGlobalLoader=function(force=false){
   const loader=document.getElementById('global-loader');
   if(!loader)return;
   const elapsed=Date.now()-window.__mpInitialLoaderStartedAt;
-  const minVisible=380;
+  const minVisible=120;
   const reveal=()=>requestAnimationFrame(()=>{
     if(window.__mpInitialLoaderHidden)return;
     window.__mpInitialLoaderHidden=true;
@@ -5167,15 +5158,55 @@ clone.innerHTML = `<div data-editable="true" class="text-[8px] sm:text-[9px] upp
 parent.insertBefore(clone, btn);
 if(window.updateResizeBox) window.updateResizeBox();
 }
+function createUniqueTestimonialId(prefix){
+  const base=String(prefix||'testimonial')+'_'+Date.now().toString(36);
+  try{if(window.crypto?.randomUUID)return base+'_'+window.crypto.randomUUID().replace(/-/g,'').slice(0,12);}catch(e){}
+  return base+'_'+Math.random().toString(36).slice(2,12);
+}
+function ensureUniqueTestimonialIds(root=document){
+  const used=new Set();
+  root.querySelectorAll?.('.video-testimonial-card, .card[data-testimonial-type]').forEach(card=>{
+    const isVideo=card.classList.contains('video-testimonial-card');
+    const type=isVideo?'testimonial_video':'testimonial_text';
+    let id=String(card.getAttribute('data-testimonial-id')||card.getAttribute('data-card-id')||'').trim();
+    if(!id||used.has(id))id=createUniqueTestimonialId(isVideo?'t':'txt');
+    used.add(id);
+    card.setAttribute('data-testimonial-id',id);
+    card.setAttribute('data-card-id',id);
+    card.setAttribute('data-testimonial-type',type);
+  });
+}
+function getTestimonialCardById(testimonialId,testimonialType=''){
+  const id=String(testimonialId||'').trim();
+  if(!id)return null;
+  const selector=testimonialType==='testimonial_video'
+    ? '.video-testimonial-card[data-testimonial-id]'
+    : testimonialType==='testimonial_text'
+      ? '.card[data-testimonial-type="testimonial_text"][data-testimonial-id]'
+      : '.video-testimonial-card[data-testimonial-id], .card[data-testimonial-type][data-testimonial-id]';
+  return Array.from(document.querySelectorAll(selector)).find(el=>el.getAttribute('data-testimonial-id')===id)||null;
+}
+
+function getTestimonialEditorData(card,type){
+  if(!card)return null;
+  const video=card.querySelector('video');
+  return {
+    src:type==='testimonial_video'?(video?.getAttribute('src')||video?.currentSrc||''):'',
+    name:card.querySelector(type==='testimonial_video'?'.vt-name':'.txt-name')?.innerText?.trim()||'Alumno',
+    role:card.querySelector(type==='testimonial_video'?'.vt-role':'.txt-role')?.innerText?.trim()||(type==='testimonial_video'?'Caso de Éxito':'Curso General'),
+    quote:card.querySelector(type==='testimonial_video'?'.vt-quote':'.txt-quote')?.innerText?.trim()||card.querySelector('p')?.innerText?.trim()||'',
+    theme:card.getAttribute('data-theme')||(type==='testimonial_video'?'cyan':'pink')
+  };
+}
 window.cloneTextTestimonial = function(btnNode) {
 if(!window.isAdminMode) return;
-const grid = btnNode.parentElement; const newId = 'txt_' + Date.now();
+const grid = btnNode.parentElement; const newId = createUniqueTestimonialId('txt');
 const div = document.createElement('div');
 div.className = "p-6 md:p-8 rounded-[32px] bg-[#101014] border border-pink-500/40 flex flex-col shadow-[0_0_15px_rgba(255,45,168,0.1)] card transition-all group relative overflow-hidden cursor-pointer";
-div.setAttribute('data-theme', 'pink'); div.setAttribute('data-card-id', newId); div.setAttribute('data-resizable', 'true');
+div.setAttribute('data-theme', 'pink'); div.setAttribute('data-card-id', newId); div.setAttribute('data-testimonial-id', newId); div.setAttribute('data-testimonial-type', 'testimonial_text'); div.setAttribute('data-resizable', 'true');
 div.innerHTML = `
 <i class="fa-solid fa-quote-left text-pink-400 text-3xl mb-4 pointer-events-none transition-colors"></i>
-<p data-editable="true" class="text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Escribe tu comentario aquí..."</p>
+<p data-editable="true" class="txt-quote text-zinc-400 text-sm italic mb-6 flex-1 leading-relaxed">"Escribe tu comentario aquí..."</p>
 <div class="flex items-center gap-4 pt-4 border-t border-white/5">
 <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">N</span></div>
 <div class="flex flex-col">
@@ -5184,7 +5215,7 @@ div.innerHTML = `
 </div>
 </div>
 <div class="admin-video-edit-overlay ignore-drag">
-<button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button>
+<button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
 <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
 </div>
 `;
@@ -5193,10 +5224,10 @@ if(window.updateResizeBox) window.updateResizeBox();
 }
 window.cloneVideoTestimonial = function(btnNode) {
 if(!window.isAdminMode) return;
-const col = btnNode.parentElement; const newId = 't_' + Date.now();
+const col = btnNode.parentElement; const newId = createUniqueTestimonialId('t');
 const div = document.createElement('div');
 div.className = "video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]";
-div.setAttribute('data-theme', 'cyan'); div.setAttribute('data-card-id', newId); div.setAttribute('data-resizable', 'true');
+div.setAttribute('data-theme', 'cyan'); div.setAttribute('data-card-id', newId); div.setAttribute('data-testimonial-id', newId); div.setAttribute('data-testimonial-type', 'testimonial_video'); div.setAttribute('data-resizable', 'true');
 div.innerHTML = `
 <video data-editable="true" data-mp-src="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy90ZXN0aW1vbmlvL3Rlc3RpbW9uaW8wLm1wNA"  crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none"></video>
 <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
@@ -5215,7 +5246,7 @@ div.innerHTML = `
 </div>
 </div>
 <div class="admin-video-edit-overlay ignore-drag">
-<button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: "https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4", name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button>
+<button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: "https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4", name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
 <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
 </div>
 `;
@@ -5232,7 +5263,7 @@ const courses = document.getElementById('view-courses');
 if(!courses) return;
 courses.querySelectorAll('.video-testimonial-card[data-card-id]').forEach(card => {
 if(card.querySelector(':scope > .admin-video-edit-overlay')) return;
-const id = card.getAttribute('data-card-id');
+const id = card.getAttribute('data-testimonial-id') || card.getAttribute('data-card-id');
 const video = card.querySelector('video');
 const name = card.querySelector('.vt-name')?.innerText?.trim() || 'Alumno';
 const role = card.querySelector('.vt-role')?.innerText?.trim() || 'Caso de Éxito';
@@ -5241,23 +5272,23 @@ const src = video?.getAttribute('src') || '';
 const theme = card.getAttribute('data-theme') || 'cyan';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
-overlay.innerHTML = `<button type="button" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:id,itemData:{src,name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
+overlay.innerHTML = `<button type="button" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:stableId,itemData:{src,name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
 courses.querySelectorAll('.card[data-card-id]').forEach(card => {
 if(card.classList.contains('video-testimonial-card') || card.querySelector('.video-testimonial-card') || card.querySelector(':scope > .admin-video-edit-overlay')) return;
 if(!card.querySelector('.txt-name') || !card.querySelector('.txt-role')) return;
-const id = card.getAttribute('data-card-id');
+const id = card.getAttribute('data-testimonial-id') || card.getAttribute('data-card-id');
 const name = card.querySelector('.txt-name')?.innerText?.trim() || 'Alumno';
 const role = card.querySelector('.txt-role')?.innerText?.trim() || 'Curso General';
 const quote = card.querySelector('p')?.innerText?.trim() || 'Escribe tu comentario aquí...';
 const theme = card.getAttribute('data-theme') || 'pink';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
-overlay.innerHTML = `<button type="button" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar Comentario</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:id,itemData:{name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
+overlay.innerHTML = `<button type="button" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:stableId,itemData:{name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
@@ -5861,6 +5892,7 @@ if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResp
 if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
 if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const controlMs=Math.max(1000,Math.min(120000,Number(event.data.ms)||15000)); const durationMs=Math.round(controlMs*100); const gallery=document.getElementById('academy-gallery-marquee'); gallery.style.animationDuration=durationMs+'ms'; gallery.style.animationTimingFunction='linear'; gallery.style.animationIterationCount='infinite'; gallery.setAttribute('data-editor-duration',String(controlMs)); gallery.setAttribute('data-editor-css-duration',String(durationMs)); }
 if (event.data.type === 'ENABLE_BUILDER') {
+ensureUniqueTestimonialIds(document);
 window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
 window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
 if (window.__builderClickHandler) document.removeEventListener('click', window.__builderClickHandler, true);
@@ -5876,7 +5908,11 @@ e.preventDefault();e.stopPropagation();
 if(window.selectedEl)window.selectedEl.classList.remove('builder-selected-el');
 window.selectedEl=target;ensureBuilderId(target);target.classList.add('builder-selected-el');window.updateResizeBox();
 const computed=window.getComputedStyle(target);
-window.parent.postMessage({type:'ELEMENT_SELECTED',tagName:target.tagName,text:target.innerText||'',href:target.getAttribute('data-social-url')||target.getAttribute('data-href')||target.src||(target.tagName==='A'?target.href:''),isVideoCard:target.classList.contains('video-testimonial-card'),hasTheme:target.hasAttribute('data-theme'),currentTheme:target.getAttribute('data-theme')||'',classes:target.className||'',id:target.id||'',builderId:ensureBuilderId(target),network:target.getAttribute('data-network')||'',iconClass:target.getAttribute('data-icon-class')||'',badgeIcon:target.getAttribute('data-badge-icon')||'',badgeIconColor:target.getAttribute('data-badge-icon-color')||'',badgeIconSize:target.getAttribute('data-badge-icon-size')||'',isAcademyBadge:target.classList.contains('academy-course-badge'),editable:target.getAttribute('data-editable')==='true',resizable:target.getAttribute('data-resizable')==='true',styles:{width:target.style.width||computed.width,height:target.style.height||computed.height,padding:target.style.padding||computed.padding,margin:target.style.margin||computed.margin,radius:target.style.borderRadius||computed.borderRadius,color:target.style.color||computed.color,bg:target.style.backgroundColor||computed.backgroundColor,fontFamily:target.style.fontFamily||computed.fontFamily,fontSize:target.style.fontSize||computed.fontSize,fontWeight:target.style.fontWeight||computed.fontWeight,lineHeight:target.style.lineHeight||computed.lineHeight,letterSpacing:target.style.letterSpacing||computed.letterSpacing,textAlign:target.style.textAlign||computed.textAlign,opacity:target.style.opacity||computed.opacity,borderWidth:target.style.borderWidth||computed.borderWidth,borderColor:target.style.borderColor||computed.borderColor,borderStyle:target.style.borderStyle||computed.borderStyle,boxShadow:target.style.boxShadow||computed.boxShadow,display:target.style.display||computed.display,animationName:target.style.animationName||computed.animationName,animationDuration:target.style.animationDuration||computed.animationDuration,animationDelay:target.style.animationDelay||computed.animationDelay,animationIterationCount:target.style.animationIterationCount||computed.animationIterationCount,animationTimingFunction:target.style.animationTimingFunction||computed.animationTimingFunction}},'*');
+const testimonialCard=target.closest?.('.video-testimonial-card[data-testimonial-id], .card[data-testimonial-type="testimonial_text"][data-testimonial-id]');
+const testimonialType=testimonialCard?.getAttribute('data-testimonial-type')||'';
+const testimonialId=testimonialCard?.getAttribute('data-testimonial-id')||'';
+const testimonialData=testimonialCard&&testimonialType?getTestimonialEditorData(testimonialCard,testimonialType):null;
+window.parent.postMessage({type:'ELEMENT_SELECTED',tagName:target.tagName,text:target.innerText||'',href:target.getAttribute('data-social-url')||target.getAttribute('data-href')||target.src||(target.tagName==='A'?target.href:''),isVideoCard:target.classList.contains('video-testimonial-card'),testimonialType,testimonialId,testimonialData,hasTheme:target.hasAttribute('data-theme'),currentTheme:target.getAttribute('data-theme')||'',classes:target.className||'',id:target.id||'',builderId:ensureBuilderId(target),network:target.getAttribute('data-network')||'',iconClass:target.getAttribute('data-icon-class')||'',badgeIcon:target.getAttribute('data-badge-icon')||'',badgeIconColor:target.getAttribute('data-badge-icon-color')||'',badgeIconSize:target.getAttribute('data-badge-icon-size')||'',isAcademyBadge:target.classList.contains('academy-course-badge'),editable:target.getAttribute('data-editable')==='true',resizable:target.getAttribute('data-resizable')==='true',styles:{width:target.style.width||computed.width,height:target.style.height||computed.height,padding:target.style.padding||computed.padding,margin:target.style.margin||computed.margin,radius:target.style.borderRadius||computed.borderRadius,color:target.style.color||computed.color,bg:target.style.backgroundColor||computed.backgroundColor,fontFamily:target.style.fontFamily||computed.fontFamily,fontSize:target.style.fontSize||computed.fontSize,fontWeight:target.style.fontWeight||computed.fontWeight,lineHeight:target.style.lineHeight||computed.lineHeight,letterSpacing:target.style.letterSpacing||computed.letterSpacing,textAlign:target.style.textAlign||computed.textAlign,opacity:target.style.opacity||computed.opacity,borderWidth:target.style.borderWidth||computed.borderWidth,borderColor:target.style.borderColor||computed.borderColor,borderStyle:target.style.borderStyle||computed.borderStyle,boxShadow:target.style.boxShadow||computed.boxShadow,display:target.style.display||computed.display,animationName:target.style.animationName||computed.animationName,animationDuration:target.style.animationDuration||computed.animationDuration,animationDelay:target.style.animationDelay||computed.animationDelay,animationIterationCount:target.style.animationIterationCount||computed.animationIterationCount,animationTimingFunction:target.style.animationTimingFunction||computed.animationTimingFunction}},'*');
 emitLayers();
 }else{if(window.selectedEl)window.selectedEl.classList.remove('builder-selected-el');window.selectedEl=null;window.updateResizeBox();window.parent.postMessage({type:'CLEAR_SELECTION'},'*');}
 };
@@ -5919,8 +5955,8 @@ if (itemType === 'course') { window.appCourses = window.appCourses.filter(x => x
 }
 if (event.data.type === 'UPDATE_TESTIMONIAL') {
 const { itemId, data: d } = event.data;
-const targetCard = document.querySelector(`.video-testimonial-card[data-card-id="${itemId}"]`);
-if(targetCard) {
+const targetCard = getTestimonialCardById(itemId,'testimonial_video');
+if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_video') {
 if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { vid.src = d.src; vid.load(); } }
 if(d.name) { const n = targetCard.querySelector('.vt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.vt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
 if(d.role) { const r = targetCard.querySelector('.vt-role'); if(r) r.innerText = d.role; }
@@ -5931,11 +5967,11 @@ if (window.updateResizeBox) window.updateResizeBox();
 }
 if (event.data.type === 'UPDATE_TEXT_TESTIMONIAL') {
 const { itemId, data: d } = event.data;
-const targetCard = document.querySelector(`.card[data-card-id="${itemId}"]`);
-if(targetCard) {
+const targetCard = getTestimonialCardById(itemId,'testimonial_text');
+if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_text') {
 if(d.name) { const n = targetCard.querySelector('.txt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.txt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
 if(d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.role; }
-if(d.quote) { const q = targetCard.querySelector('p'); if(q) q.innerText = d.quote; }
+if(d.quote) { const q = targetCard.querySelector('.txt-quote') || targetCard.querySelector('p'); if(q) q.innerText = d.quote; }
 if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
 if (window.updateResizeBox) window.updateResizeBox();
 }
