@@ -1304,12 +1304,12 @@ https://www.youtube.com/..." rows="4"></textarea></div></div><div class="pro-div
 </div>
 </div>
 <div class="pro-mobile-dock"><button class="mini-btn" onclick="window.undo()" type="button"><i class="fa-solid fa-rotate-left"></i></button><button class="mini-btn" onclick="window.redo()" type="button"><i class="fa-solid fa-rotate-right"></i></button><button class="mini-btn" onclick="window.openLayers()" type="button"><i class="fa-solid fa-layer-group"></i></button><button class="mini-btn" onclick="window.openCommandPalette()" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i></button><button class="mini-btn" onclick="window.openHistory()" type="button"><i class="fa-solid fa-clock-rotate-left"></i></button><button class="mini-btn" onclick="window.openAudit()" type="button"><i class="fa-solid fa-user-clock"></i></button><button class="mini-btn" onclick="window.toggleInspector()" type="button"><i class="fa-solid fa-sliders"></i></button></div>
-<script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, deleteDoc, deleteField, writeBatch, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+<script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, deleteDoc, deleteField, writeBatch, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.09.28.04';
+const MP_ADMIN_BUILD='2026.09.30.01';
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const B2_MEDIA_API='https://b2.multiprintt.workers.dev';
@@ -1360,6 +1360,7 @@ const MP_LEGACY_DB=[
   {name:'productos',root:true},
   {name:'cursos',root:true}
 ];
+const MP_ACTIVE_PUBLIC_COLLECTIONS=['products','courses','productDemand','testimonials','auditLogs'];
 const MP_PRODUCT_LEGACY_FIELDS=['precio','amount','valor','descuento','discountPercent','promocional','promo','isPromotional','pricingType','priceMode','minWholesaleQty','unitsPerSet'];
 const MP_COURSE_LEGACY_FIELDS=['precio','amount','valor'];
 async function mpDeleteCollectionDocs(collectionName,root=false){
@@ -1414,7 +1415,7 @@ async function mpNormalizeAndCleanActiveDocs(){
   return result;
 }
 window.auditAndCleanDatabase=async()=>{
-  if(!confirm('Limpieza de Base de Datos\\n\\nSe conservarán: productos, cursos, settings, productDemand y auditLogs.\\n\\nSe eliminarán colecciones legacy no usadas y campos duplicados conocidos. No se tocará index.html.\\n\\n¿Continuar?'))return;
+  if(!confirm('Limpieza de Base de Datos\\n\\nSe conservarán: productos, cursos, testimonios, settings, productDemand y auditLogs.\\n\\nSe eliminarán colecciones legacy no usadas y campos duplicados conocidos. No se tocará index.html.\\n\\n¿Continuar?'))return;
   try{
     await ensureAdminWriteSession();
     window.showToast('Auditando y limpiando la base de datos…');
@@ -1655,6 +1656,96 @@ window.updateProductPriceMode=function(){
   if(setWrap)setWrap.classList.toggle('hidden',mode!=='set');
   if(help)help.textContent=mode==='wholesale'?'El precio indicado se aplica por unidad desde la cantidad mínima configurada.':mode==='set'?'El precio indicado corresponde a un set completo. La cantidad del set se muestra en el catálogo.':'El precio indicado corresponde a una unidad.';
 };
+
+/* ================================================================
+ * Google Drive Picker — solo testimonios de video
+ * Lazy-load para no afectar el arranque normal del editor.
+ * ================================================================ */
+const MP_GOOGLE_PICKER_CONFIG={
+  apiKey:String(firebaseConfig.apiKey||''),
+  clientId:'',
+  appId:String(firebaseConfig.messagingSenderId||''),
+  scope:'https://www.googleapis.com/auth/drive.file'
+};
+let mpGooglePickerLoading=null,mpGoogleTokenClient=null,mpGoogleAccessToken='';
+function mpLoadScript(src,id){
+  return new Promise((resolve,reject)=>{
+    if(id&&document.getElementById(id))return resolve();
+    const s=document.createElement('script');if(id)s.id=id;s.src=src;s.async=true;s.defer=true;
+    s.onload=resolve;s.onerror=()=>reject(new Error('No se pudo cargar Google Drive.'));
+    document.head.appendChild(s);
+  });
+}
+async function mpEnsureGoogleDrivePicker(){
+  if(!MP_GOOGLE_PICKER_CONFIG.clientId)throw new Error('Falta configurar el OAuth Client ID de Google Drive.');
+  if(!mpGooglePickerLoading){
+    mpGooglePickerLoading=(async()=>{
+      await Promise.all([
+        mpLoadScript('https://apis.google.com/js/api.js','mp-google-picker-api'),
+        mpLoadScript('https://accounts.google.com/gsi/client','mp-google-gis')
+      ]);
+      await new Promise((resolve,reject)=>{
+        if(window.gapi?.load)window.gapi.load('picker',{callback:resolve,onerror:()=>reject(new Error('Google Picker no disponible.'))});
+        else reject(new Error('Google Picker API no disponible.'));
+      });
+      if(!window.google?.accounts?.oauth2)throw new Error('Google Identity Services no disponible.');
+      mpGoogleTokenClient=google.accounts.oauth2.initTokenClient({
+        client_id:MP_GOOGLE_PICKER_CONFIG.clientId,
+        scope:MP_GOOGLE_PICKER_CONFIG.scope,
+        callback:(response)=>{if(response?.access_token)mpGoogleAccessToken=response.access_token;}
+      });
+    })().catch(err=>{mpGooglePickerLoading=null;throw err;});
+  }
+  return mpGooglePickerLoading;
+}
+function mpWaitForGoogleToken(){
+  return new Promise((resolve,reject)=>{
+    if(mpGoogleAccessToken)return resolve(mpGoogleAccessToken);
+    if(!mpGoogleTokenClient)return reject(new Error('Google Identity Services no está listo.'));
+    mpGoogleTokenClient.callback=(response)=>{
+      if(response?.access_token){mpGoogleAccessToken=response.access_token;resolve(response.access_token);}
+      else reject(new Error('No se obtuvo autorización de Google Drive.'));
+    };
+    try{mpGoogleTokenClient.requestAccessToken({prompt:'consent'});}catch(e){reject(e);}
+  });
+}
+window.pickTestimonialVideoFromGoogleDrive=async()=>{
+  try{
+    await mpEnsureGoogleDrivePicker();
+    const token=await mpWaitForGoogleToken();
+    const view=new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setIncludeFolders(false)
+      .setMimeTypes('video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v');
+    const picker=new google.picker.PickerBuilder()
+      .setDeveloperKey(MP_GOOGLE_PICKER_CONFIG.apiKey)
+      .setAppId(MP_GOOGLE_PICKER_CONFIG.appId)
+      .setOAuthToken(token)
+      .enableFeature(google.picker.Feature.NAV_HIDDEN)
+      .setTitle('Selecciona el video testimonial')
+      .addView(view)
+      .setCallback(data=>{
+        if(data.action!==google.picker.Action.PICKED)return;
+        const picked=data.docs?.[0];if(!picked)return;
+        const mime=String(picked.mimeType||'').toLowerCase();
+        if(!mime.startsWith('video/'))return window.showToast('Selecciona únicamente un archivo de video.');
+        const id=String(picked.id||'').trim();
+        const url=id?`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`:String(picked.url||'').trim();
+        const input=document.getElementById('db-vid');
+        if(input){
+          input.value=url;input.dataset.provider='google_drive';input.dataset.driveId=id;input.dataset.fileName=String(picked.name||'');
+          input.dispatchEvent(new Event('input',{bubbles:true}));
+        }
+        const helper=document.getElementById('db-vid-helper');
+        if(helper)helper.textContent=`Google Drive · ${String(picked.name||'Video seleccionado')} · Debe permitir acceso mediante enlace para visitantes.`;
+        window.showToast('Video de Google Drive seleccionado.');
+      }).build();
+    picker.setVisible(true);
+  }catch(e){
+    console.error('Google Drive Picker:',e);
+    window.showToast(e?.message||'No se pudo abrir Google Drive.');
+  }
+};
+
 window.openDbEditor=(type,id,data=null)=>{const d=data&&typeof data==='object'?data:{};const generatedId=id||('new_'+Date.now()+'_'+Math.random().toString(36).slice(2,8));currentDbItem={...d,type,id:generatedId,isNew:!id};let h='';
 if(type==='product'){
   const categories=['textil','jarros','imp-general','packs'];
@@ -1667,7 +1758,7 @@ if(type==='product'){
   setTimeout(()=>window.updateProductPriceMode(),0);
 }
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" inputmode="decimal" value="${esc(String(mpAdminParseMoney(d.price??d.precio,'') ?? ''))}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
-if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><div class="flex gap-2"><input id="db-vid" class="field" value="${esc(d.src||'')}"><button type="button" class="mini-btn" title="Seleccionar video" onclick="window.openGallery('db-vid','video','media')"><i class="fa-solid fa-photo-film"></i></button></div><div class="helper mt-1">Selecciona el video que pertenezca únicamente a este testimonio.</div></div>`:'')+`<div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
+if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video testimonial</label><div class="flex gap-2"><input id="db-vid" class="field" value="${esc(d.src||'')}"><button type="button" class="mini-btn" title="Seleccionar video desde Google Drive" onclick="window.pickTestimonialVideoFromGoogleDrive()"><i class="fa-brands fa-google-drive"></i></button><button type="button" class="mini-btn" title="Seleccionar desde Multiprintt Host" onclick="window.openGallery('db-vid','video','media')"><i class="fa-solid fa-photo-film"></i></button></div><div id="db-vid-helper" class="helper mt-1">Google Drive está reservado exclusivamente para videos testimoniales. Para reproducirlo en la web, el archivo debe permitir acceso mediante enlace.</div></div>`:'')+`<div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
 
 document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}if(type==='testimonial_video'||type==='testimonial_text')window.setTestimonialThemeChoice(d.theme||(type==='testimonial_video'?'cyan':'pink'));};
 function normalizeProductImageField(raw){
@@ -1800,12 +1891,16 @@ if(t==='course'){
   payload.updatedAt=now;
 }
 if(t==='testimonial_video'||t==='testimonial_text'){
-  payload={name:document.getElementById('db-name')?.value.trim()||'',role:document.getElementById('db-role')?.value.trim()||'',quote:document.getElementById('db-quote')?.value.trim()||'',theme:document.getElementById('db-theme')?.value||'pink',testimonialId:String(currentDbItem.id||'').trim(),testimonialType:t};
+  const vidInput=document.getElementById('db-vid');
+  payload={name:document.getElementById('db-name')?.value.trim()||'',role:document.getElementById('db-role')?.value.trim()||'',quote:document.getElementById('db-quote')?.value.trim()||'',theme:document.getElementById('db-theme')?.value||'pink',testimonialId:String(currentDbItem.id||'').trim(),testimonialType:t,createdAt:Number(currentDbItem?.createdAt)||Date.now(),updatedAt:Date.now()};
   if(!payload.name)return window.showToast('El testimonio necesita un nombre.');
   if(!payload.quote)return window.showToast('El testimonio necesita una cita.');
   if(!['cyan','pink','violet','amber','emerald'].includes(payload.theme))payload.theme='pink';
   if(t==='testimonial_video'){
-    payload.src=document.getElementById('db-vid')?.value.trim()||'';
+    payload.src=vidInput?.value.trim()||'';
+    payload.videoProvider=String(vidInput?.dataset?.provider||currentDbItem?.videoProvider||'url').trim()||'url';
+    payload.driveFileId=String(vidInput?.dataset?.driveId||currentDbItem?.driveFileId||'').trim();
+    payload.videoFileName=String(vidInput?.dataset?.fileName||currentDbItem?.videoFileName||'').trim();
     if(payload.src && !/^https?:\/\//i.test(payload.src))return window.showToast('El video debe usar una URL http(s) válida.');
   }
 }
@@ -1818,11 +1913,15 @@ if(col){
   iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},location.origin);
   const changedFields=Object.keys(payload).filter(k=>!['imageVariants','createdAt','updatedAt'].includes(k));
   void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':'curso'}: ${payload.name||payload.title||id}${changedFields.length?' · campos: '+changedFields.join(', '):''}`,'db');
-}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
-window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty('Testimonio actualizado',false);proScheduleSnapshot();
+}else if(t==='testimonial_video'||t==='testimonial_text'){
+  await setDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id),payload,{merge:true});
+  iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
+  void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} testimonio ${t==='testimonial_video'?'de video':'de texto'}: ${payload.name||id}`,'db');
+}
+window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty(t.startsWith('testimonial_')?'Testimonio actualizado':'Elemento actualizado',false);proScheduleSnapshot();
 }catch(e){
   console.error('Guardar BD:',e);const code=e?.code||'';
-  const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Publica las Firestore Rules y verifica que esta cuenta esté autenticada.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
+  const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Verifica que las Rules permitan testimonios para la cuenta Email/Password compartida.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
   window.showToast(msg);
 }finally{
   dbSaveInFlight=false;
@@ -2529,6 +2628,31 @@ if(d.type==='SAVE_FULL_LAYOUT_ERROR'){if((Number(d.saveRequestId)||0)!==latestSa
 if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
 if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
 if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?')){(async()=>{try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId));await writeAdminAudit(`Eliminó ${d.itemType==='product'?'producto':'curso'} ${d.itemId}`,'db');iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},location.origin);window.showToast('Registro eliminado correctamente')}catch(e){console.error('Eliminar BD:',e);window.showToast('No se pudo eliminar: '+(e?.code||e?.message||'error'))}})()}}
+if(d.type==='TESTIMONIAL_CREATED'){
+(async()=>{
+  try{
+    await ensureAdminWriteSession();
+    const id=String(d.itemId||'').trim();if(!id)return;
+    const data={...(d.data||{}),testimonialId:id,testimonialType:d.testimonialType||'testimonial_text',createdAt:Number(d.data?.createdAt)||Date.now(),updatedAt:Date.now()};
+    await setDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id),data,{merge:true});
+    await writeAdminAudit(`Creó testimonio ${data.testimonialType==='testimonial_video'?'de video':'de texto'} ${id}`,'db');
+    markDirty('Testimonio creado',false);proScheduleSnapshot();
+    // Abre inmediatamente el editor del nuevo registro: así no depende de hover ni de la plantilla base.
+    setTimeout(()=>window.openDbEditor(data.testimonialType,id,{...data,id,testimonialId:id}),0);
+  }catch(e){console.error('Crear testimonio:',e);window.showToast('No se pudo sincronizar el nuevo testimonio con Firebase: '+(e?.code||e?.message||'error'))}
+})();
+}
+if(d.type==='TESTIMONIAL_DELETED'){
+(async()=>{
+  try{
+    await ensureAdminWriteSession();
+    const id=String(d.itemId||'').trim();if(!id)return;
+    await deleteDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id));
+    await writeAdminAudit(`Eliminó testimonio ${id}`,'db');
+    markDirty('Testimonio eliminado',false);proScheduleSnapshot();
+  }catch(e){console.error('Eliminar testimonio:',e);window.showToast('No se pudo eliminar el registro de testimonio: '+(e?.code||e?.message||'error'))}
+})();
+}
 });
 document.addEventListener('keydown',e=>{if(document.getElementById('gallery-modal')?.classList.contains('open')){if(e.key==='1')window.switchMediaExplorerTab('library');if(e.key==='2')window.switchMediaExplorerTab('imgbb');if(e.key==='3')window.switchMediaExplorerTab('sources')}});window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();window.publishChanges(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();window.openCommandPalette()}if(e.key==='Escape'){['social-modal','db-modal','gallery-modal','layers-modal','history-modal','audit-modal','command-modal','global-modal','seo-modal'].forEach(window.closeModal)}});
 window.filterSocials('');</script>
