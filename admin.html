@@ -1309,7 +1309,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, setDoc, deleteDoc, deleteField, writeBatch, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.09.30.10';
+const MP_ADMIN_BUILD='2026.09.30.11';
 const iframe=()=>document.getElementById('site-frame');
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=true,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
 const B2_MEDIA_API='https://b2.multiprintt.workers.dev';
@@ -2740,9 +2740,25 @@ window.filterSocials('');</script>
       const credential=await signInWithEmailAndPassword(auth,email,pass);
       if(!credential?.user||credential.user.isAnonymous)throw Object.assign(new Error('Firebase no devolvió una sesión administrativa válida.'),{code:'auth/session-not-created'});
       setLoginUi(false);
-      window.showToast?.('Sesión iniciada correctamente. Cargando editor…');
-      // Recargar hace que el módulo principal tome esta misma sesión persistida desde cero.
-      setTimeout(()=>location.reload(),120);
+      // IMPORTANT: never reload after login. Reloading breaks local/file:// tests and can
+      // create an endless authentication loop when the main module is temporarily unavailable.
+      if(typeof window.showAdminWorkspace==='function'){
+        const ok=window.showAdminWorkspace(credential.user,true);
+        if(ok)return;
+      }
+      const authScreen=document.getElementById('auth-screen');
+      const builder=document.getElementById('builder-ui');
+      if(authScreen)authScreen.style.display='none';
+      if(builder)builder.style.display='flex';
+      const fr=document.getElementById('site-frame');
+      if(fr && (!fr.getAttribute('src') || fr.getAttribute('src')===location.href)){
+        fr.src='index.html?t='+Date.now();
+      }
+      if(location.protocol==='file:'){
+        window.showToast?.('Sesión Firebase válida. Para usar todo el editor localmente, abre admin.html desde http://localhost (por ejemplo con Firebase Hosting Emulator o un servidor HTTP).');
+      }else{
+        window.showToast?.('Sesión iniciada correctamente. Cargando editor…');
+      }
     }catch(e){
       console.error('Login safety bridge:',e);
       setLoginUi(false,errorMessage(e));
