@@ -5383,7 +5383,12 @@ function applyStoredTestimonialData(card,d){
   if(d.theme){card.setAttribute('data-theme',d.theme);window.applyThemeSwap?.(card,d.theme);}
   const video=card.querySelector('video');
   if(type==='testimonial_video'&&video&&d.src){
-    mpSetTestimonialVideoSource(video,String(d.src),d);
+    video.removeAttribute('data-mp-src');
+    video.src=String(d.src);
+    video.setAttribute('data-video-provider',d.videoProvider||'url');
+    if(d.driveFileId)video.setAttribute('data-drive-file-id',d.driveFileId);else video.removeAttribute('data-drive-file-id');
+    if(d.videoFileName)video.setAttribute('data-video-file-name',d.videoFileName);else video.removeAttribute('data-video-file-name');
+    try{video.load()}catch(e){}
   }
   const name=card.querySelector(type==='testimonial_video'?'.vt-name':'.txt-name');
   const role=card.querySelector(type==='testimonial_video'?'.vt-role':'.txt-role');
@@ -6019,8 +6024,11 @@ document.addEventListener('click', (event) => {
 }, true);
 
 window.addEventListener('message', async (event) => {
-if (window.parent !== window && (event.source !== window.parent || event.origin !== window.location.origin)) return;
-if (event.source !== window.parent || event.origin !== window.location.origin) return;
+if (window.parent !== window) {
+  const allowedOrigin = window.location.origin === 'null' ? 'null' : window.location.origin;
+  if (event.source !== window.parent || event.origin !== allowedOrigin) return;
+}
+if (event.source !== window.parent) return;
 if (event.data.type === 'SET_GLOBAL_SETTINGS') { applyGlobalSettings(event.data.settings||{}); }
 if (event.data.type === 'SET_ANALYTICS_CONFIG') { applyAnalyticsConfig(event.data.config||{}); }
 if (event.data.type === 'SET_GLOBAL_URLS') { applyGlobalUrls(event.data.urls||{}); }
@@ -6043,7 +6051,7 @@ if (window.__builderClickHandler) document.removeEventListener('click', window._
 // Todo texto estático queda seleccionable/editable, incluidos spans, enlaces y textos anidados.
 markTextElementsEditable(document);
 window.__builderClickHandler = function(e) {
-if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active') || window.builderSelectionEnabled === false) return;
+if (!document.body.classList.contains('builder-mode') || window.builderSelectionEnabled === false) return;
 window.parent.postMessage({type:'HIDE_CONTEXT_MENU'}, '*');
 if(e.target.closest('.ignore-drag,.admin-tool')) return;
 const target=builderSelectionTarget(e.target,e);
@@ -6101,10 +6109,7 @@ if (event.data.type === 'UPDATE_TESTIMONIAL') {
 const { itemId, data: d } = event.data;
 const targetCard = getTestimonialCardById(itemId,'testimonial_video');
 if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_video') {
-if(d.src) { const vid = targetCard.querySelector('video'); if(vid) {
-  /* Una URL elegida desde Drive sustituye definitivamente al MP4 base codificado. */
-  mpSetTestimonialVideoSource(vid,String(d.src),d);
-} }
+if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { mpSetTestimonialVideoSource(vid,String(d.src),d); } }
 if(d.name) { const n = targetCard.querySelector('.vt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.vt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
 if(d.role) { const r = targetCard.querySelector('.vt-role'); if(r) r.innerText = d.role; }
 if(d.quote) { const q = targetCard.querySelector('.vt-quote'); if(q) q.innerText = d.quote; }
