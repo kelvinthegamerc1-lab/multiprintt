@@ -17,6 +17,21 @@
 <meta name="description" content="Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.">
 <meta name="keywords" content="Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<script id="mp-google-tag-bootstrap">
+(function(){
+  const ID='G-VP3XV39H5M';
+  if(window.parent!==window) return;
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
+  window.gtag('js',new Date());
+  window.gtag('config',ID,{send_page_view:true});
+  const s=document.createElement('script');
+  s.async=true;
+  s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(ID);
+  document.head.appendChild(s);
+  window.__mpGoogleAnalyticsId=ID;
+})();
+</script>
 <link rel="canonical" href="https://multiprintt.web.app/">
 <link rel="icon" href="https://multiprintt.web.app/favicon.ico" type="image/x-icon">
 <link rel="icon" type="image/webp" href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-mp-href="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy9mYXZpY29uLndlYnA">
@@ -5144,8 +5159,38 @@ Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-
 });
 grid.innerHTML = renderHTML;
 }
+
+window.__mpEnsureCourseSortable=function(){
+  if(!window.isAdminMode || !document.body.classList.contains('dragging-active')) return;
+  const grid=document.getElementById('courses-grid');
+  if(!grid || !window.Sortable) return;
+  try{if(grid._courseSortable){grid._courseSortable.destroy();grid._courseSortable=null;}}catch(e){console.warn('Course Sortable cleanup:',e)}
+  const cards=Array.from(grid.children).filter(el=>el.classList.contains('card') && !el.classList.contains('ignore-drag'));
+  if(cards.length<2) return;
+  grid._courseSortable=new Sortable(grid,{
+    animation:180,
+    ghostClass:'sortable-ghost',
+    chosenClass:'sortable-chosen',
+    dragClass:'sortable-drag',
+    filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',
+    delay:120,
+    delayOnTouchOnly:true,
+    draggable:'.card',
+    onStart(){window.builderSelectionEnabled=false;},
+    onEnd(evt){
+      const order=Array.from(grid.querySelectorAll(':scope > .card[data-id]')).map(el=>String(el.getAttribute('data-id')||'')).filter(Boolean);
+      window.courseOrderArray=order;
+      window.parent.postMessage({type:'COURSE_ORDER_UPDATED',order,fromIndex:evt.oldIndex??-1,toIndex:evt.newIndex??-1,itemId:evt.item?.getAttribute('data-id')||''},'*');
+      window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item?.getAttribute('data-id')||'',fromId:'courses-grid',toId:'courses-grid',collection:'courses'},'*');
+      window.builderSelectionEnabled=false;
+      emitLayers();
+    }
+  });
+  window.sortableInstances.push(grid._courseSortable);
+};
+
 const _mpOriginalRenderCourses = window.renderCourses;
-window.renderCourses = function(){ const r = _mpOriginalRenderCourses?.apply(this, arguments); try { window.ensureAcademyGallery(); } catch(e) {} return r; };
+window.renderCourses = function(){ const r = _mpOriginalRenderCourses?.apply(this, arguments); try { window.ensureAcademyGallery(); } catch(e) {} try { window.__mpEnsureCourseSortable?.(); } catch(e) {} return r; };
 window.cloneCourseBadge = function(btn) {
 if(!window.isAdminMode) return;
 const colors = ['cyan', 'pink', 'amber', 'violet', 'emerald'];
@@ -5906,10 +5951,10 @@ function renderResponsiveOverrides(){const media={mobile:'(max-width: 640px)',ta
 function applyResponsiveStyle(el,device,prop,value){if(!el)return;const id=ensureBuilderId(el);window.mpResponsiveRules=window.mpResponsiveRules||{};window.mpResponsiveRules[id]=window.mpResponsiveRules[id]||{};window.mpResponsiveRules[id][device]=window.mpResponsiveRules[id][device]||{};window.mpResponsiveRules[id][device][prop]=String(value??'').replace(/[;{}]/g,'');renderResponsiveOverrides();el.setAttribute('data-responsive-'+device+'-'+prop,'true')}
 function restoreResponsiveRules(layoutModel){window.mpResponsiveRules={};if(!layoutModel?.zones){renderResponsiveOverrides();return}Object.values(layoutModel.zones).forEach(zone=>(zone.elements||[]).forEach(rec=>{if(!rec?.builderId||!rec.responsive)return;const el=findBuilderElement(rec.builderId);if(!el)return;window.mpResponsiveRules[rec.builderId]=JSON.parse(JSON.stringify(rec.responsive));Object.entries(rec.responsive).forEach(([dev,props])=>Object.keys(props||{}).forEach(prop=>el.setAttribute('data-responsive-'+dev+'-'+prop,'true')))}));renderResponsiveOverrides()}
 function mapAnimationName(name){const map={fadeIn:'mpFadeIn',slideUp:'mpSlideUp',slideDown:'mpSlideDown',slideLeft:'mpSlideLeft',slideRight:'mpSlideRight',pulse:'mpPulse',float:'mpFloat',zoomIn:'mpZoomIn',flipIn:'mpFlipIn'};return map[name]||name}
-const SEO_RUNTIME_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://multiprintt.web.app/favicon.ico',ogImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",twitterImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'',searchUrl:''};
+const SEO_RUNTIME_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://multiprintt.web.app/favicon.ico',ogImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",twitterImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'',searchUrl:'',googleSiteVerification:''};
 function upsertMeta(attr,name,content){if(!content)return;let el=document.head.querySelector(`meta[${attr}="${CSS.escape(name)}"]`);if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el)}el.setAttribute('content',content)}
 function upsertLink(rel,href,type){if(!href)return;let el=document.head.querySelector(`link[rel="${rel}"]`);if(!el){el=document.createElement('link');el.rel=rel;document.head.appendChild(el)}el.href=href;if(type)el.type=type}
-function applySeoRuntime(raw={}){const d={...SEO_RUNTIME_DEFAULTS,...raw};if(d.title)document.title=d.title;if(d.description)upsertMeta('name','description',d.description);if(d.keywords)upsertMeta('name','keywords',d.keywords);if(d.canonical)upsertLink('canonical',d.canonical);if(d.favicon)upsertLink('icon',d.favicon,(d.favicon.match(/\.svg($|\?)/i)?'image/svg+xml':d.favicon.match(/\.webp($|\?)/i)?'image/webp':undefined));upsertLink('shortcut icon',d.favicon);if(d.ogImage){upsertMeta('property','og:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('property','og:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('property','og:url',d.canonical||SEO_RUNTIME_DEFAULTS.canonical);upsertMeta('property','og:image',d.ogImage);upsertMeta('property','og:site_name',d.brand||'Multiprintt');upsertMeta('name','twitter:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('name','twitter:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('name','twitter:image',d.twitterImage||d.ogImage)}let schemaEl=document.getElementById('multiprintt-runtime-schema');if(!schemaEl){schemaEl=document.createElement('script');schemaEl.type='application/ld+json';schemaEl.id='multiprintt-runtime-schema';document.head.appendChild(schemaEl)}const sameAs=String(d.sameAs||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);const graph=[{'@type':'Organization','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#organization`,'name':d.brand||'Multiprintt','alternateName':d.alternate||undefined,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'sameAs':sameAs},{'@type':'WebSite','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#website`,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'name':d.brand||'Multiprintt','description':d.description||SEO_RUNTIME_DEFAULTS.description}];if(d.searchUrl){graph[1].potentialAction={'@type':'SearchAction','target':String(d.searchUrl).replace('TERM','{search_term_string}'),'query-input':'required name=search_term_string'}}graph.unshift({'@type':'LocalBusiness','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#business`,'name':d.brand||'Multiprintt','url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'image':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'description':d.description||SEO_RUNTIME_DEFAULTS.description,'telephone':d.phone||undefined,'address':{'@type':'PostalAddress','addressLocality':d.city||'Guayaquil','addressCountry':d.country||'EC'},'areaServed':{'@type':'City','name':d.area||d.city||'Guayaquil'},'sameAs':sameAs});schemaEl.textContent=JSON.stringify({'@context':'https://schema.org','@graph':graph},null,2)}
+function applySeoRuntime(raw={}){const d={...SEO_RUNTIME_DEFAULTS,...raw};if(d.title)document.title=d.title;if(d.googleSiteVerification){let v=document.querySelector('meta[name="google-site-verification"]');if(!v){v=document.createElement('meta');v.name='google-site-verification';document.head.appendChild(v)}v.content=String(d.googleSiteVerification).trim();}if(d.description)upsertMeta('name','description',d.description);if(d.keywords)upsertMeta('name','keywords',d.keywords);if(d.canonical)upsertLink('canonical',d.canonical);if(d.favicon)upsertLink('icon',d.favicon,(d.favicon.match(/\.svg($|\?)/i)?'image/svg+xml':d.favicon.match(/\.webp($|\?)/i)?'image/webp':undefined));upsertLink('shortcut icon',d.favicon);if(d.ogImage){upsertMeta('property','og:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('property','og:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('property','og:url',d.canonical||SEO_RUNTIME_DEFAULTS.canonical);upsertMeta('property','og:image',d.ogImage);upsertMeta('property','og:site_name',d.brand||'Multiprintt');upsertMeta('name','twitter:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('name','twitter:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('name','twitter:image',d.twitterImage||d.ogImage)}let schemaEl=document.getElementById('multiprintt-runtime-schema');if(!schemaEl){schemaEl=document.createElement('script');schemaEl.type='application/ld+json';schemaEl.id='multiprintt-runtime-schema';document.head.appendChild(schemaEl)}const sameAs=String(d.sameAs||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);const graph=[{'@type':'Organization','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#organization`,'name':d.brand||'Multiprintt','alternateName':d.alternate||undefined,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'sameAs':sameAs},{'@type':'WebSite','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#website`,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'name':d.brand||'Multiprintt','description':d.description||SEO_RUNTIME_DEFAULTS.description}];if(d.searchUrl){graph[1].potentialAction={'@type':'SearchAction','target':String(d.searchUrl).replace('TERM','{search_term_string}'),'query-input':'required name=search_term_string'}}graph.unshift({'@type':'LocalBusiness','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#business`,'name':d.brand||'Multiprintt','url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'image':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'description':d.description||SEO_RUNTIME_DEFAULTS.description,'telephone':d.phone||undefined,'address':{'@type':'PostalAddress','addressLocality':d.city||'Guayaquil','addressCountry':d.country||'EC'},'areaServed':{'@type':'City','name':d.area||d.city||'Guayaquil'},'sameAs':sameAs});schemaEl.textContent=JSON.stringify({'@context':'https://schema.org','@graph':graph},null,2)}
 try{applySeoRuntime(SEO_RUNTIME_DEFAULTS)}catch(e){console.warn('SEO inicial:',e)}
 function builderSelectionTarget(raw, e) {
 if (!raw || raw.nodeType !== 1) return null;
@@ -6175,23 +6220,37 @@ if (event.data.type === 'TOGGLE_DRAG') {
 const enabled = event.data.state !== false;
 window.__mpDragBuildSeq=(window.__mpDragBuildSeq||0)+1;
 const buildSeq=window.__mpDragBuildSeq;
-window.destroyBuilderSortables = function(){ (window.sortableInstances||[]).forEach(s=>{try{s.destroy()}catch(e){}}); window.sortableInstances=[]; };
-if(!enabled){document.body.classList.remove('dragging-active');window.destroyBuilderSortables();}
-else{
+window.destroyBuilderSortables = function(){ (window.sortableInstances||[]).forEach(s=>{try{s.destroy()}catch(e){}}); window.sortableInstances=[]; try{const cg=document.getElementById('courses-grid');if(cg)cg._courseSortable=null;}catch(e){} };
+if(!enabled){
+  document.body.classList.remove('dragging-active');
+  window.builderSelectionEnabled=true;
+  window.destroyBuilderSortables();
+}else{
   document.body.classList.add('dragging-active');
+  window.builderSelectionEnabled=false;
   if(window.selectedEl){window.selectedEl.classList.remove('builder-selected-el');window.selectedEl=null;}
-  window.updateResizeBox(); window.destroyBuilderSortables();
+  window.updateResizeBox();
+  window.destroyBuilderSortables();
   (async()=>{
     try{await window.__mpLoadSortable();}catch(e){console.warn('No se pudo cargar el editor de arrastre:',e);return;}
     if(buildSeq!==window.__mpDragBuildSeq||!document.body.classList.contains('dragging-active'))return;
     const parents=new Set();
-    document.querySelectorAll('.sortable-zone,.editable-section').forEach(p=>parents.add(p));
-    document.querySelectorAll('[data-editable="true"],[data-resizable="true"],.card,img,video,button').forEach(el=>{const p=el.parentElement;if(!p||p.closest('.ignore-drag')||p.closest('#videoModalContent'))return;if(p.children.length>=2)parents.add(p);});
+    document.querySelectorAll('.sortable-zone,.editable-section').forEach(p=>{
+      if(!p || p.id==='courses-grid' || p.closest('#courses-grid')) return;
+      parents.add(p);
+    });
+    document.querySelectorAll('[data-editable="true"],[data-resizable="true"],.card,img,video,button').forEach(el=>{
+      const p=el.parentElement;
+      if(!p||p.closest('.ignore-drag')||p.closest('#videoModalContent')||p.closest('#courses-grid'))return;
+      if(p.children.length>=2)parents.add(p);
+    });
     parents.forEach(container=>{
-      if(!container||container.id==='videoModalContent'||container.classList.contains('admin-tool'))return;
+      if(!container||container.id==='videoModalContent'||container.id==='courses-grid'||container.classList.contains('admin-tool'))return;
       const movable=Array.from(container.children).filter(ch=>!ch.classList.contains('ignore-drag')&&!ch.classList.contains('admin-tool')&&!ch.matches('script,style,link'));
       if(movable.length<2)return;
-      try{const sortable=new Sortable(container,{animation:180,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',dragClass:'sortable-drag',filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',delay:120,delayOnTouchOnly:true,onEnd(evt){if(evt.to.id==='social-footer-links'||evt.from.id==='social-footer-links')window.syncSocialNetworks();window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item.id||'',fromId:evt.from.id||'',toId:evt.to.id||''},'*');emitLayers();}});container._sortable=sortable;window.sortableInstances.push(sortable)}catch(e){console.warn('Sortable',e)}});
+      try{const sortable=new Sortable(container,{animation:180,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',dragClass:'sortable-drag',filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',delay:120,delayOnTouchOnly:true,onStart(){window.builderSelectionEnabled=false;},onEnd(evt){if(evt.to.id==='social-footer-links'||evt.from.id==='social-footer-links')window.syncSocialNetworks();window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item.id||'',fromId:evt.from.id||'',toId:evt.to.id||''},'*');emitLayers();}});container._sortable=sortable;window.sortableInstances.push(sortable)}catch(e){console.warn('Sortable',e)}
+    });
+    try{window.__mpEnsureCourseSortable?.();}catch(e){console.warn('Course Sortable:',e)}
   })();
 }
 }
