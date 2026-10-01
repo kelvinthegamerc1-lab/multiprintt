@@ -5398,9 +5398,18 @@ window.__mpStartPublicSnapshots=function(){
     try{window.renderCourses();}catch(e){console.warn('Render courses:',e)}
   },error=>{console.warn('No se pudo sincronizar courses; se mantiene la caché/local.',error);});
   onSnapshot(collection(db,'artifacts',APP_ID,'public','data','testimonials'),snap=>{
-    const records=snap.docs.map(d=>{const raw={id:d.id,...(d.data()||{})};const provider=String(raw.videoProvider||'').trim();const src=String(raw.src||'');if(raw.testimonialType==='testimonial_video' && provider && provider!=='b2_testimonial'){delete raw.src;delete raw.videoProvider;delete raw.videoKey;delete raw.videoFileName;}return raw;});
+    const records=snap.docs.map(d=>{
+      const raw={id:d.id,...(d.data()||{})};
+      if(raw.testimonialType==='testimonial_video' && raw.src && !raw.videoProvider){
+        const src=String(raw.src).trim();
+        raw.videoProvider=/(^|\/)raw\.githubusercontent\.com\//i.test(src)||/github\.com\//i.test(src)?'github':/(^|\/)testimonio_videos\//i.test(src)?'b2_testimonial':'url';
+      }
+      return raw;
+    });
     window.__mpTestimonialsCache=records;window.__mpReconcileTestimonials(records);
   },error=>{console.warn('No se pudo sincronizar testimonials; se mantiene la caché/local.',error);window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]);});
+  onSnapshot(doc(db,'artifacts',APP_ID,'public','data','settings','seo'),snap=>{if(snap.exists()){window.__mpSeoSettings={...SEO_RUNTIME_DEFAULTS,...(snap.data()||{})};applySeoRuntime(window.__mpSeoSettings);}},error=>console.warn('No se pudo sincronizar settings/seo:',error));
+  onSnapshot(doc(db,'artifacts',APP_ID,'public','data','settings','global'),snap=>{if(snap.exists())applyGlobalSettings(snap.data()||{});},error=>console.warn('No se pudo sincronizar settings/global:',error));
 };
 window.__mpTestimonialsLiveIds=new Set();
 function testimonialCardKey(d){return String(d?.testimonialType||'')+':'+String(d?.testimonialId||d?.id||'');}
@@ -5660,7 +5669,7 @@ window.navigate('catalog');
 if(!window.__mpInitialShellRendered){try{window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}catch(e){console.warn('Render final de recuperación:',e)}}
 if (!firebaseReady) window.__mpMarkCatalogReady();
 window.__mpHideGlobalLoader(false);
-if(window.parent && window.parent !== window) window.parent.postMessage({ type: 'APP_READY' }, '*');
+if(window.parent && window.parent !== window){ const MP_BUILDER_SESSION_ID=(crypto?.randomUUID?crypto.randomUUID():`mp-builder-${Date.now()}-${Math.random().toString(36).slice(2,10)}`); window.__mpBuilderSessionId=MP_BUILDER_SESSION_ID; window.parent.postMessage({ type: 'APP_READY', protocolVersion:1, sessionId:MP_BUILDER_SESSION_ID }, location.origin === 'null' ? '*' : location.origin); }
 }
 }
 const MP_GALLERY_FALLBACK_IMAGES = [
@@ -6098,12 +6107,16 @@ if (window.__builderClickHandler) document.removeEventListener('click', window._
 // Todo texto estático queda seleccionable/editable, incluidos spans, enlaces y textos anidados.
 markTextElementsEditable(document);
 window.__builderClickHandler = function(e) {
+// Navegación tiene prioridad sobre el Builder: el navbar nunca se selecciona para edición.
+const navControl=e.target.closest?.('.nav-link[data-target],.bot-nav-item,[data-target][onclick*="navigate("],header nav button[onclick*="navigate("],header nav a[onclick*="navigate("]');
+const navClick=e.target.closest?.('button[onclick*="navigate("],a[onclick*="navigate("]');
+if(navControl||navClick){
+  const navTarget=navControl?.getAttribute?.('data-target')||(navControl?.id?.startsWith('bot-')?navControl.id.slice(4):'')||navClick?.getAttribute?.('data-target')||'';
+  if(navTarget&&typeof window.navigate==='function'){e.preventDefault();e.stopPropagation();window.navigate(navTarget);return;}
+  if(navClick)return;
+}
 if (!document.body.classList.contains('builder-mode') || window.builderSelectionEnabled === false) return;
-// Los controles de navegación siguen siendo navegación real dentro del iframe.
-// No se interceptan como elementos editables del Builder.
-const navControl = e.target.closest?.('.nav-link, .bot-nav-item, [data-target]');
-const navClick = e.target.closest?.('button[onclick*="navigate("],a[onclick*="navigate("]');
-if (navControl || navClick) return;
+if(document.body.classList.contains('dragging-active')) return;
 window.parent.postMessage({type:'HIDE_CONTEXT_MENU'}, '*');
 if(e.target.closest('.ignore-drag,.admin-tool')) return;
 const target=builderSelectionTarget(e.target,e);
