@@ -4243,7 +4243,7 @@ body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{
                         </div>
                     </div>
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-testimonial-id') || this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" data-admin-testimonial-edit="1" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
+                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-testimonial-id') || this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, course: this.closest('.card').querySelector('.txt-role').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, '*')" data-admin-testimonial-edit="1" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
                         <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
@@ -5214,6 +5214,7 @@ function getTestimonialEditorData(card,type){
     src,
     name:card.querySelector(type==='testimonial_video'?'.vt-name':'.txt-name')?.innerText?.trim()||'Alumno',
     role:card.querySelector(type==='testimonial_video'?'.vt-role':'.txt-role')?.innerText?.trim()||(type==='testimonial_video'?'Caso de Éxito':'Curso General'),
+    course:type==='testimonial_text'?(card.querySelector('.txt-role')?.innerText?.trim()||'Curso General'):'',
     quote:card.querySelector(type==='testimonial_video'?'.vt-quote':'.txt-quote')?.innerText?.trim()||card.querySelector('p')?.innerText?.trim()||'',
     theme:card.getAttribute('data-theme')||(type==='testimonial_video'?'cyan':'pink'),
     videoProvider:card.getAttribute('data-video-provider')||video?.getAttribute('data-video-provider')||'b2_testimonial',
@@ -5234,16 +5235,16 @@ div.innerHTML = `
 <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">N</span></div>
 <div class="flex flex-col">
 <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide txt-name m-0">Nuevo Alumno</h4>
-<span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role block mt-1">Curso General</span>
+<span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role block mt-1">Curso Básico</span>
 </div>
 </div>
 <div class="admin-video-edit-overlay ignore-drag">
-<button type="button" data-admin-testimonial-edit="1" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
+<button type="button" data-admin-testimonial-edit="1" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', course: 'Curso Básico', role: 'Curso Básico', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
 <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
 </div>
 `;
 grid.insertBefore(div, btnNode);
-window.parent.postMessage({type:'TESTIMONIAL_CREATED',itemId:newId,testimonialType:'testimonial_text',data:{name:'Nuevo Alumno',role:'Curso General',quote:'Escribe tu comentario aquí...',theme:'pink'}},'*');
+window.parent.postMessage({type:'TESTIMONIAL_CREATED',itemId:newId,testimonialType:'testimonial_text',data:{name:'Nuevo Alumno',course:'Curso Básico',role:'Curso Básico',quote:'Escribe tu comentario aquí...',theme:'pink'}},'*');
 if(window.updateResizeBox) window.updateResizeBox();
 }
 window.cloneVideoTestimonial = function(btnNode) {
@@ -5313,13 +5314,14 @@ if(card.classList.contains('video-testimonial-card') || card.querySelector('.vid
 if(!card.querySelector('.txt-name') || !card.querySelector('.txt-role')) return;
 const id = card.getAttribute('data-testimonial-id') || card.getAttribute('data-card-id');
 const name = card.querySelector('.txt-name')?.innerText?.trim() || 'Alumno';
-const role = card.querySelector('.txt-role')?.innerText?.trim() || 'Curso General';
+const course = card.querySelector('.txt-role')?.innerText?.trim() || 'Curso General';
+const role = course;
 const quote = card.querySelector('p')?.innerText?.trim() || 'Escribe tu comentario aquí...';
 const theme = card.getAttribute('data-theme') || 'pink';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
 overlay.innerHTML = `<button type="button" data-admin-testimonial-edit="1" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" data-admin-testimonial-delete="1" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:stableId,itemData:{name,role,quote,theme}},'*'); });
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:stableId,itemData:{name,course,role,quote,theme}},'*'); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
@@ -5384,7 +5386,7 @@ function applyStoredTestimonialData(card,d){
   const quote=card.querySelector(type==='testimonial_video'?'.vt-quote':'.txt-quote')||card.querySelector('p');
   const initial=card.querySelector(type==='testimonial_video'?'.vt-initial':'.txt-initial');
   if(name&&d.name)name.textContent=String(d.name);
-  if(role&&d.role)role.textContent=String(d.role);
+  if(role&&(d.course||d.role))role.textContent=String(d.course||d.role);
   if(quote&&d.quote)quote.textContent=String(d.quote);
   if(initial&&d.name)initial.textContent=String(d.name).charAt(0).toUpperCase();
 }
@@ -6107,7 +6109,7 @@ const { itemId, data: d } = event.data;
 const targetCard = getTestimonialCardById(itemId,'testimonial_text');
 if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_text') {
 if(d.name) { const n = targetCard.querySelector('.txt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.txt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
-if(d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.role; }
+if(d.course || d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.course || d.role; }
 if(d.quote) { const q = targetCard.querySelector('.txt-quote') || targetCard.querySelector('p'); if(q) q.innerText = d.quote; }
 if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
 if (window.updateResizeBox) window.updateResizeBox();
