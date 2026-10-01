@@ -526,6 +526,48 @@ html{color-scheme:dark;}.glass{background:linear-gradient(180deg,rgba(18,19,24,.
 
 
 </style>
+<style id="global-settings-modal-fix-2026-09-30">
+/* Ajustes globales: cabecera y pie fijos; solo el contenido interno hace scroll. */
+#global-modal .modal-card{
+  width:min(760px,96vw)!important;
+  height:min(900px,calc(100dvh - 40px))!important;
+  max-height:calc(100dvh - 40px)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+#global-modal .modal-head{
+  flex:0 0 auto!important;
+}
+#global-modal .modal-body{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+}
+#global-modal .modal-foot{
+  flex:0 0 auto!important;
+  position:relative!important;
+  z-index:5!important;
+  background:#0a0b0f!important;
+  box-shadow:0 -8px 18px rgba(0,0,0,.22)!important;
+}
+@media(max-width:760px){
+  #global-modal .modal-card{
+    width:100%!important;
+    height:calc(100dvh - 16px)!important;
+    max-height:calc(100dvh - 16px)!important;
+  }
+  #global-modal .modal-body{
+    padding:11px!important;
+  }
+  #global-modal .modal-foot{
+    padding:9px 11px calc(9px + env(safe-area-inset-bottom))!important;
+  }
+}
+</style>
 <style>.help-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-left:4px;border-radius:999px;border:1px solid rgba(139,92,246,.45);background:rgba(139,92,246,.10);color:#c4b5fd;font-size:9px;font-weight:800;cursor:help;vertical-align:middle}.seo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.seo-span{grid-column:1 / -1}@media(max-width:760px){.seo-grid{grid-template-columns:1fr}.seo-span{grid-column:auto}}#seo-modal .modal-card{max-width:1000px}#seo-robots-preview,#seo-sitemap-preview{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.5}</style>
 <style id="admin-mobile-performance-unified-2026">@media (max-width:760px){
   html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent;}
@@ -1158,7 +1200,7 @@ html{color-scheme:dark;}.glass{background:linear-gradient(180deg,rgba(18,19,24,.
 <button class="nav-btn" data-view="about" onclick="window.navigateSection('about')" type="button"><i class="fa-solid fa-circle-info w-4"></i>Nosotros<span class="badge">03</span></button>
 <button class="nav-btn" data-view="contact" onclick="window.navigateSection('contact')" type="button"><i class="fa-solid fa-envelope w-4"></i>Contacto<span class="badge">04</span></button>
 <div class="mt-4 section-label">Constructor</div>
-<div class="toolrow"><button class="mini-btn active" id="drag-btn" onclick="window.toggleDragMode()" type="button"><i class="fa-solid fa-up-down-left-right mr-1"></i>Mover</button><button class="mini-btn active" id="select-btn" onclick="window.toggleSelectionLock()" type="button"><i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar</button></div>
+<div class="toolrow"><button class="mini-btn" id="drag-btn" onclick="window.toggleDragMode()" type="button"><i class="fa-solid fa-lock mr-1"></i>Fijo</button><button class="mini-btn active" id="select-btn" onclick="window.toggleSelectionLock()" type="button"><i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar</button></div>
 <div class="toolrow mt-2"><button class="mini-btn" onclick="window.focusCanvas()" type="button"><i class="fa-solid fa-expand mr-1"></i>Encajar</button><button class="mini-btn" onclick="window.reloadPreview()" type="button"><i class="fa-solid fa-rotate mr-1"></i>Recargar</button></div>
 <div class="mt-4 section-label">Contenido</div>
 <button class="nav-btn" onclick="window.openDbEditor('product',null)" type="button"><i class="fa-solid fa-box-open w-4 text-pink-400"></i>Nuevo producto</button>
@@ -1183,25 +1225,7 @@ html{color-scheme:dark;}.glass{background:linear-gradient(180deg,rgba(18,19,24,.
 <div class="modal" id="command-modal"><div class="modal-card"><div class="modal-head"><div><div class="font-extrabold text-white text-sm">Comandos rápidos</div><div class="text-zinc-500 text-[9px] mt-1">Atajos para editar más rápido.</div></div><button class="mini-btn" onclick="window.closeModal('command-modal')" type="button"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><input class="field mb-3" id="command-search" oninput="window.renderCommands(this.value)" placeholder="Buscar comando..."/><div class="command-list" id="command-list"></div></div></div></div>
 <div class="modal" id="seo-modal"><div class="modal-card"><div class="modal-head"><div><div class="font-extrabold text-white text-sm"><i class="fa-solid fa-magnifying-glass-chart mr-2 text-violet-300"></i>SEO Manager</div><div class="text-zinc-500 text-[9px] mt-1">Controla SEO, redes sociales, Schema, robots.txt y sitemap.xml desde el editor.</div></div><button class="mini-btn" onclick="window.closeModal('seo-modal')" type="button"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><div class="helper mb-3"><i class="fa-solid fa-circle-info mr-1 text-violet-300"></i><b>Importante:</b> estos ajustes se sincronizan con el <code>index.html</code>. <b>robots.txt</b> y <b>sitemap.xml</b> son archivos públicos independientes; aquí puedes generarlos y descargarlos para subirlos a la raíz de Firebase Hosting.</div><div class="section-label p-0 mb-2">SEO principal</div><div class="seo-grid"><div><label class="lbl">Title <button class="help-btn" title="Título que puede aparecer como resultado en Google. Usa una frase clara, con Multiprintt y el servicio/ubicación principal." type="button">?</button></label><input class="field" id="seo-title"/></div><div><label class="lbl">Canonical <button class="help-btn" title="URL oficial que Google debe considerar como principal para esta página. Debe ser la URL definitiva del sitio." type="button">?</button></label><input class="field" id="seo-canonical"/></div><div class="seo-span"><label class="lbl">Description <button class="help-btn" title="Resumen de la página para buscadores. Debe explicar claramente qué ofrece Multiprintt, dónde y por qué es relevante." type="button">?</button></label><textarea class="field" id="seo-description" rows="3"></textarea></div><div><label class="lbl">Favicon <button class="help-btn" title="URL pública del icono de tu sitio. Idealmente usa HTTPS y un archivo accesible desde cualquier dispositivo." type="button">?</button></label><input class="field" id="seo-favicon"/></div><div><label class="lbl">OG Image <button class="help-btn" title="Imagen que aparece al compartir el sitio en WhatsApp, Facebook, LinkedIn y otras plataformas." type="button">?</button></label><input class="field" id="seo-og-image"/></div><div><label class="lbl">Twitter/X Image <button class="help-btn" title="Imagen para tarjetas de X/Twitter. Puedes usar la misma imagen de Open Graph." type="button">?</button></label><input class="field" id="seo-twitter-image"/></div><div><label class="lbl">Keywords de contenido <button class="help-btn" title="No es una garantía de ranking. Úsalas como guía editorial para mantener coherencia temática, no para repetir palabras artificialmente." type="button">?</button></label><input class="field" id="seo-keywords" placeholder="Multiprintt, impresión en Guayaquil, sublimación, DTF..."/></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">Identidad y datos estructurados</div><div class="seo-grid"><div><label class="lbl">Nombre de marca <button class="help-btn" title="Nombre oficial que aparecerá en la identidad estructurada del negocio." type="button">?</button></label><input class="field" id="seo-brand"/></div><div><label class="lbl">Nombre alternativo <button class="help-btn" title="Otra forma reconocible del nombre, si existe. Ej.: Multiprintt Impresión &amp; Publicidad." type="button">?</button></label><input class="field" id="seo-alternate"/></div><div><label class="lbl">Teléfono <button class="help-btn" title="Teléfono público del negocio. Usa el formato internacional si es posible." type="button">?</button></label><input class="field" id="seo-phone"/></div><div><label class="lbl">Localidad <button class="help-btn" title="Ciudad principal asociada al negocio local." type="button">?</button></label><input class="field" id="seo-city"/></div><div><label class="lbl">País <button class="help-btn" title="Código de país de dos letras. Ecuador = EC." type="button">?</button></label><input class="field" id="seo-country"/></div><div><label class="lbl">Área atendida <button class="help-btn" title="Zona principal de servicio. Puedes usar una ciudad, provincia o región." type="button">?</button></label><input class="field" id="seo-area"/></div><div class="seo-span"><label class="lbl">Redes sociales (una URL por línea) <button class="help-btn" title="URLs públicas de perfiles oficiales de Multiprintt. Se usan para fortalecer la identidad de la marca en Schema." type="button">?</button></label><textarea class="field" id="seo-sameas" placeholder="https://www.instagram.com/...
 https://www.facebook.com/...
-https://www.youtube.com/..." rows="4"></textarea></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">SEO por contenido</div><div class="seo-grid"><div><label class="lbl">Alt text por defecto <button class="help-btn" title="Texto alternativo para imágenes nuevas cuando aún no tengan uno específico. Describe la imagen; no metas keywords sin sentido." type="button">?</button></label><input class="field" id="seo-default-alt" placeholder="Producto personalizado Multiprintt"/></div><div><label class="lbl">SEO de productos <button class="help-btn" title="Plantilla opcional para títulos/descripciones de producto. El editor puede reutilizarla cuando falte SEO específico." type="button">?</button></label><input class="field" id="seo-product-template" placeholder="{name} | Personalizados Multiprintt"/></div><div><label class="lbl">SEO de cursos <button class="help-btn" title="Plantilla opcional para títulos/descripciones de cursos de la Academia." type="button">?</button></label><input class="field" id="seo-course-template" placeholder="{name} | Academia Multiprintt"/></div><div><label class="lbl">WebSite Search URL <button class="help-btn" title="URL base que recibe búsquedas internas si tu sitio tiene buscador. Ej.: https://multiprintt.web.app/?q=TERM . Déjala vacía si no existe." type="button">?</button></label><input class="field" id="seo-search-url" placeholder="https://multiprintt.web.app/?q=TERM"/></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">Robots y Sitemap</div><div class="seo-grid"><div><label class="lbl">Robots URL <button class="help-btn" title="URL pública donde se publica robots.txt. Debe estar en la raíz del dominio." type="button">?</button></label><input class="field" id="seo-robots-url"/></div><div><label class="lbl">Sitemap URL <button class="help-btn" title="URL pública donde se publica sitemap.xml. Debe coincidir con el sitemap que realmente subas al hosting." type="button">?</button></label><input class="field" id="seo-sitemap-url"/></div><div class="seo-span"><div class="helper mb-2"><b>Generador de archivos:</b> usa el botón para crear versiones listas para subir a Firebase Hosting. Si algún día cambias de dominio, regenera ambos.</div><textarea class="field" id="seo-robots-preview" readonly="" rows="5"></textarea><textarea class="field mt-2" id="seo-sitemap-preview" readonly="" rows="9"></textarea></div></div></div><div class="modal-foot"><button class="secondary" onclick="window.resetSeoSettings()" type="button">Predeterminados</button><button class="secondary" onclick="window.downloadSeoFiles()" type="button"><i class="fa-solid fa-download mr-1"></i>Descargar SEO</button><button class="primary" onclick="window.saveSeoManager()" type="button"><i class="fa-solid fa-floppy-disk mr-1"></i>Guardar SEO</button></div></div></div><div class="modal" id="global-modal"><div class="modal-card"><div class="modal-head"><div><div class="font-extrabold text-white text-sm">Ajustes globales</div><div class="text-zinc-500 text-[9px] mt-1">Fuentes, URL base, comportamiento y responsive.</div></div><button class="mini-btn" onclick="window.closeModal('global-modal')" type="button"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><div class="section-label p-0 mb-2">Resolución</div><div class="grid2"><div><label class="lbl">Ancho personalizado</label><input class="field" id="custom-viewport-width" max="2400" min="280" type="number" value="1440"/></div><div><label class="lbl">Escala</label><input class="field" id="custom-viewport-scale" max="1.5" min="0.4" step=".05" type="number" value="1"/></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">URL Manager</div><div class="helper mb-3"><i class="fa-solid fa-circle-info mr-1"></i>Estas bases sirven para resolver <b>URLs relativas</b>. Las URLs completas que ya tenga un elemento no se modifican. <b>API es opcional</b>: déjala vacía si tu alojamiento solo entrega imágenes/vídeos y no tienes una API propia.</div><div class="pro-url-list"><div class="pro-url-row"><div><span class="lbl m-0">Site</span><div class="helper mt-1">Sitio principal. Ej.: https://multiprintt.com</div></div><input class="field" id="global-site-url" placeholder="https://multiprintt.com"/></div><div class="pro-url-row"><div><span class="lbl m-0">Media</span><div class="helper mt-1">Base general de multimedia. Respaldo para imágenes/vídeos.</div></div><input class="field" id="global-media-url" placeholder="https://cdn.tudominio.com/media/"/></div><div class="pro-url-row"><div><span class="lbl m-0">Media Proxy <span class="opacity-60">(recomendado)</span></span><div class="helper mt-1">URL pública de tu Worker/CDN proxy para ocultar GitHub/Cloudinary en Network.</div></div><input class="field" id="global-media-proxy-url" placeholder="https://media.tudominio.com/media"/></div><div class="pro-url-row"><div><span class="lbl m-0">Imágenes</span><div class="helper mt-1">Base específica para imágenes. Ej.: /images/</div></div><input class="field" id="global-image-url" placeholder="https://cdn.tudominio.com/images/"/></div><div class="pro-url-row"><div><span class="lbl m-0">Vídeos</span><div class="helper mt-1">Base específica para vídeos. Ej.: /videos/</div></div><input class="field" id="global-video-url" placeholder="https://cdn.tudominio.com/videos/"/></div><div class="pro-url-row"><div><span class="lbl m-0">API <span class="opacity-60">(opcional)</span></span><div class="helper mt-1">Solo para endpoints/API externos. No es necesaria para alojar imágenes o vídeos.</div></div><input class="field" id="global-api-url" placeholder="Opcional · https://api.tudominio.com/"/></div></div><div class="pro-divider"></div>
-<div class="section-label p-0 mb-2">Google Drive</div>
-<div class="helper mb-3"><i class="fa-brands fa-google-drive mr-1 text-cyan-300"></i>Configura el selector una sola vez. Para testimonios de vídeo se mostrará únicamente material de vídeo y, cuando exista <b>Folder ID</b>, el selector se intentará abrir sobre esa carpeta. El vídeo seleccionado se guarda como una URL estable de tu Worker para que el sitio público pueda reproducirlo.</div>
-<div class="grid2">
-<div><label class="lbl">API Key <button class="help-btn" title="Clave de API del mismo proyecto de Google Cloud que usa Picker y Drive.">?</button></label><input class="field" id="global-drive-api-key" autocomplete="off" placeholder="AIza..."/></div>
-<div><label class="lbl">OAuth Client ID <button class="help-btn" title="Client ID web de OAuth 2.0 del mismo proyecto.">?</button></label><input class="field" id="global-drive-client-id" autocomplete="off" placeholder="...apps.googleusercontent.com"/></div>
-<div><label class="lbl">App ID / número de proyecto <button class="help-btn" title="Número de proyecto de Google Cloud, usado por PickerBuilder.setAppId().">?</button></label><input class="field" id="global-drive-app-id" inputmode="numeric" placeholder="123456789012"/></div>
-<div><label class="lbl">Folder ID de testimonios <button class="help-btn" title="ID de la carpeta exclusiva de Google Drive. Sale de la URL /folders/ID. Déjalo vacío para permitir navegar por Drive.">?</button></label><input class="field" id="global-drive-folder-id" placeholder="ID de carpeta"/></div>
-</div>
-<div class="helper mt-2">La cuenta que seleccione el archivo debe tener acceso a él. Para que el sitio público lo reproduzca sin iniciar sesión, el archivo de vídeo debe ser accesible públicamente según las políticas de compartición de Google Drive.</div>
-<div class="pro-divider"></div>
-<div class="section-label p-0 mb-2">Google Analytics 4</div>
-<div class="grid2">
-<div class="flex items-end"><label class="text-[10px] text-white"><input id="global-analytics-enabled" type="checkbox"> Activar Analytics en el sitio público</label></div>
-<div><label class="lbl">Measurement ID</label><input class="field" id="global-analytics-id" placeholder="G-XXXXXXXXXX"/></div>
-</div>
-<div class="helper mt-2">El Builder/iframe no enviará visitas a GA4; solo se habilita en la página pública.</div>
-
-<div class="mt-3 rounded-xl border border-white/5 bg-white/[0.02] p-3"><div class="text-[10px] font-bold text-white mb-2"><i class="fa-solid fa-cloud-arrow-up mr-1 text-cyan-300"></i>Ejemplos rápidos</div><div class="text-[9px] leading-5 text-zinc-400"><b class="text-zinc-300">Cloudflare R2 / CDN propio:</b> Media = https://cdn.tudominio.com/ · Imágenes = https://cdn.tudominio.com/images/ · Vídeos = https://cdn.tudominio.com/videos/ · API = vacío si no existe API.<br/><b class="text-zinc-300">Cloudinary:</b> normalmente se usan URLs de entrega específicas para imágenes y vídeos; no necesitas una API para mostrar recursos públicos.</div></div></div><div class="modal-foot"><button class="secondary" onclick="window.resetGlobalSettings()" type="button">Predeterminados</button><button class="primary" onclick="window.saveGlobalSettings()" type="button">Guardar ajustes</button></div></div></div>
+https://www.youtube.com/..." rows="4"></textarea></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">SEO por contenido</div><div class="seo-grid"><div><label class="lbl">Alt text por defecto <button class="help-btn" title="Texto alternativo para imágenes nuevas cuando aún no tengan uno específico. Describe la imagen; no metas keywords sin sentido." type="button">?</button></label><input class="field" id="seo-default-alt" placeholder="Producto personalizado Multiprintt"/></div><div><label class="lbl">SEO de productos <button class="help-btn" title="Plantilla opcional para títulos/descripciones de producto. El editor puede reutilizarla cuando falte SEO específico." type="button">?</button></label><input class="field" id="seo-product-template" placeholder="{name} | Personalizados Multiprintt"/></div><div><label class="lbl">SEO de cursos <button class="help-btn" title="Plantilla opcional para títulos/descripciones de cursos de la Academia." type="button">?</button></label><input class="field" id="seo-course-template" placeholder="{name} | Academia Multiprintt"/></div><div><label class="lbl">WebSite Search URL <button class="help-btn" title="URL base que recibe búsquedas internas si tu sitio tiene buscador. Ej.: https://multiprintt.web.app/?q=TERM . Déjala vacía si no existe." type="button">?</button></label><input class="field" id="seo-search-url" placeholder="https://multiprintt.web.app/?q=TERM"/></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">Robots y Sitemap</div><div class="seo-grid"><div><label class="lbl">Robots URL <button class="help-btn" title="URL pública donde se publica robots.txt. Debe estar en la raíz del dominio." type="button">?</button></label><input class="field" id="seo-robots-url"/></div><div><label class="lbl">Sitemap URL <button class="help-btn" title="URL pública donde se publica sitemap.xml. Debe coincidir con el sitemap que realmente subas al hosting." type="button">?</button></label><input class="field" id="seo-sitemap-url"/></div><div class="seo-span"><div class="helper mb-2"><b>Generador de archivos:</b> usa el botón para crear versiones listas para subir a Firebase Hosting. Si algún día cambias de dominio, regenera ambos.</div><textarea class="field" id="seo-robots-preview" readonly="" rows="5"></textarea><textarea class="field mt-2" id="seo-sitemap-preview" readonly="" rows="9"></textarea></div></div></div><div class="modal-foot"><button class="secondary" onclick="window.resetSeoSettings()" type="button">Predeterminados</button><button class="secondary" onclick="window.downloadSeoFiles()" type="button"><i class="fa-solid fa-download mr-1"></i>Descargar SEO</button><button class="primary" onclick="window.saveSeoManager()" type="button"><i class="fa-solid fa-floppy-disk mr-1"></i>Guardar SEO</button></div></div></div><div class="modal" id="global-modal"><div class="modal-card"><div class="modal-head"><div><div class="font-extrabold text-white text-sm">Ajustes globales</div><div class="text-zinc-500 text-[9px] mt-1">Fuentes, URL base, comportamiento y responsive.</div></div><button class="mini-btn" onclick="window.closeModal('global-modal')" type="button"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><div class="section-label p-0 mb-2">Resolución</div><div class="grid2"><div><label class="lbl">Ancho personalizado</label><input class="field" id="custom-viewport-width" max="2400" min="280" type="number" value="1440"/></div><div><label class="lbl">Escala</label><input class="field" id="custom-viewport-scale" max="1.5" min="0.4" step=".05" type="number" value="1"/></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">URL Manager</div><div class="helper mb-3"><i class="fa-solid fa-circle-info mr-1"></i>Estas bases sirven para resolver <b>URLs relativas</b>. Las URLs completas que ya tenga un elemento no se modifican. <b>API es opcional</b>: déjala vacía si tu alojamiento solo entrega imágenes/vídeos y no tienes una API propia.</div><div class="pro-url-list"><div class="pro-url-row"><div><span class="lbl m-0">Site</span><div class="helper mt-1">Sitio principal. Ej.: https://multiprintt.com</div></div><input class="field" id="global-site-url" placeholder="https://multiprintt.com"/></div><div class="pro-url-row"><div><span class="lbl m-0">Media</span><div class="helper mt-1">Base general de multimedia. Respaldo para imágenes/vídeos.</div></div><input class="field" id="global-media-url" placeholder="https://cdn.tudominio.com/media/"/></div><div class="pro-url-row"><div><span class="lbl m-0">Media Proxy <span class="opacity-60">(recomendado)</span></span><div class="helper mt-1">URL pública de tu Worker/CDN proxy para ocultar GitHub/Cloudinary en Network.</div></div><input class="field" id="global-media-proxy-url" placeholder="https://media.tudominio.com/media"/></div><div class="pro-url-row"><div><span class="lbl m-0">Imágenes</span><div class="helper mt-1">Base específica para imágenes. Ej.: /images/</div></div><input class="field" id="global-image-url" placeholder="https://cdn.tudominio.com/images/"/></div><div class="pro-url-row"><div><span class="lbl m-0">Vídeos</span><div class="helper mt-1">Base específica para vídeos. Ej.: /videos/</div></div><input class="field" id="global-video-url" placeholder="https://cdn.tudominio.com/videos/"/></div><div class="pro-url-row"><div><span class="lbl m-0">API <span class="opacity-60">(opcional)</span></span><div class="helper mt-1">Solo para endpoints/API externos. No es necesaria para alojar imágenes o vídeos.</div></div><input class="field" id="global-api-url" placeholder="Opcional · https://api.tudominio.com/"/></div></div><div class="mt-3 rounded-xl border border-white/5 bg-white/[0.02] p-3"><div class="text-[10px] font-bold text-white mb-2"><i class="fa-solid fa-cloud-arrow-up mr-1 text-cyan-300"></i>Ejemplos rápidos</div><div class="text-[9px] leading-5 text-zinc-400"><b class="text-zinc-300">Cloudflare R2 / CDN propio:</b> Media = https://cdn.tudominio.com/ · Imágenes = https://cdn.tudominio.com/images/ · Vídeos = https://cdn.tudominio.com/videos/ · API = vacío si no existe API.<br/><b class="text-zinc-300">Cloudinary:</b> normalmente se usan URLs de entrega específicas para imágenes y vídeos; no necesitas una API para mostrar recursos públicos.</div></div></div><div class="pro-divider"></div><div class="section-label p-0 mb-2">Google Analytics 4</div><div class="grid2"><div><label class="lbl">Activar Analytics</label><label class="text-[10px] text-white flex items-center gap-2"><input id="global-ga-enabled" type="checkbox" checked onchange="window.updateGlobalAnalyticsHelp()"> Activado</label></div><div><label class="lbl">ID de medición</label><input class="field" id="global-ga-id" value="G-VP3XV39H5M" placeholder="G-XXXXXXXXXX" oninput="window.updateGlobalAnalyticsHelp()"></div></div><div class="helper mt-2" id="global-ga-help">Se cargará únicamente en el sitio público. El editor/preview no enviará visitas a Analytics.</div><div class="modal-foot"><button class="secondary" onclick="window.resetGlobalSettings()" type="button">Predeterminados</button><button class="primary" onclick="window.saveGlobalSettings()" type="button">Guardar ajustes</button></div></div></div>
 <div class="modal" id="social-modal"><div class="modal-card"><div class="modal-head"><div><div class="font-extrabold text-white text-sm">Redes sociales</div><div class="text-zinc-500 text-[9px] mt-1">Añade las que necesites. También puedes usar una clase de Font Awesome personalizada.</div></div><button class="mini-btn" onclick="window.closeModal('social-modal')" type="button"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><input class="field mb-3" id="social-search" oninput="window.filterSocials(this.value)" placeholder="Buscar red social..."/><div class="social-grid mb-4" id="social-grid"></div><div class="grid2"><div><label class="lbl">Nombre / red</label><input class="field" id="social-name" placeholder="Mi red"/></div><div><label class="lbl">Clase de icono</label><input class="field" id="social-icon" placeholder="fa-brands fa-..." value="fa-solid fa-link"/></div></div><div class="mt-3"><label class="lbl">URL</label><input class="field" id="social-url" placeholder="https://..."/></div><div class="helper mt-2">Puedes introducir literalmente cualquier clase de icono compatible con Font Awesome instalado.</div></div><div class="modal-foot"><button class="secondary" onclick="window.closeModal('social-modal')" type="button">Cancelar</button><button class="primary" onclick="window.addSocial()" type="button"><i class="fa-solid fa-plus mr-1"></i>Añadir red</button></div></div></div>
 <div class="modal" id="db-modal"><div class="modal-card"><div class="modal-head"><div class="font-extrabold text-white text-sm" id="db-modal-title">Editor</div><button class="mini-btn" onclick="window.closeModal('db-modal')" type="button"><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body grid gap-3" id="db-modal-body"></div><div class="modal-foot"><button class="secondary" onclick="window.closeModal('db-modal')" type="button">Cancelar</button><button class="primary" id="btn-save-db" onclick="window.saveDbItem()" type="button">Guardar cambios</button></div></div></div>
 <div class="modal media-modal" id="gallery-modal">
@@ -1327,10 +1351,10 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, getDoc, setDoc, deleteDoc, deleteField, writeBatch, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.10.01.01';
+const MP_ADMIN_BUILD='2026.09.30.12';
 const iframe=()=>document.getElementById('site-frame');
+const MP_FRAME_TARGET_ORIGIN = '*';
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=false,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
-let builderEnabled=false,builderHandshakeVersion=1,builderSessionId='';
 const B2_MEDIA_API='https://b2.multiprintt.workers.dev';
 const B2_PUBLIC_BASE='https://b2.multiprintt.workers.dev';
 window.imgbbLibrary=[];window.imgbbFiltered=[];window.imgbbCategoryFilter='all';window.imgbbPage=1;window.imgbbPageSize=window.innerWidth<601?12:(window.innerWidth<901?15:20);window.imgbbUploadQueue=[];window.__imgbbRecordCache=new Map();window.imgbbPageItems=[];window.imgbbPageCache=new Map();window.imgbbPageCursors=[null];window.imgbbPageLastDocs=[null];window.imgbbPageHasMore=[];window.imgbbTotalCount=null;window.imgbbCountCache=new Map();window.imgbbSearchMode=false;window.imgbbSearchResults=[];
@@ -1347,75 +1371,19 @@ const defaultGallery=[
 {type:'image',url:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=70',title:'Jarro'},
 {type:'video',url:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4',title:'Testimonio'}];
 const PRO_STORAGE_KEY='multiprintt_builder_pro_v1';
-const GLOBAL_SETTINGS_DOC=()=>doc(db,'artifacts',APP_ID,'public','data','settings','global');
-const PRO_GLOBAL_DEFAULTS={
-  site:'',media:'',mediaProxy:'',image:'',video:'',api:'',
-  analytics:{enabled:false,measurementId:''},
-  googleDrive:{apiKey:'',clientId:'',appId:'',folderId:'',scope:'https://www.googleapis.com/auth/drive.metadata.readonly'}
-};
-let globalSettingsRemoteReady=false;
-function normalizeGlobalSettings(raw={}){
-  const g={...PRO_GLOBAL_DEFAULTS,...(raw&&typeof raw==='object'?raw:{})};
-  g.analytics={...PRO_GLOBAL_DEFAULTS.analytics,...(raw.analytics||{})};
-  g.googleDrive={...PRO_GLOBAL_DEFAULTS.googleDrive,...(raw.googleDrive||{})};
-  return g;
-}
-function readGlobalSettings(){
-  try{return normalizeGlobalSettings(JSON.parse(safeStorageGet(PRO_STORAGE_KEY)||'{}'))}
-  catch(e){return normalizeGlobalSettings({})}
-}
-function writeGlobalSettings(v){safeStorageSet(PRO_STORAGE_KEY,JSON.stringify(normalizeGlobalSettings(v)))}
-function pushGlobalSettingsToFrame(d=readGlobalSettings()){
-  const safe=normalizeGlobalSettings(d);
-  proPost('SET_GLOBAL_URLS',{urls:safe});
-  proPost('SET_ANALYTICS_SETTINGS',{analytics:safe.analytics||{}});
-}
-async function hydrateGlobalSettingsFromFirebase(){
-  try{
-    const snap=await getDoc(GLOBAL_SETTINGS_DOC());
-    if(snap.exists()){
-      const merged=normalizeGlobalSettings({...readGlobalSettings(),...snap.data(),analytics:{...readGlobalSettings().analytics,...(snap.data()?.analytics||{})},googleDrive:{...readGlobalSettings().googleDrive,...(snap.data()?.googleDrive||{})}});
-      writeGlobalSettings(merged); globalSettingsRemoteReady=true; pushGlobalSettingsToFrame(merged); return merged;
-    }
-  }catch(e){console.warn('Ajustes globales remotos no disponibles; se usa caché local.',e)}
-  const local=readGlobalSettings(); pushGlobalSettingsToFrame(local); return local;
-}
-window.openGlobalSettings=()=>{
-  const d=readGlobalSettings();
-  ['site','media','mediaProxy','image','video','api'].forEach(k=>{const el=document.getElementById('global-'+k+'-url');if(el)el.value=d[k]||''});
-  const gd=d.googleDrive||{};
-  [['googleDriveApiKey','global-drive-api-key'],['googleDriveClientId','global-drive-client-id'],['googleDriveAppId','global-drive-app-id'],['googleDriveFolderId','global-drive-folder-id'],['analyticsMeasurementId','global-analytics-id']].forEach(([key,id])=>{
-    const el=document.getElementById(id); if(el) el.value=key.startsWith('googleDrive')?((key==='googleDriveApiKey'?gd.apiKey:key==='googleDriveClientId'?gd.clientId:key==='googleDriveAppId'?gd.appId:gd.folderId)||''):(d.analytics?.measurementId||'');
-  });
-  const a=document.getElementById('global-analytics-enabled'); if(a)a.checked=d.analytics?.enabled===true;
-  const vw=safeStorageGet('multiprintt_custom_viewport_width');const vs=safeStorageGet('multiprintt_custom_viewport_scale');const w=document.getElementById('custom-viewport-width');const ss=document.getElementById('custom-viewport-scale');if(w&&vw)w.value=vw;if(ss&&vs)ss.value=vs;
-  window.openModal('global-modal');
-};
+const PRO_DEFAULTS={site:'',media:'',mediaProxy:'',image:'',video:'',api:'',analytics:{enabled:true,measurementId:'G-VP3XV39H5M'}};
+let proSnapshotTimer=null,proSnapshotBusy=false,proRestoring=false,proLastSnapshot='';
+function proPost(type,payload={}){try{iframe().contentWindow.postMessage({type,...payload},MP_FRAME_TARGET_ORIGIN)}catch(e){}}
+function safeStorageGet(key,fallback=''){try{const v=localStorage.getItem(key);return v==null?fallback:v}catch(e){return fallback}}
+function safeStorageSet(key,value){try{localStorage.setItem(key,String(value));return true}catch(e){console.warn('Storage write blocked:',key,e);return false}}
+function safeStorageRemove(key){try{localStorage.removeItem(key);return true}catch(e){return false}}
+function readGlobalSettings(){try{const raw=JSON.parse(safeStorageGet(PRO_STORAGE_KEY)||'{}')||{};const cleanRaw={site:raw.site||'',media:raw.media||'',mediaProxy:raw.mediaProxy||'',image:raw.image||'',video:raw.video||'',api:raw.api||'',analytics:{...PRO_DEFAULTS.analytics,...(raw.analytics||{})}};return cleanRaw}catch(e){return {...PRO_DEFAULTS,analytics:{...PRO_DEFAULTS.analytics}}} }
+function writeGlobalSettings(v){safeStorageSet(PRO_STORAGE_KEY,JSON.stringify(v))}
+window.openGlobalSettings=()=>{const d=readGlobalSettings();['site','media','mediaProxy','image','video','api'].forEach(k=>{const el=document.getElementById('global-'+k+'-url');if(el)el.value=d[k]||''});const gaEnabled=document.getElementById('global-ga-enabled'),gaId=document.getElementById('global-ga-id');if(gaEnabled)gaEnabled.checked=d.analytics?.enabled!==false;if(gaId)gaId.value=d.analytics?.measurementId||'G-VP3XV39H5M';window.updateGlobalAnalyticsHelp();const vw=safeStorageGet('multiprintt_custom_viewport_width');const vs=safeStorageGet('multiprintt_custom_viewport_scale');const w=document.getElementById('custom-viewport-width');const s=document.getElementById('custom-viewport-scale');if(w&&vw)w.value=vw;if(s&&vs)s.value=vs;window.openModal('global-modal')};
+window.__mpMainOpenGlobalSettings=window.openGlobalSettings;window.updateGlobalAnalyticsHelp=()=>{const enabled=document.getElementById('global-ga-enabled')?.checked!==false;const id=String(document.getElementById('global-ga-id')?.value||'').trim();const h=document.getElementById('global-ga-help');if(h)h.textContent=enabled?(id?'Se cargará únicamente en el sitio público. El editor/preview no enviará visitas a Analytics.':'Introduce un ID de medición GA4 que empiece por G-.'):'Google Analytics quedará desactivado en el sitio público.'};
 function normalizeGlobalUrl(v){const x=String(v||'').trim().replace(/\s+/g,'');if(!x)return '';if(/^https?:\/\//i.test(x)||/^\/[A-Za-z0-9]/.test(x))return x.length>1?x.replace(/\/$/,''):x;return ''}
-window.saveGlobalSettings=async()=>{
-  const raw=id=>document.getElementById(id)?.value||'';
-  const keys=[['site','global-site-url'],['media','global-media-url'],['mediaProxy','global-media-proxy-url'],['image','global-image-url'],['video','global-video-url'],['api','global-api-url']];
-  const d={};
-  for(const [key,id] of keys){const source=raw(id);const normalized=normalizeGlobalUrl(source);if(String(source).trim()&&!normalized)return window.showToast(`URL inválida en ${key}. Usa http://, https:// o una ruta relativa /...`);d[key]=normalized;}
-  const current=readGlobalSettings();
-  const gd={...current.googleDrive,apiKey:raw('global-drive-api-key').trim(),clientId:raw('global-drive-client-id').trim(),appId:raw('global-drive-app-id').trim(),folderId:raw('global-drive-folder-id').trim()};
-  if(gd.appId && !/^\d{6,}$/.test(gd.appId))return window.showToast('El App ID de Google Drive debe ser el número de proyecto de Google Cloud.');
-  const measurementId=raw('global-analytics-id').trim();
-  if(measurementId && !/^G-[A-Z0-9]+$/i.test(measurementId))return window.showToast('El Measurement ID de Google Analytics debe tener formato G-XXXXXXXXXX.');
-  const payload=normalizeGlobalSettings({...current,...d,googleDrive:gd,analytics:{enabled:!!document.getElementById('global-analytics-enabled')?.checked,measurementId}});
-  const w=Math.max(280,Math.min(2400,parseInt(document.getElementById('custom-viewport-width')?.value||'1440',10)||1440));
-  const scale=Math.max(.4,Math.min(1.5,parseFloat(document.getElementById('custom-viewport-scale')?.value||'1')||1));
-  safeStorageSet('multiprintt_custom_viewport_width',String(w));safeStorageSet('multiprintt_custom_viewport_scale',String(scale));writeGlobalSettings(payload);pushGlobalSettingsToFrame(payload);proPost('SET_PREVIEW_WIDTH',{width:w});
-  try{await ensureAdminWriteSession();await setDoc(GLOBAL_SETTINGS_DOC(),{...payload,updatedAt:Date.now()},{merge:true});globalSettingsRemoteReady=true;window.showToast('Ajustes globales guardados en Firebase');}
-  catch(e){window.showToast('Ajustes guardados localmente; no se pudo sincronizar Firebase.');console.warn('Global settings Firebase:',e)}
-  markDirty('Ajustes globales actualizados');
-};
-window.resetGlobalSettings=async()=>{
-  const payload=normalizeGlobalSettings({}); writeGlobalSettings(payload); pushGlobalSettingsToFrame(payload);
-  try{await ensureAdminWriteSession();await setDoc(GLOBAL_SETTINGS_DOC(),{...payload,updatedAt:Date.now(),reset:true},{merge:true})}catch(e){console.warn('Reset global Firebase:',e)}
-  window.openGlobalSettings(); window.showToast('Ajustes globales restaurados'); markDirty('Ajustes globales restaurados',false);
-};
-
+window.saveGlobalSettings=async()=>{const raw=id=>document.getElementById(id)?.value||'';const keys=[['site','global-site-url'],['media','global-media-url'],['mediaProxy','global-media-proxy-url'],['image','global-image-url'],['video','global-video-url'],['api','global-api-url']];const d={};for(const [key,id] of keys){const source=raw(id);const normalized=normalizeGlobalUrl(source);if(String(source).trim()&&!normalized)return window.showToast(`URL inválida en ${key}. Usa http://, https:// o una ruta relativa /...`);d[key]=normalized;}const w=Math.max(280,Math.min(2400,parseInt(document.getElementById('custom-viewport-width')?.value||'1440',10)||1440));const scale=Math.max(.4,Math.min(1.5,parseFloat(document.getElementById('custom-viewport-scale')?.value||'1')||1));const gaEnabled=document.getElementById('global-ga-enabled')?.checked!==false;const gaId=String(document.getElementById('global-ga-id')?.value||'').trim().toUpperCase()||'G-VP3XV39H5M';if(gaEnabled&&!/^G-[A-Z0-9_-]+$/i.test(gaId))return window.showToast('El ID de Google Analytics no es válido. Debe comenzar por G-.');d.analytics={enabled:gaEnabled,measurementId:gaId};safeStorageSet('multiprintt_custom_viewport_width',String(w));safeStorageSet('multiprintt_custom_viewport_scale',String(scale));writeGlobalSettings(d);proPost('SET_GLOBAL_SETTINGS',{settings:d});proPost('SET_GLOBAL_URLS',{urls:d});proPost('SET_ANALYTICS_CONFIG',{config:d.analytics});proPost('SET_PREVIEW_WIDTH',{width:w});try{await ensureAdminWriteSession();await setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','global'),d,{merge:false})}catch(e){console.warn('Settings/global Firebase:',e);return window.showToast('No se pudieron sincronizar los ajustes globales con Firebase.')}window.showToast('Ajustes globales guardados');markDirty('Ajustes globales actualizados');};
+window.resetGlobalSettings=async()=>{const d={...PRO_DEFAULTS,analytics:{...PRO_DEFAULTS.analytics}};safeStorageSet('multiprintt_custom_viewport_width','1440');safeStorageSet('multiprintt_custom_viewport_scale','1');writeGlobalSettings(d);proPost('SET_GLOBAL_SETTINGS',{settings:d});proPost('SET_GLOBAL_URLS',{urls:d});proPost('SET_ANALYTICS_CONFIG',{config:d.analytics});proPost('SET_PREVIEW_WIDTH',{width:1440});try{await ensureAdminWriteSession();await setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','global'),d,{merge:false})}catch(e){console.warn('Reset settings/global Firebase:',e)}window.openGlobalSettings();window.showToast('Ajustes globales restaurados')};
 const SEO_STORAGE_KEY='multiprintt_seo_manager_v1';
 const SEO_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://multiprintt.web.app/favicon.ico',ogImage:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp',twitterImage:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp',keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'https://www.facebook.com/\nhttps://www.instagram.com/\nhttps://www.youtube.com/',defaultAlt:'Producto personalizado Multiprintt',productTemplate:'{name} | Personalizados Multiprintt',courseTemplate:'{name} | Academia Multiprintt',searchUrl:'',robotsUrl:'https://multiprintt.web.app/robots.txt',sitemapUrl:'https://multiprintt.web.app/sitemap.xml'};
 function readSeoSettings(){try{return {...SEO_DEFAULTS,...JSON.parse(safeStorageGet(SEO_STORAGE_KEY)||'{}')}}catch(e){return {...SEO_DEFAULTS}}}
@@ -1436,6 +1404,7 @@ const MP_LEGACY_DB=[
   {name:'productos',root:true},
   {name:'cursos',root:true}
 ];
+const MP_ACTIVE_PUBLIC_COLLECTIONS=['products','courses','productDemand','testimonials','auditLogs'];
 const MP_PRODUCT_LEGACY_FIELDS=['precio','amount','valor','descuento','discountPercent','promocional','promo','isPromotional','pricingType','priceMode','minWholesaleQty','unitsPerSet'];
 const MP_COURSE_LEGACY_FIELDS=['precio','amount','valor'];
 async function mpDeleteCollectionDocs(collectionName,root=false){
@@ -1490,7 +1459,7 @@ async function mpNormalizeAndCleanActiveDocs(){
   return result;
 }
 window.auditAndCleanDatabase=async()=>{
-  if(!confirm('Limpieza de Base de Datos\\n\\nSe conservarán: productos, cursos, settings, productDemand y auditLogs.\\n\\nSe eliminarán colecciones legacy no usadas y campos duplicados conocidos. No se tocará index.html.\\n\\n¿Continuar?'))return;
+  if(!confirm('Limpieza de Base de Datos\\n\\nSe conservarán: productos, cursos, testimonios, settings, productDemand y auditLogs.\\n\\nSe eliminarán colecciones legacy no usadas y campos duplicados conocidos. No se tocará index.html.\\n\\n¿Continuar?'))return;
   try{
     await ensureAdminWriteSession();
     window.showToast('Auditando y limpiando la base de datos…');
@@ -1511,17 +1480,7 @@ window.refreshLayers=()=>{proPost('GET_LAYERS');};
 window.openLayers=()=>{window.openModal('layers-modal');window.refreshLayers()};
 window.renderLayers=(layers=[])=>{const host=document.getElementById('layer-list');if(!host)return;host.innerHTML=layers.map(x=>{const id=String(x.builderId||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');return `<div class="layer-row ${x.selected?'active':''}"><span class="layer-icon"><i class="${x.icon||'fa-regular fa-square'}"></i></span><span class="layer-text">${proEscapeName(x.label||x.tag||'Elemento')}</span><div class="layer-actions"><button type="button" data-id="${id}" onclick="window.selectLayer(this.dataset.id)" title="Seleccionar"><i class="fa-solid fa-arrow-pointer"></i></button><button type="button" data-id="${id}" onclick="window.focusLayer(this.dataset.id)" title="Enfocar"><i class="fa-solid fa-crosshairs"></i></button><button type="button" data-id="${id}" onclick="window.toggleLayerLock(this.dataset.id)" title="Bloquear"><i class="fa-solid fa-lock"></i></button></div></div>`}).join('')||'<div class="p-5 text-center text-zinc-600 text-[10px]">No hay capas editables aquí.</div>'};
 window.selectLayer=id=>proPost('SELECT_BY_BUILDER_ID',{builderId:id});window.focusLayer=id=>proPost('FOCUS_BY_BUILDER_ID',{builderId:id});window.toggleLayerLock=id=>{proPost('TOGGLE_LAYER_LOCK',{builderId:id});markDirty('Bloqueo de capa actualizado');proScheduleSnapshot()};
-window.mpHealthCheck=async()=>{
-  const checks=[]; const add=(name,ok,detail='')=>checks.push(`${ok?'OK':'ERROR'} · ${name}${detail?' · '+detail:''}`);
-  try{const u=auth?.currentUser;add('Firebase Auth',!!u&&!u.isAnonymous,u?.email||'sin sesión')}catch(e){add('Firebase Auth',false,e?.message||'error')}
-  const fr=iframe();add('Iframe',!!fr?.contentWindow,fr?.src||'sin iframe');
-  try{const st=await getDoc(doc(db,'artifacts',APP_ID,'public','data','settings','global'));add('settings/global',true,st.exists()?'disponible':'no existe')}catch(e){add('settings/global',false,e?.code||e?.message||'error')}
-  try{const probe=await fetch(`${B2_MEDIA_API}/health`,{method:'GET',cache:'no-store'});add('B2 Worker',probe.ok,`HTTP ${probe.status}`)}catch(e){add('B2 Worker',false,e?.message||'error')}
-  try{const cw=fr?.contentWindow;const ready=!!cw;add('Builder channel',ready,ready?'ready':'no listo')}catch(e){add('Builder channel',false,e?.message||'error')}
-  window.showToast(checks.join('\n').slice(0,1500));
-  return checks;
-};
-const commandDefs=[['Estado del sistema','HEALTH',()=>window.mpHealthCheck()],['Deshacer','Ctrl+Z',()=>window.undo()],['Rehacer','Ctrl+Y',()=>window.redo()],['Guardar','Ctrl+S',()=>window.publishChanges(false)],['Guardar plantilla base actual','BASE',()=>window.saveCurrentAsTemplateBase()],['Restaurar plantilla base','',()=>window.resetTemplateConfirm()],['Capas','',()=>window.openLayers()],['Ajustes globales','',()=>window.openGlobalSettings()],['Explorador de medios','',()=>window.openGallery('prop-href','all','media')],['Auditar y limpiar Base de Datos','DB',()=>window.auditAndCleanDatabase()],['Mover elemento','',()=>window.toggleDragMode()],['Enfocar selección','',()=>window.focusSelected()],['Duplicar selección','',()=>window.duplicateSelected()],['Eliminar selección','',()=>window.deleteElement()],['Preview móvil','',()=>document.querySelectorAll('.device-btn')[2]?.click()],['Preview escritorio','',()=>document.querySelectorAll('.device-btn')[0]?.click()]];
+const commandDefs=[['Deshacer','Ctrl+Z',()=>window.undo()],['Rehacer','Ctrl+Y',()=>window.redo()],['Guardar','Ctrl+S',()=>window.publishChanges(false)],['Guardar plantilla base actual','BASE',()=>window.saveCurrentAsTemplateBase()],['Restaurar plantilla base','',()=>window.resetTemplateConfirm()],['Capas','',()=>window.openLayers()],['Ajustes globales','',()=>window.openGlobalSettings()],['Explorador de medios','',()=>window.openGallery('prop-href','all','media')],['Auditar y limpiar Base de Datos','DB',()=>window.auditAndCleanDatabase()],['Mover elemento','',()=>window.toggleDragMode()],['Enfocar selección','',()=>window.focusSelected()],['Duplicar selección','',()=>window.duplicateSelected()],['Eliminar selección','',()=>window.deleteElement()],['Preview móvil','',()=>document.querySelectorAll('.device-btn')[2]?.click()],['Preview escritorio','',()=>document.querySelectorAll('.device-btn')[0]?.click()]];
 window.renderCommands=q=>{q=String(q||'').toLowerCase();const host=document.getElementById('command-list');if(!host)return;host.innerHTML=commandDefs.filter(x=>!q||x[0].toLowerCase().includes(q)).map((x,n)=>`<button type="button" class="command-item" onclick="window.runCommand(${n})"><span>${x[0]}</span><span class="pro-kbd">${x[1]||'↵'}</span></button>`).join('')};window.runCommand=n=>{const fn=commandDefs[n]?.[2];if(fn)fn();window.closeModal('command-modal')};window.openCommandPalette=()=>{window.openModal('command-modal');const q=document.getElementById('command-search');if(q){q.value='';window.renderCommands('');setTimeout(()=>q.focus(),30)}};
 window.setCustomViewport=()=>{const v=prompt('Ancho del preview (px):',safeStorageGet('multiprintt_custom_viewport_width')||'1440');const n=parseInt(v,10);if(!n||n<280||n>2400)return;const wrap=document.getElementById('preview-wrapper');if(!wrap)return;wrap.className='device-custom';wrap.style.width=n+'px';wrap.style.height='900px';wrap.style.flex='0 0 '+n+'px';wrap.style.transformOrigin='top center';document.getElementById('preview-hint').textContent='Vista previa · personalizado '+n+'px';const scale=Math.min(1,(document.getElementById('preview-stage').clientWidth-56)/n,.95);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;proPost('SET_PREVIEW_WIDTH',{width:n})};
 function proScheduleSnapshot(){clearTimeout(proSnapshotTimer);proSnapshotTimer=setTimeout(()=>{if(!window.appState.dirty||proSnapshotBusy||proRestoring)return;proSnapshotBusy=true;proPost('CAPTURE_LAYOUT',{reason:'autosnapshot'})},650)}
@@ -1565,11 +1524,24 @@ window.clearAuditView=()=>{auditRows=[];window.renderAuditLog();window.showToast
 window.clearHistoryLog=()=>{changeLog=[];window.renderHistory();window.showToast('Historial visible limpiado')};
 window.undo=()=>{if(builderHistory.length>1){const current=builderHistory.pop();builderRedo.push(current);const target=builderHistory[builderHistory.length-1]||{};proRestoring=true;proPost('RESTORE_LAYOUT',{layoutData:target.layoutData||target,layoutModel:target.layoutModel||null});setTimeout(()=>{proRestoring=false;window.showToast('Estado anterior restaurado');markDirty('Cambio deshecho')},180);return}const snap=history.pop();if(!snap)return window.showToast('No hay cambios para deshacer.');redoStack.push(snap);sendStyleSnapshot(snap.before);markDirty('Cambio deshecho');window.showToast('Cambio deshecho')};
 window.redo=()=>{if(builderRedo.length){const target=builderRedo.pop()||{};builderHistory.push(target);proRestoring=true;proPost('RESTORE_LAYOUT',{layoutData:target.layoutData||target,layoutModel:target.layoutModel||null});setTimeout(()=>{proRestoring=false;window.showToast('Cambio rehecho');markDirty('Cambio rehecho')},180);return}const snap=redoStack.pop();if(!snap)return window.showToast('No hay cambios para rehacer.');history.push(snap);sendStyleSnapshot(snap.after);markDirty('Cambio rehecho');window.showToast('Cambio rehecho')};
-function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.entries(styles).forEach(([prop,value])=>iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},location.origin));}
-function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},location.origin);history.push({before,after:{[prop]:value}});redoStack=[];if(commit){markDirty('Editando…');proScheduleSnapshot()}}
+function sendStyleSnapshot(styles){if(!currentSelection||!styles)return;Object.entries(styles).forEach(([prop,value])=>iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},MP_FRAME_TARGET_ORIGIN));}
+function setStyle(prop,value,commit=true){if(!currentSelection)return;const before={ [prop]: currentSelection.styles?.[prop] ?? ''}; currentSelection.styles=currentSelection.styles||{}; currentSelection.styles[prop]=value;iframe().contentWindow.postMessage({type:'UPDATE_STYLE',prop,value},MP_FRAME_TARGET_ORIGIN);history.push({before,after:{[prop]:value}});redoStack=[];if(commit){markDirty('Editando…');proScheduleSnapshot()}}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 let loginInFlight=false;
 let adminUiReady=false;
+
+function syncBuilderStateToFrame(delay=0){
+  const send=()=>{
+    const fr=iframe();
+    if(!fr?.contentWindow)return;
+    proPost('ENABLE_BUILDER');
+    proPost('TOGGLE_SELECTION',{state:!selectionLocked});
+    proPost('TOGGLE_DRAG',{state:isDragMode});
+    proPost('SET_GLOBAL_URLS',{urls:readGlobalSettings()});
+    syncMediaSourcesToFrame();
+  };
+  if(delay>0)setTimeout(send,delay);else send();
+}
 
 function showAdminWorkspace(user,notify=true){
   if(!user || user.isAnonymous)return false;
@@ -1577,14 +1549,29 @@ function showAdminWorkspace(user,notify=true){
   if(!authScreen||!builder)return false;
   authScreen.style.display='none';
   builder.style.display='flex';
-  if(adminUiReady)return true;
+  if(adminUiReady){syncBuilderStateToFrame(40);return true;}
   adminUiReady=true;
   const fr=iframe();
   if(fr && (!fr.getAttribute('src')||fr.getAttribute('src')===location.href))fr.src='index.html?t='+Date.now();
+  syncBuilderStateToFrame(80);
+  syncBuilderStateToFrame(350);
     setTimeout(()=>{migrateLegacyProductDemand().catch(e=>console.warn('Migración demanda:',e))},1450);
+  // Sincroniza los ajustes globales persistentes de Firebase sin bloquear la apertura del Builder.
+  void window.loadGlobalSettingsFromFirebase?.().catch(e=>console.warn('Ajustes globales remotos:',e));
   if(notify)window.showToast('Sesión iniciada correctamente');
   return true;
 }
+window.loadGlobalSettingsFromFirebase=async()=>{
+  try{
+    const snap=await getDoc(doc(db,'artifacts',APP_ID,'public','data','settings','global'));
+    if(!snap.exists())return readGlobalSettings();
+    const remote=snap.data()||{};
+    const remoteSource=remote&&typeof remote==='object'?remote:{};const remoteClean={site:remoteSource.site||'',media:remoteSource.media||'',mediaProxy:remoteSource.mediaProxy||'',image:remoteSource.image||'',video:remoteSource.video||'',api:remoteSource.api||'',analytics:{...PRO_DEFAULTS.analytics,...(remoteSource.analytics||{})}};const merged={...readGlobalSettings(),...remoteClean,analytics:{...PRO_DEFAULTS.analytics,...(remoteClean.analytics||{})}};
+    writeGlobalSettings(merged);
+    if(document.getElementById('global-modal')?.classList.contains('open'))window.openGlobalSettings();
+    return merged;
+  }catch(e){console.warn('No se pudieron cargar los ajustes globales desde Firebase:',e);return readGlobalSettings();}
+};
 function showAuthScreen(){
   adminUiReady=false;
   if(auditUnsubscribe){try{auditUnsubscribe()}catch(e){}auditUnsubscribe=null;}
@@ -1607,7 +1594,7 @@ window.attemptLogin=async()=>{
   btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';
   try{
     try{await setPersistence(auth,browserSessionPersistence)}catch(e){console.warn('Persistencia no disponible; se continuará con la sesión actual.',e)}
-    const credential=await signInWithEmailAndPassword(auth,email,pass);
+    const credential=await Promise.race([signInWithEmailAndPassword(auth,email,pass),new Promise((_,reject)=>setTimeout(()=>reject(Object.assign(new Error('Tiempo de espera agotado al iniciar sesión.'),{code:'auth/network-timeout'})),15000))]);
     const user=credential?.user||auth.currentUser;
     if(!user || user.isAnonymous)throw Object.assign(new Error('Firebase no devolvió una sesión administrativa válida.'),{code:'auth/session-not-created'});
     showAdminWorkspace(user,true);
@@ -1624,6 +1611,7 @@ window.attemptLogin=async()=>{
       'auth/user-disabled':'Esta cuenta está deshabilitada.',
       'auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.',
       'auth/network-request-failed':'No se pudo conectar con Firebase. Comprueba tu conexión.',
+      'auth/network-timeout':'Firebase tardó demasiado en responder. Comprueba conexión, dominio autorizado y vuelve a intentarlo.',
       'auth/operation-not-allowed':'El acceso Email/Password no está habilitado en Firebase Authentication.',
       'auth/invalid-api-key':'La configuración de Firebase es inválida.',
       'auth/app-not-authorized':'Este dominio no está autorizado en Firebase Authentication.',
@@ -1642,8 +1630,8 @@ document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key===
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error('Firebase logout:',e)}location.reload()};
 onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){showAdminWorkspace(user,false)}else{showAuthScreen()}},error=>{console.error('Firebase Auth observer:',error);if(!auth.currentUser)showAuthScreen()});
-iframe().addEventListener('load',()=>{setTimeout(()=>{iframe().contentWindow.postMessage({type:'ADMIN_HANDSHAKE',protocolVersion:1},location.origin);iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},location.origin);iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},location.origin)},120);setTimeout(updateDesktopPreviewScale,80);setSaveState('busy','Sincronizando lienzo…')});
-window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},location.origin);document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
+iframe().addEventListener('load',()=>{syncBuilderStateToFrame(60);syncBuilderStateToFrame(320);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
+window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},MP_FRAME_TARGET_ORIGIN);document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
 window.setDevice=(type,btn)=>{document.querySelectorAll('.device-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const wrap=document.getElementById('preview-wrapper');wrap.className='device-'+type;if(type==='desktop'){wrap.style.transformOrigin='top center';updateDesktopPreviewScale()}else{wrap.style.transform='';wrap.style.marginBottom='';}};
 window.addEventListener('resize',()=>{if(document.getElementById('preview-wrapper')?.classList.contains('device-desktop'))updateDesktopPreviewScale()});
@@ -1651,8 +1639,8 @@ setTimeout(updateDesktopPreviewScale,100);
 window.focusCanvas=()=>document.getElementById('preview-stage').scrollTo({top:0,behavior:'smooth'});
 window.reloadPreview=()=>{const src=iframe().src;iframe().src=src.split('?')[0]+'?t='+Date.now();setSaveState('busy','Recargando…')};
 window.toggleInspector=()=>document.getElementById('rightbar').classList.toggle('mobile-open');
-window.toggleDragMode=()=>{isDragMode=!isDragMode;const b=document.getElementById('drag-btn');b.classList.toggle('active',isDragMode);b.innerHTML=isDragMode?'<i class="fa-solid fa-up-down-left-right mr-1"></i>Mover':'<i class="fa-solid fa-lock mr-1"></i>Fijo';iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},location.origin);iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},location.origin);};
-window.toggleSelectionLock=()=>{selectionLocked=!selectionLocked;const b=document.getElementById('select-btn');b.classList.toggle('active',!selectionLocked);b.innerHTML=selectionLocked?'<i class="fa-solid fa-lock mr-1"></i>Bloqueado':'<i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar';iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},location.origin)};
+window.toggleDragMode=()=>{isDragMode=!isDragMode;const b=document.getElementById('drag-btn');b.classList.toggle('active',isDragMode);b.innerHTML=isDragMode?'<i class="fa-solid fa-up-down-left-right mr-1"></i>Mover':'<i class="fa-solid fa-lock mr-1"></i>Fijo';iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},MP_FRAME_TARGET_ORIGIN);};
+window.toggleSelectionLock=()=>{selectionLocked=!selectionLocked;const b=document.getElementById('select-btn');b.classList.toggle('active',!selectionLocked);b.innerHTML=selectionLocked?'<i class="fa-solid fa-lock mr-1"></i>Bloqueado':'<i class="fa-solid fa-arrow-pointer mr-1"></i>Seleccionar';iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},MP_FRAME_TARGET_ORIGIN)};
 window.clearSelection=()=>{currentSelection=null;document.getElementById('sel-name').textContent='Ningún elemento seleccionado';document.getElementById('sel-meta').textContent='Selecciona un elemento dentro del sitio';document.getElementById('properties-panel').innerHTML='<div class="p-5 text-center text-zinc-600 text-[10px]">Selecciona un elemento en el lienzo para editarlo.</div>'};
 function acc(title,body,open=true){return `<div class="acc ${open?'open':''}"><button type="button" class="acc-head" onclick="window.toggleAcc(this)"><span>${title}</span><i class="fa-solid fa-chevron-down text-[9px]"></i></button><div class="acc-body">${body}</div></div>`}
 window.toggleAcc=head=>head.parentElement.classList.toggle('open');
@@ -1681,17 +1669,17 @@ window.openSelectedTestimonialBD=()=>{
 };
 window.cssToHex=v=>{const m=String(v||'').match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);if(m)return '#'+[m[1],m[2],m[3]].map(x=>Number(x).toString(16).padStart(2,'0')).join('');if(/^#[0-9a-f]{6}$/i.test(v))return v;return '#111111'};
 window.applyStyle=(prop,val)=>{if(!currentSelection)return;const normalized=prop==='backgroundColor'?'bg':prop;setStyle(normalized,val)};
-window.clearAnimation=()=>{['animationName','animationDuration','animationDelay','animationIterationCount','animationTimingFunction'].forEach(prop=>iframe().contentWindow.postMessage({type:'CLEAR_STYLE',prop},location.origin));markDirty('Animación eliminada')};
-window.updateText=val=>{iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',text:val},location.origin);if(currentSelection){currentSelection.text=val}markDirty('Texto editado y listo para guardar');proScheduleSnapshot()};
-window.updateHref=val=>{iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',href:val},location.origin);if(currentSelection)currentSelection.href=val;markDirty('Enlace actualizado');proScheduleSnapshot()};window.setResponsiveDevice=d=>{responsiveDevice=d;if(currentSelection)renderInspector(currentSelection)};window.applyResponsiveFromInspector=()=>{if(!currentSelection)return;const prop=document.getElementById('responsive-prop')?.value||'fontSize';const val=document.getElementById('responsive-value')?.value||'';if(!val)return window.showToast('Introduce un valor responsive');iframe().contentWindow.postMessage({type:'SET_RESPONSIVE_STYLE',device:responsiveDevice,prop,value:val},location.origin);markDirty('Responsive actualizado');proScheduleSnapshot()};
-window.updateSocialIcon=val=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'UPDATE_SOCIAL_ICON',iconClass:val},location.origin);if(currentSelection)currentSelection.iconClass=val;markDirty('Icono actualizado');proScheduleSnapshot()};
-window.updateAcademyBadgeIcon=val=>{if(!currentSelection?.isAcademyBadge)return;const icon=String(val||'fa-solid fa-star').trim();iframe().contentWindow.postMessage({type:'UPDATE_BADGE_ICON',iconClass:icon},location.origin);currentSelection.badgeIcon=icon;renderInspector(currentSelection);markDirty('Icono de tarjeta actualizado');proScheduleSnapshot()};
-window.updateAcademyBadgeIconStyle=(kind,val)=>{if(!currentSelection?.isAcademyBadge)return;const clean=String(val||'').trim();if(!clean)return;const msg={type:'UPDATE_BADGE_ICON_STYLE'};msg[kind]=clean;iframe().contentWindow.postMessage(msg,location.origin);currentSelection[kind==='color'?'badgeIconColor':'badgeIconSize']=clean;markDirty(kind==='color'?'Color de icono actualizado':'Tamaño de icono actualizado');proScheduleSnapshot()};
-window.setGalleryDuration=val=>{const controlMs=Math.max(1000,Math.min(120000,Number(val)||15000));const v=document.getElementById('gallery-duration-value');if(v)v.value=controlMs;if(currentSelection)currentSelection.styles={...(currentSelection.styles||{}),animationDuration:controlMs+'ms'};iframe().contentWindow.postMessage({type:'SET_GALLERY_DURATION',ms:controlMs},location.origin);markDirty('Duración de galería actualizada');proScheduleSnapshot()};
-window.resetSelectedStyles=()=>{if(!currentSelection)return;const props=['color','bg','fontSize','fontWeight','lineHeight','letterSpacing','textAlign','fontFamily','opacity','borderRadius','borderWidth','borderColor','borderStyle','boxShadow','width','height','padding','margin','animationName','animationDuration','animationDelay','animationIterationCount','animationTimingFunction'];props.forEach(p=>iframe().contentWindow.postMessage({type:'CLEAR_STYLE',prop:p},location.origin));window.showToast('Estilos locales restablecidos');markDirty('Restableciendo estilos')};
-window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTED'},location.origin);
-window.duplicateSelected=()=>{iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},location.origin);markDirty('Elemento duplicado');proScheduleSnapshot()};
-window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},location.origin);window.clearSelection();markDirty('Elemento eliminado');proScheduleSnapshot()};
+window.clearAnimation=()=>{['animationName','animationDuration','animationDelay','animationIterationCount','animationTimingFunction'].forEach(prop=>iframe().contentWindow.postMessage({type:'CLEAR_STYLE',prop},MP_FRAME_TARGET_ORIGIN));markDirty('Animación eliminada')};
+window.updateText=val=>{iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',text:val},MP_FRAME_TARGET_ORIGIN);if(currentSelection){currentSelection.text=val}markDirty('Texto editado y listo para guardar');proScheduleSnapshot()};
+window.updateHref=val=>{iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',href:val},MP_FRAME_TARGET_ORIGIN);if(currentSelection)currentSelection.href=val;markDirty('Enlace actualizado');proScheduleSnapshot()};window.setResponsiveDevice=d=>{responsiveDevice=d;if(currentSelection)renderInspector(currentSelection)};window.applyResponsiveFromInspector=()=>{if(!currentSelection)return;const prop=document.getElementById('responsive-prop')?.value||'fontSize';const val=document.getElementById('responsive-value')?.value||'';if(!val)return window.showToast('Introduce un valor responsive');iframe().contentWindow.postMessage({type:'SET_RESPONSIVE_STYLE',device:responsiveDevice,prop,value:val},MP_FRAME_TARGET_ORIGIN);markDirty('Responsive actualizado');proScheduleSnapshot()};
+window.updateSocialIcon=val=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'UPDATE_SOCIAL_ICON',iconClass:val},MP_FRAME_TARGET_ORIGIN);if(currentSelection)currentSelection.iconClass=val;markDirty('Icono actualizado');proScheduleSnapshot()};
+window.updateAcademyBadgeIcon=val=>{if(!currentSelection?.isAcademyBadge)return;const icon=String(val||'fa-solid fa-star').trim();iframe().contentWindow.postMessage({type:'UPDATE_BADGE_ICON',iconClass:icon},MP_FRAME_TARGET_ORIGIN);currentSelection.badgeIcon=icon;renderInspector(currentSelection);markDirty('Icono de tarjeta actualizado');proScheduleSnapshot()};
+window.updateAcademyBadgeIconStyle=(kind,val)=>{if(!currentSelection?.isAcademyBadge)return;const clean=String(val||'').trim();if(!clean)return;const msg={type:'UPDATE_BADGE_ICON_STYLE'};msg[kind]=clean;iframe().contentWindow.postMessage(msg,MP_FRAME_TARGET_ORIGIN);currentSelection[kind==='color'?'badgeIconColor':'badgeIconSize']=clean;markDirty(kind==='color'?'Color de icono actualizado':'Tamaño de icono actualizado');proScheduleSnapshot()};
+window.setGalleryDuration=val=>{const controlMs=Math.max(1000,Math.min(120000,Number(val)||15000));const v=document.getElementById('gallery-duration-value');if(v)v.value=controlMs;if(currentSelection)currentSelection.styles={...(currentSelection.styles||{}),animationDuration:controlMs+'ms'};iframe().contentWindow.postMessage({type:'SET_GALLERY_DURATION',ms:controlMs},MP_FRAME_TARGET_ORIGIN);markDirty('Duración de galería actualizada');proScheduleSnapshot()};
+window.resetSelectedStyles=()=>{if(!currentSelection)return;const props=['color','bg','fontSize','fontWeight','lineHeight','letterSpacing','textAlign','fontFamily','opacity','borderRadius','borderWidth','borderColor','borderStyle','boxShadow','width','height','padding','margin','animationName','animationDuration','animationDelay','animationIterationCount','animationTimingFunction'];props.forEach(p=>iframe().contentWindow.postMessage({type:'CLEAR_STYLE',prop:p},MP_FRAME_TARGET_ORIGIN));window.showToast('Estilos locales restablecidos');markDirty('Restableciendo estilos')};
+window.focusSelected=()=>iframe().contentWindow.postMessage({type:'FOCUS_SELECTED'},MP_FRAME_TARGET_ORIGIN);
+window.duplicateSelected=()=>{iframe().contentWindow.postMessage({type:'DUPLICATE_SELECTED'},MP_FRAME_TARGET_ORIGIN);markDirty('Elemento duplicado');proScheduleSnapshot()};
+window.deleteElement=()=>{if(!currentSelection)return;iframe().contentWindow.postMessage({type:'DELETE_SELECTED_NODE'},MP_FRAME_TARGET_ORIGIN);window.clearSelection();markDirty('Elemento eliminado');proScheduleSnapshot()};
 function mpAdminParseMoney(value,fallback=NaN){
   if(typeof value==='number') return Number.isFinite(value)?value:fallback;
   let s=String(value??'').trim(); if(!s)return fallback;
@@ -1741,112 +1729,54 @@ window.updateProductPriceMode=function(){
   if(setWrap)setWrap.classList.toggle('hidden',mode!=='set');
   if(help)help.textContent=mode==='wholesale'?'El precio indicado se aplica por unidad desde la cantidad mínima configurada.':mode==='set'?'El precio indicado corresponde a un set completo. La cantidad del set se muestra en el catálogo.':'El precio indicado corresponde a una unidad.';
 };
-// ---------------- Google Drive picker ----------------
-let drivePickerPromise=null,driveTokenClient=null,driveAccessToken=null;
-function readDriveConfig(){const g=readGlobalSettings().googleDrive||{};return {apiKey:String(g.apiKey||''),clientId:String(g.clientId||''),appId:String(g.appId||''),folderId:String(g.folderId||''),scope:String(g.scope||'https://www.googleapis.com/auth/drive.metadata.readonly')}}
-function loadDriveScript(src,test,loader){
-  return new Promise((resolve,reject)=>{
-    if(test())return resolve();
-    const existing=document.querySelector(`script[data-mp-drive-loader="${loader}"]`);
-    if(existing){existing.addEventListener('load',()=>resolve(),{once:true});existing.addEventListener('error',()=>reject(new Error('No se pudo cargar Google Drive.')),{once:true});return;}
-    const sc=document.createElement('script');sc.async=true;sc.defer=true;sc.src=src;sc.dataset.mpDriveLoader=loader;sc.onload=()=>resolve();sc.onerror=()=>reject(new Error('No se pudo cargar Google Drive.'));document.head.appendChild(sc);
-  });
-}
-async function initGoogleDrivePicker(){
-  if(drivePickerPromise)return drivePickerPromise;
-  drivePickerPromise=(async()=>{
-    const cfg=readDriveConfig();
-    if(!cfg.apiKey||!cfg.clientId||!cfg.appId)throw new Error('Configura API Key, OAuth Client ID y App ID en Ajustes globales > Google Drive.');
-    await loadDriveScript('https://apis.google.com/js/api.js',()=>!!window.gapi,'gapi');
-    await loadDriveScript('https://accounts.google.com/gsi/client',()=>!!window.google?.accounts?.oauth2,'gis');
-    await new Promise((resolve,reject)=>{try{gapi.load('picker',{callback:resolve,onerror:()=>reject(new Error('Google Picker no disponible.'))})}catch(e){reject(e)}});
-    await new Promise((resolve,reject)=>{try{gapi.load('client',{callback:resolve,onerror:()=>reject(new Error('Google Drive API no disponible.'))})}catch(e){reject(e)}});
-    if(!gapi.client?.drive){await gapi.client.init({apiKey:cfg.apiKey});await gapi.client.load('drive','v3');}
-    driveTokenClient=google.accounts.oauth2.initTokenClient({client_id:cfg.clientId,scope:cfg.scope,callback:()=>{}});
-    return cfg;
-  })().catch(e=>{drivePickerPromise=null;throw e});
-  return drivePickerPromise;
-}
-async function googleDriveFolderFileIds(cfg){
-  const folder=String(cfg.folderId||'').trim();
-  if(!folder)return [];
+
+window.uploadTestimonialVideoFile=async(fileInput)=>{
+  const file=fileInput?.files?.[0];
+  if(!file)return;
+  const name=String(document.getElementById('db-name')?.value||currentDbItem?.name||'testimonio').trim()||'testimonio';
+  const isWebm=/^video\/webm$/i.test(file.type||'')||/\.webm$/i.test(file.name||'');
+  const maxBytes=20*1024*1024;
+  if(!isWebm){window.showToast('El video testimonial debe estar en formato WEBM.');fileInput.value='';return;}
+  if(Number(file.size||0)>maxBytes){window.showToast('El video WEBM supera el máximo permitido de 20 MB.');fileInput.value='';return;}
+  const input=document.getElementById('db-vid');
+  const preview=document.getElementById('db-vid-preview');
+  const helper=document.getElementById('db-vid-helper');
   try{
-    gapi.client.setToken({access_token:driveAccessToken});
-    const q=`'${folder.replace(/'/g,"\\'")}' in parents and trashed = false and (mimeType = 'video/mp4' or mimeType = 'video/quicktime' or mimeType = 'video/webm' or mimeType = 'video/x-m4v')`;
-    const ids=[]; let pageToken='';
-    do{
-      const res=await gapi.client.drive.files.list({q,fields:'nextPageToken,files(id,name,mimeType)',pageSize:1000,orderBy:'name',pageToken:pageToken||undefined,includeItemsFromAllDrives:false,supportsAllDrives:false});
-      (res?.result?.files||[]).forEach(f=>{if(f?.id)ids.push(String(f.id))});
-      pageToken=res?.result?.nextPageToken||'';
-    }while(pageToken && ids.length<5000);
-    return ids;
-  }catch(e){console.warn('No se pudo listar la carpeta de Google Drive:',e);throw new Error('No se pudo verificar la carpeta de testimonios en Google Drive. Revisa el Folder ID y los permisos de la API de Drive.');}
-}
-async function googleDrivePickerView(cfg){
-  const view=new google.picker.DocsView(google.picker.ViewId.DOCS);
-  view.setMimeTypes('video/mp4,video/quicktime,video/webm,video/x-m4v');
-  try{view.setIncludeFolders(false);view.setSelectFolderEnabled(false)}catch(e){}
-  if(cfg.folderId){
-    const ids=await googleDriveFolderFileIds(cfg);
-    if(!ids.length){try{view.setFileIds('')}catch(e){}return view;}
-    // setFileIds makes this picker view exclusive to the configured folder contents.
-    // It intentionally replaces setParent, which is only an initial-folder setting.
-    view.setFileIds(ids.join(','));
+    await ensureAdminWriteSession();
+    const user=auth?.currentUser;
+    if(!user||user.isAnonymous)throw Object.assign(new Error('Sesión administrativa no disponible.'),{code:'auth/not-ready'});
+    const token=await user.getIdToken(true);
+    const form=new FormData();
+    form.append('file',file,file.name||'testimonio.webm');
+    form.append('name',name);
+    const response=await fetch(`${B2_MEDIA_API}/api/testimonial-video`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:form});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok||!result?.ok)throw new Error(result?.error||`Worker respondió HTTP ${response.status}`);
+    const url=String(result.url||'').trim();
+    if(!url)throw new Error('El Worker no devolvió una URL pública para el video.');
+    if(input){input.value=url;input.dataset.provider='b2_testimonial';input.dataset.key=String(result.key||'');input.dataset.fileName=String(result.name||file.name||'testimonio.webm');}
+    currentDbItem={...(currentDbItem||{}),src:url,videoProvider:'b2_testimonial',videoKey:String(result.key||''),videoFileName:String(result.name||file.name||'testimonio.webm')};
+    if(preview){preview.style.display='block';preview.src=url;preview.load();}
+    if(helper)helper.innerHTML=`WEBM · ${b2FormatBytes(Number(result.size||file.size)||file.size)} · <b>testimonio_videos/</b> · listo para guardar`;
+    if(currentDbItem?.id){
+      proPost('UPDATE_TESTIMONIAL',{itemId:String(currentDbItem.id),data:{
+        src:url,
+        videoProvider:'b2_testimonial',
+        videoKey:String(result.key||''),
+        videoFileName:String(result.name||file.name||'testimonio.webm'),
+        name:String(document.getElementById('db-name')?.value||currentDbItem?.name||'').trim(),
+        role:String(document.getElementById('db-role')?.value||currentDbItem?.role||'').trim(),
+        quote:String(document.getElementById('db-quote')?.value||currentDbItem?.quote||'').trim(),
+        theme:String(document.getElementById('db-theme')?.value||currentDbItem?.theme||'cyan').trim()
+      }});
+    }
+    window.showToast('Video WEBM subido correctamente a testimonio_videos/. Ahora pulsa Guardar cambios.');
+  }catch(e){
+    console.error('Subida testimonial WEBM:',e);
+    window.showToast('No se pudo subir el video: '+(e?.message||e?.code||'error'));
+  }finally{
+    fileInput.value='';
   }
-  return view;
-}
-function drivePickedDocument(data){
-  const docs=data?.[google.picker.Response.DOCUMENTS]||data?.docs||[];
-  const d=Array.isArray(docs)?docs[0]:null; if(!d)return null;
-  return {id:String(d[google.picker.Document.ID]||d.id||''),name:String(d[google.picker.Document.NAME]||d.name||'Video'),mimeType:String(d[google.picker.Document.MIME_TYPE]||d.mimeType||''),url:String(d[google.picker.Document.URL]||d.url||'')};
-}
-async function pickGoogleDriveVideo(){
-  const cfg=await initGoogleDrivePicker();
-  return new Promise((resolve,reject)=>{
-    const show=async()=>{
-      try{
-        gapi.client.setToken({access_token:driveAccessToken});
-        const view=await googleDrivePickerView(cfg);
-        const picker=new google.picker.PickerBuilder()
-          .setDeveloperKey(cfg.apiKey)
-          .setAppId(cfg.appId)
-          .setOAuthToken(driveAccessToken)
-          .setOrigin(window.location.origin)
-          .setCallback(async data=>{
-            if(data.action===google.picker.Action.CANCEL){resolve(null);return}
-            if(data.action!==google.picker.Action.PICKED)return;
-            try{
-              const picked=drivePickedDocument(data);
-              if(!picked?.id)throw new Error('Google Drive no devolvió el ID del archivo.');
-              if(picked.mimeType && !/^video\/(mp4|quicktime|webm|x-m4v)$/i.test(picked.mimeType))throw new Error('Selecciona un archivo de vídeo compatible (MP4, MOV o WebM).');
-              const base=B2_PUBLIC_BASE.replace(/\/$/,'');
-              const proxied=`${base}/drive/${encodeURIComponent(picked.id)}?v=${Date.now()}&mime=${encodeURIComponent(picked.mimeType||'video/mp4')}`;
-              const probe=await fetch(proxied,{method:'GET',headers:{Range:'bytes=0-0'},cache:'no-store'});
-              const ct=probe.headers.get('content-type')||'';
-              if(!probe.ok || !/^video\//i.test(ct))throw new Error('El vídeo seleccionado no está disponible públicamente para reproducción. Comparte el archivo en Google Drive y vuelve a intentarlo.');
-              try{await probe.body?.cancel?.()}catch(e){}
-              resolve({...picked,src:proxied,driveFileId:picked.id,videoProvider:'google-drive',videoFileName:picked.name});
-            }catch(e){reject(e)}
-          })
-          .addView(view)
-          .build();
-        picker.setVisible(true);
-      }catch(e){reject(e)}
-    };
-    driveTokenClient.callback=(response)=>{if(response?.error)return reject(response);driveAccessToken=response.access_token;show()};
-    driveTokenClient.requestAccessToken({prompt:driveAccessToken?'':'consent'});
-  });
-}
-window.pickGoogleDriveVideoForField=async(fieldId)=>{
-  try{
-    window.showToast('Abriendo Google Drive…');
-    const picked=await pickGoogleDriveVideo(); if(!picked)return;
-    const el=document.getElementById(fieldId); if(!el)return;
-    el.value=picked.src; el.dataset.driveFileId=picked.driveFileId; el.dataset.videoProvider='google-drive'; el.dataset.videoFileName=picked.videoFileName||'';
-    el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true}));
-    currentDbItem=currentDbItem||{}; currentDbItem.driveFileId=picked.driveFileId; currentDbItem.videoProvider='google-drive'; currentDbItem.videoFileName=picked.videoFileName||'';
-    window.showToast(`Vídeo de Drive seleccionado: ${picked.videoFileName||'archivo'}`);
-  }catch(e){console.error('Google Drive Picker:',e);window.showToast(e?.message||'No se pudo seleccionar el vídeo de Google Drive.');}
 };
 
 window.openDbEditor=(type,id,data=null)=>{const d=data&&typeof data==='object'?data:{};const generatedId=id||('new_'+Date.now()+'_'+Math.random().toString(36).slice(2,8));currentDbItem={...d,type,id:generatedId,isNew:!id};let h='';
@@ -1861,9 +1791,9 @@ if(type==='product'){
   setTimeout(()=>window.updateProductPriceMode(),0);
 }
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" inputmode="decimal" value="${esc(String(mpAdminParseMoney(d.price??d.precio,'') ?? ''))}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
-if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video</label><div class="flex gap-2"><input id="db-vid" class="field" value="${esc(d.src||'')}"><button type="button" class="mini-btn" title="Seleccionar video" onclick="window.openGallery('db-vid','video','media')"><i class="fa-solid fa-photo-film"></i></button><button type="button" class="mini-btn" title="Elegir desde Google Drive" onclick="window.pickGoogleDriveVideoForField('db-vid')"><i class="fa-brands fa-google-drive"></i></button></div><div class="helper mt-1">Selecciona el video que pertenezca únicamente a este testimonio. Google Drive se convierte automáticamente a una URL reproducible mediante tu Worker.</div></div>`:'')+`<div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
+if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video testimonial · WEBM</label><div class="flex gap-2"><input id="db-vid" class="field flex-1" value="${esc(d.src||'')}" readonly placeholder="Sube un video .webm"><input id="db-vid-file" type="file" accept="video/webm,.webm" class="hidden" onchange="window.uploadTestimonialVideoFile(this)"><button type="button" class="mini-btn" title="Subir video testimonial WEBM" onclick="document.getElementById('db-vid-file')?.click()"><i class="fa-solid fa-cloud-arrow-up"></i></button></div><video id="db-vid-preview" class="w-full mt-2 rounded-lg border border-white/10 bg-black/30 max-h-56" controls muted playsinline preload="metadata" ${d.src?`src="${esc(d.src)}"`:'style="display:none"'}></video><div id="db-vid-helper" class="helper mt-1">Solo WEBM · máximo 20 MB. Los videos se guardan exclusivamente en <b>testimonio_videos/</b> del bucket. Esta subida aparece únicamente aquí.</div></div>`:'')+`<div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
 
-document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}if(type==='testimonial_video'){const v=document.getElementById('db-vid');if(v){if(d.driveFileId)v.dataset.driveFileId=d.driveFileId;if(d.videoProvider)v.dataset.videoProvider=d.videoProvider;if(d.videoFileName)v.dataset.videoFileName=d.videoFileName;}}if(type==='testimonial_video'||type==='testimonial_text')window.setTestimonialThemeChoice(d.theme||(type==='testimonial_video'?'cyan':'pink'));};
+document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}if(type==='testimonial_video'||type==='testimonial_text')window.setTestimonialThemeChoice(d.theme||(type==='testimonial_video'?'cyan':'pink'));if(type==='testimonial_video'){const vi=document.getElementById('db-vid');const pv=document.getElementById('db-vid-preview');if(vi){vi.dataset.provider=String(d.videoProvider||'');vi.dataset.key=String(d.videoKey||'');vi.dataset.fileName=String(d.videoFileName||'');}if(pv&&d.src){pv.src=String(d.src);try{pv.load()}catch(e){}}}};
 function normalizeProductImageField(raw){
   return String(raw??'').split(/\r?\n|,/).map(v=>normalizeSelectedMediaUrl(v)).filter(Boolean).join('\n');
 }
@@ -1993,38 +1923,19 @@ if(t==='course'){
   payload.createdAt=Number(currentDbItem?.createdAt)||now;
   payload.updatedAt=now;
 }
-function extractGoogleDriveFileId(raw){
- const v=String(raw||'').trim();
- if(!v)return '';
- const m=v.match(/(?:drive\.google\.com|drive\.usercontent\.google\.com)\/(?:file\/d\/|open\?|uc\?|thumbnail\?|download\?(?:[^#]*&)?id=)([a-zA-Z0-9_-]+)/i);
- if(m?.[1])return m[1];
- try{const u=new URL(v);const id=u.searchParams.get('id');if(id&&/^[a-zA-Z0-9_-]{10,120}$/.test(id))return id}catch(e){}
- return /^[a-zA-Z0-9_-]{10,120}$/.test(v)?v:'';
-}
-function normalizeDriveVideoSource(raw){
- const v=String(raw||'').trim(); if(!v)return {src:'',driveFileId:'',provider:''};
- const id=extractGoogleDriveFileId(v);
- if(!id)return {src:v,driveFileId:'',provider:'external'};
- return {src:`${B2_PUBLIC_BASE}/drive/${encodeURIComponent(id)}?v=${Date.now()}&mime=video%2Fmp4`,driveFileId:id,provider:'google-drive'};
-}
-
 if(t==='testimonial_video'||t==='testimonial_text'){
-  payload={name:document.getElementById('db-name')?.value.trim()||'',role:document.getElementById('db-role')?.value.trim()||'',quote:document.getElementById('db-quote')?.value.trim()||'',theme:document.getElementById('db-theme')?.value||'pink',testimonialId:String(currentDbItem.id||'').trim(),testimonialType:t,active:true,deleted:false};
+  const vidInput=document.getElementById('db-vid');
+  payload={name:document.getElementById('db-name')?.value.trim()||'',role:document.getElementById('db-role')?.value.trim()||'',quote:document.getElementById('db-quote')?.value.trim()||'',theme:document.getElementById('db-theme')?.value||'pink',testimonialId:String(currentDbItem.id||'').trim(),testimonialType:t,createdAt:Number(currentDbItem?.createdAt)||Date.now(),updatedAt:Date.now()};
   if(!payload.name)return window.showToast('El testimonio necesita un nombre.');
   if(!payload.quote)return window.showToast('El testimonio necesita una cita.');
   if(!['cyan','pink','violet','amber','emerald'].includes(payload.theme))payload.theme='pink';
   if(t==='testimonial_video'){
-    const rawVideo=document.getElementById('db-vid')?.value.trim()||'';
-    const driveId=document.getElementById('db-vid')?.dataset.driveFileId||currentDbItem?.driveFileId||'';
-    const provider=document.getElementById('db-vid')?.dataset.videoProvider||currentDbItem?.videoProvider||'';
-    const fileName=document.getElementById('db-vid')?.dataset.videoFileName||currentDbItem?.videoFileName||'';
-    const normalizedVideo=normalizeDriveVideoSource(rawVideo);
-    payload.src=normalizedVideo.src;
-    payload.driveFileId=driveId || normalizedVideo.driveFileId || '';
-    payload.videoProvider=(payload.driveFileId||provider==='google-drive')?'google-drive':'external';
-    payload.videoFileName=fileName||'';
+    payload.src=vidInput?.value.trim()||'';
+    payload.videoProvider=String(vidInput?.dataset?.provider||currentDbItem?.videoProvider||'url').trim()||'url';
+    payload.videoKey=String(vidInput?.dataset?.key||currentDbItem?.videoKey||'').trim();
+    payload.videoFileName=String(vidInput?.dataset?.fileName||currentDbItem?.videoFileName||'').trim();
+    if(payload.videoProvider==='b2_testimonial' && payload.videoKey && !payload.videoKey.startsWith('testimonio_videos/'))return window.showToast('La ruta del video testimonial no es válida.');
     if(payload.src && !/^https?:\/\//i.test(payload.src))return window.showToast('El video debe usar una URL http(s) válida.');
-    if(payload.videoProvider==='google-drive'&&!payload.driveFileId)return window.showToast('No se pudo identificar el archivo de Google Drive.');
   }
 }
 const saveBtn=document.getElementById('btn-save-db');
@@ -2033,22 +1944,18 @@ await ensureAdminWriteSession();
 const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;
 if(col){
   await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});
-  iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},location.origin);
+  iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},MP_FRAME_TARGET_ORIGIN);
   const changedFields=Object.keys(payload).filter(k=>!['imageVariants','createdAt','updatedAt'].includes(k));
   void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':'curso'}: ${payload.name||payload.title||id}${changedFields.length?' · campos: '+changedFields.join(', '):''}`,'db');
 }else if(t==='testimonial_video'||t==='testimonial_text'){
-  const now=Date.now();
-  payload.createdAt=Number(currentDbItem?.createdAt)||now;
-  payload.updatedAt=now;
-  if(t==='testimonial_video'&&payload.driveFileId&&!/^https:\/\/b2\.multiprintt\.workers\.dev\/drive\//i.test(payload.src))payload.src=normalizeDriveVideoSource(payload.src).src;
   await setDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id),payload,{merge:true});
-  iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
-  void writeAdminAudit(`${currentDbItem.isNew?'Creó':'Actualizó'} testimonio ${t==='testimonial_video'?'de vídeo':'de texto'}: ${payload.name||id}`,'db');
-}else iframe().contentWindow.postMessage({type:'UPDATE_ELEMENT',itemId:id,data:payload},location.origin);
-window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty('Testimonio actualizado',false);proScheduleSnapshot();
+  iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},MP_FRAME_TARGET_ORIGIN);
+  void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} testimonio ${t==='testimonial_video'?'de video':'de texto'}: ${payload.name||id}`,'db');
+}
+window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty(t.startsWith('testimonial_')?'Testimonio actualizado':'Elemento actualizado',false);proScheduleSnapshot();
 }catch(e){
   console.error('Guardar BD:',e);const code=e?.code||'';
-  const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Publica las Firestore Rules y verifica que esta cuenta esté autenticada.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
+  const msg=code==='permission-denied'?'Firebase rechazó la escritura (permission-denied). Verifica que las Rules permitan testimonios para la cuenta Email/Password compartida.':code==='auth/not-ready'?'La sesión todavía no está lista. Vuelve a intentar en un segundo.':code==='failed-precondition'?'Firestore requiere una condición previa/índice que no está disponible.':'No se pudo guardar: '+(e?.message||code||'error desconocido');
   window.showToast(msg);
 }finally{
   dbSaveInFlight=false;
@@ -2056,7 +1963,7 @@ window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento cre
   if(saveBtn){saveBtn.disabled=false;saveBtn.innerHTML=saveBtn.dataset.originalText||'Guardar cambios';delete saveBtn.dataset.originalText;}
 }
 };
-window.openSocialModal=()=>{selectedSocial={name:'',icon:'',network:''};const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value='';if(i)i.value='fa-solid fa-link';window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button type="button" class="social-opt" data-name="${n.replace(/"/g,'&quot;')}" data-icon="${c.replace(/"/g,'&quot;')}"><i class="${c} mr-1"></i>${n}</button>`).join('');document.querySelectorAll('#social-grid .social-opt').forEach(btn=>btn.addEventListener('click',()=>window.pickSocial(btn.dataset.name,btn.dataset.icon,btn)))};window.pickSocial=(name,icon,btn)=>{selectedSocial={name:String(name||''),icon:String(icon||''),network:String(name||'').toLowerCase().trim().replace(/\s+/g,'-')||'custom'};document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));if(btn)btn.classList.add('selected');const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value=selectedSocial.name;if(i)i.value=selectedSocial.icon;};window.addSocial=()=>{const typedName=document.getElementById('social-name')?.value.trim()||'';const typedIcon=document.getElementById('social-icon')?.value.trim()||'';const name=selectedSocial.name||typedName||'Red social';const icon=selectedSocial.icon||typedIcon||'fa-solid fa-link';const url=document.getElementById('social-url')?.value.trim()||'';if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');const network=selectedSocial.network||name.toLowerCase().trim().replace(/\s+/g,'-')||'custom';iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network},location.origin);selectedSocial={name:'',icon:'',network:''};window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
+window.openSocialModal=()=>{selectedSocial={name:'',icon:'',network:''};const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value='';if(i)i.value='fa-solid fa-link';window.filterSocials('');window.openModal('social-modal')};window.filterSocials=q=>{q=String(q||'').toLowerCase();document.getElementById('social-grid').innerHTML=socials.filter(([n])=>n.toLowerCase().includes(q)).map(([n,c])=>`<button type="button" class="social-opt" data-name="${n.replace(/"/g,'&quot;')}" data-icon="${c.replace(/"/g,'&quot;')}"><i class="${c} mr-1"></i>${n}</button>`).join('');document.querySelectorAll('#social-grid .social-opt').forEach(btn=>btn.addEventListener('click',()=>window.pickSocial(btn.dataset.name,btn.dataset.icon,btn)))};window.pickSocial=(name,icon,btn)=>{selectedSocial={name:String(name||''),icon:String(icon||''),network:String(name||'').toLowerCase().trim().replace(/\s+/g,'-')||'custom'};document.querySelectorAll('.social-opt').forEach(x=>x.classList.remove('selected'));if(btn)btn.classList.add('selected');const n=document.getElementById('social-name'),i=document.getElementById('social-icon');if(n)n.value=selectedSocial.name;if(i)i.value=selectedSocial.icon;};window.addSocial=()=>{const typedName=document.getElementById('social-name')?.value.trim()||'';const typedIcon=document.getElementById('social-icon')?.value.trim()||'';const name=selectedSocial.name||typedName||'Red social';const icon=selectedSocial.icon||typedIcon||'fa-solid fa-link';const url=document.getElementById('social-url')?.value.trim()||'';if(!/^https?:\/\//i.test(url))return window.showToast('Introduce una URL válida');const network=selectedSocial.network||name.toLowerCase().trim().replace(/\s+/g,'-')||'custom';iframe().contentWindow.postMessage({type:'ADD_SOCIAL_ICON',url,iconClass:icon,network},MP_FRAME_TARGET_ORIGIN);selectedSocial={name:'',icon:'',network:''};window.closeModal('social-modal');window.showToast(name+' añadida');markDirty('Red social añadida')};
 function bindImgBBThumbLoading(root){
   if(!root)return;
   root.querySelectorAll('[data-imgbb-thumb-wrap] img').forEach(img=>{
@@ -2507,7 +2414,7 @@ catch { items=text.split(/\r?\n|,\s*(?=https?:\/\/)/).map(v=>v.trim()).filter(Bo
 return items.map((x,i)=>{const obj=typeof x==='string'?{url:x}:x||{};let u=String(obj.url||obj.src||'').trim();if(u&&!/^(https?:|data:|blob:|\/\/)/i.test(u)){u=(base||'').replace(/\/$/,'/')+u.replace(/^\/+/, '');}return {type:/\.(mp4|webm|mov|m4v)($|\?)/i.test(u)?'video':'image',url:u,title:String(obj.title||obj.name||u.split('/').pop()||('Recurso '+(i+1)))}}).filter(x=>x.url);
 }
 function sourceConfigFor(mode){const m=window.validateMediaSourceModes?.()||mediaSources();return mode==='product'?{mode:m.productMode||'auto',json:m.productJson,base:m.productBase,manual:m.manualProducts||''}:{mode:m.generalMode||'auto',json:m.generalJson,base:m.generalBase,manual:m.manualGeneral||''}}
-function syncMediaSourcesToFrame(){try{iframe().contentWindow.postMessage({type:'SET_MEDIA_SOURCES',sources:mediaSources()},location.origin)}catch(e){}}
+function syncMediaSourcesToFrame(){try{iframe().contentWindow.postMessage({type:'SET_MEDIA_SOURCES',sources:mediaSources()},MP_FRAME_TARGET_ORIGIN)}catch(e){}}
 window.switchMediaExplorerTab=(tab='library')=>{const wanted=['library','imgbb','sources'].includes(tab)?tab:'library';document.querySelectorAll('#gallery-modal .media-tab').forEach(b=>b.classList.toggle('active',b.dataset.mediaTab===wanted));document.querySelectorAll('#gallery-modal .media-pane').forEach(p=>p.classList.toggle('active',p.dataset.mediaPane===wanted));if(wanted==='imgbb'){requestAnimationFrame(()=>{window.loadImgBBLibrary?.(false)?.catch?.(e=>console.warn('Multiprintt Host:',e))})}if(wanted==='sources'){const m=mediaSources();[['generalMode','media-mode-general'],['productMode','media-mode-products'],['generalJson','media-json-general'],['generalBase','media-base-general'],['productJson','media-json-products'],['productBase','media-base-products'],['manualGeneral','media-manual-general'],['manualProducts','media-manual-products']].forEach(([k,id])=>{const el=document.getElementById(id);if(el)el.value=m[k]||''})}};
 window.toggleMediaSources=()=>{window.switchMediaExplorerTab('sources');};
 window.saveMediaSources=()=>{const val=id=>document.getElementById(id)?.value||'';const m={generalMode:val('media-mode-general')||'auto',productMode:val('media-mode-products')||'auto',generalJson:val('media-json-general').trim()||DEFAULT_MEDIA_SOURCES.generalJson,generalBase:val('media-base-general').trim(),productJson:val('media-json-products').trim()||DEFAULT_MEDIA_SOURCES.productJson,productBase:val('media-base-products').trim(),manualGeneral:val('media-manual-general').trim(),manualProducts:val('media-manual-products').trim()};safeStorageSet('multiprintt_media_sources',JSON.stringify(m));syncMediaSourcesToFrame();window.showToast('Fuentes de medios actualizadas');window.openGallery(activeMediaInput,currentGalleryType,currentGalleryMode)};
@@ -2685,7 +2592,7 @@ const saveRequestId=++saveRequestSeq;
 const saveRevision=changeRevision;
 latestSaveRequestId=saveRequestId;
 setSaveState('busy',auto?'Autoguardando…':'Guardando…');
-iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual',saveRequestId,saveRevision},location.origin);
+iframe().contentWindow.postMessage({type:'SAVE_FULL_LAYOUT',saveMode:auto?'auto':'manual',saveRequestId,saveRevision},MP_FRAME_TARGET_ORIGIN);
 };
 window.resetTemplateConfirm=async()=>{if(!confirm('¿Restaurar la plantilla base? Esto eliminará únicamente los cambios visuales actuales y volverá a la plantilla maestra guardada en Firebase.'))return;try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data','settings','layout'));await writeAdminAudit('Restauró la plantilla base','manual');window.showToast('Plantilla base restaurada');window.reloadPreview();}catch(e){console.error('Restaurar plantilla:',e);window.showToast('No se pudo restablecer la plantilla.')}};
 window.saveCurrentAsTemplateBase=async()=>{
@@ -2697,7 +2604,7 @@ window.__templateBaseRequestId=requestId;
 const captureId=(crypto?.randomUUID?crypto.randomUUID():`capture-${Date.now()}-${Math.random().toString(36).slice(2,10)}`);
 let captureTimer=null;
 const handler=event=>{
-if(event.source!==frame.contentWindow || event.origin!==location.origin)return;
+if(event.source!==frame.contentWindow)return;
 const d=event.data||{}; if(d.type!=='LAYOUT_SNAPSHOT'||d.captureId!==captureId)return;
 window.removeEventListener('message',handler);
 if(captureTimer)clearTimeout(captureTimer);
@@ -2705,20 +2612,12 @@ const payload={zones:d.layoutData||{},layoutModel:d.layoutModel||null,layoutSche
 setDoc(doc(db,'artifacts',APP_ID,'public','data','settings','templateBase'),payload,{merge:false}).then(()=>{void writeAdminAudit('Actualizó la plantilla base','template').catch(()=>{});window.showToast('Plantilla base actual guardada en Firebase')}).catch(()=>window.showToast('No se pudo guardar la plantilla base'));
 };
 window.addEventListener('message',handler);
-frame.contentWindow.postMessage({type:'CAPTURE_LAYOUT',captureId,reason:'set-template-base'},location.origin);
+frame.contentWindow.postMessage({type:'CAPTURE_LAYOUT',captureId,reason:'set-template-base'},MP_FRAME_TARGET_ORIGIN);
 captureTimer=setTimeout(()=>{window.removeEventListener('message',handler);window.showToast('La vista previa tardó demasiado en responder. No se cambió la plantilla base.');},6000);
 }catch(e){console.error(e);window.showToast('No se pudo preparar la plantilla base')}
 };
-window.addEventListener('message',event=>{if(event.source!==iframe().contentWindow || event.origin!==location.origin)return;const d=event.data||{};if(!d.type)return;
-if(d.type==='APP_READY'){
-  builderEnabled=true; builderHandshakeVersion=Number(d.protocolVersion)||1; builderSessionId=String(d.sessionId||'');
-  iframe().contentWindow.postMessage({type:'ENABLE_BUILDER',protocolVersion:1,sessionId:builderSessionId},location.origin);
-  iframe().contentWindow.postMessage({type:'SET_BUILDER_STATE',enabled:true},location.origin);
-  iframe().contentWindow.postMessage({type:'TOGGLE_SELECTION',state:!selectionLocked},location.origin);
-  iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},location.origin);
-  hydrateGlobalSettingsFromFirebase().finally(()=>{syncMediaSourcesToFrame();setTimeout(()=>proPost('CAPTURE_LAYOUT',{reason:'initial'}),500)});
-  setSaveState('ok','Sincronizado');
-}
+window.addEventListener('message',event=>{if(event.source!==iframe().contentWindow)return;const d=event.data||{};if(!d.type)return;
+if(d.type==='APP_READY'){syncBuilderStateToFrame();setTimeout(()=>syncBuilderStateToFrame(),180);setTimeout(()=>proPost('CAPTURE_LAYOUT',{reason:'initial'}),500);setSaveState('ok','Sincronizado')}
 if(d.type==='ELEMENT_SELECTED'){renderInspector(d);if(window.innerWidth<760)document.getElementById('rightbar').classList.add('mobile-open')}
 if(d.type==='CLEAR_SELECTION')window.clearSelection();
 if(d.type==='LAYERS_DATA'){window.renderLayers(d.layers||[])}
@@ -2760,21 +2659,34 @@ setSaveState('err','Error al guardar');
 window.showToast('Error de sincronización');
 })}
 if(d.type==='SAVE_FULL_LAYOUT_ERROR'){if((Number(d.saveRequestId)||0)!==latestSaveRequestId)return;setSaveState('err','No se pudo preparar el guardado');if((d.message||'').trim())window.showToast(d.message)}
-if(d.type==='DELETE_TESTIMONIAL'){
-  (async()=>{try{
-    await ensureAdminWriteSession();
-    const id=String(d.itemId||'').trim(); const type=d.testimonialType==='testimonial_text'?'testimonial_text':'testimonial_video'; if(!id)return;
-    const ref=doc(db,'artifacts',APP_ID,'public','data','testimonials',id);
-    await setDoc(ref,{testimonialId:id,testimonialType:type,active:false,deleted:true,updatedAt:Date.now()},{merge:true});
-    await writeAdminAudit(`Eliminó testimonio: ${id}`,'db');
-    iframe().contentWindow.postMessage({type:'TESTIMONIAL_DELETED',itemId:id,testimonialType:type},location.origin);
-    window.showToast('Testimonio eliminado correctamente');
-  }catch(e){console.error('Eliminar testimonio:',e);window.showToast('No se pudo eliminar el testimonio: '+(e?.message||'error'));}
-  })();
-}
 if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
 if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
-if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?')){(async()=>{try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId));await writeAdminAudit(`Eliminó ${d.itemType==='product'?'producto':'curso'} ${d.itemId}`,'db');iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},location.origin);window.showToast('Registro eliminado correctamente')}catch(e){console.error('Eliminar BD:',e);window.showToast('No se pudo eliminar: '+(e?.code||e?.message||'error'))}})()}}
+if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?')){(async()=>{try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId));await writeAdminAudit(`Eliminó ${d.itemType==='product'?'producto':'curso'} ${d.itemId}`,'db');iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},MP_FRAME_TARGET_ORIGIN);window.showToast('Registro eliminado correctamente')}catch(e){console.error('Eliminar BD:',e);window.showToast('No se pudo eliminar: '+(e?.code||e?.message||'error'))}})()}}
+if(d.type==='TESTIMONIAL_CREATED'){
+(async()=>{
+  try{
+    await ensureAdminWriteSession();
+    const id=String(d.itemId||'').trim();if(!id)return;
+    const data={...(d.data||{}),testimonialId:id,testimonialType:d.testimonialType||'testimonial_text',createdAt:Number(d.data?.createdAt)||Date.now(),updatedAt:Date.now()};
+    await setDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id),data,{merge:true});
+    await writeAdminAudit(`Creó testimonio ${data.testimonialType==='testimonial_video'?'de video':'de texto'} ${id}`,'db');
+    markDirty('Testimonio creado',false);proScheduleSnapshot();
+    // Abre inmediatamente el editor del nuevo registro: así no depende de hover ni de la plantilla base.
+    setTimeout(()=>window.openDbEditor(data.testimonialType,id,{...data,id,testimonialId:id}),0);
+  }catch(e){console.error('Crear testimonio:',e);window.showToast('No se pudo sincronizar el nuevo testimonio con Firebase: '+(e?.code||e?.message||'error'))}
+})();
+}
+if(d.type==='TESTIMONIAL_DELETED'){
+(async()=>{
+  try{
+    await ensureAdminWriteSession();
+    const id=String(d.itemId||'').trim();if(!id)return;
+    await deleteDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id));
+    await writeAdminAudit(`Eliminó testimonio ${id}`,'db');
+    markDirty('Testimonio eliminado',false);proScheduleSnapshot();
+  }catch(e){console.error('Eliminar testimonio:',e);window.showToast('No se pudo eliminar el registro de testimonio: '+(e?.code||e?.message||'error'))}
+})();
+}
 });
 document.addEventListener('keydown',e=>{if(document.getElementById('gallery-modal')?.classList.contains('open')){if(e.key==='1')window.switchMediaExplorerTab('library');if(e.key==='2')window.switchMediaExplorerTab('imgbb');if(e.key==='3')window.switchMediaExplorerTab('sources')}});window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();window.publishChanges(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();window.openCommandPalette()}if(e.key==='Escape'){['social-modal','db-modal','gallery-modal','layers-modal','history-modal','audit-modal','command-modal','global-modal','seo-modal'].forEach(window.closeModal)}});
 window.filterSocials('');</script>
@@ -2810,4 +2722,118 @@ window.filterSocials('');</script>
   if(typeof originalSetDevice==='function')window.setDevice=(type,btn)=>{originalSetDevice(type,btn);schedule();};
 })();
 </script>
+<script id="mp-login-safety-bridge">
+(()=>{
+  const FIREBASE_CONFIG={apiKey:'AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY',authDomain:'multiprintt-cc0f1.firebaseapp.com',projectId:'multiprintt-cc0f1',storageBucket:'multiprintt-cc0f1.firebasestorage.app',messagingSenderId:'626369594335',appId:'1:626369594335:web:711aac8c65197a0dceba6a'};
+  const setLoginUi=(busy,message)=>{
+    const btn=document.getElementById('btn-login');
+    if(!btn)return;
+    if(busy){
+      if(!btn.dataset.mpOriginalHtml)btn.dataset.mpOriginalHtml=btn.innerHTML;
+      btn.disabled=true;
+      btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Autenticando…';
+    }else{
+      btn.disabled=false;
+      btn.innerHTML=btn.dataset.mpOriginalHtml||'<i class="fa-solid fa-right-to-bracket mr-2"></i>Ingresar al sistema';
+      delete btn.dataset.mpOriginalHtml;
+    }
+    if(message&&typeof window.showToast==='function')window.showToast(message);
+  };
+  const errorMessage=(e)=>{
+    const code=e?.code||'';
+    const map={
+      'auth/invalid-credential':'Correo o contraseña incorrectos.',
+      'auth/invalid-login-credentials':'Correo o contraseña incorrectos.',
+      'auth/invalid-email':'El correo no tiene un formato válido.',
+      'auth/user-not-found':'No existe una cuenta con ese correo.',
+      'auth/wrong-password':'La contraseña es incorrecta.',
+      'auth/user-disabled':'Esta cuenta está deshabilitada.',
+      'auth/too-many-requests':'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.',
+      'auth/network-request-failed':'No se pudo conectar con Firebase. Comprueba tu conexión.',
+      'auth/operation-not-allowed':'El acceso Email/Password no está habilitado en Firebase Authentication.',
+      'auth/invalid-api-key':'La configuración de Firebase es inválida.',
+      'auth/app-not-authorized':'Este dominio no está autorizado en Firebase Authentication.'
+    };
+    return map[code]||('No se pudo iniciar sesión'+(code?` (${code})`:e?.message?`: ${e.message}`:''));
+  };
+  async function fallbackLogin(){
+    const email=document.getElementById('loginUser')?.value.trim()||'';
+    const pass=document.getElementById('loginPass')?.value||'';
+    if(!email||!pass){return setLoginUi(false,'Completa correo y contraseña');}
+    if(!/^\S+@\S+\.\S+$/.test(email)){return setLoginUi(false,'Introduce un correo válido');}
+    setLoginUi(true);
+    try{
+      const [{getApps,getApp,initializeApp},{getAuth,signInWithEmailAndPassword,setPersistence,browserSessionPersistence}]=await Promise.all([
+        import('https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js')
+      ]);
+      const app=getApps().length?getApp():initializeApp(FIREBASE_CONFIG);
+      const auth=window.__mpAuth||getAuth(app);
+      try{await setPersistence(auth,browserSessionPersistence)}catch(e){console.warn('Persistencia de sesión:',e)}
+      const credential=await signInWithEmailAndPassword(auth,email,pass);
+      if(!credential?.user||credential.user.isAnonymous)throw Object.assign(new Error('Firebase no devolvió una sesión administrativa válida.'),{code:'auth/session-not-created'});
+      setLoginUi(false);
+      // IMPORTANT: never reload after login. Reloading breaks local/file:// tests and can
+      // create an endless authentication loop when the main module is temporarily unavailable.
+      if(typeof window.showAdminWorkspace==='function'){
+        const ok=window.showAdminWorkspace(credential.user,true);
+        if(ok)return;
+      }
+      const authScreen=document.getElementById('auth-screen');
+      const builder=document.getElementById('builder-ui');
+      if(authScreen)authScreen.style.display='none';
+      if(builder)builder.style.display='flex';
+      const fr=document.getElementById('site-frame');
+      if(fr && (!fr.getAttribute('src') || fr.getAttribute('src')===location.href)){
+        fr.src='index.html?t='+Date.now();
+      }
+      if(location.protocol==='file:'){
+        window.showToast?.('Sesión Firebase válida. Para usar todo el editor localmente, abre admin.html desde http://localhost (por ejemplo con Firebase Hosting Emulator o un servidor HTTP).');
+      }else{
+        window.showToast?.('Sesión iniciada correctamente. Cargando editor…');
+      }
+    }catch(e){
+      console.error('Login safety bridge:',e);
+      setLoginUi(false,errorMessage(e));
+    }
+  }
+  const install=()=>{
+    const current=window.attemptLogin;
+    // Si el módulo principal ya expuso su login, se conserva intacto.
+    if(typeof current==='function')return;
+    window.attemptLogin=fallbackLogin;
+  };
+  // El módulo type=module se ejecuta de forma diferida; este puente se instala
+  // inmediatamente y solo queda activo si el módulo principal no pudo registrarse.
+  install();
+  document.addEventListener('DOMContentLoaded',install,{once:true});
+  window.addEventListener('error',e=>{
+    if(typeof window.attemptLogin!=='function')window.attemptLogin=fallbackLogin;
+    if(document.getElementById('auth-screen')?.style.display!=='none'){
+      const msg=String(e?.message||'');
+      if(msg)console.error('Multiprintt Admin runtime:',msg);
+    }
+  });
+})();
+</script>
+
+<script id="mp-global-ui-fallback">
+(function(){
+  function openModalFallback(id){const el=document.getElementById(id);if(el){el.classList.add('open');el.setAttribute('aria-hidden','false');return true;}return false;}
+  function closeModalFallback(id){const el=document.getElementById(id);if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true');return true;}return false;}
+  window.openGlobalSettings=function(){
+    try{const fn=window.__mpMainOpenGlobalSettings;if(typeof fn==='function'){return fn();} if(window.__mpOpenGlobalSettingsMain){return window.__mpOpenGlobalSettingsMain();}}catch(e){console.warn('openGlobalSettings principal:',e)}
+    const key='multiprintt_builder_pro_v1';let d={};try{d=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}
+    const defaults={site:'',media:'',mediaProxy:'',image:'',video:'',api:'',analytics:{enabled:true,measurementId:'G-VP3XV39H5M'}};
+    d={...defaults,...d,analytics:{...defaults.analytics,...(d.analytics||{})}};
+    ['site','media','mediaProxy','image','video','api'].forEach(k=>{const el=document.getElementById('global-'+k+'-url');if(el)el.value=d[k]||''});
+    const ga=document.getElementById('global-ga-enabled'),gid=document.getElementById('global-ga-id');if(ga)ga.checked=d.analytics.enabled!==false;if(gid)gid.value=d.analytics.measurementId||'G-VP3XV39H5M';
+    const w=localStorage.getItem('multiprintt_custom_viewport_width'),sc=localStorage.getItem('multiprintt_custom_viewport_scale');if(w&&document.getElementById('custom-viewport-width'))document.getElementById('custom-viewport-width').value=w;if(sc&&document.getElementById('custom-viewport-scale'))document.getElementById('custom-viewport-scale').value=sc;
+    openModalFallback('global-modal');
+  };
+  if(typeof window.openModal!=='function')window.openModal=openModalFallback;
+  if(typeof window.closeModal!=='function')window.closeModal=closeModalFallback;
+})();
+</script>
+
 </body></html>
