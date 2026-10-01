@@ -1182,7 +1182,7 @@ html{color-scheme:dark;}.glass{background:linear-gradient(180deg,rgba(18,19,24,.
   .media-modal-card{height:95svh;max-height:95svh;height:95dvh;max-height:95dvh}
 }
 </style>
-</head>
+<style id="mp-github-testimonial-picker-style">#github-testimonial-modal{z-index:1200}#github-testimonial-modal .modal-card{max-height:min(86vh,760px)}#github-testimonial-list{max-height:55vh;overflow:auto;padding-right:2px}</style></head>
 <body>
 <div id="toast"></div>
 <div id="auth-screen"><div class="auth-card"><div class="flex items-center gap-3 mb-6"><div class="brand-mark"><img alt="Multiprintt" src="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp"/></div><div><div class="text-white font-extrabold text-lg">Multiprintt</div><div class="text-zinc-500 text-[10px] tracking-[.18em] uppercase">Visual Builder</div></div></div><div class="grid gap-3"><input class="field" id="loginUser" placeholder="Correo administrativo" type="email"/><input class="field" id="loginPass" placeholder="Contraseña" type="password"/><button class="primary w-full" id="btn-login" onclick="window.attemptLogin()" type="button"><i class="fa-solid fa-right-to-bracket mr-2"></i>Ingresar al sistema</button></div><div class="helper mt-4">Editor visual conectado a Firebase y sincronizado con el sitio.</div></div></div>
@@ -1351,7 +1351,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPe
 import { getFirestore, doc, getDoc, setDoc, deleteDoc, deleteField, writeBatch, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, addDoc, getDocs, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY",authDomain:"multiprintt-cc0f1.firebaseapp.com",projectId:"multiprintt-cc0f1",storageBucket:"multiprintt-cc0f1.firebasestorage.app",messagingSenderId:"626369594335",appId:"1:626369594335:web:711aac8c65197a0dceba6a"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);let db;try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch(e){console.warn("Firestore persistence no disponible; usando caché normal.",e);db=getFirestore(app)}window.__mpAuth=auth;window.__mpDb=db;const APP_ID="multiprintt-web";
-const MP_ADMIN_BUILD='2026.09.30.12';
+const MP_ADMIN_BUILD='2026.10.01.30';
 const iframe=()=>document.getElementById('site-frame');
 const MP_FRAME_TARGET_ORIGIN = '*';
 let currentSelection=null,currentDbItem=null,activeMediaInput=null,currentGalleryMode='media',currentGalleryType='all',galleryDataCache=[],isDragMode=false,selectionLocked=false,autosaveTimer=null,history=[],redoStack=[],selectedSocial={name:'',icon:'',network:''};
@@ -1730,61 +1730,106 @@ window.updateProductPriceMode=function(){
   if(help)help.textContent=mode==='wholesale'?'El precio indicado se aplica por unidad desde la cantidad mínima configurada.':mode==='set'?'El precio indicado corresponde a un set completo. La cantidad del set se muestra en el catálogo.':'El precio indicado corresponde a una unidad.';
 };
 
-window.uploadTestimonialVideoFile=async(fileInput)=>{
-  const file=fileInput?.files?.[0];
-  if(!file)return;
-  const name=String(document.getElementById('db-name')?.value||currentDbItem?.name||'testimonio').trim()||'testimonio';
-  const isWebm=/^video\/webm$/i.test(file.type||'')||/\.webm$/i.test(file.name||'');
-  const maxBytes=20*1024*1024;
-  if(!isWebm){window.showToast('El video testimonial debe estar en formato WEBM.');fileInput.value='';return;}
-  if(Number(file.size||0)>maxBytes){window.showToast('El video WEBM supera el máximo permitido de 20 MB.');fileInput.value='';return;}
-  const input=document.getElementById('db-vid');
-  const preview=document.getElementById('db-vid-preview');
-  const helper=document.getElementById('db-vid-helper');
+const GITHUB_TESTIMONIAL_REPO='kelvinthegamerc1-lab/multiprintt';
+const GITHUB_TESTIMONIAL_PATH='recursos/testimonio';
+const GITHUB_TESTIMONIAL_BRANCH='main';
+const TESTIMONIAL_VIDEO_MAX_BYTES=20*1024*1024;
+function inferAdminTestimonialVideoProvider(url,current=''){
+  const u=String(url||'').trim().toLowerCase(), c=String(current||'').trim();
+  if(u.includes('b2.multiprintt.workers.dev/testimonio_videos/'))return 'b2_testimonial';
+  if(u.includes('raw.githubusercontent.com/')||u.includes('github.com/'))return 'github';
+  if(c==='b2_testimonial'&&u.includes('/testimonio_videos/'))return 'b2_testimonial';
+  if(c==='github'&&u)return 'github';
+  return u?'url':(c||'url');
+}
+function testimonialVideoFileKind(file){
+  const n=String(file?.name||'').toLowerCase(), t=String(file?.type||'').toLowerCase();
+  if(/^video\/webm$/.test(t)||n.endsWith('.webm'))return 'webm';
+  if(/^video\/mp4$/.test(t)||n.endsWith('.mp4')||/^video\/(quicktime|x-m4v)$/.test(t)||/\.(mov|m4v)$/.test(n))return 'mp4';
+  return '';
+}
+function b2FormatBytes(n){const x=Number(n)||0;if(x<1024)return `${x} B`;if(x<1048576)return `${(x/1024).toFixed(1)} KB`;return `${(x/1048576).toFixed(2)} MB`;}
+async function convertLocalVideoToWebM(file,onProgress){
+  const objectUrl=URL.createObjectURL(file), video=document.createElement('video');
+  video.preload='auto';video.playsInline=true;video.controls=false;
+  video.style.cssText='position:fixed;left:-10000px;top:-10000px;width:2px;height:2px;opacity:0;pointer-events:none;';
+  document.body.appendChild(video);
+  let recorder=null, raf=0, stream=null, sourceStream=null;
   try{
-    await ensureAdminWriteSession();
-    const user=auth?.currentUser;
-    if(!user||user.isAnonymous)throw Object.assign(new Error('Sesión administrativa no disponible.'),{code:'auth/not-ready'});
-    const token=await user.getIdToken(true);
-    const form=new FormData();
-    form.append('file',file,file.name||'testimonio.webm');
-    form.append('name',name);
-    const response=await fetch(`${B2_MEDIA_API}/api/testimonial-video`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:form});
-    const result=await response.json().catch(()=>({}));
-    if(!response.ok||!result?.ok)throw new Error(result?.error||`Worker respondió HTTP ${response.status}`);
-    const url=String(result.url||'').trim();
-    if(!url)throw new Error('El Worker no devolvió una URL pública para el video.');
-    const oldKey=String(currentDbItem?.videoKey||'').trim();
-    if(input){input.value=url;input.dataset.provider='b2_testimonial';input.dataset.key=String(result.key||'');input.dataset.fileName=String(result.name||file.name||'testimonio.webm');}
-    if(oldKey && oldKey!==String(result.key||'').trim()){
-      try{
-        const cleanupToken=await user.getIdToken();
-        await fetch(`${B2_MEDIA_API}/api/testimonial-video?key=${encodeURIComponent(oldKey)}`,{method:'DELETE',headers:{Authorization:`Bearer ${cleanupToken}`}});
-      }catch(cleanupError){console.warn('No se pudo retirar el WEBM anterior:',cleanupError);}
-    }
-    currentDbItem={...(currentDbItem||{}),src:url,videoProvider:'b2_testimonial',videoKey:String(result.key||''),videoFileName:String(result.name||file.name||'testimonio.webm')};
-    if(preview){preview.style.display='block';preview.src=url;preview.load();}
-    if(helper)helper.innerHTML=`WEBM · ${b2FormatBytes(Number(result.size||file.size)||file.size)} · <b>testimonio_videos/</b> · listo para guardar`;
-    if(currentDbItem?.id){
-      proPost('UPDATE_TESTIMONIAL',{itemId:String(currentDbItem.id),data:{
-        src:url,
-        videoProvider:'b2_testimonial',
-        videoKey:String(result.key||''),
-        videoFileName:String(result.name||file.name||'testimonio.webm'),
-        name:String(document.getElementById('db-name')?.value||currentDbItem?.name||'').trim(),
-        role:String(document.getElementById('db-role')?.value||currentDbItem?.role||'').trim(),
-        quote:String(document.getElementById('db-quote')?.value||currentDbItem?.quote||'').trim(),
-        theme:String(document.getElementById('db-theme')?.value||currentDbItem?.theme||'cyan').trim()
-      }});
-    }
-    window.showToast('Video WEBM subido correctamente a testimonio_videos/. Ahora pulsa Guardar cambios.');
-  }catch(e){
-    console.error('Subida testimonial WEBM:',e);
-    window.showToast('No se pudo subir el video: '+(e?.message||e?.code||'error'));
-  }finally{
-    fileInput.value='';
-  }
+    video.src=objectUrl;
+    await new Promise((resolve,reject)=>{
+      const done=()=>{cleanup();resolve()},bad=()=>{cleanup();reject(new Error('No se pudo leer el MP4.'))};
+      const cleanup=()=>{video.removeEventListener('loadedmetadata',done);video.removeEventListener('error',bad)};
+      video.addEventListener('loadedmetadata',done,{once:true});video.addEventListener('error',bad,{once:true});video.load();
+    });
+    const duration=Number(video.duration||0); if(!Number.isFinite(duration)||duration<=0)throw new Error('El MP4 no tiene una duración válida.');
+    const capture=video.captureStream||video.mozCaptureStream;
+    if(typeof capture!=='function'||typeof MediaRecorder!=='function')throw new Error('Tu navegador no permite conversión local MP4 → WEBM. Usa Edge o Chrome actualizado.');
+    const sw=Math.max(2,video.videoWidth||1280),sh=Math.max(2,video.videoHeight||720),scale=Math.min(1,1280/sw,720/sh);
+    const width=Math.max(2,Math.round(sw*scale/2)*2),height=Math.max(2,Math.round(sh*scale/2)*2),canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw new Error('No se pudo preparar el conversor.');
+    const canvasStream=canvas.captureStream(30);sourceStream=capture.call(video);const audio=sourceStream.getAudioTracks();stream=new MediaStream([...canvasStream.getVideoTracks(),...audio]);
+    const targetBytes=18.2*1024*1024,audioBps=audio.length?96000:0,desiredTotal=Math.max(450000,Math.min(2800000,targetBytes*8/duration)),videoBps=Math.max(320000,Math.floor(desiredTotal-audioBps));
+    const mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported?.(x))||'';
+    const opts=mime?{mimeType:mime,videoBitsPerSecond:videoBps,audioBitsPerSecond:audioBps||64000}:{videoBitsPerSecond:videoBps,audioBitsPerSecond:audioBps||64000};
+    const chunks=[];recorder=new MediaRecorder(stream,opts);
+    const blobPromise=new Promise((resolve,reject)=>{recorder.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};recorder.onerror=e=>reject(e.error||new Error('Falló la conversión WEBM.'));recorder.onstop=()=>resolve(new Blob(chunks,{type:'video/webm'}));});
+    const draw=()=>{if(video.readyState>=2){try{ctx.drawImage(video,0,0,width,height)}catch(e){}}onProgress?.(Math.min(99,(video.currentTime/duration)*100));if(!video.ended)raf=requestAnimationFrame(draw)};
+    video.currentTime=0;recorder.start(1000);await video.play();raf=requestAnimationFrame(draw);
+    await new Promise((resolve,reject)=>{video.addEventListener('ended',resolve,{once:true});video.addEventListener('error',()=>reject(new Error('El MP4 falló durante la conversión.')),{once:true})});
+    cancelAnimationFrame(raf);raf=0;onProgress?.(100);if(recorder.state!=='inactive')recorder.stop();const blob=await blobPromise;if(!blob.size)throw new Error('La conversión no produjo datos.');
+    return new File([blob],`${String(file.name||'testimonio').replace(/\.[^.]+$/,'')}.webm`,{type:'video/webm',lastModified:Date.now()});
+  }finally{cancelAnimationFrame(raf);try{if(recorder&&recorder.state!=='inactive')recorder.stop()}catch(e){}try{stream?.getTracks().forEach(t=>t.stop())}catch(e){}try{sourceStream?.getTracks().forEach(t=>t.stop())}catch(e){}try{video.pause()}catch(e){}video.remove();URL.revokeObjectURL(objectUrl)}
+}
+async function uploadTestimonialVideoWebM(file,name){
+  const input=document.getElementById('db-vid'),preview=document.getElementById('db-vid-preview'),helper=document.getElementById('db-vid-helper');
+  await ensureAdminWriteSession();const user=auth?.currentUser;if(!user||user.isAnonymous)throw Object.assign(new Error('Sesión administrativa no disponible.'),{code:'auth/not-ready'});
+  const token=await user.getIdToken(true),form=new FormData();form.append('file',file,file.name||'testimonio.webm');form.append('name',name);
+  const response=await fetch(`${B2_MEDIA_API}/api/testimonial-video`,{method:'POST',headers:{Authorization:`Bearer ${token}`},body:form}),result=await response.json().catch(()=>({}));
+  if(!response.ok||!result?.ok)throw new Error(result?.error||`Worker respondió HTTP ${response.status}`);
+  const url=String(result.url||'').trim();if(!url)throw new Error('El Worker no devolvió URL pública.');
+  const oldKey=String(currentDbItem?.videoKey||'').trim();
+  if(input){input.value=url;input.dataset.provider='b2_testimonial';input.dataset.key=String(result.key||'');input.dataset.fileName=String(result.name||file.name||'testimonio.webm');}
+  if(oldKey&&oldKey!==String(result.key||'').trim()){try{const ct=await user.getIdToken();await fetch(`${B2_MEDIA_API}/api/testimonial-video?key=${encodeURIComponent(oldKey)}`,{method:'DELETE',headers:{Authorization:`Bearer ${ct}`}})}catch(e){console.warn('No se pudo retirar WEBM anterior:',e)}}
+  currentDbItem={...(currentDbItem||{}),src:url,videoProvider:'b2_testimonial',videoKey:String(result.key||''),videoFileName:String(result.name||file.name||'testimonio.webm')};
+  if(preview){preview.style.display='block';preview.src=url;preview.load?.()};if(helper)helper.innerHTML=`WEBM · ${b2FormatBytes(result.size||file.size)} · <b>testimonio_videos/</b> · listo para guardar`;
+  window.showToast('Video WEBM subido correctamente a testimonio_videos/. Pulsa Guardar cambios.');
+}
+window.uploadTestimonialVideoFile=async(fileInput)=>{
+  const original=fileInput?.files?.[0];if(!original)return;const kind=testimonialVideoFileKind(original);if(!kind){window.showToast('Selecciona un video WEBM o MP4.');fileInput.value='';return;}
+  const name=String(document.getElementById('db-name')?.value||currentDbItem?.name||'testimonio').trim()||'testimonio',helper=document.getElementById('db-vid-helper');let file=original;
+  try{
+    if(kind==='mp4'){
+      if(helper)helper.innerHTML='Convirtiendo MP4 → WEBM optimizado · máximo 720p/30fps… <b>0%</b>';
+      window.showToast('Convirtiendo MP4 a WEBM optimizado…');
+      file=await convertLocalVideoToWebM(original,pct=>{if(helper)helper.innerHTML=`Convirtiendo MP4 → WEBM optimizado · máximo 720p/30fps… <b>${Math.round(pct)}%</b>`});
+      if(file.size>TESTIMONIAL_VIDEO_MAX_BYTES)throw new Error('El WEBM convertido supera 20 MB. Usa un MP4 más corto o de menor resolución.');
+    }else if(original.size>TESTIMONIAL_VIDEO_MAX_BYTES){window.showToast('El WEBM supera el máximo permitido de 20 MB.');fileInput.value='';return;}
+    await uploadTestimonialVideoWebM(file,name);
+  }catch(e){console.error('Subida/conversión testimonial:',e);window.showToast('No se pudo preparar el video: '+(e?.message||e?.code||'error'))}finally{fileInput.value=''}
 };
+
+window.openGithubTestimonialPicker=async function(){
+  let modal=document.getElementById('github-testimonial-modal');
+  if(!modal){
+    modal=document.createElement('div');modal.id='github-testimonial-modal';modal.className='modal';
+    modal.innerHTML=`<div class="modal-card" style="max-width:720px"><div class="modal-head"><div class="font-extrabold text-white text-sm"><i class="fa-brands fa-github mr-2"></i>Videos testimoniales · GitHub</div><button class="mini-btn" type="button" data-github-close><i class="fa-solid fa-xmark"></i></button></div><div class="modal-body"><div class="helper mb-2">Repositorio: <b>${GITHUB_TESTIMONIAL_REPO}</b> · carpeta <b>${GITHUB_TESTIMONIAL_PATH}/</b></div><div class="grid gap-2" id="github-testimonial-list"><div class="helper">Cargando videos…</div></div></div></div>`;
+    document.body.appendChild(modal);modal.querySelector('[data-github-close]')?.addEventListener('click',()=>modal.classList.remove('open'));modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open')});
+  }
+  modal.classList.add('open');const list=modal.querySelector('#github-testimonial-list');if(!list)return;list.innerHTML='<div class="helper"><i class="fa-solid fa-spinner fa-spin mr-1"></i>Consultando GitHub…</div>';
+  try{
+    const cacheKey='mp_github_testimonial_files_v1';let files=null;try{const raw=JSON.parse(sessionStorage.getItem(cacheKey)||'null');if(raw&&Date.now()-Number(raw.time||0)<10*60*1000)files=raw.files}catch(e){}
+    if(!Array.isArray(files)){
+      const response=await fetch(`https://api.github.com/repos/${GITHUB_TESTIMONIAL_REPO}/contents/${GITHUB_TESTIMONIAL_PATH}?ref=${GITHUB_TESTIMONIAL_BRANCH}`,{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)throw new Error(`GitHub respondió HTTP ${response.status}`);
+      const data=await response.json();files=(Array.isArray(data)?data:[]).filter(x=>x?.type==='file'&&/\.(mp4|webm|mov|m4v)$/i.test(String(x.name||''))).map(x=>({name:String(x.name),url:String(x.download_url||''),htmlUrl:String(x.html_url||'')})).filter(x=>/^https?:\/\//i.test(x.url));try{sessionStorage.setItem(cacheKey,JSON.stringify({time:Date.now(),files}))}catch(e){}
+    }
+    if(!files.length){list.innerHTML='<div class="helper">No hay videos compatibles en la carpeta de GitHub.</div>';return;}
+    list.innerHTML=files.map((f,i)=>`<button type="button" class="mini-btn text-left w-full flex items-center justify-between gap-3" data-github-video-index="${i}" style="min-height:46px"><span class="min-w-0"><i class="fa-solid fa-video mr-2 text-cyan-400"></i><b class="truncate">${esc(f.name)}</b></span><i class="fa-solid fa-check text-zinc-500"></i></button>`).join('');
+    list.querySelectorAll('[data-github-video-index]').forEach(btn=>btn.addEventListener('click',()=>{const file=files[Number(btn.dataset.githubVideoIndex)];if(!file)return;const input=document.getElementById('db-vid'),preview=document.getElementById('db-vid-preview'),helper=document.getElementById('db-vid-helper');if(input){input.value=file.url;input.dataset.provider='github';input.dataset.key='';input.dataset.fileName=file.name;}currentDbItem={...(currentDbItem||{}),src:file.url,videoProvider:'github',videoKey:'',videoFileName:file.name};if(preview){preview.style.display='block';preview.src=file.url;preview.load?.();}if(helper)helper.innerHTML=`GitHub · <b>${esc(file.name)}</b> · origen externo · listo para guardar`;modal.classList.remove('open');window.showToast('Video de GitHub seleccionado. Pulsa Guardar cambios.')}));
+  }catch(e){console.error('GitHub picker:',e);list.innerHTML=`<div class="helper text-red-300">No se pudo cargar GitHub: ${esc(e?.message||'error')}</div>`}
+};
+
+document.addEventListener('input',e=>{if(e.target?.id==='db-vid'){const src=String(e.target.value||'').trim();e.target.dataset.provider=inferAdminTestimonialVideoProvider(src,e.target.dataset.provider||'url');if(currentDbItem){currentDbItem.src=src;currentDbItem.videoProvider=e.target.dataset.provider;}}});
 
 window.__testimonialCourseOptions=[];
 window.loadTestimonialCourseOptions=async function(selectedValue=''){
@@ -1824,10 +1869,10 @@ if(type==='product'){
   setTimeout(()=>window.updateProductPriceMode(),0);
 }
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" inputmode="decimal" value="${esc(String(mpAdminParseMoney(d.price??d.precio,'') ?? ''))}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
-if(type==='testimonial_video')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'Caso de Éxito')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div><div><label class="lbl">Video testimonial · WEBM</label><div class="flex gap-2"><input id="db-vid" class="field flex-1" value="${esc(d.src||'')}" readonly placeholder="Sube un video .webm"><input id="db-vid-file" type="file" accept="video/webm,.webm" class="hidden" onchange="window.uploadTestimonialVideoFile(this)"><button type="button" class="mini-btn" title="Subir video testimonial WEBM" onclick="document.getElementById('db-vid-file')?.click()"><i class="fa-solid fa-cloud-arrow-up"></i></button></div><video id="db-vid-preview" class="w-full mt-2 rounded-lg border border-white/10 bg-black/30 max-h-56" controls muted playsinline preload="metadata" ${d.src?`src="${esc(d.src)}"`:'style="display:none"'}></video><div id="db-vid-helper" class="helper mt-1">Solo WEBM · máximo 20 MB. Los videos se guardan exclusivamente en <b>testimonio_videos/</b> del bucket. Esta subida aparece únicamente aquí.</div></div><div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
+if(type==='testimonial_video')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Rol</label><input id="db-role" class="field" value="${esc(d.role||'Caso de Éxito')}"></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div><div><label class="lbl">Video testimonial · WEBM</label><div class="flex gap-2"><input id="db-vid" class="field flex-1" value="${esc(d.src||'')}" placeholder="URL de GitHub o video WEBM en B2"><input id="db-vid-file" type="file" accept="video/webm,.webm,video/mp4,.mp4,video/quicktime,.mov,.m4v" class="hidden" onchange="window.uploadTestimonialVideoFile(this)"><button type="button" class="mini-btn" title="Seleccionar video desde GitHub" onclick="window.openGithubTestimonialPicker()"><i class="fa-brands fa-github"></i></button><button type="button" class="mini-btn" title="Subir WEBM o convertir MP4" onclick="document.getElementById('db-vid-file')?.click()"><i class="fa-solid fa-cloud-arrow-up"></i></button></div><video id="db-vid-preview" class="w-full mt-2 rounded-lg border border-white/10 bg-black/30 max-h-56" controls muted playsinline preload="metadata" ${d.src?`src="${esc(d.src)}"`:'style="display:none"'}></video><div id="db-vid-helper" class="helper mt-1">WEBM · máximo 20 MB. MP4 se convierte automáticamente a WEBM optimizado antes de subir. También puedes seleccionar un video existente de GitHub. Los videos B2 se guardan exclusivamente en <b>testimonio_videos/</b>.</div></div><div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
 if(type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">Curso</label><select id="db-course" class="field" aria-describedby="db-course-help"><option value="">Cargando cursos…</option></select><div id="db-course-help" class="helper mt-1">Selecciona el curso realizado por el alumno. La lista se obtiene de los cursos registrados en Academia.</div></div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div><div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
 
-document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(type==='testimonial_text')setTimeout(()=>window.loadTestimonialCourseOptions(String(d.course||d.role||'')),0);if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}if(type==='testimonial_video'||type==='testimonial_text')window.setTestimonialThemeChoice(d.theme||(type==='testimonial_video'?'cyan':'pink'));if(type==='testimonial_video'){const vi=document.getElementById('db-vid');const pv=document.getElementById('db-vid-preview');if(vi){vi.dataset.provider=String(d.videoProvider||'');vi.dataset.key=String(d.videoKey||'');vi.dataset.fileName=String(d.videoFileName||'');}if(pv&&d.src){pv.src=String(d.src);try{pv.load()}catch(e){}}}};
+document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(type==='testimonial_text')setTimeout(()=>window.loadTestimonialCourseOptions(String(d.course||d.role||'')),0);if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}if(type==='testimonial_video'||type==='testimonial_text')window.setTestimonialThemeChoice(d.theme||(type==='testimonial_video'?'cyan':'pink'));if(type==='testimonial_video'){const vi=document.getElementById('db-vid');const pv=document.getElementById('db-vid-preview');const inferred=inferAdminTestimonialVideoProvider(String(d.src||''),String(d.videoProvider||''));if(vi){vi.dataset.provider=inferred;vi.dataset.key=String(d.videoKey||'');vi.dataset.fileName=String(d.videoFileName||'');}if(pv&&d.src){pv.style.display='block';pv.src=String(d.src);try{pv.load()}catch(e){}}}};
 function normalizeProductImageField(raw){
   return String(raw??'').split(/\r?\n|,/).map(v=>normalizeSelectedMediaUrl(v)).filter(Boolean).join('\n');
 }
@@ -1969,7 +2014,7 @@ if(t==='testimonial_video'||t==='testimonial_text'){
   if(!['cyan','pink','violet','amber','emerald'].includes(payload.theme))payload.theme='pink';
   if(t==='testimonial_video'){
     payload.src=vidInput?.value.trim()||'';
-    payload.videoProvider=String(vidInput?.dataset?.provider||currentDbItem?.videoProvider||'url').trim()||'url';
+    payload.videoProvider=inferAdminTestimonialVideoProvider(payload.src,vidInput?.dataset?.provider||currentDbItem?.videoProvider||'');
     payload.videoKey=String(vidInput?.dataset?.key||currentDbItem?.videoKey||'').trim();
     payload.videoFileName=String(vidInput?.dataset?.fileName||currentDbItem?.videoFileName||'').trim();
     if(payload.videoProvider==='b2_testimonial' && payload.videoKey && !payload.videoKey.startsWith('testimonio_videos/'))return window.showToast('La ruta del video testimonial no es válida.');
