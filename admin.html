@@ -568,6 +568,12 @@ html{color-scheme:dark;}.glass{background:linear-gradient(180deg,rgba(18,19,24,.
   }
 }
 </style>
+<style id="google-picker-layer-fix-2026-09-30">
+/* Google Picker se monta directamente en <body>; debe quedar por encima de los modales del Builder. */
+.picker-dialog-bg{z-index:30000!important;}
+.picker-dialog{z-index:30001!important;}
+.picker-dialog-content{position:relative!important;}
+</style>
 <style>.help-btn{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin-left:4px;border-radius:999px;border:1px solid rgba(139,92,246,.45);background:rgba(139,92,246,.10);color:#c4b5fd;font-size:9px;font-weight:800;cursor:help;vertical-align:middle}.seo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.seo-span{grid-column:1 / -1}@media(max-width:760px){.seo-grid{grid-template-columns:1fr}.seo-span{grid-column:auto}}#seo-modal .modal-card{max-width:1000px}#seo-robots-preview,#seo-sitemap-preview{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.5}</style>
 <style id="admin-mobile-performance-unified-2026">@media (max-width:760px){
   html,body{overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent;}
@@ -1719,6 +1725,8 @@ window.updateProductPriceMode=function(){
  * Google Drive Picker — solo testimonios de video
  * Lazy-load para no afectar el arranque normal del editor.
  * ================================================================ */
+const MP_GOOGLE_TESTIMONIAL_FOLDER_ID='1AsSD5GCb7g5Qiw-ftHUf0G4JrvV9BU3F';
+const MP_GOOGLE_TESTIMONIAL_FOLDER_URL='https://drive.google.com/drive/u/7/folders/'+MP_GOOGLE_TESTIMONIAL_FOLDER_ID;
 const MP_GOOGLE_PICKER_CONFIG={
   apiKey:'',
   clientId:'',
@@ -1769,37 +1777,100 @@ function mpWaitForGoogleToken(){
     try{mpGoogleTokenClient.requestAccessToken({prompt:'consent'});}catch(e){reject(e);}
   });
 }
+async function mpVerifyTestimonialDriveFolder(fileId,picked,responseData,token){
+  const expected=MP_GOOGLE_TESTIMONIAL_FOLDER_ID;
+  const directParent=String(picked?.[google.picker.Document.PARENT_ID]||picked?.parentId||'').trim();
+  if(directParent)return directParent===expected;
+  const responseParents=responseData?.[google.picker.Response.PARENTS]||responseData?.parents||[];
+  if(Array.isArray(responseParents)&&responseParents.length){
+    const ids=responseParents.map(parent=>String(parent?.[google.picker.Document.ID]||parent?.id||'').trim()).filter(Boolean);
+    if(ids.length)return ids.includes(expected);
+  }
+  try{
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}?fields=id,name,mimeType,parents&supportsAllDrives=true`,{headers:{Authorization:`Bearer ${token}`}});
+    if(!res.ok)return false;
+    const meta=await res.json();
+    const parents=Array.isArray(meta?.parents)?meta.parents.map(String):[];
+    return parents.includes(expected);
+  }catch(e){
+    console.warn('No se pudo verificar la carpeta de Google Drive:',e);
+    return false;
+  }
+}
 window.pickTestimonialVideoFromGoogleDrive=async()=>{
   try{
     await mpEnsureGoogleDrivePicker();
     const token=await mpWaitForGoogleToken();
     const view=new google.picker.DocsView(google.picker.ViewId.DOCS)
+      .setParent(MP_GOOGLE_TESTIMONIAL_FOLDER_ID)
       .setIncludeFolders(false)
       .setMimeTypes('video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v');
     const picker=new google.picker.PickerBuilder()
       .setDeveloperKey(mpGoogleDriveApiKey())
       .setAppId(MP_GOOGLE_PICKER_CONFIG.appId)
       .setOAuthToken(token)
+      .setOrigin(window.location.protocol+'//'+window.location.host)
       .enableFeature(google.picker.Feature.NAV_HIDDEN)
-      .setTitle('Selecciona el video testimonial')
+      .setTitle('Selecciona un video testimonial · Carpeta exclusiva')
       .addView(view)
       .setCallback(data=>{
-        if(data.action!==google.picker.Action.PICKED)return;
-        const picked=data.docs?.[0];if(!picked)return;
-        const mime=String(picked.mimeType||'').toLowerCase();
-        if(!mime.startsWith('video/'))return window.showToast('Selecciona únicamente un archivo de video.');
-        const id=String(picked.id||'').trim();
-        const url=id?`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`:String(picked.url||'').trim();
+        const action=data?.[google.picker.Response.ACTION]||data?.action||'';
+        if(action===google.picker.Action.CANCEL)return;
+        if(action!==google.picker.Action.PICKED){
+          console.warn('Google Picker respuesta:',data);
+          const err=String(data?.error?.message||data?.error||'').trim();
+          if(action===google.picker.Action.ERROR||err)window.showToast('Google Drive no pudo completar la selección.'+(err?' '+err:''));
+          return;
+        }
+        const docs=data?.[google.picker.Response.DOCUMENTS]||data?.docs||[];
+        const picked=docs[0];
+        if(!picked)return window.showToast('Google Drive no devolvió el archivo seleccionado.');
+        const mime=String(picked?.[google.picker.Document.MIME_TYPE]||picked?.mimeType||'').toLowerCase();
+        if(mime&&!mime.startsWith('video/'))return window.showToast('Selecciona únicamente un archivo de video.');
+        const id=String(picked?.[google.picker.Document.ID]||picked?.id||'').trim();
+        if(!id)return window.showToast('Google Drive no devolvió un ID válido para el video.');
+        const insideFolder=await mpVerifyTestimonialDriveFolder(id,picked,data,token);
+        if(!insideFolder){
+          window.showToast('Ese video no pertenece a la carpeta exclusiva de testimoniales. Selecciona un video dentro de la carpeta configurada.');
+          return;
+        }
+        const name=String(picked?.[google.picker.Document.NAME]||picked?.name||'Video seleccionado').trim();
+        const pickedUrl=String(picked?.[google.picker.Document.URL]||picked?.url||'').trim();
+        const url=id?`https://drive.google.com/uc?export=download&id=${encodeURIComponent(id)}`:pickedUrl;
+        if(!url)return window.showToast('Google Drive no devolvió una URL utilizable para el video.');
         const input=document.getElementById('db-vid');
         if(input){
-          input.value=url;input.dataset.provider='google_drive';input.dataset.driveId=id;input.dataset.fileName=String(picked.name||'');
+          input.value=url;input.dataset.provider='google_drive';input.dataset.driveId=id;input.dataset.fileName=name;
           input.dispatchEvent(new Event('input',{bubbles:true}));
         }
+        currentDbItem={...(currentDbItem||{}),src:url,videoProvider:'google_drive',driveFileId:id,videoFileName:name};
         const helper=document.getElementById('db-vid-helper');
-        if(helper)helper.textContent=`Google Drive · ${String(picked.name||'Video seleccionado')} · Debe permitir acceso mediante enlace para visitantes.`;
-        window.showToast('Video de Google Drive seleccionado.');
+        if(helper)helper.textContent=`Google Drive · ${name} · El archivo debe permitir acceso mediante enlace para visitantes.`;
+        /* Actualiza inmediatamente el canvas, sin esperar a Guardar cambios. */
+        if(currentDbItem?.id){
+          proPost('UPDATE_TESTIMONIAL',{itemId:String(currentDbItem.id),data:{
+            src:url,videoProvider:'google_drive',driveFileId:id,videoFileName:name,
+            name:String(document.getElementById('db-name')?.value||currentDbItem?.name||'').trim(),
+            role:String(document.getElementById('db-role')?.value||currentDbItem?.role||'').trim(),
+            quote:String(document.getElementById('db-quote')?.value||currentDbItem?.quote||'').trim(),
+            theme:String(document.getElementById('db-theme')?.value||currentDbItem?.theme||'cyan').trim()
+          }});
+        }
+        window.showToast('Video de Google Drive seleccionado y colocado en el testimonio.');
+        setTimeout(()=>{
+          document.querySelectorAll('.picker-dialog,.picker-dialog-bg').forEach(el=>{el.style.removeProperty('z-index');});
+        },250);
       }).build();
     picker.setVisible(true);
+    /* Google crea estos nodos después de setVisible(). Forzamos la capa superior. */
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('.picker-dialog-bg').forEach(el=>el.style.setProperty('z-index','30000','important'));
+      document.querySelectorAll('.picker-dialog').forEach(el=>el.style.setProperty('z-index','30001','important'));
+    });
+    setTimeout(()=>{
+      document.querySelectorAll('.picker-dialog-bg').forEach(el=>el.style.setProperty('z-index','30000','important'));
+      document.querySelectorAll('.picker-dialog').forEach(el=>el.style.setProperty('z-index','30001','important'));
+    },50);
   }catch(e){
     console.error('Google Drive Picker:',e);
     window.showToast(e?.message||'No se pudo abrir Google Drive.');
