@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdminUser() {
+      return isSignedIn() && request.auth.token.firebase.sign_in_provider == 'password';
+    }
+
+    function validDemandBase() {
+      return request.resource.data.keys().hasOnly(['cartAdds','checkoutIntents','updatedAt'])
+        && request.resource.data.get('cartAdds', 0) is int
+        && request.resource.data.get('checkoutIntents', 0) is int
+        && request.resource.data.get('cartAdds', 0) >= 0
+        && request.resource.data.get('checkoutIntents', 0) >= 0
+        && request.resource.data.get('updatedAt', 0) is int
+        && request.resource.data.get('updatedAt', 0) > 0;
+    }
+
+    function validDemandCreate() {
+      let cart = request.resource.data.get('cartAdds', 0);
+      let checkout = request.resource.data.get('checkoutIntents', 0);
+      return validDemandBase()
+        && ((cart == 1 && checkout == 0) || (cart == 0 && checkout >= 1 && checkout <= 50));
+    }
+
+    function validDemandUpdate() {
+      let oldCart = resource.data.get('cartAdds', 0);
+      let oldCheckout = resource.data.get('checkoutIntents', 0);
+      let newCart = request.resource.data.get('cartAdds', 0);
+      let newCheckout = request.resource.data.get('checkoutIntents', 0);
+      let cartEvent = newCart == oldCart + 1 && newCheckout == oldCheckout;
+      let checkoutEvent = newCart == oldCart && newCheckout > oldCheckout && newCheckout <= oldCheckout + 50;
+      return validDemandBase() && (cartEvent || checkoutEvent);
+    }
+
+    match /artifacts/multiprintt-web/public/data/products/{document=**} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /artifacts/multiprintt-web/public/data/courses/{document=**} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /artifacts/multiprintt-web/public/data/settings/{document=**} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    // Testimonios: contenido público; creación/edición/eliminación solo por una sesión administrativa Email/Password.
+    match /artifacts/multiprintt-web/public/data/testimonials/{document=**} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /artifacts/multiprintt-web/public/data/productDemand/{productId} {
+      allow read: if true;
+      allow create: if isAdminUser() || (isSignedIn() && validDemandCreate());
+      allow update: if isAdminUser() || (isSignedIn() && validDemandUpdate());
+      allow delete: if isAdminUser();
+    }
+
+    match /artifacts/multiprintt-web/public/data/auditLogs/{document=**} {
+      allow read, write: if isAdminUser();
+    }
+
+    match /artifacts/multiprintt-web/public/data/imgbbLibrary/{document=**} {
+      allow read, write: if isAdminUser();
+    }
+    match /artifacts/multiprintt-web/public/data/imgbbUrlIndex/{document=**} {
+      allow read, write: if isAdminUser();
+    }
+    match /artifacts/multiprintt-web/public/data/imgbbSpeedManifest/{document=**} {
+      allow read, write: if isAdminUser();
+    }
+    match /productos/{document=**} {
+      allow read, write: if isAdminUser();
+    }
+    match /cursos/{document=**} {
+      allow read, write: if isAdminUser();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

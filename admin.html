@@ -2443,127 +2443,134 @@ const MP_LEGACY_B2_MIGRATION={
     {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json',key:'media/manifests/imagenes.json'},
     {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json',key:'media/manifests/productos.json'}
   ],
-  map:{
-    'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp':'https://b2.multiprintt.workers.dev/media/site/logo_mejorado.webp',
-    'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/favicon.webp':'https://b2.multiprintt.workers.dev/media/site/favicon.webp',
-    'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4':'https://b2.multiprintt.workers.dev/testimonio_videos/testimonio0.mp4',
-    'https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4':'https://b2.multiprintt.workers.dev/media/videos/capacitacion-1.mp4',
-    'https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01':'https://b2.multiprintt.workers.dev/media/videos/capacitacion-1.mp4#t=0.01'
-  }
+  map:{}
 };
 function mpRewriteBase64LegacyUrls(text,map){return String(text||'').replace(/([A-Za-z0-9+/]{40,}={0,2})/g,(all)=>{try{const decoded=atob(all);const replacement=map[decoded];if(!replacement)return all;return btoa(replacement)}catch(e){return all}})}
-function mpRewriteLegacyUrls(text,map){let out=String(text||'');for(const [a,b] of Object.entries(map))out=out.split(a).join(b);return mpRewriteBase64LegacyUrls(out,map)}
-async function mpMigrateOneExternal(item,progress){
-  const result=await b2Fetch('/api/migrate-external',{method:'POST',timeoutMs:60000,body:JSON.stringify(item)});
-  progress?.(result);return result;
-}
-function mpCanonicalExternalUrl(raw){
-  try{const u=new URL(String(raw||'').trim());u.hash='';u.search='';return u.toString();}catch{return String(raw||'').trim().split('#')[0].split('?')[0]}
-}
+function mpRewriteLegacyUrls(text,map){let out=String(text||'');for(const [a,b] of Object.entries(map||{}))out=out.split(a).join(b);return mpRewriteBase64LegacyUrls(out,map||{})}
+function mpCanonicalExternalUrl(raw){try{const u=new URL(String(raw||'').trim());u.hash='';u.search='';return u.toString()}catch{return String(raw||'').trim().split('#')[0].split('?')[0]}}
 function mpCanonicalMigrationKey(raw){return String(raw||'').trim().replace(/\\+/g,'/').replace(/^\/+/, '')}
-window.migrateLegacyExternalMediaToB2=async function(){
-  if(!window.__mpAuth?.currentUser||window.__mpAuth.currentUser.isAnonymous){return window.showToast('Inicia sesión como administrador antes de migrar medios.');}
-  if(!confirm('Se copiarán los medios históricos de GitHub/Cloudinary a Backblaze B2 y se actualizarán sus referencias en Firebase. Los archivos ya existentes o repetidos se detectarán y no se volverán a duplicar. ¿Continuar?'))return;
+function mpLegacyKeyFromUrl(raw){
   try{
-    const map={};const results=[];const seenSources=new Map();const seenKeys=new Map();
-    const processMigration=async(item)=>{
-      const sourceUrl=mpCanonicalExternalUrl(item?.sourceUrl);const key=mpCanonicalMigrationKey(item?.key);
-      if(!sourceUrl||!key)return {ok:false,skipped:true,duplicate:true};
-      if(seenSources.has(sourceUrl)){const prior=seenSources.get(sourceUrl);map[sourceUrl]=prior.url||prior;return {ok:true,skipped:true,duplicate:true,reason:'same-source',url:map[sourceUrl]};}
-      if(seenKeys.has(key)){const prior=seenKeys.get(key);const resolved=prior.url||prior;map[sourceUrl]=resolved;return {ok:true,skipped:true,duplicate:true,reason:'same-target',url:resolved};}
-      const res=await mpMigrateOneExternal({sourceUrl,key,contentType:item?.contentType||''});
-      const resolved=res?.url||'';if(resolved)map[sourceUrl]=resolved;
-      const rec={...res,sourceUrl,key};seenSources.set(sourceUrl,rec);seenKeys.set(key,rec);results.push(rec);return rec;
-    };
-    // 1) Known static assets and manifests. We DO NOT blindly trust the hardcoded map:
-    // the Worker checks B2 first, so an empty/new bucket is populated, while existing files are skipped.
-    for(const item of MP_LEGACY_B2_MIGRATION.assets){
-      if(!item.sourceUrl)continue;
-      const res=await processMigration(item);
-      if(res?.duplicate && res?.url)map[mpCanonicalExternalUrl(item.sourceUrl)]=res.url;
+    const u=new URL(mpCanonicalExternalUrl(raw));
+    if(u.hostname==='raw.githubusercontent.com'){
+      const p=u.pathname.replace(/^\/+/, '');
+      const mark='kelvinthegamerc1-lab/multiprintt/refs/heads/main/';
+      const rel=p.startsWith(mark)?p.slice(mark.length).replace(/^recursos\//i,''):p.split('/').pop()||'asset.bin';
+      if(rel==='logo_mejorado.webp')return 'media/site/logo_mejorado.webp';
+      if(rel==='favicon.webp')return 'media/site/favicon.webp';
+      if(/^testimonio\//i.test(rel))return 'testimonio_videos/'+rel.replace(/^testimonio\//i,'');
+      if(rel==='imagenes.json')return 'media/manifests/imagenes.json';
+      if(/^productos\/imagenes\.json$/i.test(rel))return 'media/manifests/productos.json';
+      if(/^productos\//i.test(rel))return 'media/productos/'+rel.replace(/^productos\//i,'');
+      return 'media/general/'+rel;
     }
-    // 2) Read both GitHub manifests through the authenticated Worker and migrate every referenced asset.
+    if(u.hostname==='res.cloudinary.com'){
+      const parts=u.pathname.replace(/^\/+/,'').split('/');let i=parts.indexOf('upload');let rel=i>=0?parts.slice(i+1):parts.slice(2);while(rel.length && (/^v\d+$/i.test(rel[0])||/^[a-z]{1,4}_[^/]+$/i.test(rel[0])))rel.shift();return 'media/cloudinary/'+(rel.join('/')||'asset.bin');
+    }
+  }catch(e){}
+  return '';
+}
+async function mpMigrateOneExternal(item,progress){const result=await b2Fetch('/api/migrate-external',{method:'POST',timeoutMs:60000,body:JSON.stringify(item)});progress?.(result);return result}
+async function mpMigrateExternalBatch(items){
+  const clean=(items||[]).filter(x=>x?.sourceUrl).slice(0,25);
+  if(!clean.length)return {ok:true,results:[]};
+  return await b2Fetch('/api/migrate-external-batch',{method:'POST',timeoutMs:60000,body:JSON.stringify({items:clean})});
+}
+function mpCollectExternalUrls(value,set=new Set()){
+  if(typeof value==='string'){
+    const re=/https:\/\/(?:raw\.githubusercontent\.com|res\.cloudinary\.com)\/[^\s"'<>\\)]+/ig;let m;while((m=re.exec(value))){const u=mpCanonicalExternalUrl(m[0]);if(u)set.add(u)}
+  }else if(Array.isArray(value)){for(const v of value)mpCollectExternalUrls(v,set)}
+  else if(value&&typeof value==='object'){for(const v of Object.values(value))mpCollectExternalUrls(v,set)}
+  return set;
+}
+function mpB2UrlWithFragment(url,resolved){const raw=String(url||'');const hash=raw.indexOf('#');return resolved+(hash>=0?raw.slice(hash):'')}
+window.migrateLegacyExternalMediaToB2=async function(){
+  if(!window.__mpAuth?.currentUser||window.__mpAuth.currentUser.isAnonymous)return window.showToast('Inicia sesión como administrador antes de migrar medios.');
+  if(!confirm('Se copiarán REALMENTE los archivos multimedia de GitHub y Cloudinary al bucket Backblaze B2, como se hace con ImgBB. Los archivos ya existentes o repetidos se detectarán y no se duplicarán. Después se reemplazarán las referencias antiguas en Firebase. ¿Continuar?'))return;
+  const btn=document.querySelector('[onclick*="migrateLegacyExternalMediaToB2"]');if(btn)btn.disabled=true;
+  try{
+    const map={...(MP_LEGACY_B2_MIGRATION.map||{})};const results=[];const seenSources=new Set();const seenKeys=new Set();
+    const enqueue=(sourceUrl,key)=>{const source=mpCanonicalExternalUrl(sourceUrl);const target=mpCanonicalMigrationKey(key||mpLegacyKeyFromUrl(source));if(!source||!target)return;if(seenSources.has(source)||seenKeys.has(target))return;seenSources.add(source);seenKeys.add(target);results.push({sourceUrl:source,key:target})};
+
+    // A. Repositorio GitHub: enumeramos TODOS los archivos de medios dentro de recursos/,
+    // no solo los que aparecieron en imagenes.json.
+    const tree=await b2Fetch('/api/github-tree',{method:'GET',timeoutMs:30000});
+    for(const item of (tree.items||[]))enqueue(item.sourceUrl,item.key);
+    // Fallback/seguro: incluir los históricos explícitos aunque GitHub Tree API estuviera incompleto.
+    for(const item of MP_LEGACY_B2_MIGRATION.assets)enqueue(item.sourceUrl,item.key);
+
+    // B. Cloudinary + GitHub que ya estén guardados en Firestore: recorremos TODOS los campos,
+    // no solo image/src, para que no quede ninguna referencia vieja escondida en settings/layout.
+    const collections=['products','courses','testimonials','settings'];
+    for(const col of collections){
+      const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data',col));
+      for(const ds of snap.docs)for(const source of mpCollectExternalUrls(ds.data()||new Set()))enqueue(source,mpLegacyKeyFromUrl(source));
+    }
+
+    // C. URL históricas presentes en este administrador (incluye Cloudinary conocido) solo como respaldo de migración.
+    for(const source of mpCollectExternalUrls(document.documentElement.outerHTML))enqueue(source,mpLegacyKeyFromUrl(source));
+
+    // D. Migración real, por lotes. El Worker hace HEAD del destino B2 antes de descargar/subir.
+    const batchSize=10;let uploaded=0,skipped=0,failed=0;
+    for(let i=0;i<results.length;i+=batchSize){
+      const batch=results.slice(i,i+batchSize);
+      const response=await mpMigrateExternalBatch(batch);
+      for(const r of (response.results||[])){
+        if(r.ok){if(r.url)map[mpCanonicalExternalUrl(r.sourceUrl)]=r.url;r.skipped?skipped++:uploaded++;}else failed++;
+      }
+    }
+
+    // E. Reescribimos los dos manifests oficiales y los volvemos a subir a B2 ya apuntando a B2.
     const manifests=[
-      {source:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json',base:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/',prefix:'media/general/'},
-      {source:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json',base:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/',prefix:'media/productos/'},
+      {source:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json',key:'media/manifests/imagenes.json',base:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/'},
+      {source:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json',key:'media/manifests/productos.json',base:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/'}
     ];
     for(const m of manifests){
-      const fetched=await b2Fetch('/api/external-json?sourceUrl='+encodeURIComponent(m.source));
-      let arr=[];const data=fetched.data;if(Array.isArray(data))arr=data;else if(Array.isArray(data?.items))arr=data.items;else if(Array.isArray(data?.imagenes))arr=data.imagenes;else for(const v of Object.values(data||{}))if(Array.isArray(v))arr.push(...v);
-      for(let i=0;i<arr.length;i++){
-        const raw=typeof arr[i]==='string'?arr[i]:(arr[i]?.url||arr[i]?.src||'');if(!raw)continue;
-        const sourceUrl=/^https?:\/\//i.test(raw)?raw:new URL(raw,m.base).toString();
-        if(/^https:\/\/b2\.multiprintt\.workers\.dev\//i.test(sourceUrl))continue;
-        if(!/^https:\/\/raw\.githubusercontent\.com\//i.test(sourceUrl))continue;
-        const cleanPath=new URL(sourceUrl).pathname.split('/recursos/')[1]||('asset_'+i);
-        const key=m.prefix+cleanPath.replace(/^productos\//i,'');
-        const res=await processMigration({sourceUrl,key});
-        if(res?.duplicate && res?.url)map[mpCanonicalExternalUrl(sourceUrl)]=res.url;
-      }
-      // Reescribe y publica el manifiesto ya sin referencias a GitHub.
-      const rewriteManifestValue=(value)=>{
-        if(typeof value==='string'){
-          const rawUrl=value.trim();
-          const canonical=mpCanonicalExternalUrl(rawUrl);
-          if(map[canonical]) return map[canonical];
-          if(map[rawUrl]) return map[rawUrl];
-          if(/^https?:\/\//i.test(rawUrl)) return value;
+      try{
+        const fetched=await b2Fetch('/api/external-json?sourceUrl='+encodeURIComponent(m.source),{method:'GET',timeoutMs:30000});
+        const rewrite=async(value)=>{
+          if(typeof value==='string'){
+            const raw=value.trim();const abs=/^https?:\/\//i.test(raw)?raw:new URL(raw,m.base).toString();
+            const canonical=mpCanonicalExternalUrl(abs);
+            if(map[canonical])return mpB2UrlWithFragment(raw,map[canonical]);
+            const key=mpLegacyKeyFromUrl(abs);if(key){const mig=await mpMigrateOneExternal({sourceUrl:canonical,key});if(mig?.url){map[canonical]=mig.url;return mpB2UrlWithFragment(raw,mig.url)}}
+            return value;
+          }
+          if(Array.isArray(value)){const out=[];for(const v of value)out.push(await rewrite(v));return out}
+          if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=await rewrite(v);return out}
           return value;
-        }
-        if(Array.isArray(value)) return value.map(rewriteManifestValue);
-        if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=rewriteManifestValue(v);return out;}
-        return value;
-      };
-      const rewrittenManifest=rewriteManifestValue(data);
-      const targetManifest=m.prefix==='media/products/'?'media/manifests/productos.json':'media/manifests/imagenes.json';
-      const uploaded=await b2Fetch('/api/upload-json',{method:'POST',timeoutMs:60000,body:JSON.stringify({key:targetManifest,data:rewrittenManifest})});
-      results.push({...uploaded,key:targetManifest,kind:'manifest'});
+        };
+        const rewritten=await rewrite(fetched.data);
+        await b2Fetch('/api/upload-json',{method:'POST',timeoutMs:30000,body:JSON.stringify({key:m.key,data:rewritten})});
+      }catch(e){console.warn('Manifest migration:',m.source,e);failed++}
     }
-    // 3) Migrate external URLs found in Firebase products/courses/testimonials.
-    const paths=[
-      ['products',d=>String(d.image||'').split(/\r?\n|,/).map(x=>x.trim()).filter(Boolean)],
-      ['courses',d=>[String(d.image||'').trim()].filter(Boolean)],
-      ['testimonials',d=>[String(d.src||'').trim()].filter(Boolean)]
-    ];
-    for(const [col,extract] of paths){
+
+    // F. Reescribimos Firestore en profundidad: productos, cursos, testimonios y settings.
+    for(const col of collections){
       const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data',col));
       for(const ds of snap.docs){
-        const d={...ds.data()};let changed=false;
-        if(col==='products'&&d.image){const vals=[];for(const u of extract(d)){const r=await window.migrateLegacyUrlIfNeeded(u,'media/catalog/',d.category||'general',map);vals.push(r);if(r!==u)changed=true;}if(changed)d.image=vals.join('\\n');}
-        else if(col==='courses'&&d.image){const u=String(d.image).trim();const r=await window.migrateLegacyUrlIfNeeded(u,'media/courses/','courses',map);if(r!==u){d.image=r;changed=true;}}
-        else if(col==='testimonials'&&d.src){const u=String(d.src).trim();const r=await window.migrateLegacyUrlIfNeeded(u,d.videoKey?'testimonio_videos/':'media/testimonios/','testimonials',map);if(r!==u){d.src=r;d.videoProvider='b2';d.updatedAt=Date.now();changed=true;}}
-        if(changed){await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,ds.id),d,{merge:true});}
+        const original=ds.data()||{};let changed=false;
+        const migrateValue=async(value)=>{
+          if(typeof value==='string'){
+            const matches=[...value.matchAll(/https:\/\/(?:raw\.githubusercontent\.com|res\.cloudinary\.com)\/[^\s"'<>\\)]+/ig)];
+            if(!matches.length)return mpRewriteLegacyUrls(value,map);
+            let out=value;for(const match of matches){const u=match[0];const canonical=mpCanonicalExternalUrl(u);let resolved=map[canonical];if(!resolved){const key=mpLegacyKeyFromUrl(canonical);if(key){const r=await mpMigrateOneExternal({sourceUrl:canonical,key});resolved=r?.url||'';if(resolved)map[canonical]=resolved}}if(resolved){out=out.split(u).join(mpB2UrlWithFragment(u,resolved));changed=true;}}return mpRewriteLegacyUrls(out,map);
+          }
+          if(Array.isArray(value)){const out=[];for(const v of value)out.push(await migrateValue(v));return out}
+          if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=await migrateValue(v);return out}
+          return value;
+        };
+        const migrated=await migrateValue(original);
+        if(JSON.stringify(migrated)!==JSON.stringify(original))await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,ds.id),migrated,{merge:true});
       }
     }
-    // 4) Migrate URLs embedded anywhere in known settings/layout/template records.
-    const settingIds=['seo','layout','templateBase','mediaSources'];
-    const migrateSettingValue=async(value,settingId)=>{
-      if(typeof value==='string'){
-        const u=value.trim();
-        if(/^https:\/\/raw\.githubusercontent\.com\//i.test(u)||/^https:\/\/res\.cloudinary\.com\//i.test(u)){
-          try{return await window.migrateLegacyUrlIfNeeded(u,'media/settings/','settings',map)}catch(e){console.warn('Migración setting '+settingId+': '+u,e);return value;}
-        }
-        return mpRewriteLegacyUrls(value,map);
-      }
-      if(Array.isArray(value)){const out=[];for(const v of value)out.push(await migrateSettingValue(v,settingId));return out;}
-      if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=await migrateSettingValue(v,settingId);return out;}
-      return value;
-    };
-    for(const settingId of settingIds){
-      const ref=doc(db,'artifacts',APP_ID,'public','data','settings',settingId);const snap=await getDoc(ref);if(!snap.exists())continue;
-      const d=snap.data()||{};const migrated=await migrateSettingValue(d,settingId);const before=JSON.stringify(d),after=JSON.stringify(migrated);
-      if(before!==after){await setDoc(ref,migrated,{merge:true});}
-    }
-    // Local/runtime source settings are now B2-only.
+
     const cleanMedia={generalMode:'auto',productMode:'auto',generalJson:'https://b2.multiprintt.workers.dev/media/manifests/imagenes.json',generalBase:'https://b2.multiprintt.workers.dev/media/general/',productJson:'https://b2.multiprintt.workers.dev/media/manifests/productos.json',productBase:'https://b2.multiprintt.workers.dev/media/productos/',manualGeneral:'',manualProducts:''};
     safeStorageSet('multiprintt_media_sources',JSON.stringify(cleanMedia));safeStorageRemove('multiprintt_media_sources_legacy');syncMediaSourcesToFrame();
-    const uploadedCount=results.filter(x=>x?.ok&&!x?.skipped&&!x?.kind).length;
-    const skippedCount=results.filter(x=>x?.skipped===true).length;
-    const manifestCount=results.filter(x=>x?.kind==='manifest').length;
-    window.showToast(`Migración B2 finalizada · ${uploadedCount} archivos nuevos · ${skippedCount} existentes/reutilizados · ${manifestCount} manifiestos · sin duplicados.`);
-    void writeAdminAudit(`Migración B2: ${uploadedCount} nuevos · ${skippedCount} reutilizados/existentes · ${manifestCount} manifiestos`, 'media');
-    markDirty('Migración completa de medios a B2',false);proScheduleSnapshot();
-  }catch(e){console.error('Migración externa a B2:',e);window.showToast('La migración se detuvo: '+(e?.message||e?.code||'error'));}
+    const msg=`Migración REAL GitHub/Cloudinary → B2 finalizada · ${uploaded} archivos subidos · ${skipped} ya existentes/reutilizados · ${failed} fallidos · sin duplicados por fuente/clave.`;
+    window.showToast(msg);void writeAdminAudit(msg,'media');markDirty('Migración completa GitHub/Cloudinary → B2',false);proScheduleSnapshot();
+  }catch(e){console.error('Migración GitHub/Cloudinary → B2:',e);window.showToast('La migración se detuvo: '+(e?.message||e?.code||'error'));}
+  finally{if(btn)btn.disabled=false;}
 };
 window.migrateLegacyUrlIfNeeded=async function(url,prefix,kind,sharedMap=null){
   const u=String(url||'').trim();if(!u)return u;if(/^https:\/\/b2\.multiprintt\.workers\.dev\//i.test(u))return u;
