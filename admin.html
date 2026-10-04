@@ -6,9 +6,9 @@
 <meta content="width=device-width,initial-scale=1.0,viewport-fit=cover" name="viewport"/>
 <meta content="no-cache,no-store,must-revalidate" http-equiv="Cache-Control"/>
 <title>Multiprintt | Visual Builder</title>
-<link href="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/favicon.webp" rel="icon" type="image/webp"/>
-<link href="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/favicon.webp" rel="shortcut icon" type="image/webp"/>
-<link href="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/favicon.webp" rel="apple-touch-icon"/>
+<link href="https://b2.multiprintt.workers.dev/media/site/favicon.webp" rel="icon" type="image/webp"/>
+<link href="https://b2.multiprintt.workers.dev/media/site/favicon.webp" rel="shortcut icon" type="image/webp"/>
+<link href="https://b2.multiprintt.workers.dev/media/site/favicon.webp" rel="apple-touch-icon"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Manrope:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
@@ -1143,10 +1143,10 @@ html{color-scheme:dark;}.glass{background:linear-gradient(180deg,rgba(18,19,24,.
 <style id="mp-testimonial-bucket-explorer">#testimonial-video-bucket-modal{padding:10px!important}#testimonial-video-bucket-modal .modal-card{overflow:hidden!important}@media(max-width:700px){#testimonial-video-bucket-modal .modal-card{width:calc(100vw - 12px)!important;max-height:94dvh!important}#testimonial-video-bucket-modal .modal-body{grid-template-columns:1fr!important}#testimonial-video-bucket-list,#testimonial-video-bucket-preview{height:auto!important;max-height:32dvh!important;min-height:180px!important}#testimonial-video-bucket-preview{order:-1!important}}</style></head>
 <body>
 <div id="toast"></div>
-<div id="auth-screen"><div class="auth-card"><div class="flex items-center gap-3 mb-6"><div class="brand-mark"><img alt="Multiprintt" src="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp"/></div><div><div class="text-white font-extrabold text-lg">Multiprintt</div><div class="text-zinc-500 text-[10px] tracking-[.18em] uppercase">Visual Builder</div></div></div><div class="grid gap-3"><input class="field" id="loginUser" placeholder="Correo administrativo" type="email"/><input class="field" id="loginPass" placeholder="Contraseña" type="password"/><button class="primary w-full" id="btn-login" onclick="window.attemptLogin()" type="button"><i class="fa-solid fa-right-to-bracket mr-2"></i>Ingresar al sistema</button></div><div class="helper mt-4">Editor visual conectado a Firebase y sincronizado con el sitio.</div></div></div>
+<div id="auth-screen"><div class="auth-card"><div class="flex items-center gap-3 mb-6"><div class="brand-mark"><img alt="Multiprintt" src="https://b2.multiprintt.workers.dev/media/site/logo_mejorado.webp"/></div><div><div class="text-white font-extrabold text-lg">Multiprintt</div><div class="text-zinc-500 text-[10px] tracking-[.18em] uppercase">Visual Builder</div></div></div><div class="grid gap-3"><input class="field" id="loginUser" placeholder="Correo administrativo" type="email"/><input class="field" id="loginPass" placeholder="Contraseña" type="password"/><button class="primary w-full" id="btn-login" onclick="window.attemptLogin()" type="button"><i class="fa-solid fa-right-to-bracket mr-2"></i>Ingresar al sistema</button></div><div class="helper mt-4">Editor visual conectado a Firebase y sincronizado con el sitio.</div></div></div>
 <div id="builder-ui">
 <header class="topbar">
-<div class="brand"><div class="brand-mark"><img alt="Multiprintt" src="https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp"/></div><div><div class="text-white text-[12px] font-extrabold">Multiprintt Visual Builder</div><div class="text-zinc-500 text-[9px]">Editor técnico · Diseño · Contenido · Datos</div></div></div>
+<div class="brand"><div class="brand-mark"><img alt="Multiprintt" src="https://b2.multiprintt.workers.dev/media/site/logo_mejorado.webp"/></div><div><div class="text-white text-[12px] font-extrabold">Multiprintt Visual Builder</div><div class="text-zinc-500 text-[9px]">Editor técnico · Diseño · Contenido · Datos</div></div></div>
 <div class="top-actions"><div class="status-pill" id="save-status"><span class="dot" id="save-dot"></span><span id="save-label">Sin cambios</span></div><button class="mini-btn" onclick="window.undo()" title="Deshacer" type="button"><i class="fa-solid fa-rotate-left"></i></button><button class="mini-btn" onclick="window.redo()" title="Rehacer" type="button"><i class="fa-solid fa-rotate-right"></i></button><button class="mini-btn" onclick="window.openLayers()" title="Capas" type="button"><i class="fa-solid fa-layer-group"></i></button><button class="mini-btn" onclick="window.openCommandPalette()" title="Comandos" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i></button><button class="mini-btn" onclick="window.openHistory()" title="Historial" type="button"><i class="fa-solid fa-clock-rotate-left"></i></button><button class="mini-btn" onclick="window.openAudit()" title="Auditoría de sesiones" type="button"><i class="fa-solid fa-user-clock"></i></button><button class="mini-btn" onclick="window.openGlobalSettings()" title="Ajustes globales" type="button"><i class="fa-solid fa-sliders"></i></button><button class="mini-btn" onclick="window.openSeoManager()" title="SEO Manager" type="button"><i class="fa-solid fa-magnifying-glass-chart"></i></button><button class="warning" onclick="window.resetTemplateConfirm()" type="button"><i class="fa-solid fa-rotate-left mr-1"></i>Reset</button><button class="primary" id="publish-btn" onclick="window.publishChanges()" type="button"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Guardar</button><button class="secondary" onclick="window.logout()" type="button"><i class="fa-solid fa-power-off"></i></button></div>
 </header>
 <div class="workspace">
@@ -1292,7 +1292,7 @@ https://www.youtube.com/..." rows="4"></textarea></div></div><div class="pro-div
 <div><label class="lbl">Lista manual general</label><textarea class="field" id="media-manual-general" placeholder="Una URL o ruta por línea." rows="6"></textarea></div>
 <div><label class="lbl">Lista manual productos</label><textarea class="field" id="media-manual-products" placeholder="Una URL o ruta por línea." rows="6"></textarea></div>
 </div>
-<div class="flex justify-end mt-3 gap-2"><button class="secondary" onclick="window.resetMediaSources()" type="button">Predeterminadas</button><button class="primary" onclick="window.saveMediaSources()" type="button"><i class="fa-solid fa-floppy-disk mr-1"></i>Guardar</button></div>
+<div class="flex items-center gap-2 mt-3 flex-wrap"><button class="mini-btn" type="button" onclick="window.migrateLegacyExternalMediaToB2()"><i class="fa-solid fa-cloud-arrow-up mr-1"></i>Migrar legado a B2</button><span class="helper">GitHub/Cloudinary → Backblaze B2, una sola vez.</span></div><div class="flex justify-end mt-3 gap-2"><button class="secondary" onclick="window.resetMediaSources()" type="button">Predeterminadas</button><button class="primary" onclick="window.saveMediaSources()" type="button"><i class="fa-solid fa-floppy-disk mr-1"></i>Guardar</button></div>
 </div>
 </div>
 </section>
@@ -1326,7 +1326,7 @@ const socials=[
 const defaultGallery=[
 {type:'image',url:'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=70',title:'Camiseta'},
 {type:'image',url:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800&auto=format&fit=crop&q=70',title:'Jarro'},
-{type:'video',url:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4',title:'Testimonio'}];
+{type:'video',url:'https://b2.multiprintt.workers.dev/testimonio_videos/testimonio0.mp4',title:'Testimonio'}];
 const PRO_STORAGE_KEY='multiprintt_builder_pro_v1';
 const PRO_DEFAULTS={site:'',media:'',mediaProxy:'',image:'',video:'',api:''};
 let proSnapshotTimer=null,proSnapshotBusy=false,proRestoring=false,proLastSnapshot='';
@@ -1341,7 +1341,7 @@ function normalizeGlobalUrl(v){const x=String(v||'').trim().replace(/\s+/g,'');i
 window.saveGlobalSettings=()=>{const raw=id=>document.getElementById(id)?.value||'';const keys=[['site','global-site-url'],['media','global-media-url'],['mediaProxy','global-media-proxy-url'],['image','global-image-url'],['video','global-video-url'],['api','global-api-url']];const d={};for(const [key,id] of keys){const source=raw(id);const normalized=normalizeGlobalUrl(source);if(String(source).trim()&&!normalized)return window.showToast(`URL inválida en ${key}. Usa http://, https:// o una ruta relativa /...`);d[key]=normalized;}const w=Math.max(280,Math.min(2400,parseInt(document.getElementById('custom-viewport-width')?.value||'1440',10)||1440));const s=Math.max(.4,Math.min(1.5,parseFloat(document.getElementById('custom-viewport-scale')?.value||'1')||1));safeStorageSet('multiprintt_custom_viewport_width',String(w));safeStorageSet('multiprintt_custom_viewport_scale',String(s));writeGlobalSettings(d);proPost('SET_GLOBAL_URLS',{urls:d});proPost('SET_PREVIEW_WIDTH',{width:w});window.showToast('Ajustes globales guardados');markDirty('URLs y vista actualizadas');};
 window.resetGlobalSettings=()=>{safeStorageRemove(PRO_STORAGE_KEY);window.openGlobalSettings();proPost('SET_GLOBAL_URLS',{urls:PRO_DEFAULTS});window.showToast('Ajustes globales restaurados')};
 const SEO_STORAGE_KEY='multiprintt_seo_manager_v1';
-const SEO_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://multiprintt.web.app/favicon.ico',ogImage:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp',twitterImage:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp',keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'https://www.facebook.com/\nhttps://www.instagram.com/\nhttps://www.youtube.com/',defaultAlt:'Producto personalizado Multiprintt',productTemplate:'{name} | Personalizados Multiprintt',courseTemplate:'{name} | Academia Multiprintt',searchUrl:'',robotsUrl:'https://multiprintt.web.app/robots.txt',sitemapUrl:'https://multiprintt.web.app/sitemap.xml'};
+const SEO_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://b2.multiprintt.workers.dev/media/site/favicon.webp',ogImage:'https://b2.multiprintt.workers.dev/media/site/logo_mejorado.webp',twitterImage:'https://b2.multiprintt.workers.dev/media/site/logo_mejorado.webp',keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'https://www.facebook.com/\nhttps://www.instagram.com/\nhttps://www.youtube.com/',defaultAlt:'Producto personalizado Multiprintt',productTemplate:'{name} | Personalizados Multiprintt',courseTemplate:'{name} | Academia Multiprintt',searchUrl:'',robotsUrl:'https://multiprintt.web.app/robots.txt',sitemapUrl:'https://multiprintt.web.app/sitemap.xml'};
 function readSeoSettings(){try{return {...SEO_DEFAULTS,...JSON.parse(safeStorageGet(SEO_STORAGE_KEY)||'{}')}}catch(e){return {...SEO_DEFAULTS}}}
 function seoEscape(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[m]))}
 function buildRobotsText(d){return `User-agent: *\nAllow: /\n\nSitemap: ${d.sitemapUrl}`}
@@ -1485,18 +1485,36 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 let loginInFlight=false;
 let adminUiReady=false;
 
+function activateBuilderFrame(){
+  const u=auth?.currentUser;
+  const fr=iframe();
+  if(!u || u.isAnonymous || !fr?.contentWindow)return false;
+  try{
+    const post=(message,delay=0)=>setTimeout(()=>{try{fr.contentWindow.postMessage(message,location.origin)}catch(e){}},delay);
+    post({type:'ENABLE_BUILDER'},80);
+    post({type:'TOGGLE_SELECTION',state:!selectionLocked},120);
+    post({type:'TOGGLE_DRAG',state:isDragMode},160);
+    post({type:'SET_GLOBAL_URLS',urls:readGlobalSettings()},200);
+    post({type:'SET_MEDIA_SOURCES',sources:mediaSources()},240);
+    post({type:'CAPTURE_LAYOUT',reason:'admin-login'},600);
+    return true;
+  }catch(e){console.warn('No se pudo activar Builder:',e);return false;}
+}
 function showAdminWorkspace(user,notify=true){
   if(!user || user.isAnonymous)return false;
   const authScreen=document.getElementById('auth-screen'),builder=document.getElementById('builder-ui');
   if(!authScreen||!builder)return false;
   authScreen.style.display='none';
   builder.style.display='flex';
-  if(adminUiReady)return true;
+  const firstSession=!adminUiReady;
   adminUiReady=true;
   const fr=iframe();
   if(fr && (!fr.getAttribute('src')||fr.getAttribute('src')===location.href))fr.src='index.html?t='+Date.now();
-    setTimeout(()=>{migrateLegacyProductDemand().catch(e=>console.warn('Migración demanda:',e))},1450);
-  if(notify)window.showToast('Sesión iniciada correctamente');
+  // Important: the iframe may already have finished loading while the login screen was visible.
+  // Activating Builder here makes login reliable in both timing orders.
+  activateBuilderFrame();
+  setTimeout(()=>{migrateLegacyProductDemand().catch(e=>console.warn('Migración demanda:',e))},1450);
+  if(notify&&firstSession)window.showToast('Sesión iniciada correctamente');
   return true;
 }
 function showAuthScreen(){
@@ -1555,8 +1573,8 @@ window.attemptLogin=async()=>{
 document.getElementById('loginUser')?.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass')?.focus()});
 document.getElementById('loginPass')?.addEventListener('keydown',e=>{if(e.key==='Enter')window.attemptLogin()});
 window.logout=async()=>{try{await signOut(auth)}catch(e){console.error('Firebase logout:',e)}location.reload()};
-onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){showAdminWorkspace(user,false)}else{showAuthScreen()}},error=>{console.error('Firebase Auth observer:',error);if(!auth.currentUser)showAuthScreen()});
-iframe().addEventListener('load',()=>{setTimeout(()=>iframe().contentWindow.postMessage({type:'ENABLE_BUILDER'},location.origin),120);setTimeout(()=>iframe().contentWindow.postMessage({type:'TOGGLE_DRAG',state:isDragMode},location.origin),350);setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
+onAuthStateChanged(auth,user=>{if(user&&!user.isAnonymous){showAdminWorkspace(user,false);setTimeout(activateBuilderFrame,180)}else{showAuthScreen()}},error=>{console.error('Firebase Auth observer:',error);if(!auth.currentUser)showAuthScreen()});
+iframe().addEventListener('load',()=>{activateBuilderFrame();setTimeout(updateDesktopPreviewScale,80);setSaveState('ok','Vista sincronizada')});
 window.navigateSection=id=>{iframe().contentWindow.postMessage({type:'NAVIGATE_SECTION',section:id},location.origin);document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===id));};
 function updateDesktopPreviewScale(){const stage=document.getElementById('preview-stage'),wrap=document.getElementById('preview-wrapper');if(!stage||!wrap||!wrap.classList.contains('device-desktop'))return;const sw=Math.max(240,stage.clientWidth-56),sh=Math.max(320,stage.clientHeight-56);const scale=Math.min(1,sw/1440,sh/900);wrap.style.transform=`scale(${scale})`;wrap.style.marginBottom=`-${900*(1-scale)}px`;}
 window.setDevice=(type,btn)=>{document.querySelectorAll('.device-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const wrap=document.getElementById('preview-wrapper');wrap.className='device-'+type;if(type==='desktop'){wrap.style.transformOrigin='top center';updateDesktopPreviewScale()}else{wrap.style.transform='';wrap.style.marginBottom='';}};
@@ -1719,7 +1737,7 @@ if(type==='product'){
   setTimeout(()=>window.updateProductPriceMode(),0);
 }
 if(type==='course')h=`<div><label class="lbl">Título</label><input id="db-title" class="field" value="${esc(d.title||'')}"></div><div><label class="lbl">Descripción</label><textarea id="db-desc" class="field">${esc(d.desc||'')}</textarea></div><div class="grid2"><div><label class="lbl">Horario</label><input id="db-schedule" class="field" value="${esc(d.schedule||'')}"></div><div><label class="lbl">Precio</label><input id="db-price" class="field" inputmode="decimal" value="${esc(String(mpAdminParseMoney(d.price??d.precio,'') ?? ''))}"></div></div><div class="grid2"><div><label class="lbl">Modalidad</label><select id="db-modality" class="field"><option value="Presencial">Presencial</option><option value="Online">Online</option><option value="Híbrido">Híbrido</option></select></div><div class="flex items-end"><label class="text-[10px] text-white"><input id="db-master" type="checkbox" ${d.isMasterclass!==false?'checked':''}> Masterclass</label></div></div><div><label class="lbl">Portada</label><input id="db-img" class="field" value="${esc(d.image||'')}"><button type="button" class="mini-btn mt-2" onclick="window.openGallery('db-img','image','media')">Abrir explorador</button></div>`;
-if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">${type==='testimonial_text'?'Curso al que perteneció':'Rol'}<\/label>`+(type==='testimonial_text'?`<select id="db-role" class="field"><option value="${esc(d.role||'')}">${esc(d.role||'Cargando cursos…')}<\/option><\/select>`:`<input id="db-role" class="field" value="${esc(d.role||'')}">`)+`</div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video testimonial</label><div class="flex gap-2"><input id="db-vid" class="field flex-1" value="${esc(d.src||'')}" placeholder="URL de GitHub o video en Backblaze B2"><input id="db-vid-file" type="file" accept="video/webm,.webm" class="hidden" onchange="window.uploadTestimonialVideoFile(this)"><button type="button" class="mini-btn" title="Subir WEBM a Backblaze" onclick="document.getElementById('db-vid-file')?.click()"><i class="fa-solid fa-cloud-arrow-up"></i></button><button type="button" class="mini-btn" title="Explorar videos subidos a testimonio_videos" onclick="window.openTestimonialVideoBucketExplorer()"><i class="fa-solid fa-folder-open"></i></button></div><div id="db-vid-helper" class="helper mt-1">WEBM · máximo 20 MB · carpeta <b>testimonio_videos/</b>. Aquí puedes subir, explorar, seleccionar o eliminar videos del bucket.</div><video id="db-vid-preview" class="w-full mt-2 rounded-xl bg-black/30 border border-white/10" style="max-height:220px;display:${d.src?'block':'none'}" controls muted playsinline preload="metadata" ${d.src?`src="${esc(d.src)}"`:''}></video></div>`:'')+`<div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
+if(type==='testimonial_video'||type==='testimonial_text')h=`<div class="helper">ID único · <b>${esc(generatedId)}</b></div><div class="grid2"><div><label class="lbl">Nombre</label><input id="db-name" class="field" value="${esc(d.name||'')}"></div><div><label class="lbl">${type==='testimonial_text'?'Curso al que perteneció':'Rol'}<\/label>`+(type==='testimonial_text'?`<select id="db-role" class="field"><option value="${esc(d.role||'')}">${esc(d.role||'Cargando cursos…')}<\/option><\/select>`:`<input id="db-role" class="field" value="${esc(d.role||'')}">`)+`</div></div><div><label class="lbl">Cita</label><textarea id="db-quote" class="field">${esc(d.quote||'')}</textarea></div>`+(type==='testimonial_video'?`<div><label class="lbl">Video testimonial</label><div class="flex gap-2"><input id="db-vid" class="field flex-1" value="${esc(d.src||'')}" placeholder="URL del video en Backblaze B2"><input id="db-vid-file" type="file" accept="video/webm,.webm" class="hidden" onchange="window.uploadTestimonialVideoFile(this)"><button type="button" class="mini-btn" title="Subir WEBM a Backblaze" onclick="document.getElementById('db-vid-file')?.click()"><i class="fa-solid fa-cloud-arrow-up"></i></button><button type="button" class="mini-btn" title="Explorar videos subidos a testimonio_videos" onclick="window.openTestimonialVideoBucketExplorer()"><i class="fa-solid fa-folder-open"></i></button></div><div id="db-vid-helper" class="helper mt-1">WEBM · máximo 20 MB · carpeta <b>testimonio_videos/</b>. Aquí puedes subir, explorar, seleccionar o eliminar videos del bucket.</div><video id="db-vid-preview" class="w-full mt-2 rounded-xl bg-black/30 border border-white/10" style="max-height:220px;display:${d.src?'block':'none'}" controls muted playsinline preload="metadata" ${d.src?`src="${esc(d.src)}"`:''}></video></div>`:'')+`<div><label class="lbl">Color del testimonio</label><div class="style-grid testimonial-theme-grid"><button type="button" class="style-chip" data-theme-choice="cyan" title="Cyan" onclick="window.setTestimonialThemeChoice('cyan')"><i class="fa-solid fa-circle" style="color:#25d8ff"></i><br>Cyan</button><button type="button" class="style-chip" data-theme-choice="pink" title="Rosa" onclick="window.setTestimonialThemeChoice('pink')"><i class="fa-solid fa-circle" style="color:#ff2da8"></i><br>Rosa</button><button type="button" class="style-chip" data-theme-choice="violet" title="Violeta" onclick="window.setTestimonialThemeChoice('violet')"><i class="fa-solid fa-circle" style="color:#735cff"></i><br>Violeta</button><button type="button" class="style-chip" data-theme-choice="amber" title="Ámbar" onclick="window.setTestimonialThemeChoice('amber')"><i class="fa-solid fa-circle" style="color:#f59e0b"></i><br>Ámbar</button><button type="button" class="style-chip" data-theme-choice="emerald" title="Esmeralda" onclick="window.setTestimonialThemeChoice('emerald')"><i class="fa-solid fa-circle" style="color:#34d399"></i><br>Esmeralda</button></div><select id="db-theme" class="field mt-2" aria-label="Color del testimonio"><option value="cyan">Cyan</option><option value="pink">Rosa</option><option value="violet">Violeta</option><option value="amber">Ámbar</option><option value="emerald">Esmeralda</option></select></div>`;
 
 document.getElementById('db-modal-title').textContent=(currentDbItem.isNew?'Nuevo ':'Editar ')+(type==='product'?'producto':type==='course'?'curso':'testimonio');document.getElementById('db-modal-body').innerHTML=h;document.getElementById('db-modal').classList.add('open');if(d.modality){const el=document.getElementById('db-modality');if(el)el.value=d.modality;}if(d.theme){const el=document.getElementById('db-theme');if(el)el.value=d.theme;}if(type==='testimonial_video'||type==='testimonial_text')window.setTestimonialThemeChoice(d.theme||(type==='testimonial_video'?'cyan':'pink'));if(type==='testimonial_text')setTimeout(()=>window.loadTestimonialCourseOptions(d.role||''),0);};
 function normalizeProductImageField(raw){
@@ -1820,7 +1838,7 @@ window.openTestimonialVideoBucketExplorer=async function(){
 window.__testimonialVideoBucketItems=[];window.__testimonialVideoBucketSelected=null;
 window.loadTestimonialVideoBucket=async function(){
   const list=document.getElementById('testimonial-video-bucket-list');if(!list)return;list.innerHTML='<div class="media-empty"><i class="fa-solid fa-circle-notch fa-spin"></i><div class="mt-2">Consultando Backblaze B2…</div></div>';
-  try{const data=await b2Fetch('/api/testimonial-videos?pageSize=200');window.__testimonialVideoBucketItems=Array.isArray(data.items)?data.items:[];window.renderTestimonialVideoBucket();if(window.__testimonialVideoBucketItems.length && !window.__testimonialVideoBucketSelected)window.previewTestimonialVideoBucket(0);}catch(e){console.error('B2 testimonial list:',e);list.innerHTML=`<div class="media-empty text-red-300">No se pudo cargar testimonio_videos/. ${esc(e?.message||'')}</div>`;}
+  try{let token='';let all=[];for(let page=0;page<5;page++){const qs=new URLSearchParams({pageSize:'200'});if(token)qs.set('continuationToken',token);const data=await b2Fetch('/api/testimonial-videos?'+qs.toString());if(Array.isArray(data.items))all.push(...data.items);token=data.nextContinuationToken||'';if(!data.isTruncated||!token)break;}window.__testimonialVideoBucketItems=all;window.renderTestimonialVideoBucket();if(window.__testimonialVideoBucketItems.length && !window.__testimonialVideoBucketSelected)window.previewTestimonialVideoBucket(0);}catch(e){console.error('B2 testimonial list:',e);list.innerHTML=`<div class="media-empty text-red-300">No se pudo cargar testimonio_videos/. ${esc(e?.message||'')}</div>`;}
 };
 window.renderTestimonialVideoBucket=function(){
   const list=document.getElementById('testimonial-video-bucket-list');if(!list)return;const q=String(document.getElementById('testimonial-video-bucket-search')?.value||'').trim().toLowerCase();const items=window.__testimonialVideoBucketItems.filter(x=>!q||String(x.name||'').toLowerCase().includes(q)||String(x.key||'').toLowerCase().includes(q));
@@ -1841,8 +1859,8 @@ window.previewTestimonialVideoBucket=function(index){
   const loader=box.querySelector('[data-tvb-preview-loader]');
   const video=document.createElement('video');
   video.controls=true; video.muted=true; video.autoplay=true; video.loop=true; video.playsInline=true; video.crossOrigin='anonymous';
-  video.preload='auto'; video.style.cssText='display:block;width:100%;height:100%;max-width:100%;max-height:52vh;object-fit:contain;background:#000;border-radius:8px;min-height:240px;';
-  const url=String(x.url||''); video.src=url+(url.includes('?')?'&':'?')+'preview=1';
+  video.preload='metadata'; video.fetchPriority='high'; video.style.cssText='display:block;width:100%;height:100%;max-width:100%;max-height:52vh;object-fit:contain;background:#000;border-radius:8px;min-height:240px;';
+  const url=String(x.url||''); video.src=url;
   if(stage){stage.appendChild(video);}
   const ready=()=>{if(loader)loader.remove();try{video.play().catch(()=>{});}catch(e){}};
   video.addEventListener('loadeddata',ready,{once:true});
@@ -1936,13 +1954,21 @@ if(t==='testimonial_video'||t==='testimonial_text'){
 const saveBtn=document.getElementById('btn-save-db');
 if(saveBtn){saveBtn.disabled=true;saveBtn.dataset.originalText=saveBtn.innerHTML;saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>Guardando…';}
 await ensureAdminWriteSession();
-const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':null;
-if(col){
-  await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});
-  iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},location.origin);
-  const changedFields=Object.keys(payload).filter(k=>!['imageVariants','createdAt','updatedAt'].includes(k));
-  void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':'curso'}: ${payload.name||payload.title||id}${changedFields.length?' · campos: '+changedFields.join(', '):''}`,'db');
-}else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
+const id=currentDbItem.id,col=t==='product'?'products':t==='course'?'courses':'testimonials';
+if(t==='testimonial_video'||t==='testimonial_text'){
+  const now=Date.now();payload.createdAt=Number(currentDbItem?.createdAt)||now;payload.updatedAt=now;
+  if(t==='testimonial_video'){
+    const input=document.getElementById('db-vid');
+    payload.videoProvider=input?.dataset?.provider||currentDbItem?.videoProvider||'b2';
+    payload.videoKey=input?.dataset?.key||currentDbItem?.videoKey||'';
+    payload.videoFileName=input?.dataset?.fileName||currentDbItem?.videoFileName||'';
+  }
+}
+await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,id),payload,{merge:true});
+if(t==='product'||t==='course') iframe().contentWindow.postMessage({type:'DB_UPDATED',itemType:t,id,data:payload},location.origin);
+else iframe().contentWindow.postMessage({type:t==='testimonial_video'?'UPDATE_TESTIMONIAL':'UPDATE_TEXT_TESTIMONIAL',itemId:id,data:payload},location.origin);
+const changedFields=Object.keys(payload).filter(k=>!['imageVariants','createdAt','updatedAt'].includes(k));
+void writeAdminAudit(`${currentDbItem.isNew?'Creado':'Actualizado'} ${t==='product'?'producto':t==='course'?'curso':t==='testimonial_video'?'testimonio de video':'testimonio de texto'}: ${payload.name||payload.title||id}${changedFields.length?' · campos: '+changedFields.join(', '):''}`,'db');
 window.closeModal('db-modal');window.showToast(currentDbItem.isNew?'Elemento creado correctamente':'Cambios guardados correctamente');markDirty('Testimonio actualizado',false);proScheduleSnapshot();
 }catch(e){
   console.error('Guardar BD:',e);const code=e?.code||'';
@@ -2390,10 +2416,10 @@ window.migrateLegacyCatalogToB2=async()=>{
 };
 
 const DEFAULT_MEDIA_SOURCES={
-generalJson:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json',
-generalBase:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/',
-productJson:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json',
-productBase:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/',
+generalJson:'https://b2.multiprintt.workers.dev/media/manifests/imagenes.json',
+generalBase:'https://b2.multiprintt.workers.dev/media/general/',
+productJson:'https://b2.multiprintt.workers.dev/media/manifests/productos.json',
+productBase:'https://b2.multiprintt.workers.dev/media/productos/',
 generalMode:'auto', productMode:'auto', manualGeneral:'', manualProducts:''
 };
 function mediaSources(){try{return {...DEFAULT_MEDIA_SOURCES,...JSON.parse(safeStorageGet('multiprintt_media_sources')||'{}')}}catch(e){return {...DEFAULT_MEDIA_SOURCES}}}
@@ -2408,6 +2434,146 @@ function sourceConfigFor(mode){const m=window.validateMediaSourceModes?.()||medi
 function syncMediaSourcesToFrame(){try{iframe().contentWindow.postMessage({type:'SET_MEDIA_SOURCES',sources:mediaSources()},location.origin)}catch(e){}}
 window.switchMediaExplorerTab=(tab='library')=>{const wanted=['library','imgbb','sources'].includes(tab)?tab:'library';document.querySelectorAll('#gallery-modal .media-tab').forEach(b=>b.classList.toggle('active',b.dataset.mediaTab===wanted));document.querySelectorAll('#gallery-modal .media-pane').forEach(p=>p.classList.toggle('active',p.dataset.mediaPane===wanted));if(wanted==='imgbb'){requestAnimationFrame(()=>{window.loadImgBBLibrary?.(false)?.catch?.(e=>console.warn('Multiprintt Host:',e))})}if(wanted==='sources'){const m=mediaSources();[['generalMode','media-mode-general'],['productMode','media-mode-products'],['generalJson','media-json-general'],['generalBase','media-base-general'],['productJson','media-json-products'],['productBase','media-base-products'],['manualGeneral','media-manual-general'],['manualProducts','media-manual-products']].forEach(([k,id])=>{const el=document.getElementById(id);if(el)el.value=m[k]||''})}};
 window.toggleMediaSources=()=>{window.switchMediaExplorerTab('sources');};
+const MP_LEGACY_B2_MIGRATION={
+  assets:[
+    {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp',key:'media/site/logo_mejorado.webp'},
+    {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/favicon.webp',key:'media/site/favicon.webp'},
+    {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4',key:'testimonio_videos/testimonio0.mp4'},
+    {sourceUrl:'https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4',key:'media/videos/capacitacion-1.mp4'},
+    {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json',key:'media/manifests/imagenes.json'},
+    {sourceUrl:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json',key:'media/manifests/productos.json'}
+  ],
+  map:{
+    'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp':'https://b2.multiprintt.workers.dev/media/site/logo_mejorado.webp',
+    'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/favicon.webp':'https://b2.multiprintt.workers.dev/media/site/favicon.webp',
+    'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4':'https://b2.multiprintt.workers.dev/testimonio_videos/testimonio0.mp4',
+    'https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4':'https://b2.multiprintt.workers.dev/media/videos/capacitacion-1.mp4',
+    'https://res.cloudinary.com/lxopsutw/video/upload/v1789322183/Capacitacion_1.mp4#t=0.01':'https://b2.multiprintt.workers.dev/media/videos/capacitacion-1.mp4#t=0.01'
+  }
+};
+function mpRewriteBase64LegacyUrls(text,map){return String(text||'').replace(/([A-Za-z0-9+/]{40,}={0,2})/g,(all)=>{try{const decoded=atob(all);const replacement=map[decoded];if(!replacement)return all;return btoa(replacement)}catch(e){return all}})}
+function mpRewriteLegacyUrls(text,map){let out=String(text||'');for(const [a,b] of Object.entries(map))out=out.split(a).join(b);return mpRewriteBase64LegacyUrls(out,map)}
+async function mpMigrateOneExternal(item,progress){
+  const result=await b2Fetch('/api/migrate-external',{method:'POST',timeoutMs:60000,body:JSON.stringify(item)});
+  progress?.(result);return result;
+}
+function mpCanonicalExternalUrl(raw){
+  try{const u=new URL(String(raw||'').trim());u.hash='';u.search='';return u.toString();}catch{return String(raw||'').trim().split('#')[0].split('?')[0]}
+}
+function mpCanonicalMigrationKey(raw){return String(raw||'').trim().replace(/\\+/g,'/').replace(/^\/+/, '')}
+window.migrateLegacyExternalMediaToB2=async function(){
+  if(!window.__mpAuth?.currentUser||window.__mpAuth.currentUser.isAnonymous){return window.showToast('Inicia sesión como administrador antes de migrar medios.');}
+  if(!confirm('Se copiarán los medios históricos de GitHub/Cloudinary a Backblaze B2 y se actualizarán sus referencias en Firebase. Los archivos ya existentes o repetidos se detectarán y no se volverán a duplicar. ¿Continuar?'))return;
+  try{
+    const map={};const results=[];const seenSources=new Map();const seenKeys=new Map();
+    const processMigration=async(item)=>{
+      const sourceUrl=mpCanonicalExternalUrl(item?.sourceUrl);const key=mpCanonicalMigrationKey(item?.key);
+      if(!sourceUrl||!key)return {ok:false,skipped:true,duplicate:true};
+      if(seenSources.has(sourceUrl)){const prior=seenSources.get(sourceUrl);map[sourceUrl]=prior.url||prior;return {ok:true,skipped:true,duplicate:true,reason:'same-source',url:map[sourceUrl]};}
+      if(seenKeys.has(key)){const prior=seenKeys.get(key);const resolved=prior.url||prior;map[sourceUrl]=resolved;return {ok:true,skipped:true,duplicate:true,reason:'same-target',url:resolved};}
+      const res=await mpMigrateOneExternal({sourceUrl,key,contentType:item?.contentType||''});
+      const resolved=res?.url||'';if(resolved)map[sourceUrl]=resolved;
+      const rec={...res,sourceUrl,key};seenSources.set(sourceUrl,rec);seenKeys.set(key,rec);results.push(rec);return rec;
+    };
+    // 1) Known static assets and manifests. We DO NOT blindly trust the hardcoded map:
+    // the Worker checks B2 first, so an empty/new bucket is populated, while existing files are skipped.
+    for(const item of MP_LEGACY_B2_MIGRATION.assets){
+      if(!item.sourceUrl)continue;
+      const res=await processMigration(item);
+      if(res?.duplicate && res?.url)map[mpCanonicalExternalUrl(item.sourceUrl)]=res.url;
+    }
+    // 2) Read both GitHub manifests through the authenticated Worker and migrate every referenced asset.
+    const manifests=[
+      {source:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/imagenes.json',base:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/',prefix:'media/general/'},
+      {source:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/imagenes.json',base:'https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/productos/',prefix:'media/productos/'},
+    ];
+    for(const m of manifests){
+      const fetched=await b2Fetch('/api/external-json?sourceUrl='+encodeURIComponent(m.source));
+      let arr=[];const data=fetched.data;if(Array.isArray(data))arr=data;else if(Array.isArray(data?.items))arr=data.items;else if(Array.isArray(data?.imagenes))arr=data.imagenes;else for(const v of Object.values(data||{}))if(Array.isArray(v))arr.push(...v);
+      for(let i=0;i<arr.length;i++){
+        const raw=typeof arr[i]==='string'?arr[i]:(arr[i]?.url||arr[i]?.src||'');if(!raw)continue;
+        const sourceUrl=/^https?:\/\//i.test(raw)?raw:new URL(raw,m.base).toString();
+        if(/^https:\/\/b2\.multiprintt\.workers\.dev\//i.test(sourceUrl))continue;
+        if(!/^https:\/\/raw\.githubusercontent\.com\//i.test(sourceUrl))continue;
+        const cleanPath=new URL(sourceUrl).pathname.split('/recursos/')[1]||('asset_'+i);
+        const key=m.prefix+cleanPath.replace(/^productos\//i,'');
+        const res=await processMigration({sourceUrl,key});
+        if(res?.duplicate && res?.url)map[mpCanonicalExternalUrl(sourceUrl)]=res.url;
+      }
+      // Reescribe y publica el manifiesto ya sin referencias a GitHub.
+      const rewriteManifestValue=(value)=>{
+        if(typeof value==='string'){
+          const rawUrl=value.trim();
+          const canonical=mpCanonicalExternalUrl(rawUrl);
+          if(map[canonical]) return map[canonical];
+          if(map[rawUrl]) return map[rawUrl];
+          if(/^https?:\/\//i.test(rawUrl)) return value;
+          return value;
+        }
+        if(Array.isArray(value)) return value.map(rewriteManifestValue);
+        if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=rewriteManifestValue(v);return out;}
+        return value;
+      };
+      const rewrittenManifest=rewriteManifestValue(data);
+      const targetManifest=m.prefix==='media/products/'?'media/manifests/productos.json':'media/manifests/imagenes.json';
+      const uploaded=await b2Fetch('/api/upload-json',{method:'POST',timeoutMs:60000,body:JSON.stringify({key:targetManifest,data:rewrittenManifest})});
+      results.push({...uploaded,key:targetManifest,kind:'manifest'});
+    }
+    // 3) Migrate external URLs found in Firebase products/courses/testimonials.
+    const paths=[
+      ['products',d=>String(d.image||'').split(/\r?\n|,/).map(x=>x.trim()).filter(Boolean)],
+      ['courses',d=>[String(d.image||'').trim()].filter(Boolean)],
+      ['testimonials',d=>[String(d.src||'').trim()].filter(Boolean)]
+    ];
+    for(const [col,extract] of paths){
+      const snap=await getDocs(collection(db,'artifacts',APP_ID,'public','data',col));
+      for(const ds of snap.docs){
+        const d={...ds.data()};let changed=false;
+        if(col==='products'&&d.image){const vals=[];for(const u of extract(d)){const r=await window.migrateLegacyUrlIfNeeded(u,'media/catalog/',d.category||'general',map);vals.push(r);if(r!==u)changed=true;}if(changed)d.image=vals.join('\\n');}
+        else if(col==='courses'&&d.image){const u=String(d.image).trim();const r=await window.migrateLegacyUrlIfNeeded(u,'media/courses/','courses',map);if(r!==u){d.image=r;changed=true;}}
+        else if(col==='testimonials'&&d.src){const u=String(d.src).trim();const r=await window.migrateLegacyUrlIfNeeded(u,d.videoKey?'testimonio_videos/':'media/testimonios/','testimonials',map);if(r!==u){d.src=r;d.videoProvider='b2';d.updatedAt=Date.now();changed=true;}}
+        if(changed){await setDoc(doc(db,'artifacts',APP_ID,'public','data',col,ds.id),d,{merge:true});}
+      }
+    }
+    // 4) Migrate URLs embedded anywhere in known settings/layout/template records.
+    const settingIds=['seo','layout','templateBase','mediaSources'];
+    const migrateSettingValue=async(value,settingId)=>{
+      if(typeof value==='string'){
+        const u=value.trim();
+        if(/^https:\/\/raw\.githubusercontent\.com\//i.test(u)||/^https:\/\/res\.cloudinary\.com\//i.test(u)){
+          try{return await window.migrateLegacyUrlIfNeeded(u,'media/settings/','settings',map)}catch(e){console.warn('Migración setting '+settingId+': '+u,e);return value;}
+        }
+        return mpRewriteLegacyUrls(value,map);
+      }
+      if(Array.isArray(value)){const out=[];for(const v of value)out.push(await migrateSettingValue(v,settingId));return out;}
+      if(value&&typeof value==='object'){const out={};for(const [k,v] of Object.entries(value))out[k]=await migrateSettingValue(v,settingId);return out;}
+      return value;
+    };
+    for(const settingId of settingIds){
+      const ref=doc(db,'artifacts',APP_ID,'public','data','settings',settingId);const snap=await getDoc(ref);if(!snap.exists())continue;
+      const d=snap.data()||{};const migrated=await migrateSettingValue(d,settingId);const before=JSON.stringify(d),after=JSON.stringify(migrated);
+      if(before!==after){await setDoc(ref,migrated,{merge:true});}
+    }
+    // Local/runtime source settings are now B2-only.
+    const cleanMedia={generalMode:'auto',productMode:'auto',generalJson:'https://b2.multiprintt.workers.dev/media/manifests/imagenes.json',generalBase:'https://b2.multiprintt.workers.dev/media/general/',productJson:'https://b2.multiprintt.workers.dev/media/manifests/productos.json',productBase:'https://b2.multiprintt.workers.dev/media/productos/',manualGeneral:'',manualProducts:''};
+    safeStorageSet('multiprintt_media_sources',JSON.stringify(cleanMedia));safeStorageRemove('multiprintt_media_sources_legacy');syncMediaSourcesToFrame();
+    const uploadedCount=results.filter(x=>x?.ok&&!x?.skipped&&!x?.kind).length;
+    const skippedCount=results.filter(x=>x?.skipped===true).length;
+    const manifestCount=results.filter(x=>x?.kind==='manifest').length;
+    window.showToast(`Migración B2 finalizada · ${uploadedCount} archivos nuevos · ${skippedCount} existentes/reutilizados · ${manifestCount} manifiestos · sin duplicados.`);
+    void writeAdminAudit(`Migración B2: ${uploadedCount} nuevos · ${skippedCount} reutilizados/existentes · ${manifestCount} manifiestos`, 'media');
+    markDirty('Migración completa de medios a B2',false);proScheduleSnapshot();
+  }catch(e){console.error('Migración externa a B2:',e);window.showToast('La migración se detuvo: '+(e?.message||e?.code||'error'));}
+};
+window.migrateLegacyUrlIfNeeded=async function(url,prefix,kind,sharedMap=null){
+  const u=String(url||'').trim();if(!u)return u;if(/^https:\/\/b2\.multiprintt\.workers\.dev\//i.test(u))return u;
+  const sourceNoFragment=mpCanonicalExternalUrl(u);const shared=sharedMap||MP_LEGACY_B2_MIGRATION.map;const exact=shared[sourceNoFragment]||shared[u.split('#')[0]];if(exact)return exact+(u.includes('#')?u.substring(u.indexOf('#')):'');
+  if(!/^https:\/\/raw\.githubusercontent\.com\//i.test(u)&&!/^https:\/\/res\.cloudinary\.com\//i.test(u))return u;
+  const parsed=new URL(u);let rel=parsed.pathname.split('/recursos/')[1]||parsed.pathname.split('/').pop()||('asset_'+Date.now());if(rel.startsWith('productos/'))rel=rel.slice('productos/'.length);
+  const ext=(rel.match(/\.[a-z0-9]{1,10}$/i)||[''])[0]||'.bin';const safe=b2Slug(String(rel).replace(/\.[^.]+$/,''));const key=(prefix+safe+ext).replace(/\\+/g,'/');
+  const result=await mpMigrateOneExternal({sourceUrl:sourceNoFragment,key});const resolved=result.url||'';if(sharedMap&&resolved)sharedMap[sourceNoFragment]=resolved;else if(resolved)MP_LEGACY_B2_MIGRATION.map[sourceNoFragment]=resolved;return resolved?resolved+(u.includes('#')?u.substring(u.indexOf('#')):''):u;
+};
+
 window.saveMediaSources=()=>{const val=id=>document.getElementById(id)?.value||'';const m={generalMode:val('media-mode-general')||'auto',productMode:val('media-mode-products')||'auto',generalJson:val('media-json-general').trim()||DEFAULT_MEDIA_SOURCES.generalJson,generalBase:val('media-base-general').trim(),productJson:val('media-json-products').trim()||DEFAULT_MEDIA_SOURCES.productJson,productBase:val('media-base-products').trim(),manualGeneral:val('media-manual-general').trim(),manualProducts:val('media-manual-products').trim()};safeStorageSet('multiprintt_media_sources',JSON.stringify(m));syncMediaSourcesToFrame();window.showToast('Fuentes de medios actualizadas');window.openGallery(activeMediaInput,currentGalleryType,currentGalleryMode)};
 window.resetMediaSources=()=>{safeStorageRemove('multiprintt_media_sources');window.toggleMediaSources();syncMediaSourcesToFrame();window.showToast('Fuentes predeterminadas restauradas');window.openGallery(activeMediaInput,currentGalleryType,currentGalleryMode)};
 window.validateMediaSourceModes=()=>{const m=mediaSources();let changed=false;if(m.generalMode==='manual'&&!String(m.manualGeneral||'').trim()){m.generalMode='auto';changed=true}if(m.productMode==='manual'&&!String(m.manualProducts||'').trim()){m.productMode='auto';changed=true}if(changed){safeStorageSet('multiprintt_media_sources',JSON.stringify(m));}return m};
@@ -2652,6 +2818,8 @@ window.showToast('Error de sincronización');
 if(d.type==='SAVE_FULL_LAYOUT_ERROR'){if((Number(d.saveRequestId)||0)!==latestSaveRequestId)return;setSaveState('err','No se pudo preparar el guardado');if((d.message||'').trim())window.showToast(d.message)}
 if(d.type==='OPEN_ICON_PICKER')window.openSocialModal();
 if(d.type==='OPEN_EDITOR')window.openDbEditor(d.editorType,d.itemId,d.itemData);
+if(d.type==='TESTIMONIAL_CREATED'){(async()=>{try{await ensureAdminWriteSession();const id=String(d.itemId||'').trim();const type=String(d.testimonialType||'testimonial_text');if(!id||!['testimonial_video','testimonial_text'].includes(type))return;const data={...(d.data||{}),testimonialId:id,testimonialType:type,createdAt:Number(d.data?.createdAt)||Date.now(),updatedAt:Date.now()};await setDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id),data,{merge:true});void writeAdminAudit(`Creó ${type==='testimonial_video'?'testimonio de video':'testimonio de texto'}: ${id}`,'db');markDirty('Testimonio creado',false);proScheduleSnapshot();setTimeout(()=>window.openDbEditor(type,id,{...data,id}),0);}catch(e){console.error('Crear testimonio:',e);window.showToast('No se pudo guardar el nuevo testimonio: '+(e?.message||e?.code||'error'));}})();}
+if(d.type==='TESTIMONIAL_DELETED'){(async()=>{try{await ensureAdminWriteSession();const id=String(d.itemId||'').trim();if(!id)return;await deleteDoc(doc(db,'artifacts',APP_ID,'public','data','testimonials',id));void writeAdminAudit(`Eliminó testimonio: ${id}`,'db');markDirty('Testimonio eliminado',false);proScheduleSnapshot();}catch(e){console.error('Eliminar testimonio:',e);window.showToast('No se pudo eliminar el testimonio: '+(e?.message||e?.code||'error'));}})();}
 if(d.type==='DELETE_DB_ITEM'){const col=d.itemType==='product'?'products':'courses';if(confirm('¿Eliminar este registro de forma permanente?')){(async()=>{try{await ensureAdminWriteSession();await deleteDoc(doc(db,'artifacts',APP_ID,'public','data',col,d.itemId));await writeAdminAudit(`Eliminó ${d.itemType==='product'?'producto':'curso'} ${d.itemId}`,'db');iframe().contentWindow.postMessage({type:'DB_DELETED_SUCCESS',itemType:d.itemType,id:d.itemId},location.origin);window.showToast('Registro eliminado correctamente')}catch(e){console.error('Eliminar BD:',e);window.showToast('No se pudo eliminar: '+(e?.code||e?.message||'error'))}})()}}
 });
 document.addEventListener('keydown',e=>{if(document.getElementById('gallery-modal')?.classList.contains('open')){if(e.key==='1')window.switchMediaExplorerTab('library');if(e.key==='2')window.switchMediaExplorerTab('imgbb');if(e.key==='3')window.switchMediaExplorerTab('sources')}});window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();window.publishChanges(false)}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();window.openCommandPalette()}if(e.key==='Escape'){['social-modal','db-modal','gallery-modal','layers-modal','history-modal','audit-modal','command-modal','global-modal','seo-modal'].forEach(window.closeModal)}});

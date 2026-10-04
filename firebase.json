@@ -7,7 +7,12 @@
       "**/.*",
       "**/node_modules/**",
       ".github/**",
-      "recursos/**"
+      "recursos/**",
+      "worker.js",
+      "worker.txt",
+      "firestore.rules",
+      "README*.md",
+      "AUDITORIA*.md"
     ],
     "headers": [
       {
