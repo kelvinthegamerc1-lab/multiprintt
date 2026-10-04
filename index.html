@@ -131,7 +131,7 @@
 function dec(v){try{let t=String(v||'').replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';return decodeURIComponent(escape(atob(t)));}catch(e){return '';}}
 window.mpDecodeMedia=dec;
 window.mpHydrateMedia=function(root){try{const scope=root||document;const isMobile=window.matchMedia&&window.matchMedia('(max-width:767px)').matches;scope.querySelectorAll?.('[data-mp-src]').forEach(function(el){const u=dec(el.getAttribute('data-mp-src'));if(!u)return;el.setAttribute('src',u);el.removeAttribute('data-mp-src');if(el.tagName==='VIDEO'){const critical=el.id==='mobile-cinematic-video';el.setAttribute('preload',isMobile?'metadata':'auto');if(!isMobile||!critical)el.load();}});scope.querySelectorAll?.('[data-mp-href]').forEach(function(el){const u=dec(el.getAttribute('data-mp-href'));if(u)el.setAttribute('href',u);el.removeAttribute('data-mp-href');});}catch(e){console.warn('No se pudo hidratar media:',e)}};
-document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(document);}, {once:true});
+document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(document);markTestimonialEditorButtons(document);}, {once:true});
 document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>window.prepareTestimonialVideoPoster?.(document),120),{once:true});
 })();
 </script>
@@ -5235,7 +5235,7 @@ function getTestimonialEditorData(card,type){
   if(!card)return null;
   const video=card.querySelector('video');
   return {
-    src:type==='testimonial_video'?(video?.getAttribute('src')||video?.currentSrc||''):'',
+    src:type==='testimonial_video'?(video?.getAttribute('data-original-media-url')||video?.getAttribute('src')||video?.currentSrc||''):'',
     name:card.querySelector(type==='testimonial_video'?'.vt-name':'.txt-name')?.innerText?.trim()||'Alumno',
     role:card.querySelector(type==='testimonial_video'?'.vt-role':'.txt-role')?.innerText?.trim()||(type==='testimonial_video'?'Caso de Éxito':'Curso General'),
     quote:card.querySelector(type==='testimonial_video'?'.vt-quote':'.txt-quote')?.innerText?.trim()||card.querySelector('p')?.innerText?.trim()||'',
@@ -5266,6 +5266,35 @@ div.innerHTML = `
 grid.insertBefore(div, btnNode);
 if(window.updateResizeBox) window.updateResizeBox();
 }
+
+function postTestimonialEditor(card,type){
+  if(!card || !window.isAdminMode)return false;
+  const stableId=card.getAttribute('data-testimonial-id')||card.getAttribute('data-card-id')||'';
+  if(!stableId)return false;
+  const data=getTestimonialEditorData(card,type)||{};
+  try{
+    window.parent.postMessage({type:'OPEN_EDITOR',editorType:type,itemId:stableId,itemData:{...data,id:stableId}},location.origin==='null'?'*':location.origin);
+    return true;
+  }catch(e){console.error('OPEN_EDITOR testimonial:',e);return false;}
+}
+
+// Capture phase: this stays reliable for dynamically cloned testimonials and for touch devices.
+document.addEventListener('click',function(event){
+  const editBtn=event.target.closest?.('[data-testimonial-edit-db]');
+  if(!editBtn || !window.isAdminMode)return;
+  const card=editBtn.closest?.('.video-testimonial-card[data-testimonial-id], .card[data-testimonial-type="testimonial_text"][data-testimonial-id]');
+  if(!card)return;
+  event.preventDefault(); event.stopPropagation();
+  const type=card.getAttribute('data-testimonial-type')||'testimonial_video';
+  postTestimonialEditor(card,type);
+},true);
+function markTestimonialEditorButtons(root=document){
+  root.querySelectorAll?.('.admin-video-edit-overlay').forEach(overlay=>{
+    const buttons=overlay.querySelectorAll('button');
+    if(buttons[0])buttons[0].setAttribute('data-testimonial-edit-db','true');
+  });
+}
+
 window.cloneVideoTestimonial = function(btnNode) {
 if(!window.isAdminMode) return;
 const col = btnNode.parentElement; const newId = createUniqueTestimonialId('t');
@@ -5295,8 +5324,10 @@ div.innerHTML = `
 </div>
 `;
 col.insertBefore(div, btnNode);
+markTestimonialEditorButtons(div);
 try{window.mpHydrateMedia?.(div)}catch(e){}
 try{window.prepareTestimonialVideoPoster?.(div)}catch(e){}
+try{window.ensureTestimonialEditorOverlays?.()}catch(e){}
 if(window.updateResizeBox) window.updateResizeBox();
 }
 window.deleteTestimonialCard = function(btn) {
@@ -5308,7 +5339,7 @@ if(!window.isAdminMode) return;
 const courses = document.getElementById('view-courses');
 if(!courses) return;
 courses.querySelectorAll('.video-testimonial-card[data-card-id]').forEach(card => {
-if(card.querySelector(':scope > .admin-video-edit-overlay')) return;
+const existingOverlay=card.querySelector(':scope > .admin-video-edit-overlay'); if(existingOverlay){markTestimonialEditorButtons(card);return;}
 const id = card.getAttribute('data-testimonial-id') || card.getAttribute('data-card-id');
 const video = card.querySelector('video');
 const name = card.querySelector('.vt-name')?.innerText?.trim() || 'Alumno';
@@ -5321,7 +5352,7 @@ overlay.className = 'admin-video-edit-overlay ignore-drag';
 overlay.innerHTML = `<button type="button" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
 overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:stableId,itemData:{src,name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
-card.appendChild(overlay);
+card.appendChild(overlay); markTestimonialEditorButtons(card);
 });
 courses.querySelectorAll('.card[data-card-id]').forEach(card => {
 if(card.classList.contains('video-testimonial-card') || card.querySelector('.video-testimonial-card') || card.querySelector(':scope > .admin-video-edit-overlay')) return;
@@ -5336,7 +5367,7 @@ overlay.className = 'admin-video-edit-overlay ignore-drag';
 overlay.innerHTML = `<button type="button" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
 overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:stableId,itemData:{name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
-card.appendChild(overlay);
+card.appendChild(overlay); markTestimonialEditorButtons(card);
 });
 };
 let lastProductSnapshot = null;
@@ -5940,7 +5971,7 @@ if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('acade
 if (event.data.type === 'ENABLE_BUILDER') {
 ensureUniqueTestimonialIds(document);
 window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
-window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
+window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); markTestimonialEditorButtons(document); initVisualResizer();
 if (window.__builderClickHandler) document.removeEventListener('click', window.__builderClickHandler, true);
 // Todo texto estático queda seleccionable/editable, incluidos spans, enlaces y textos anidados.
 markTextElementsEditable(document);
@@ -6003,7 +6034,7 @@ if (event.data.type === 'UPDATE_TESTIMONIAL') {
 const { itemId, data: d } = event.data;
 const targetCard = getTestimonialCardById(itemId,'testimonial_video');
 if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_video') {
-if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { vid.removeAttribute('poster');vid.dataset.posterReady='0';vid.crossOrigin='anonymous';vid.src = d.src; vid.load(); setTimeout(()=>window.prepareTestimonialVideoPoster?.(targetCard),80); } }
+if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { vid.removeAttribute('poster');vid.dataset.posterReady='0';vid.crossOrigin='anonymous';vid.setAttribute('data-original-media-url',d.src);vid.src = d.src;vid.preload='metadata';vid.load(); setTimeout(()=>window.prepareTestimonialVideoPoster?.(targetCard),80); } }
 if(d.name) { const n = targetCard.querySelector('.vt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.vt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
 if(d.role) { const r = targetCard.querySelector('.vt-role'); if(r) r.innerText = d.role; }
 if(d.quote) { const q = targetCard.querySelector('.vt-quote'); if(q) q.innerText = d.quote; }
@@ -6213,7 +6244,7 @@ let modalContent = document.getElementById('videoModalContent') || document.quer
 if (modalContent) window.applyThemeSwap(modalContent, themeKey);
 const modal = document.getElementById('videoModal');
 modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); if(!window.isAdminMode && modalContent) modalContent.classList.remove('scale-95'); }, 10);
-const fitTestimonialVideoModal=()=>{try{if(window.matchMedia?.('(max-width:767px)').matches&&video&&modalContent){const wrap=video.parentElement;const ratio=(video.videoWidth&&video.videoHeight)?video.videoWidth/video.videoHeight:(16/9);const maxW=Math.max(260,Math.min(window.innerWidth-16,420)),maxH=Math.max(180,window.innerHeight*.50);let w=maxW,h=w/ratio;if(h>maxH){h=maxH;w=h*ratio;}wrap.style.width=Math.round(w)+'px';wrap.style.height=Math.round(h)+'px';wrap.style.aspectRatio='auto';const body=modalContent.querySelector(':scope > div:last-of-type');if(body)body.style.maxHeight=Math.max(150,window.innerHeight-h-18)+'px';}else if(modalContent&&video?.parentElement){video.parentElement.style.width='';video.parentElement.style.height='';video.parentElement.style.aspectRatio='';}}catch(e){}};
+const fitTestimonialVideoModal=()=>{try{if(window.matchMedia?.('(max-width:767px)').matches&&video&&modalContent){const wrap=video.parentElement;const ratio=(video.videoWidth&&video.videoHeight)?video.videoWidth/video.videoHeight:(16/9);const vw=window.visualViewport?.width||window.innerWidth;const vh=window.visualViewport?.height||window.innerHeight;const maxW=Math.max(240,Math.min(vw-16,420)),maxH=Math.max(170,vh*.50);let w=maxW,h=w/ratio;if(h>maxH){h=maxH;w=h*ratio;}wrap.style.width=Math.round(w)+'px';wrap.style.height=Math.round(h)+'px';wrap.style.aspectRatio='auto';const body=modalContent.querySelector(':scope > div:last-of-type');if(body)body.style.maxHeight=Math.max(150,window.innerHeight-h-18)+'px';}else if(modalContent&&video?.parentElement){video.parentElement.style.width='';video.parentElement.style.height='';video.parentElement.style.aspectRatio='';}}catch(e){}};
 window.__mpFitTestimonialVideoModal=fitTestimonialVideoModal;
 if(video){video.addEventListener('loadedmetadata',fitTestimonialVideoModal,{once:true});}
 window.addEventListener('resize',fitTestimonialVideoModal,{passive:true});fitTestimonialVideoModal();
