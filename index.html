@@ -17,21 +17,6 @@
 <meta name="description" content="Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.">
 <meta name="keywords" content="Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<script id="mp-google-tag-bootstrap">
-(function(){
-  const ID='G-VP3XV39H5M';
-  if(window.parent!==window) return;
-  window.dataLayer=window.dataLayer||[];
-  window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
-  window.gtag('js',new Date());
-  window.gtag('config',ID,{send_page_view:true});
-  const s=document.createElement('script');
-  s.async=true;
-  s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(ID);
-  document.head.appendChild(s);
-  window.__mpGoogleAnalyticsId=ID;
-})();
-</script>
 <link rel="canonical" href="https://multiprintt.web.app/">
 <link rel="icon" href="https://multiprintt.web.app/favicon.ico" type="image/x-icon">
 <link rel="icon" type="image/webp" href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-mp-href="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy9mYXZpY29uLndlYnA">
@@ -40,8 +25,8 @@
 <meta name="application-name" content="Multiprintt">
 <meta name="apple-mobile-web-app-title" content="Multiprintt">
 <meta name="theme-color" content="#070709">
-<meta name="mp-build-version" content="2026.09.30.01">
-<meta name="mp-final-mobile-fix" content="mp-final-mobile-2026-09-30">
+<meta name="mp-build-version" content="2026.09.28.02">
+<meta name="mp-final-mobile-fix" content="mp-final-mobile-2026-09-24">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://multiprintt.web.app/">
 <meta property="og:site_name" content="Multiprintt">
@@ -147,6 +132,7 @@ function dec(v){try{let t=String(v||'').replace(/-/g,'+').replace(/_/g,'/');whil
 window.mpDecodeMedia=dec;
 window.mpHydrateMedia=function(root){try{const scope=root||document;const isMobile=window.matchMedia&&window.matchMedia('(max-width:767px)').matches;scope.querySelectorAll?.('[data-mp-src]').forEach(function(el){const u=dec(el.getAttribute('data-mp-src'));if(!u)return;el.setAttribute('src',u);el.removeAttribute('data-mp-src');if(el.tagName==='VIDEO'){const critical=el.id==='mobile-cinematic-video';el.setAttribute('preload',isMobile?'metadata':'auto');if(!isMobile||!critical)el.load();}});scope.querySelectorAll?.('[data-mp-href]').forEach(function(el){const u=dec(el.getAttribute('data-mp-href'));if(u)el.setAttribute('href',u);el.removeAttribute('data-mp-href');});}catch(e){console.warn('No se pudo hidratar media:',e)}};
 document.addEventListener('DOMContentLoaded',function(){window.mpHydrateMedia(document);}, {once:true});
+document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>window.prepareTestimonialVideoPoster?.(document),120),{once:true});
 })();
 </script>
 <style id="multiprintt-tailwind-static">/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
@@ -4019,13 +4005,28 @@ html{color-scheme:dark;}
   display:block;
   will-change:transform;
 }
-<style id="testimonial-admin-interaction-fix-2026">
-body.is-admin-session .admin-video-edit-overlay{pointer-events:none!important;}
-body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-edit],
-body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{pointer-events:auto!important;}
-@media(max-width:767px){body.is-admin-session .video-testimonial-card .admin-video-edit-overlay{pointer-events:none!important;}body.is-admin-session .video-testimonial-card .admin-video-edit-overlay [data-admin-testimonial-edit],body.is-admin-session .video-testimonial-card .admin-video-edit-overlay [data-admin-testimonial-delete]{pointer-events:auto!important;}}
 </style>
 
+<style id="mp-testimonial-mobile-modal-fix">
+#videoModal{padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));}
+@media(max-width:767px){
+  #videoModal{align-items:center!important;justify-content:center!important;overflow:hidden!important;}
+  #videoModalContent{width:min(420px,calc(100vw - 16px))!important;max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;height:auto!important;display:flex!important;flex-direction:column!important;border-radius:20px!important;overflow:hidden!important;margin:0!important;}
+  #videoModalContent > div:first-of-type{width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;aspect-ratio:16/9!important;background:#000!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;}
+  #testimonial-video{position:relative!important;inset:auto!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;background:#000!important;}
+  #videoModalContent > div:last-of-type{width:100%!important;min-width:0!important;max-height:calc(100dvh - 16px - 42vw)!important;overflow-y:auto!important;padding:16px!important;padding-bottom:max(16px,env(safe-area-inset-bottom))!important;}
+  #vm-quote{font-size:15px!important;line-height:1.52!important;max-height:26dvh!important;overflow:auto!important;}
+  #vm-quote-icon{font-size:30px!important;margin-bottom:10px!important;}
+  #vm-name{font-size:16px!important;}
+  #vm-role{font-size:9px!important;letter-spacing:.16em!important;}
+  #videoModalContent > button{top:8px!important;right:8px!important;width:36px!important;height:36px!important;z-index:500!important;background:rgba(0,0,0,.65)!important;}
+}
+@media(max-width:380px){
+  #videoModalContent{width:calc(100vw - 12px)!important;max-width:calc(100vw - 12px)!important;border-radius:16px!important;}
+  #videoModalContent > div:last-of-type{padding:13px!important;}
+  #vm-quote{font-size:14px!important;}
+}
+</style>
 </head>
 <body class="transform-gpu">
 <div id="global-loader" role="status" aria-live="polite" aria-label="Cargando Multiprintt" class="fixed inset-0 z-[9999] bg-[#070709] flex items-center justify-center transition-all duration-700 ease-in-out">
@@ -4220,8 +4221,8 @@ body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{
         </div>
         <div class="flex flex-col lg:flex-row gap-5 max-w-7xl mx-auto mb-16 reveal show w-full pb-20 md:pb-0">
             <div id="video-testimonials-col" class="w-full lg:w-1/3 flex flex-col gap-4 sortable-zone">
-                <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-card-id="t_default_1" data-testimonial-id="t_default_1" data-testimonial-type="testimonial_video" data-video-provider="github" data-resizable="true">
-                    <video data-editable="true" data-mp-src="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy90ZXN0aW1vbmlvL3Rlc3RpbW9uaW8wLm1wNA" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none" loading="lazy"></video>
+                <div class="video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]" data-theme="cyan" data-card-id="t_default_1" data-testimonial-id="t_default_1" data-testimonial-type="testimonial_video" data-resizable="true">
+                    <video data-editable="true" data-mp-src="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy90ZXN0aW1vbmlvL3Rlc3RpbW9uaW8wLm1wNA" crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none" loading="lazy" preload="metadata"></video>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
                     <div class="absolute top-6 left-6 right-6 z-20 pointer-events-none drop-shadow-md">
                         <i class="fa-solid fa-quote-left text-4xl text-cyan-400/50 mb-3"></i>
@@ -4238,7 +4239,7 @@ body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{
                         </div>
                     </div>
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button type="button" onclick="event.stopPropagation(); window.openTestimonialDbEditor(this)" data-admin-testimonial-edit="1" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
+                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: this.closest('.video-testimonial-card').getAttribute('data-testimonial-id') || this.closest('.video-testimonial-card').getAttribute('data-card-id'), itemData: { src: this.closest('.video-testimonial-card').querySelector('video').src, name: this.closest('.video-testimonial-card').querySelector('.vt-name').innerText, role: this.closest('.video-testimonial-card').querySelector('.vt-role').innerText, quote: this.closest('.video-testimonial-card').querySelector('.vt-quote').innerText, theme: this.closest('.video-testimonial-card').getAttribute('data-theme') || 'cyan' }}, location.origin === 'null' ? '*' : location.origin)" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
                         <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
@@ -4258,7 +4259,7 @@ body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{
                         </div>
                     </div>
                     <div class="admin-video-edit-overlay ignore-drag">
-                        <button type="button" onclick="event.stopPropagation(); window.openTestimonialDbEditor(this)" data-admin-testimonial-edit="1" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
+                        <button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: this.closest('.card').getAttribute('data-testimonial-id') || this.closest('.card').getAttribute('data-card-id'), itemData: { name: this.closest('.card').querySelector('.txt-name').innerText, role: this.closest('.card').querySelector('.txt-role').innerText, quote: this.closest('.card').querySelector('p').innerText, theme: this.closest('.card').getAttribute('data-theme') || 'pink' }}, location.origin === 'null' ? '*' : location.origin)" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-database pointer-events-none"></i> Editar BD</button>
                         <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
                     </div>
                 </div>
@@ -4388,7 +4389,7 @@ body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{
     <div id="videoModalContent" data-editable="true" class="relative w-[95vw] max-w-4xl bg-[#0a0a0c] border border-cyan-400/20 rounded-[32px] shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transform scale-95 transition-transform duration-500 flex flex-col md:flex-row mx-auto" data-theme="cyan">
         <button type="button" onclick="window.closeVideoModal(event)" class="absolute top-4 right-4 md:top-6 md:right-6 z-[310] w-10 h-10 rounded-full bg-black/50 hover:bg-white/20 backdrop-blur-md border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-all ignore-drag outline-none shadow-lg cursor-pointer border-none"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
         <div class="w-full md:w-[45%] h-[280px] sm:h-[350px] md:h-auto min-h-[300px] relative bg-black shrink-0">
-            <video id="testimonial-video" data-editable="true" playsinline class="absolute inset-0 w-full h-full object-cover object-center"></video>
+            <video id="testimonial-video" data-editable="true" playsinline crossorigin="anonymous" class="absolute inset-0 w-full h-full object-cover object-center"></video>
             <div data-editable="true" class="absolute top-4 left-4 md:top-6 md:left-6 z-[310] bg-black/60 backdrop-blur-md border border-white/10 text-white text-[11px] font-mono px-3 py-1.5 rounded-lg shadow-lg pointer-events-none"><span id="vm-time">00:00</span></div>
         </div>
         <div class="w-full md:w-[55%] p-8 sm:p-10 md:p-12 flex flex-col justify-center relative z-20 bg-[#0a0a0c]">
@@ -4410,14 +4411,14 @@ body.is-admin-session .admin-video-edit-overlay [data-admin-testimonial-delete]{
         <img id="im-full-image" alt="Vista previa de imagen de Multiprintt" class="max-w-full max-h-full object-contain rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.9)]" loading="lazy" onclick="event.stopPropagation()">
     </div>
 </div>
-<script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+<script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const MP_BUILD_VERSION = '2026.09.30.08';
+const MP_BUILD_VERSION = '2026.09.28.02';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
 const APP_ID = "multiprintt-web";
 let firebaseReady = true;
@@ -4443,8 +4444,8 @@ window.__mpHideGlobalLoader=function(force=false){
   reveal();
 };
 window.__mpMarkCatalogReady=function(){window.__mpCatalogReady=true;window.__mpHideGlobalLoader(false);};
-setTimeout(()=>window.__mpHideGlobalLoader(true),900);
-try{requestAnimationFrame(()=>requestAnimationFrame(()=>window.__mpHideGlobalLoader(false)))}catch(e){setTimeout(()=>window.__mpHideGlobalLoader(false),60)}
+setTimeout(()=>window.__mpHideGlobalLoader(true),1200);
+try{setTimeout(()=>window.__mpHideGlobalLoader(false),160)}catch(e){}
 window.normalizeMediaUrl=function(raw){let v=String(raw??'').trim();if(!v)return'';v=v.replace(/^['"]+|['"]+$/g,'').trim();v=v.replace(/&amp;/gi,'&').replace(/&quot;/gi,'\"').replace(/&#39;/gi,"'").replace(/&#x27;/gi,"'");if(v.startsWith('//'))v='https:'+v;return v};
 window.protectMediaUrl=function(raw){const v=window.normalizeMediaUrl(raw);if(!v)return'';if(/^(blob:|data:|mailto:|tel:|#)/i.test(v))return v;try{const parsed=new URL(v,location.href);if(parsed.hostname==='i.ibb.co'||parsed.hostname==='ibb.co'){return parsed.href}}catch(e){}const proxy=String(document.documentElement.dataset.mediaProxy||window.MEDIA_PROXY_BASE||'').replace(/\/$/,'');if(!proxy)return v;try{const u=new URL(v,location.href),p=new URL(proxy,location.href);if(u.origin===p.origin&&u.pathname.startsWith(p.pathname))return v;if(u.hostname==='raw.githubusercontent.com'||u.hostname==='res.cloudinary.com'){const kind=u.hostname==='raw.githubusercontent.com'?'github':'cloudinary';return p.origin+p.pathname.replace(/\/$/,'')+'/'+kind+u.pathname+u.search+u.hash}}catch(e){}return v};
 window.protectMediaList=list=>Array.isArray(list)?list.map(window.protectMediaUrl):list;
@@ -4750,17 +4751,7 @@ window.mpNormalizeCourseData=function(raw){
 };
 const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,image:'',icon:'fa-shirt'}];
 const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:"", isMasterclass: true, modality: "Presencial"}];
-function mpPublicCacheRead(key,fallback){try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
-function mpPublicCacheWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){return false}}
-const MP_PUBLIC_PRODUCTS_CACHE='multiprintt_public_products_v3';
-const MP_PUBLIC_COURSES_CACHE='multiprintt_public_courses_v3';
-const MP_PUBLIC_TESTIMONIALS_CACHE='multiprintt_public_testimonials_v2';
-const cachedProducts=mpPublicCacheRead(MP_PUBLIC_PRODUCTS_CACHE,[]);
-const cachedCourses=mpPublicCacheRead(MP_PUBLIC_COURSES_CACHE,[]);
-const cachedTestimonials=mpPublicCacheRead(MP_PUBLIC_TESTIMONIALS_CACHE,[]);
-window.appProducts = Array.isArray(cachedProducts)&&cachedProducts.length?[...cachedProducts]:[...defaultProducts];
-window.appCourses = Array.isArray(cachedCourses)&&cachedCourses.length?[...cachedCourses]:[...defaultCourses];
-window.__mpTestimonialsCache=Array.isArray(cachedTestimonials)?cachedTestimonials:[];
+window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
 window.navigate = function(targetId) {
 const subnav = document.getElementById('catalog-subnav');
 ['catalog', 'about', 'courses', 'contact'].forEach(id => {
@@ -5159,38 +5150,8 @@ Ver Detalles <i class="fa-solid fa-arrow-right ml-2 group-hover/btn:translate-x-
 });
 grid.innerHTML = renderHTML;
 }
-
-window.__mpEnsureCourseSortable=function(){
-  if(!window.isAdminMode || !document.body.classList.contains('dragging-active')) return;
-  const grid=document.getElementById('courses-grid');
-  if(!grid || !window.Sortable) return;
-  try{if(grid._courseSortable){grid._courseSortable.destroy();grid._courseSortable=null;}}catch(e){console.warn('Course Sortable cleanup:',e)}
-  const cards=Array.from(grid.children).filter(el=>el.classList.contains('card') && !el.classList.contains('ignore-drag'));
-  if(cards.length<2) return;
-  grid._courseSortable=new Sortable(grid,{
-    animation:180,
-    ghostClass:'sortable-ghost',
-    chosenClass:'sortable-chosen',
-    dragClass:'sortable-drag',
-    filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',
-    delay:120,
-    delayOnTouchOnly:true,
-    draggable:'.card',
-    onStart(){window.builderSelectionEnabled=false;},
-    onEnd(evt){
-      const order=Array.from(grid.querySelectorAll(':scope > .card[data-id]')).map(el=>String(el.getAttribute('data-id')||'')).filter(Boolean);
-      window.courseOrderArray=order;
-      window.parent.postMessage({type:'COURSE_ORDER_UPDATED',order,fromIndex:evt.oldIndex??-1,toIndex:evt.newIndex??-1,itemId:evt.item?.getAttribute('data-id')||''},'*');
-      window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item?.getAttribute('data-id')||'',fromId:'courses-grid',toId:'courses-grid',collection:'courses'},'*');
-      window.builderSelectionEnabled=false;
-      emitLayers();
-    }
-  });
-  window.sortableInstances.push(grid._courseSortable);
-};
-
 const _mpOriginalRenderCourses = window.renderCourses;
-window.renderCourses = function(){ const r = _mpOriginalRenderCourses?.apply(this, arguments); try { window.ensureAcademyGallery(); } catch(e) {} try { window.__mpEnsureCourseSortable?.(); } catch(e) {} return r; };
+window.renderCourses = function(){ const r = _mpOriginalRenderCourses?.apply(this, arguments); try { window.ensureAcademyGallery(); } catch(e) {} return r; };
 window.cloneCourseBadge = function(btn) {
 if(!window.isAdminMode) return;
 const colors = ['cyan', 'pink', 'amber', 'violet', 'emerald'];
@@ -5218,6 +5179,29 @@ clone.innerHTML = `<div data-editable="true" class="text-[8px] sm:text-[9px] upp
 parent.insertBefore(clone, btn);
 if(window.updateResizeBox) window.updateResizeBox();
 }
+
+function createFallbackTestimonialPoster(label='VIDEO TESTIMONIAL'){
+  try{const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#061018"/><stop offset=".55" stop-color="#11101b"/><stop offset="1" stop-color="#190916"/></linearGradient></defs><rect width="960" height="540" fill="url(#g)"/><circle cx="480" cy="240" r="74" fill="rgba(37,216,255,.18)" stroke="#25d8ff" stroke-width="3"/><polygon points="462,205 462,275 520,240" fill="#fff"/><text x="480" y="390" text-anchor="middle" fill="#d8fbff" font-family="Arial,sans-serif" font-size="28" font-weight="700" letter-spacing="4">${String(label).replace(/[<>&\"']/g,'')}</text></svg>`;return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)}catch(e){return ''}
+}
+window.prepareTestimonialVideoPoster=async function(root=document){
+  const videos=Array.from(root.querySelectorAll?.('.video-testimonial-card video.vt-video')||[]);
+  for(const video of videos){
+    if(video.dataset.posterReady==='1')continue;
+    video.dataset.posterReady='1';
+    if(!video.getAttribute('src') && video.getAttribute('data-mp-src')){try{window.mpHydrateMedia?.(video.parentElement||root)}catch(e){}}
+    video.setAttribute('preload','metadata'); video.setAttribute('playsinline','');
+    const fallback=createFallbackTestimonialPoster('TESTIMONIO'); if(fallback&&!video.poster)video.poster=fallback;
+    const capture=async()=>{try{
+      if(video.readyState<2 || !video.videoWidth || !video.videoHeight)return;
+      const c=document.createElement('canvas');const w=640,h=Math.max(360,Math.round(640*video.videoHeight/video.videoWidth));c.width=w;c.height=h;const ctx=c.getContext('2d');if(!ctx)return;ctx.drawImage(video,0,0,w,h);const data=c.toDataURL('image/jpeg',.72);if(data)video.poster=data;
+    }catch(e){/* Cross-origin sin CORS: conserva poster fallback. */}};
+    const onMeta=()=>{try{video.currentTime=Math.min(0.15,Math.max(0,Number(video.duration||0)*0.03));}catch(e){capture()}};
+    const onSeek=()=>{capture();video.removeEventListener('loadeddata',capture);video.removeEventListener('seeked',onSeek)};
+    video.addEventListener('loadedmetadata',onMeta,{once:true});video.addEventListener('loadeddata',capture,{once:true});video.addEventListener('seeked',onSeek,{once:true});
+    try{video.load()}catch(e){}
+  }
+};
+
 function createUniqueTestimonialId(prefix){
   const base=String(prefix||'testimonial')+'_'+Date.now().toString(36);
   try{if(window.crypto?.randomUUID)return base+'_'+window.crypto.randomUUID().replace(/-/g,'').slice(0,12);}catch(e){}
@@ -5250,21 +5234,12 @@ function getTestimonialCardById(testimonialId,testimonialType=''){
 function getTestimonialEditorData(card,type){
   if(!card)return null;
   const video=card.querySelector('video');
-  let src='';
-  if(type==='testimonial_video'){
-    src=video?.getAttribute('src')||video?.currentSrc||video?.getAttribute('data-mp-src')||'';
-    if(window.mpDecodeMedia&&src&&video?.hasAttribute('data-mp-src'))src=window.mpDecodeMedia(src)||src;
-  }
   return {
-    src,
+    src:type==='testimonial_video'?(video?.getAttribute('src')||video?.currentSrc||''):'',
     name:card.querySelector(type==='testimonial_video'?'.vt-name':'.txt-name')?.innerText?.trim()||'Alumno',
     role:card.querySelector(type==='testimonial_video'?'.vt-role':'.txt-role')?.innerText?.trim()||(type==='testimonial_video'?'Caso de Éxito':'Curso General'),
-    course:type==='testimonial_text'?(card.querySelector('.txt-role')?.innerText?.trim()||'Curso General'):'',
     quote:card.querySelector(type==='testimonial_video'?'.vt-quote':'.txt-quote')?.innerText?.trim()||card.querySelector('p')?.innerText?.trim()||'',
-    theme:card.getAttribute('data-theme')||(type==='testimonial_video'?'cyan':'pink'),
-    videoProvider:inferTestimonialVideoProvider(src,card.getAttribute('data-video-provider')||video?.getAttribute('data-video-provider')||''),
-    videoFileName:card.getAttribute('data-video-file-name')||video?.getAttribute('data-video-file-name')||'',
-    videoKey:card.getAttribute('data-video-key')||video?.getAttribute('data-video-key')||''
+    theme:card.getAttribute('data-theme')||(type==='testimonial_video'?'cyan':'pink')
   };
 }
 window.cloneTextTestimonial = function(btnNode) {
@@ -5280,30 +5255,23 @@ div.innerHTML = `
 <div class="w-10 h-10 rounded-full bg-pink-400/10 border border-pink-400 flex items-center justify-center font-bold text-sm text-pink-400 transition-colors shrink-0"><span data-editable="true" class="txt-initial">N</span></div>
 <div class="flex flex-col">
 <h4 data-editable="true" class="text-white text-xs font-bold uppercase tracking-wide txt-name m-0">Nuevo Alumno</h4>
-<span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role block mt-1">Curso Básico</span>
+<span data-editable="true" class="text-pink-400 text-[10px] font-medium transition-colors txt-role block mt-1">Curso General</span>
 </div>
 </div>
 <div class="admin-video-edit-overlay ignore-drag">
-<button type="button" data-admin-testimonial-edit="1" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', course: 'Curso Básico', role: 'Curso Básico', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
+<button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_text', itemId: '${newId}', itemData: { name: 'Nuevo Alumno', role: 'Curso General', quote: 'Escribe tu comentario aquí...', theme: 'pink' }}, '*')" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
 <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
 </div>
 `;
 grid.insertBefore(div, btnNode);
-window.parent.postMessage({type:'TESTIMONIAL_CREATED',itemId:newId,testimonialType:'testimonial_text',data:{name:'Nuevo Alumno',course:'Curso Básico',role:'Curso Básico',quote:'Escribe tu comentario aquí...',theme:'pink'}},'*');
 if(window.updateResizeBox) window.updateResizeBox();
 }
-window.openTestimonialDbEditor=function(btnNode){
-  const card=btnNode?.closest?.('.video-testimonial-card[data-testimonial-id],.video-testimonial-card[data-card-id]');
-  if(!card)return;
-  const data=getTestimonialEditorData(card,'testimonial_video')||{};
-  window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:String(card.getAttribute('data-testimonial-id')||card.getAttribute('data-card-id')||''),itemData:data},location.origin==='null'?'*':location.origin);
-};
 window.cloneVideoTestimonial = function(btnNode) {
 if(!window.isAdminMode) return;
 const col = btnNode.parentElement; const newId = createUniqueTestimonialId('t');
 const div = document.createElement('div');
 div.className = "video-testimonial-card cursor-pointer relative w-full h-[400px] rounded-[32px] overflow-hidden group shadow-[0_15px_40px_rgba(37,216,255,0.15)] border border-white/10 shrink-0 transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(37,216,255,0.3)] bg-[#0a0a0c]";
-div.setAttribute('data-theme', 'cyan'); div.setAttribute('data-card-id', newId); div.setAttribute('data-testimonial-id', newId); div.setAttribute('data-testimonial-type', 'testimonial_video'); div.setAttribute('data-video-provider', 'github'); div.setAttribute('data-resizable', 'true');
+div.setAttribute('data-theme', 'cyan'); div.setAttribute('data-card-id', newId); div.setAttribute('data-testimonial-id', newId); div.setAttribute('data-testimonial-type', 'testimonial_video'); div.setAttribute('data-resizable', 'true');
 div.innerHTML = `
 <video data-editable="true" data-mp-src="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2tlbHZpbnRoZWdhbWVyYzEtbGFiL211bHRpcHJpbnR0L3JlZnMvaGVhZHMvbWFpbi9yZWN1cnNvcy90ZXN0aW1vbmlvL3Rlc3RpbW9uaW8wLm1wNA"  crossorigin="anonymous" class="vt-video absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700 pointer-events-none"></video>
 <div class="absolute inset-0 bg-gradient-to-t from-[#050507] via-[#050507]/60 to-transparent pointer-events-none transition-opacity duration-300 group-hover:opacity-80"></div>
@@ -5322,23 +5290,18 @@ div.innerHTML = `
 </div>
 </div>
 <div class="admin-video-edit-overlay ignore-drag">
-<button type="button" data-admin-testimonial-edit="1" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: "https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4", name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
+<button type="button" onclick="event.stopPropagation(); window.parent.postMessage({type: 'OPEN_EDITOR', editorType: 'testimonial_video', itemId: '${newId}', itemData: { src: "https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/testimonio/testimonio0.mp4", name: 'Nuevo Alumno', role: 'Caso de Éxito', quote: 'Escribe tu testimonio en video aquí...', theme: 'cyan' }}, '*')" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button>
 <button type="button" onclick="event.stopPropagation(); window.deleteTestimonialCard(this)" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>
 </div>
 `;
 col.insertBefore(div, btnNode);
-window.parent.postMessage({type:'TESTIMONIAL_CREATED',itemId:newId,testimonialType:'testimonial_video',data:{src:'',videoProvider:'b2_testimonial',name:'Nuevo Alumno',role:'Caso de Éxito',quote:'Escribe tu testimonio en video aquí...',theme:'cyan'}},'*');
+try{window.mpHydrateMedia?.(div)}catch(e){}
+try{window.prepareTestimonialVideoPoster?.(div)}catch(e){}
 if(window.updateResizeBox) window.updateResizeBox();
 }
 window.deleteTestimonialCard = function(btn) {
 const card = btn.closest('.video-testimonial-card, .card');
-if(card) {
-  const id=String(card.getAttribute('data-testimonial-id')||card.getAttribute('data-card-id')||'').trim();
-  const testimonialType=String(card.getAttribute('data-testimonial-type')||(card.classList.contains('video-testimonial-card')?'testimonial_video':'testimonial_text')).trim();
-  card.remove();
-  if(id)window.parent.postMessage({type:'TESTIMONIAL_DELETED',itemId:id,testimonialType},'*');
-  window.showToast("Testimonio eliminado.");
-}
+if(card) { card.remove(); window.showToast("Testimonio eliminado."); }
 }
 window.ensureTestimonialEditorOverlays = function() {
 if(!window.isAdminMode) return;
@@ -5355,8 +5318,8 @@ const src = video?.getAttribute('src') || '';
 const theme = card.getAttribute('data-theme') || 'cyan';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
-overlay.innerHTML = `<button type="button" data-admin-testimonial-edit="1" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" data-admin-testimonial-delete="1" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; const itemData={src,name,role,quote,theme,videoProvider:card.getAttribute('data-video-provider')||video?.getAttribute('data-video-provider')||'b2_testimonial',videoKey:card.getAttribute('data-video-key')||video?.getAttribute('data-video-key')||'',videoFileName:card.getAttribute('data-video-file-name')||video?.getAttribute('data-video-file-name')||''}; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:stableId,itemData},'*'); });
+overlay.innerHTML = `<button type="button" class="bg-violet-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-violet-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_video',itemId:stableId,itemData:{src,name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
@@ -5365,187 +5328,47 @@ if(card.classList.contains('video-testimonial-card') || card.querySelector('.vid
 if(!card.querySelector('.txt-name') || !card.querySelector('.txt-role')) return;
 const id = card.getAttribute('data-testimonial-id') || card.getAttribute('data-card-id');
 const name = card.querySelector('.txt-name')?.innerText?.trim() || 'Alumno';
-const course = card.querySelector('.txt-role')?.innerText?.trim() || 'Curso General';
-const role = course;
+const role = card.querySelector('.txt-role')?.innerText?.trim() || 'Curso General';
 const quote = card.querySelector('p')?.innerText?.trim() || 'Escribe tu comentario aquí...';
 const theme = card.getAttribute('data-theme') || 'pink';
 const overlay = document.createElement('div');
 overlay.className = 'admin-video-edit-overlay ignore-drag';
-overlay.innerHTML = `<button type="button" data-admin-testimonial-edit="1" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" data-admin-testimonial-delete="1" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
-overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:stableId,itemData:{name,course,role,quote,theme}},'*'); });
+overlay.innerHTML = `<button type="button" class="bg-pink-500 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-lg pointer-events-auto hover:bg-pink-400 transition-colors z-50 flex items-center gap-2 cursor-pointer border-none"><i class="fa-solid fa-pen pointer-events-none"></i> Editar BD</button><button type="button" class="bg-red-500 text-white px-4 py-1.5 rounded-xl text-[10px] font-bold shadow-lg pointer-events-auto hover:bg-red-400 transition-colors z-50 flex items-center gap-1.5 cursor-pointer border-none"><i class="fa-solid fa-trash pointer-events-none"></i> Eliminar</button>`;
+overlay.children[0].addEventListener('click', e => { e.stopPropagation(); const stableId=card.getAttribute('data-testimonial-id')||id; window.parent.postMessage({type:'OPEN_EDITOR',editorType:'testimonial_text',itemId:stableId,itemData:{name,role,quote,theme}},location.origin === 'null' ? '*' : location.origin); });
 overlay.children[1].addEventListener('click', e => { e.stopPropagation(); window.deleteTestimonialCard(overlay.children[1]); });
 card.appendChild(overlay);
 });
 };
 let lastProductSnapshot = null;
-window.__mpStartPublicSnapshots=function(){
-  if(window.__mpPublicSnapshotsBound)return;
-  window.__mpPublicSnapshotsBound=true;
-  onSnapshot(collection(db,'artifacts',APP_ID,'public','data','products'),snap=>{
-    const nextProducts=snap.empty?[...defaultProducts]:snap.docs.map(d=>window.mpNormalizeProductData({id:d.id,...d.data()}));
-    window.appProducts=nextProducts;window.productsDataReady=true;lastProductSnapshot=nextProducts.map(p=>({...p}));
-    mpPublicCacheWrite(MP_PUBLIC_PRODUCTS_CACHE,nextProducts);
-    try{window.renderProducts();}catch(e){console.warn('Render products:',e)}
-    window.updateCartUI();window.__mpMarkCatalogReady();
-  },error=>{console.warn('No se pudo sincronizar products; se mantiene la caché/local.',error);window.productsDataReady=true;window.__mpMarkCatalogReady();window.updateCartUI();});
-  onSnapshot(collection(db,'artifacts',APP_ID,'public','data','productDemand'),snap=>{
-    const map={};snap.forEach(d=>{map[d.id]=d.data()||{}});window.productDemandMap=map;
-    if(window.currentFilter==='mas-vendidos')window.renderProducts();
-  },error=>{console.warn('No se pudo sincronizar productDemand:',error);});
-  onSnapshot(collection(db,'artifacts',APP_ID,'public','data','courses'),snap=>{
-    const nextCourses=snap.empty?[...defaultCourses]:snap.docs.map(d=>window.mpNormalizeCourseData({id:d.id,...d.data()}));
-    window.appCourses=nextCourses;window.__mpInitialCoursesReady=true;mpPublicCacheWrite(MP_PUBLIC_COURSES_CACHE,nextCourses);
-    try{window.renderCourses();}catch(e){console.warn('Render courses:',e)}
-  },error=>{console.warn('No se pudo sincronizar courses; se mantiene la caché/local.',error);});
-  onSnapshot(collection(db,'artifacts',APP_ID,'public','data','testimonials'),snap=>{
-    const records=snap.docs.map(d=>{
-      const raw={id:d.id,...(d.data()||{})};
-      if(raw.testimonialType==='testimonial_video' && raw.src && !raw.videoProvider){
-        const src=String(raw.src).trim();
-        raw.videoProvider=/(^|\/)raw\.githubusercontent\.com\//i.test(src)||/github\.com\//i.test(src)?'github':/(^|\/)testimonio_videos\//i.test(src)?'b2_testimonial':'url';
-      }
-      return raw;
-    });
-    window.__mpTestimonialsCache=records;window.__mpReconcileTestimonials(records);
-  },error=>{console.warn('No se pudo sincronizar testimonials; se mantiene la caché/local.',error);window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]);});
-  onSnapshot(doc(db,'artifacts',APP_ID,'public','data','settings','seo'),snap=>{if(snap.exists()){window.__mpSeoSettings={...SEO_RUNTIME_DEFAULTS,...(snap.data()||{})};applySeoRuntime(window.__mpSeoSettings);}},error=>console.warn('No se pudo sincronizar settings/seo:',error));
-  onSnapshot(doc(db,'artifacts',APP_ID,'public','data','settings','global'),snap=>{if(snap.exists())applyGlobalSettings(snap.data()||{});},error=>console.warn('No se pudo sincronizar settings/global:',error));
-};
-window.__mpTestimonialsLiveIds=new Set();
-function testimonialCardKey(d){return String(d?.testimonialType||'')+':'+String(d?.testimonialId||d?.id||'');}
-function inferTestimonialVideoProvider(src,current=''){
-  const url=String(src||'').trim().toLowerCase();
-  const cur=String(current||'').trim();
-  if(url.includes('b2.multiprintt.workers.dev/testimonio_videos/'))return 'b2_testimonial';
-  if(url.includes('raw.githubusercontent.com/')||url.includes('github.com/'))return 'github';
-  if(cur==='b2_testimonial'&&url.includes('/testimonio_videos/'))return 'b2_testimonial';
-  if(cur==='github'&&url)return 'github';
-  return url?'url':(cur||'url');
-}
-function mpSetTestimonialVideoSource(video,src,data={}){
-  if(!video)return;
-  const url=String(src||'').trim();
-  const provider=inferTestimonialVideoProvider(url,data.videoProvider||video.getAttribute('data-video-provider')||'url');
-  video.removeAttribute('data-mp-src');
-  video.setAttribute('data-video-provider',provider);
-  if(data.videoFileName)video.setAttribute('data-video-file-name',String(data.videoFileName));
-  else if(provider!=='github'&&provider!=='b2_testimonial')video.removeAttribute('data-video-file-name');
-  if(data.videoKey)video.setAttribute('data-video-key',String(data.videoKey));
-  else if(provider!=='b2_testimonial')video.removeAttribute('data-video-key');
-  video.onerror=null;
-  if(!url){video.removeAttribute('src');video.load?.();return;}
-  // No borres una fuente GitHub al abrir/guardar el editor.
-  if(!/^https?:\/\//i.test(url)){video.removeAttribute('src');video.load?.();return;}
-  video.setAttribute('src',url);
-  try{video.load()}catch(e){}
-}
-function applyStoredTestimonialData(card,d){
-  if(!card||!d)return;
-  const type=String(d.testimonialType||'');
-  card.setAttribute('data-testimonial-id',String(d.testimonialId||d.id||''));
-  card.setAttribute('data-card-id',String(d.testimonialId||d.id||''));
-  card.setAttribute('data-testimonial-type',type);
-  if(d.theme){card.setAttribute('data-theme',d.theme);window.applyThemeSwap?.(card,d.theme);}
-  const video=card.querySelector('video');
-  if(type==='testimonial_video'&&video&&d.src){
-    mpSetTestimonialVideoSource(video,String(d.src),d);
-  }
-  const name=card.querySelector(type==='testimonial_video'?'.vt-name':'.txt-name');
-  const role=card.querySelector(type==='testimonial_video'?'.vt-role':'.txt-role');
-  const quote=card.querySelector(type==='testimonial_video'?'.vt-quote':'.txt-quote')||card.querySelector('p');
-  const initial=card.querySelector(type==='testimonial_video'?'.vt-initial':'.txt-initial');
-  if(name&&d.name)name.textContent=String(d.name);
-  if(role&&(d.course||d.role))role.textContent=String(d.course||d.role);
-  if(quote&&d.quote)quote.textContent=String(d.quote);
-  if(initial&&d.name)initial.textContent=String(d.name).charAt(0).toUpperCase();
-}
-function createStoredTestimonialCard(d){
-  const type=String(d?.testimonialType||'');
-  if(!['testimonial_video','testimonial_text'].includes(type))return null;
-  const source=type==='testimonial_video'
-    ?document.querySelector('.video-testimonial-card[data-testimonial-id]')
-    :document.querySelector('#testimonials-grid-right .card[data-testimonial-type="testimonial_text"][data-testimonial-id]');
-  if(!source)return null;
-  const card=source.cloneNode(true);
-  card.setAttribute('data-testimonial-source','firebase');
-  card.querySelectorAll('[data-builder-id]').forEach(el=>el.removeAttribute('data-builder-id'));
-  card.querySelectorAll('.admin-video-edit-overlay').forEach(el=>el.remove());
-  applyStoredTestimonialData(card,d);
-  return card;
-}
-function insertStoredTestimonialCard(card,type){
-  if(!card)return;
-  const host=type==='testimonial_video'?document.getElementById('testimonials-grid-left'):document.getElementById('testimonials-grid-right');
-  if(!host)return;
-  const addButton=host.querySelector('.admin-tool');
-  if(addButton)host.insertBefore(card,addButton);else host.appendChild(card);
-}
-window.__mpReconcileTestimonials=function(records){
-  const list=Array.isArray(records)?records:[];
-  const live=new Set();
-  list.forEach(d=>{
-    const type=String(d?.testimonialType||'');
-    const id=String(d?.testimonialId||d?.id||'').trim();
-    if(!id||!['testimonial_video','testimonial_text'].includes(type))return;
-    const key=type+':'+id;live.add(key);
-    let card=getTestimonialCardById(id,type);
-    if(!card){card=createStoredTestimonialCard({...d,id});insertStoredTestimonialCard(card,type);}
-    if(card)applyStoredTestimonialData(card,{...d,id});
-  });
-  document.querySelectorAll('[data-testimonial-source="firebase"]').forEach(card=>{
-    const key=String(card.getAttribute('data-testimonial-type')||'')+':'+String(card.getAttribute('data-testimonial-id')||'');
-    if(!live.has(key))card.remove();
-  });
-  window.__mpTestimonialsLiveIds=live;
-  try{mpPublicCacheWrite(MP_PUBLIC_TESTIMONIALS_CACHE,list.map(x=>({...x,id:undefined})));}catch(e){}
-  try{ensureUniqueTestimonialIds(document);window.ensureTestimonialEditorOverlays?.();window.mpHydrateMedia?.(document);}catch(e){}
-};
-function mpPostAdminTestimonialEdit(button){
-  const card=button?.closest?.('.video-testimonial-card[data-testimonial-id], .card[data-testimonial-type][data-testimonial-id]');
-  if(!card)return;
-  const type=card.getAttribute('data-testimonial-type')||(card.classList.contains('video-testimonial-card')?'testimonial_video':'');
-  const id=card.getAttribute('data-testimonial-id')||card.getAttribute('data-card-id')||'';
-  if(!['testimonial_video','testimonial_text'].includes(type)||!id)return;
-  const data=getTestimonialEditorData(card,type)||{};
-  try{window.parent.postMessage({type:'OPEN_EDITOR',editorType:type,itemId:id,itemData:{...data,id,testimonialId:id,testimonialType:type}},'*');}catch(e){console.warn('No se pudo abrir el editor de testimonio:',e);}
-}
-(function bindTestimonialAdminDelegation(){
-  document.addEventListener('click',e=>{
-    const edit=e.target.closest?.('[data-admin-testimonial-edit]');
-    if(!edit||!window.isAdminMode)return;
-    e.preventDefault();e.stopPropagation();
-    if(e.stopImmediatePropagation)e.stopImmediatePropagation();
-    mpPostAdminTestimonialEdit(edit);
-  },true);
-})();
 window.loadFirebaseData = async function() {
 try {
-try{if(!window.__mpInitialShellRendered){window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]);}}catch(e){console.warn('Render inicial local:',e)}
+try{if(!window.__mpInitialShellRendered){window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}}catch(e){console.warn('Render inicial local:',e)}
 window.__mpHideGlobalLoader(false);
-// Public reads are allowed by the current Firestore rules; do not block first paint on anonymous Auth.
-try{window.__mpStartPublicSnapshots?.();}catch(e){console.warn('Snapshots públicos:',e)}
-let authPromise=(async()=>{
-  try{await Promise.race([auth.authStateReady(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Firebase Auth timeout')),2500))]);
-  if(!auth.currentUser){await Promise.race([signInAnonymously(auth),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Anonymous Auth timeout')),2500))]);}}
-  catch(authError){console.warn('Firebase Auth de fondo no disponible; las lecturas públicas continuarán.',authError);}
-})();
-let remoteSeoSnap=null, remoteGlobalSnap=null, remoteTemplateSnap=null, remoteLayoutSnap=null;
-// Las lecturas públicas no dependen de Auth según las Firestore Rules; se arrancan en paralelo.
-const remoteReadsPromise=firebaseReady?Promise.allSettled([
-  getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'seo')),
-  getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'global')),
-  getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'templateBase')),
-  getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'))
-]):Promise.resolve([]);
-await authPromise;
+try {
+await Promise.race([
+auth.authStateReady(),
+new Promise((_, reject) => setTimeout(() => reject(new Error('Firebase Auth timeout')), 4500))
+]);
+if (!auth.currentUser) {
+await Promise.race([
+signInAnonymously(auth),
+new Promise((_, reject) => setTimeout(() => reject(new Error('Anonymous Auth timeout')), 4500))
+]);
+}
+} catch (authError) {
+firebaseReady = false;
+console.warn('Firebase Auth no estuvo disponible; el sitio continuará con datos locales.', authError);
+}
+let remoteSeoSnap=null, remoteTemplateSnap=null, remoteLayoutSnap=null;
 if(firebaseReady){
-  const remoteReads=await remoteReadsPromise;
+  const remoteReads=await Promise.allSettled([
+    getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'seo')),
+    getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'templateBase')),
+    getDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'settings', 'layout'))
+  ]);
   remoteSeoSnap=remoteReads[0].status==='fulfilled'?remoteReads[0].value:null;
-  remoteGlobalSnap=remoteReads[1].status==='fulfilled'?remoteReads[1].value:null;
-  remoteTemplateSnap=remoteReads[2].status==='fulfilled'?remoteReads[2].value:null;
-  remoteLayoutSnap=remoteReads[3].status==='fulfilled'?remoteReads[3].value:null;
-  if(remoteReads[1].status==='fulfilled'&&remoteGlobalSnap?.exists())applyGlobalSettings(remoteGlobalSnap.data()||{});
-  else if(remoteReads[1].status==='rejected')console.warn('Ajustes globales remotos no disponibles; se conserva la caché/local.',remoteReads[1].reason);
+  remoteTemplateSnap=remoteReads[1].status==='fulfilled'?remoteReads[1].value:null;
+  remoteLayoutSnap=remoteReads[2].status==='fulfilled'?remoteReads[2].value:null;
   if(remoteReads[0].status==='fulfilled'&&remoteSeoSnap?.exists()){
     window.__mpSeoSettings={...SEO_RUNTIME_DEFAULTS,...remoteSeoSnap.data()};
     applySeoRuntime(window.__mpSeoSettings);
@@ -5637,8 +5460,7 @@ catch(modalError) { console.warn('Plantilla de video ignorada:', modalError); }
 }
 if(Array.isArray(data.prodOrder)) window.productOrderArray = data.prodOrder;
 if(Array.isArray(data.courseOrder)) window.courseOrderArray = data.courseOrder;
-if(Array.isArray(data.socialOrder)) window.applySocialOrder(data.socialOrder);try{window.mpHydrateMedia?.(document);}catch(e){console.warn('Rehidratación inicial de media:',e)}
-    try{ensureUniqueTestimonialIds(document);window.ensureTestimonialEditorOverlays?.();window.mpHydrateMedia?.(document);window.renderProducts();window.renderCourses();window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]);}catch(e){console.warn('Rehidratación post-layout:',e)}
+if(Array.isArray(data.socialOrder)) window.applySocialOrder(data.socialOrder);
 } else if (templateBaseData && typeof templateBaseData === 'object' && templateBaseData.zones) {
 try {
 const safeTemplateZones = validateLayoutAgainstModel(templateBaseData.zones, templateBaseData.layoutModel || null);
@@ -5650,12 +5472,59 @@ if (zone.id === 'view-catalog' && !/id=["']product-grid["']/i.test(savedHtml)) r
 try { zone.innerHTML = savedHtml; } catch (e) { console.warn('Plantilla maestra ignorada en', zone.id, e); }
 });
 if (Array.isArray(templateBaseData.socialOrder)) window.applySocialOrder(templateBaseData.socialOrder);
-try{window.mpHydrateMedia?.(document);window.renderProducts();window.renderCourses();window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]);window.ensureTestimonialEditorOverlays?.();}catch(e){console.warn('Rehidratación plantilla base:',e)}
 } catch (templateRestoreError) {
 console.warn('No se pudo restaurar la plantilla maestra; se conserva el HTML local.', templateRestoreError);
 }
 }
-try{window.renderProducts();window.renderCourses();window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]);}catch(e){console.warn('Primera pintura pública:',e)}
+if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
+const nextProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => window.mpNormalizeProductData({id: d.id, ...d.data()}));
+let structuralChange = lastProductSnapshot === null || nextProducts.length !== lastProductSnapshot.length;
+if (lastProductSnapshot) {
+  const previousById = new Map(lastProductSnapshot.map(p => [p.id, p]));
+  structuralChange = structuralChange || nextProducts.some(p => {
+    const prev = previousById.get(p.id);
+    if (!prev) return true;
+    const keys = new Set([...Object.keys(prev), ...Object.keys(p)]);
+    keys.delete('cartAdds'); keys.delete('checkoutIntents');
+    for (const key of keys) if (JSON.stringify(prev[key]) !== JSON.stringify(p[key])) return true;
+    return false;
+  });
+}
+window.appProducts = nextProducts; window.productsDataReady = true;
+lastProductSnapshot = nextProducts.map(p => ({...p}));
+if (structuralChange || window.currentFilter==='mas-vendidos') {
+  clearTimeout(window.demandRenderTimer);
+  window.demandRenderTimer=setTimeout(()=>{try{window.renderProducts();}finally{window.__mpMarkCatalogReady();}},180);
+} else {
+  window.__mpMarkCatalogReady();
+}
+window.updateCartUI();
+}, (error) => {
+  console.warn('No se pudo sincronizar products; se mantiene el catálogo local.', error);
+  if(!window.productsDataReady){
+    window.appProducts=[...defaultProducts];
+    window.productsDataReady=true;
+    try{window.renderProducts();}catch(e){console.warn('Fallback products:',e)}
+    window.__mpMarkCatalogReady();
+    window.updateCartUI();
+  }
+});
+if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'productDemand'), (snap) => {
+  const map={}; snap.forEach(d=>{map[d.id]=d.data()||{}}); window.productDemandMap=map;
+  if(window.currentFilter==='mas-vendidos'){clearTimeout(window.demandRenderTimer);window.demandRenderTimer=setTimeout(()=>window.renderProducts(),120);}
+}, (error) => {
+  console.warn('No se pudo sincronizar productDemand; se usará demanda local si existe.', error);
+  window.productDemandMap=window.productDemandMap||{};
+  if(window.currentFilter==='mas-vendidos')window.renderProducts();
+});
+if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'courses'), (snap) => {
+window.appCourses = snap.empty ? [...defaultCourses] : snap.docs.map(d => window.mpNormalizeCourseData({id: d.id, ...d.data()}));
+window.__mpInitialCoursesReady=true;
+window.renderCourses();
+}, (error) => {
+  console.warn('No se pudo sincronizar courses; se mantiene la academia local.', error);
+  if(!Array.isArray(window.appCourses)||!window.appCourses.length){window.appCourses=[...defaultCourses];try{window.renderCourses()}catch(e){console.warn('Fallback courses:',e)}}
+});
 } catch (error) {
 console.warn("Error cargando DB, cargando fallback", error);
 window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses]; window.productsDataReady = true;
@@ -5669,7 +5538,7 @@ window.navigate('catalog');
 if(!window.__mpInitialShellRendered){try{window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}catch(e){console.warn('Render final de recuperación:',e)}}
 if (!firebaseReady) window.__mpMarkCatalogReady();
 window.__mpHideGlobalLoader(false);
-if(window.parent && window.parent !== window){ const MP_BUILDER_SESSION_ID=(crypto?.randomUUID?crypto.randomUUID():`mp-builder-${Date.now()}-${Math.random().toString(36).slice(2,10)}`); window.__mpBuilderSessionId=MP_BUILDER_SESSION_ID; window.parent.postMessage({ type: 'APP_READY', protocolVersion:1, sessionId:MP_BUILDER_SESSION_ID }, location.origin === 'null' ? '*' : location.origin); }
+if(window.parent && window.parent !== window) window.parent.postMessage({ type: 'APP_READY' }, location.origin === 'null' ? '*' : location.origin);
 }
 }
 const MP_GALLERY_FALLBACK_IMAGES = [
@@ -5934,40 +5803,10 @@ try{zone.innerHTML=html}catch(e){console.warn('No se pudo restaurar',id,e)}
 });
 if(layoutModel) setTimeout(()=>restoreResponsiveRules(layoutModel),0);
 if(safeData.videoModalTpl){try{const old=document.getElementById('videoModalContent');const host=old?.parentElement;if(host){const tmp=document.createElement('div');tmp.innerHTML=safeData.videoModalTpl;const fresh=tmp.firstElementChild;if(old&&fresh)old.replaceWith(fresh)}}catch(e){}}
-try{window.mpHydrateMedia?.(document);}catch(e){console.warn('Rehidratación de media tras restaurar layout:',e)}
-try{ensureUniqueTestimonialIds(document);window.ensureTestimonialEditorOverlays?.();}catch(e){}
 }
 function emitLayers(){const selected=window.selectedEl;const nodes=[];document.querySelectorAll('[data-editable="true"],[data-resizable="true"],button,img,video,a,.card,section').forEach(el=>{if(!el||el.closest('.ignore-drag')||el.closest('#videoModalContent')||el.closest('#builder-resize-box'))return;const bid=ensureBuilderId(el);nodes.push({builderId:bid,tag:el.tagName,label:(el.id?'#'+el.id+' ': '')+((el.getAttribute('aria-label')||el.innerText||el.getAttribute('alt')||'Elemento').trim().slice(0,70)),icon:builderIconFor(el),selected:el===selected})});window.parent.postMessage({type:'LAYERS_DATA',layers:nodes.slice(0,300)},'*')}
 function findBuilderElement(id){return id?[...document.querySelectorAll('[data-builder-id]')].find(el=>el.getAttribute('data-builder-id')===id):null}
 function applyGlobalUrls(urls){try{const clean={site:urls?.site||'',media:urls?.media||'',mediaProxy:urls?.mediaProxy||'',image:urls?.image||'',video:urls?.video||'',api:urls?.api||''};window.MEDIA_PROXY_BASE=clean.mediaProxy||'';document.documentElement.dataset.mediaProxy=clean.mediaProxy||'';document.documentElement.dataset.siteBase=clean.site;document.documentElement.dataset.mediaBase=clean.media;document.documentElement.dataset.imageBase=clean.image;document.documentElement.dataset.videoBase=clean.video;document.documentElement.dataset.apiBase=clean.api;document.documentElement.style.setProperty('--mp-site-base',clean.site);document.documentElement.style.setProperty('--mp-media-base',clean.media);document.documentElement.style.setProperty('--mp-image-base',clean.image);document.documentElement.style.setProperty('--mp-video-base',clean.video);document.documentElement.style.setProperty('--mp-api-base',clean.api)}catch(e){}}
-const MP_GLOBAL_SETTINGS_DEFAULT={site:'',media:'',mediaProxy:'',image:'',video:'',api:'',analytics:{enabled:true,measurementId:'G-VP3XV39H5M'}};
-const MP_PUBLIC_GLOBAL_CACHE='multiprintt_public_global_v1';
-function mpReadCachedGlobal(){try{const raw=JSON.parse(localStorage.getItem(MP_PUBLIC_GLOBAL_CACHE)||'{}');return {...MP_GLOBAL_SETTINGS_DEFAULT,...raw,analytics:{...MP_GLOBAL_SETTINGS_DEFAULT.analytics,...(raw?.analytics||{})}}}catch(e){return {...MP_GLOBAL_SETTINGS_DEFAULT,analytics:{...MP_GLOBAL_SETTINGS_DEFAULT.analytics}}}}
-function mpWriteCachedGlobal(v){try{localStorage.setItem(MP_PUBLIC_GLOBAL_CACHE,JSON.stringify(v))}catch(e){}}
-function removeGoogleAnalyticsRuntime(){try{document.getElementById('mp-google-tag-script')?.remove();window.__mpGoogleAnalyticsId='';}catch(e){}}
-function applyAnalyticsConfig(raw={}){
-  const cfg={...MP_GLOBAL_SETTINGS_DEFAULT.analytics,...(raw||{})};
-  const id=String(cfg.measurementId||'').trim().toUpperCase();
-  const enabled=cfg.enabled!==false&&/^G-[A-Z0-9_-]+$/i.test(id);
-  if(window.parent!==window||window.isAdminMode){removeGoogleAnalyticsRuntime();return;}
-  if(!enabled){removeGoogleAnalyticsRuntime();return;}
-  if(window.__mpGoogleAnalyticsId===id&&document.getElementById('mp-google-tag-script'))return;
-  removeGoogleAnalyticsRuntime();
-  window.dataLayer=window.dataLayer||[];
-  window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
-  window.gtag('js',new Date());
-  window.gtag('config',id,{send_page_view:true});
-  const script=document.createElement('script');
-  script.id='mp-google-tag-script';
-  script.async=true;
-  script.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(id);
-  document.head.appendChild(script);
-  window.__mpGoogleAnalyticsId=id;
-}
-function applyGlobalSettings(raw={}){try{const clean={...MP_GLOBAL_SETTINGS_DEFAULT,...(raw||{}),analytics:{...MP_GLOBAL_SETTINGS_DEFAULT.analytics,...(raw?.analytics||{})}};window.__mpGlobalSettings=clean;mpWriteCachedGlobal(clean);applyGlobalUrls(clean);applyAnalyticsConfig(clean.analytics)}catch(e){console.warn('Ajustes globales:',e)}}
-window.__mpGlobalSettings=mpReadCachedGlobal();
-applyGlobalSettings(window.__mpGlobalSettings);
-
 function applyMediaSources(cfg){try{mediaConfig={...mediaConfig,...(cfg||{})}}catch(e){}}
 function parseMediaList(raw,base){const text=String(raw||'').trim();if(!text)return[];let items=[];try{const d=JSON.parse(text);items=Array.isArray(d)?d:(d.items||d.imagenes||[])}catch{items=text.split(/\r?\n|,\s*(?=https?:\/\/)/).map(v=>v.trim()).filter(Boolean)}return items.map((x,i)=>{const o=typeof x==='string'?{url:x}:x||{};let u=String(o.url||o.src||'');if(u&&!/^(https?:|data:|blob:|\/\/)/i.test(u))u=(base||'').replace(/\/$/,'/')+u.replace(/^\/+/,'');return{url:u,title:String(o.title||o.name||u.split('/').pop()||('Medio '+(i+1)))} }).filter(x=>x.url)}
 function responsiveDeviceForViewport(width=window.innerWidth){const w=Number(width)||window.innerWidth;return w<=640?'mobile':w<=1024?'tablet':w<=1279?'laptop':'desktop'}
@@ -5975,10 +5814,10 @@ function renderResponsiveOverrides(){const media={mobile:'(max-width: 640px)',ta
 function applyResponsiveStyle(el,device,prop,value){if(!el)return;const id=ensureBuilderId(el);window.mpResponsiveRules=window.mpResponsiveRules||{};window.mpResponsiveRules[id]=window.mpResponsiveRules[id]||{};window.mpResponsiveRules[id][device]=window.mpResponsiveRules[id][device]||{};window.mpResponsiveRules[id][device][prop]=String(value??'').replace(/[;{}]/g,'');renderResponsiveOverrides();el.setAttribute('data-responsive-'+device+'-'+prop,'true')}
 function restoreResponsiveRules(layoutModel){window.mpResponsiveRules={};if(!layoutModel?.zones){renderResponsiveOverrides();return}Object.values(layoutModel.zones).forEach(zone=>(zone.elements||[]).forEach(rec=>{if(!rec?.builderId||!rec.responsive)return;const el=findBuilderElement(rec.builderId);if(!el)return;window.mpResponsiveRules[rec.builderId]=JSON.parse(JSON.stringify(rec.responsive));Object.entries(rec.responsive).forEach(([dev,props])=>Object.keys(props||{}).forEach(prop=>el.setAttribute('data-responsive-'+dev+'-'+prop,'true')))}));renderResponsiveOverrides()}
 function mapAnimationName(name){const map={fadeIn:'mpFadeIn',slideUp:'mpSlideUp',slideDown:'mpSlideDown',slideLeft:'mpSlideLeft',slideRight:'mpSlideRight',pulse:'mpPulse',float:'mpFloat',zoomIn:'mpZoomIn',flipIn:'mpFlipIn'};return map[name]||name}
-const SEO_RUNTIME_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://multiprintt.web.app/favicon.ico',ogImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",twitterImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'',searchUrl:'',googleSiteVerification:''};
+const SEO_RUNTIME_DEFAULTS={title:'Multiprintt | Impresión y Publicidad en Guayaquil | Sublimación y DTF',description:'Multiprintt en Guayaquil: impresión, publicidad, personalización, sublimación y DTF. Conoce nuestros productos, servicios y Academia de impresión y emprendimiento.',canonical:'https://multiprintt.web.app/',favicon:'https://multiprintt.web.app/favicon.ico',ogImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",twitterImage:"https://raw.githubusercontent.com/kelvinthegamerc1-lab/multiprintt/refs/heads/main/recursos/logo_mejorado.webp",keywords:'Multiprintt, impresión en Guayaquil, publicidad en Guayaquil, sublimación, DTF, personalización, productos personalizados, academia de impresión, impresión gráfica',brand:'Multiprintt',alternate:'Multiprintt Impresión & Publicidad',phone:'+593 99 759 1021',city:'Guayaquil',country:'EC',area:'Guayaquil',sameAs:'',searchUrl:''};
 function upsertMeta(attr,name,content){if(!content)return;let el=document.head.querySelector(`meta[${attr}="${CSS.escape(name)}"]`);if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el)}el.setAttribute('content',content)}
 function upsertLink(rel,href,type){if(!href)return;let el=document.head.querySelector(`link[rel="${rel}"]`);if(!el){el=document.createElement('link');el.rel=rel;document.head.appendChild(el)}el.href=href;if(type)el.type=type}
-function applySeoRuntime(raw={}){const d={...SEO_RUNTIME_DEFAULTS,...raw};if(d.title)document.title=d.title;if(d.googleSiteVerification){let v=document.querySelector('meta[name="google-site-verification"]');if(!v){v=document.createElement('meta');v.name='google-site-verification';document.head.appendChild(v)}v.content=String(d.googleSiteVerification).trim();}if(d.description)upsertMeta('name','description',d.description);if(d.keywords)upsertMeta('name','keywords',d.keywords);if(d.canonical)upsertLink('canonical',d.canonical);if(d.favicon)upsertLink('icon',d.favicon,(d.favicon.match(/\.svg($|\?)/i)?'image/svg+xml':d.favicon.match(/\.webp($|\?)/i)?'image/webp':undefined));upsertLink('shortcut icon',d.favicon);if(d.ogImage){upsertMeta('property','og:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('property','og:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('property','og:url',d.canonical||SEO_RUNTIME_DEFAULTS.canonical);upsertMeta('property','og:image',d.ogImage);upsertMeta('property','og:site_name',d.brand||'Multiprintt');upsertMeta('name','twitter:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('name','twitter:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('name','twitter:image',d.twitterImage||d.ogImage)}let schemaEl=document.getElementById('multiprintt-runtime-schema');if(!schemaEl){schemaEl=document.createElement('script');schemaEl.type='application/ld+json';schemaEl.id='multiprintt-runtime-schema';document.head.appendChild(schemaEl)}const sameAs=String(d.sameAs||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);const graph=[{'@type':'Organization','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#organization`,'name':d.brand||'Multiprintt','alternateName':d.alternate||undefined,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'sameAs':sameAs},{'@type':'WebSite','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#website`,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'name':d.brand||'Multiprintt','description':d.description||SEO_RUNTIME_DEFAULTS.description}];if(d.searchUrl){graph[1].potentialAction={'@type':'SearchAction','target':String(d.searchUrl).replace('TERM','{search_term_string}'),'query-input':'required name=search_term_string'}}graph.unshift({'@type':'LocalBusiness','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#business`,'name':d.brand||'Multiprintt','url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'image':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'description':d.description||SEO_RUNTIME_DEFAULTS.description,'telephone':d.phone||undefined,'address':{'@type':'PostalAddress','addressLocality':d.city||'Guayaquil','addressCountry':d.country||'EC'},'areaServed':{'@type':'City','name':d.area||d.city||'Guayaquil'},'sameAs':sameAs});schemaEl.textContent=JSON.stringify({'@context':'https://schema.org','@graph':graph},null,2)}
+function applySeoRuntime(raw={}){const d={...SEO_RUNTIME_DEFAULTS,...raw};if(d.title)document.title=d.title;if(d.description)upsertMeta('name','description',d.description);if(d.keywords)upsertMeta('name','keywords',d.keywords);if(d.canonical)upsertLink('canonical',d.canonical);if(d.favicon)upsertLink('icon',d.favicon,(d.favicon.match(/\.svg($|\?)/i)?'image/svg+xml':d.favicon.match(/\.webp($|\?)/i)?'image/webp':undefined));upsertLink('shortcut icon',d.favicon);if(d.ogImage){upsertMeta('property','og:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('property','og:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('property','og:url',d.canonical||SEO_RUNTIME_DEFAULTS.canonical);upsertMeta('property','og:image',d.ogImage);upsertMeta('property','og:site_name',d.brand||'Multiprintt');upsertMeta('name','twitter:title',d.title||SEO_RUNTIME_DEFAULTS.title);upsertMeta('name','twitter:description',d.description||SEO_RUNTIME_DEFAULTS.description);upsertMeta('name','twitter:image',d.twitterImage||d.ogImage)}let schemaEl=document.getElementById('multiprintt-runtime-schema');if(!schemaEl){schemaEl=document.createElement('script');schemaEl.type='application/ld+json';schemaEl.id='multiprintt-runtime-schema';document.head.appendChild(schemaEl)}const sameAs=String(d.sameAs||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);const graph=[{'@type':'Organization','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#organization`,'name':d.brand||'Multiprintt','alternateName':d.alternate||undefined,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'sameAs':sameAs},{'@type':'WebSite','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#website`,'url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'name':d.brand||'Multiprintt','description':d.description||SEO_RUNTIME_DEFAULTS.description}];if(d.searchUrl){graph[1].potentialAction={'@type':'SearchAction','target':String(d.searchUrl).replace('TERM','{search_term_string}'),'query-input':'required name=search_term_string'}}graph.unshift({'@type':'LocalBusiness','@id':`${d.canonical||SEO_RUNTIME_DEFAULTS.canonical}#business`,'name':d.brand||'Multiprintt','url':d.canonical||SEO_RUNTIME_DEFAULTS.canonical,'logo':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'image':d.ogImage||SEO_RUNTIME_DEFAULTS.ogImage,'description':d.description||SEO_RUNTIME_DEFAULTS.description,'telephone':d.phone||undefined,'address':{'@type':'PostalAddress','addressLocality':d.city||'Guayaquil','addressCountry':d.country||'EC'},'areaServed':{'@type':'City','name':d.area||d.city||'Guayaquil'},'sameAs':sameAs});schemaEl.textContent=JSON.stringify({'@context':'https://schema.org','@graph':graph},null,2)}
 try{applySeoRuntime(SEO_RUNTIME_DEFAULTS)}catch(e){console.warn('SEO inicial:',e)}
 function builderSelectionTarget(raw, e) {
 if (!raw || raw.nodeType !== 1) return null;
@@ -6077,16 +5916,15 @@ document.addEventListener('click', (event) => {
   if (edit) {
     const source = type === 'product' ? window.appProducts : window.appCourses;
     const item = Array.isArray(source) ? source.find(x => String(x.id) === String(id)) : null;
-    window.parent.postMessage({type:'OPEN_EDITOR', editorType:type, itemId:id, itemData:item || {id}}, '*');
+    window.parent.postMessage({type:'OPEN_EDITOR', editorType:type, itemId:id, itemData:item || {id}}, location.origin === 'null' ? '*' : location.origin);
   } else {
-    window.parent.postMessage({type:'DELETE_DB_ITEM', itemType:type, itemId:id}, '*');
+    window.parent.postMessage({type:'DELETE_DB_ITEM', itemType:type, itemId:id}, location.origin === 'null' ? '*' : location.origin);
   }
 }, true);
 
 window.addEventListener('message', async (event) => {
-if (window.parent !== window && event.source !== window.parent) return;
-if (event.data.type === 'SET_GLOBAL_SETTINGS') { applyGlobalSettings(event.data.settings||{}); }
-if (event.data.type === 'SET_ANALYTICS_CONFIG') { applyAnalyticsConfig(event.data.config||{}); }
+if (window.parent !== window && (event.source !== window.parent || event.origin !== window.location.origin)) return;
+if (event.source !== window.parent || event.origin !== window.location.origin) return;
 if (event.data.type === 'SET_GLOBAL_URLS') { applyGlobalUrls(event.data.urls||{}); }
 if (event.data.type === 'SET_SEO_SETTINGS') { applySeoRuntime(event.data.seo||{}); }
 if (event.data.type === 'SET_MEDIA_SOURCES') { applyMediaSources(event.data.sources||{}); try{window.loadAcademyGallery();}catch(e){} }
@@ -6094,29 +5932,20 @@ if (event.data.type === 'GET_LAYERS') { emitLayers(); }
 if (event.data.type === 'SELECT_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){el.click();} }
 if (event.data.type === 'FOCUS_BY_BUILDER_ID') { const el=findBuilderElement(event.data.builderId); if(el){try{el.scrollIntoView({behavior:'smooth',block:'center',inline:'center'})}catch(e){}} }
 if (event.data.type === 'TOGGLE_LAYER_LOCK') { const el=findBuilderElement(event.data.builderId); if(el){const id=event.data.builderId;if(proLayerLocks.has(id)){proLayerLocks.delete(id);el.removeAttribute('data-sortable-lock')}else{proLayerLocks.add(id);el.setAttribute('data-sortable-lock','true')}}emitLayers(); }
-if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); const layoutModel=captureBuilderModel(); const socialOrder=typeof window.getSocialOrder==='function'?window.getSocialOrder():[]; window.parent.postMessage({type:'LAYOUT_SNAPSHOT',captureId:event.data.captureId||'',layoutData,layoutModel,socialOrder,reason:event.data.reason||''},'*'); }
-if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
+if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayout(); const layoutModel=captureBuilderModel(); const socialOrder=typeof window.getSocialOrder==='function'?window.getSocialOrder():[]; window.parent.postMessage({type:'LAYOUT_SNAPSHOT',captureId:event.data.captureId||'',layoutData,layoutModel,socialOrder,reason:event.data.reason||''},location.origin === 'null' ? '*' : location.origin); }
+if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();try{window.mpHydrateMedia?.(document);window.prepareTestimonialVideoPoster?.(document)}catch(e){}initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
 if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
 if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
 if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const controlMs=Math.max(1000,Math.min(120000,Number(event.data.ms)||15000)); const durationMs=Math.round(controlMs*100); const gallery=document.getElementById('academy-gallery-marquee'); gallery.style.animationDuration=durationMs+'ms'; gallery.style.animationTimingFunction='linear'; gallery.style.animationIterationCount='infinite'; gallery.setAttribute('data-editor-duration',String(controlMs)); gallery.setAttribute('data-editor-css-duration',String(durationMs)); }
 if (event.data.type === 'ENABLE_BUILDER') {
 ensureUniqueTestimonialIds(document);
-window.isAdminMode = true; window.builderSelectionEnabled = true; removeGoogleAnalyticsRuntime(); document.body.classList.add('is-admin-session', 'builder-mode');
+window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
 window.renderProducts(); window.renderCourses(); window.ensureTestimonialEditorOverlays(); initVisualResizer();
 if (window.__builderClickHandler) document.removeEventListener('click', window.__builderClickHandler, true);
 // Todo texto estático queda seleccionable/editable, incluidos spans, enlaces y textos anidados.
 markTextElementsEditable(document);
 window.__builderClickHandler = function(e) {
-// Navegación tiene prioridad sobre el Builder: el navbar nunca se selecciona para edición.
-const navControl=e.target.closest?.('.nav-link[data-target],.bot-nav-item,[data-target][onclick*="navigate("],header nav button[onclick*="navigate("],header nav a[onclick*="navigate("]');
-const navClick=e.target.closest?.('button[onclick*="navigate("],a[onclick*="navigate("]');
-if(navControl||navClick){
-  const navTarget=navControl?.getAttribute?.('data-target')||(navControl?.id?.startsWith('bot-')?navControl.id.slice(4):'')||navClick?.getAttribute?.('data-target')||'';
-  if(navTarget&&typeof window.navigate==='function'){e.preventDefault();e.stopPropagation();window.navigate(navTarget);return;}
-  if(navClick)return;
-}
-if (!document.body.classList.contains('builder-mode') || window.builderSelectionEnabled === false) return;
-if(document.body.classList.contains('dragging-active')) return;
+if (!document.body.classList.contains('builder-mode') || document.body.classList.contains('dragging-active') || window.builderSelectionEnabled === false) return;
 window.parent.postMessage({type:'HIDE_CONTEXT_MENU'}, '*');
 if(e.target.closest('.ignore-drag,.admin-tool')) return;
 const target=builderSelectionTarget(e.target,e);
@@ -6174,7 +6003,7 @@ if (event.data.type === 'UPDATE_TESTIMONIAL') {
 const { itemId, data: d } = event.data;
 const targetCard = getTestimonialCardById(itemId,'testimonial_video');
 if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_video') {
-if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { mpSetTestimonialVideoSource(vid,String(d.src),d); } }
+if(d.src) { const vid = targetCard.querySelector('video'); if(vid) { vid.removeAttribute('poster');vid.dataset.posterReady='0';vid.crossOrigin='anonymous';vid.src = d.src; vid.load(); setTimeout(()=>window.prepareTestimonialVideoPoster?.(targetCard),80); } }
 if(d.name) { const n = targetCard.querySelector('.vt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.vt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
 if(d.role) { const r = targetCard.querySelector('.vt-role'); if(r) r.innerText = d.role; }
 if(d.quote) { const q = targetCard.querySelector('.vt-quote'); if(q) q.innerText = d.quote; }
@@ -6187,7 +6016,7 @@ const { itemId, data: d } = event.data;
 const targetCard = getTestimonialCardById(itemId,'testimonial_text');
 if(targetCard && targetCard.getAttribute('data-testimonial-type')==='testimonial_text') {
 if(d.name) { const n = targetCard.querySelector('.txt-name'); if(n) n.innerText = d.name; const init = targetCard.querySelector('.txt-initial'); if(init) init.innerText = d.name.charAt(0).toUpperCase(); }
-if(d.course || d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.course || d.role; }
+if(d.role) { const r = targetCard.querySelector('.txt-role'); if(r) r.innerText = d.role; }
 if(d.quote) { const q = targetCard.querySelector('.txt-quote') || targetCard.querySelector('p'); if(q) q.innerText = d.quote; }
 if(d.theme) { window.applyThemeSwap(targetCard, d.theme); targetCard.setAttribute('data-theme', d.theme); }
 if (window.updateResizeBox) window.updateResizeBox();
@@ -6253,37 +6082,23 @@ if (event.data.type === 'TOGGLE_DRAG') {
 const enabled = event.data.state !== false;
 window.__mpDragBuildSeq=(window.__mpDragBuildSeq||0)+1;
 const buildSeq=window.__mpDragBuildSeq;
-window.destroyBuilderSortables = function(){ (window.sortableInstances||[]).forEach(s=>{try{s.destroy()}catch(e){}}); window.sortableInstances=[]; try{const cg=document.getElementById('courses-grid');if(cg)cg._courseSortable=null;}catch(e){} };
-if(!enabled){
-  document.body.classList.remove('dragging-active');
-  window.builderSelectionEnabled=true;
-  window.destroyBuilderSortables();
-}else{
+window.destroyBuilderSortables = function(){ (window.sortableInstances||[]).forEach(s=>{try{s.destroy()}catch(e){}}); window.sortableInstances=[]; };
+if(!enabled){document.body.classList.remove('dragging-active');window.destroyBuilderSortables();}
+else{
   document.body.classList.add('dragging-active');
-  window.builderSelectionEnabled=false;
   if(window.selectedEl){window.selectedEl.classList.remove('builder-selected-el');window.selectedEl=null;}
-  window.updateResizeBox();
-  window.destroyBuilderSortables();
+  window.updateResizeBox(); window.destroyBuilderSortables();
   (async()=>{
     try{await window.__mpLoadSortable();}catch(e){console.warn('No se pudo cargar el editor de arrastre:',e);return;}
     if(buildSeq!==window.__mpDragBuildSeq||!document.body.classList.contains('dragging-active'))return;
     const parents=new Set();
-    document.querySelectorAll('.sortable-zone,.editable-section').forEach(p=>{
-      if(!p || p.id==='courses-grid' || p.closest('#courses-grid')) return;
-      parents.add(p);
-    });
-    document.querySelectorAll('[data-editable="true"],[data-resizable="true"],.card,img,video,button').forEach(el=>{
-      const p=el.parentElement;
-      if(!p||p.closest('.ignore-drag')||p.closest('#videoModalContent')||p.closest('#courses-grid'))return;
-      if(p.children.length>=2)parents.add(p);
-    });
+    document.querySelectorAll('.sortable-zone,.editable-section').forEach(p=>parents.add(p));
+    document.querySelectorAll('[data-editable="true"],[data-resizable="true"],.card,img,video,button').forEach(el=>{const p=el.parentElement;if(!p||p.closest('.ignore-drag')||p.closest('#videoModalContent'))return;if(p.children.length>=2)parents.add(p);});
     parents.forEach(container=>{
-      if(!container||container.id==='videoModalContent'||container.id==='courses-grid'||container.classList.contains('admin-tool'))return;
+      if(!container||container.id==='videoModalContent'||container.classList.contains('admin-tool'))return;
       const movable=Array.from(container.children).filter(ch=>!ch.classList.contains('ignore-drag')&&!ch.classList.contains('admin-tool')&&!ch.matches('script,style,link'));
       if(movable.length<2)return;
-      try{const sortable=new Sortable(container,{animation:180,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',dragClass:'sortable-drag',filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',delay:120,delayOnTouchOnly:true,onStart(){window.builderSelectionEnabled=false;},onEnd(evt){if(evt.to.id==='social-footer-links'||evt.from.id==='social-footer-links')window.syncSocialNetworks();window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item.id||'',fromId:evt.from.id||'',toId:evt.to.id||''},'*');emitLayers();}});container._sortable=sortable;window.sortableInstances.push(sortable)}catch(e){console.warn('Sortable',e)}
-    });
-    try{window.__mpEnsureCourseSortable?.();}catch(e){console.warn('Course Sortable:',e)}
+      try{const sortable=new Sortable(container,{animation:180,ghostClass:'sortable-ghost',chosenClass:'sortable-chosen',dragClass:'sortable-drag',filter:'.ignore-drag,.admin-tool,[data-sortable-lock="true"]',delay:120,delayOnTouchOnly:true,onEnd(evt){if(evt.to.id==='social-footer-links'||evt.from.id==='social-footer-links')window.syncSocialNetworks();window.parent.postMessage({type:'ELEMENT_REORDERED',itemId:evt.item.id||'',fromId:evt.from.id||'',toId:evt.to.id||''},location.origin);emitLayers();}});container._sortable=sortable;window.sortableInstances.push(sortable)}catch(e){console.warn('Sortable',e)}});
   })();
 }
 }
@@ -6398,6 +6213,10 @@ let modalContent = document.getElementById('videoModalContent') || document.quer
 if (modalContent) window.applyThemeSwap(modalContent, themeKey);
 const modal = document.getElementById('videoModal');
 modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modal.classList.remove('opacity-0'); if(!window.isAdminMode && modalContent) modalContent.classList.remove('scale-95'); }, 10);
+const fitTestimonialVideoModal=()=>{try{if(window.matchMedia?.('(max-width:767px)').matches&&video&&modalContent){const wrap=video.parentElement;const ratio=(video.videoWidth&&video.videoHeight)?video.videoWidth/video.videoHeight:(16/9);const maxW=Math.max(260,Math.min(window.innerWidth-16,420)),maxH=Math.max(180,window.innerHeight*.50);let w=maxW,h=w/ratio;if(h>maxH){h=maxH;w=h*ratio;}wrap.style.width=Math.round(w)+'px';wrap.style.height=Math.round(h)+'px';wrap.style.aspectRatio='auto';const body=modalContent.querySelector(':scope > div:last-of-type');if(body)body.style.maxHeight=Math.max(150,window.innerHeight-h-18)+'px';}else if(modalContent&&video?.parentElement){video.parentElement.style.width='';video.parentElement.style.height='';video.parentElement.style.aspectRatio='';}}catch(e){}};
+window.__mpFitTestimonialVideoModal=fitTestimonialVideoModal;
+if(video){video.addEventListener('loadedmetadata',fitTestimonialVideoModal,{once:true});}
+window.addEventListener('resize',fitTestimonialVideoModal,{passive:true});fitTestimonialVideoModal();
 const timeBadge = document.getElementById('vm-time'); if(timeBadge) timeBadge.innerText = "00:00";
 if(video) {
 video.ontimeupdate = () => {
@@ -6417,7 +6236,7 @@ if(e) e.stopPropagation();
 const video = document.getElementById('testimonial-video'); const modal = document.getElementById('videoModal');
 let content = document.getElementById('videoModalContent') || document.querySelector('#videoModal > div');
 modal.classList.add('opacity-0'); if(!window.isAdminMode && content) content.classList.add('scale-95');
-setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300);
+setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); window.removeEventListener('resize',window.__mpFitTestimonialVideoModal); if(video) { video.pause(); video.currentTime = 0; video.src = ""; } }, 300);
 }
 window.openImageModal = function(src) {
 if(document.body.classList.contains('builder-mode')) return;
