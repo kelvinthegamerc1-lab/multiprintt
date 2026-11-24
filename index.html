@@ -3722,7 +3722,7 @@ button[data-network]:focus-visible,a[data-network]:focus-visible {
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" media="print" onload="this.media='all'"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
+<link rel="preload" href="/fonts/fa-solid-900.woff2?v=652s1" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/fonts/fa-subset.css?v=652s1"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript><script id="mp-fa-fallback">(function(){var K=new Set(["fa-arrow-left","fa-arrow-right","fa-award","fa-bag-shopping","fa-bars","fa-basket-shopping","fa-box","fa-calendar-days","fa-cart-plus","fa-cart-shopping","fa-chevron-down","fa-chevron-left","fa-chevron-right","fa-circle","fa-circle-info","fa-circle-notch","fa-comment-dots","fa-database","fa-envelope","fa-expand","fa-facebook","fa-facebook-f","fa-fire","fa-gem","fa-graduation-cap","fa-image","fa-infinity","fa-instagram","fa-laptop","fa-link","fa-linkedin","fa-location-dot","fa-magnifying-glass","fa-magnifying-glass-plus","fa-map-location-dot","fa-minus","fa-pause","fa-pen","fa-phone","fa-play","fa-plus","fa-quote-left","fa-rotate","fa-sack-dollar","fa-share-nodes","fa-shirt","fa-square","fa-star","fa-store","fa-telegram","fa-tiktok","fa-times","fa-trash","fa-trash-can","fa-twitter","fa-video","fa-volume-high","fa-volume-xmark","fa-whatsapp","fa-window-maximize","fa-x-twitter","fa-xmark","fa-youtube"]);var M=/^fa-(solid|regular|brands|spin|beat|fw|lg|xl|2x|3x|4x|5x|xs|sm|pulse|bounce|fade|flip|shake|rotate-90|rotate-180|rotate-270|flip-horizontal|flip-vertical|stack|stack-1x|stack-2x|inverse|border|pull-left|pull-right|ul|li|sharp|classic)$/;var done=false;function full(){if(done)return;done=true;var l=document.createElement("link");l.rel="stylesheet";l.href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css";document.head.appendChild(l);}function scan(){if(done)return;var els=document.querySelectorAll("[class*=\"fa-\"]");for(var i=0;i<els.length;i++){var c=els[i].classList;for(var j=0;j<c.length;j++){var n=c[j];if(n.indexOf("fa-")===0&&!K.has(n)&&!M.test(n)){full();return;}}}}window.mpFaFull=full;window.mpFaScan=scan;var t;function later(){clearTimeout(t);t=setTimeout(scan,400);}document.addEventListener("DOMContentLoaded",function(){scan();try{new MutationObserver(later).observe(document.body,{childList:true,subtree:true});}catch(e){}});window.addEventListener("message",function(e){if(e.data&&e.data.type==="ENABLE_BUILDER")full();});})();</script>
 <script id="mp-lazy-vendors">
 (()=>{
   const loadScript=(src,testKey)=>{
@@ -6438,7 +6438,17 @@ setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex')
 document.addEventListener('DOMContentLoaded', () => {
 window.loadFirebaseData();
 });</script>
-<style id="mp-2026-11-perf">
+<style id="mp-2026-11-perf">@media (pointer:coarse){
+#social-nav-mobile a{padding:8px 7px;margin:-8px -7px;display:inline-flex;align-items:center}
+[class*="dot-slider-"]{position:relative}
+[class*="dot-slider-"]::after{content:"";position:absolute;left:-7px;right:-7px;top:-12px;bottom:-12px}
+#product-grid button.w-8.h-8,#cart-sidebar button.w-8.h-8{position:relative}
+#product-grid button.w-8.h-8::after,#cart-sidebar button.w-8.h-8::after{content:"";position:absolute;inset:-5px}
+#section-header .relative.ml-5.w-9{position:relative}
+#section-header .relative.ml-5.w-9::after{content:"";position:absolute;inset:-4px -6px}
+.filter-btn{min-height:40px}
+}
+
 .mp-skel{border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px;background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.02))}
 .mp-skel-img{aspect-ratio:1/1;border-radius:10px;margin-bottom:10px}
 .mp-skel-line{height:10px;border-radius:99px;margin:8px 4px 0}
@@ -6516,5 +6526,19 @@ window.loadFirebaseData();
   },{once:true});
 })();
 </script>
+<script id="mp-seo-products">(function(){
+var t;function build(){var list=Array.isArray(window.appProducts)?window.appProducts:[];if(!list.length)return;
+var items=[];for(var i=0;i<list.length&&items.length<60;i++){var x=list[i]||{};var name=String(x.name||'').trim();if(!name)continue;
+var price=parseFloat(String(x.price==null?'':x.price).replace(',','.'));var disc=parseFloat(x.discount)||0;if(isFinite(price)&&disc>0&&disc<100)price=price*(1-disc/100);
+var img=String(x.image||'');if(!/^https?:/.test(img))img='';
+var prod={"@type":"Product","name":name,"brand":{"@type":"Brand","name":"Multiprintt"}};if(img)prod.image=img;if(x.category)prod.category=String(x.category);
+if(isFinite(price)&&price>0)prod.offers={"@type":"Offer","price":price.toFixed(2),"priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://multiprintt.web.app/"};
+items.push({"@type":"ListItem","position":items.length+1,"item":prod});}
+if(!items.length)return;var el=document.getElementById('mp-ld-products');if(!el){el=document.createElement('script');el.type='application/ld+json';el.id='mp-ld-products';document.head.appendChild(el);}
+el.textContent=JSON.stringify({"@context":"https://schema.org","@type":"ItemList","name":"Catálogo Multiprintt","itemListElement":items});}
+function later(){clearTimeout(t);t=setTimeout(function(){try{build()}catch(e){}},1500);}
+function hook(){var f=window.renderProducts;if(typeof f!=='function'||f.__mpSeo)return false;var w=function(){var r=f.apply(this,arguments);later();return r;};w.__mpSeo=true;window.renderProducts=w;return true;}
+if(!hook()){window.addEventListener('load',function(){hook();later();});}else later();
+})();</script>
 </body>
 </html>
