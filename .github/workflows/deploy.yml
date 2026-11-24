@@ -15,6 +15,7 @@ on:
       - '*.jpg'
       - 'robots.txt'
       - 'sitemap.xml'
+      - 'site.webmanifest'
       - 'fonts/**'
       - 'assets/**'
   # Y se puede seguir publicando a mano desde la pestaña Actions.
