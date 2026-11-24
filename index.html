@@ -6530,7 +6530,7 @@ window.loadFirebaseData();
 var t;function build(){var list=Array.isArray(window.appProducts)?window.appProducts:[];if(!list.length)return;
 var items=[];for(var i=0;i<list.length&&items.length<60;i++){var x=list[i]||{};var name=String(x.name||'').trim();if(!name)continue;
 var price=parseFloat(String(x.price==null?'':x.price).replace(',','.'));var disc=parseFloat(x.discount)||0;if(isFinite(price)&&disc>0&&disc<100)price=price*(1-disc/100);
-var img=String(x.image||'');if(!/^https?:/.test(img))img='';
+var imgs=String(x.image||'').split(/\s+/).filter(function(u){return /^https:\/\//.test(u)}).slice(0,3);var img=imgs.length>1?imgs:(imgs[0]||'');
 var prod={"@type":"Product","name":name,"brand":{"@type":"Brand","name":"Multiprintt"}};if(img)prod.image=img;if(x.category)prod.category=String(x.category);
 if(isFinite(price)&&price>0)prod.offers={"@type":"Offer","price":price.toFixed(2),"priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://multiprintt.web.app/"};
 items.push({"@type":"ListItem","position":items.length+1,"item":prod});}
