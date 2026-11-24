@@ -4787,6 +4787,7 @@ const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico
 window.appProducts = []; window.appCourses = [...defaultCourses];
 try{const c=JSON.parse(localStorage.getItem('mp_products_cache_v1')||'null');if(c&&Array.isArray(c.items)&&c.items.length&&Date.now()-(+c.t||0)<30*864e5){window.appProducts=c.items;window.__mpProductsFromCache=true;const d=JSON.parse(localStorage.getItem('mp_demand_cache_v1')||'null');if(d&&typeof d==='object')window.productDemandMap=d;}}catch(e){}
 window.navigate = function(targetId) {
+window.__mpView = targetId;
 const subnav = document.getElementById('catalog-subnav');
 ['catalog', 'about', 'courses', 'contact'].forEach(id => {
 const section = document.getElementById(`view-${id}`); const btns = document.querySelectorAll(`[data-target="${id}"]`); const botBtn = document.getElementById(`bot-${id}`);
@@ -5011,14 +5012,7 @@ window.mpProductDemandScore = function(p){
   const manual = p?.isBestSeller ? 30 : 0;
   return cart * 2 + checkout * 8 + manual;
 };
-window.renderProducts = function(){
-const grid = document.getElementById('product-grid'); if(!grid) return;
-if(!(Array.isArray(window.appProducts)&&window.appProducts.length)&&!window.productsDataReady){grid.className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mx-auto items-start w-full sortable-zone';grid.setAttribute('aria-busy','true');grid.innerHTML=Array.from({length:8},()=>'<div class="mp-skel" aria-hidden="true"><div class="mp-skel-img"></div><div class="mp-skel-line"></div><div class="mp-skel-line short"></div></div>').join('');return;}
-grid.removeAttribute('aria-busy'); grid.innerHTML = '';
-let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
-let safeProducts = [];
-if (window.currentFilter === 'mas-vendidos') {
-  safeProducts = allProducts.sort((a, b) => {
+window.__mpBestSort = (a, b) => {
     const scoreA = window.mpProductDemandScore(a);
     const scoreB = window.mpProductDemandScore(b);
     if(scoreB !== scoreA) return scoreB - scoreA;
@@ -5026,7 +5020,16 @@ if (window.currentFilter === 'mas-vendidos') {
     const priceB = Number(window.mpProductPrice(b)) || 0;
     if(priceB !== priceA) return priceB - priceA;
     return String(a.name||a.id||'').localeCompare(String(b.name||b.id||''),'es',{sensitivity:'base'});
-  }).slice(0, 8);
+};
+window.__mpTopOrder = () => { const all = Array.isArray(window.appProducts) && window.appProducts.length ? [...window.appProducts] : []; return all.sort(window.__mpBestSort).slice(0, 8).map(p => p.id).join(','); };
+window.renderProducts = function(){
+const grid = document.getElementById('product-grid'); if(!grid) return;
+if(!(Array.isArray(window.appProducts)&&window.appProducts.length)&&!window.productsDataReady){grid.className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mx-auto items-start w-full sortable-zone';grid.setAttribute('aria-busy','true');grid.innerHTML=Array.from({length:8},()=>'<div class="mp-skel" aria-hidden="true"><div class="mp-skel-img"></div><div class="mp-skel-line"></div><div class="mp-skel-line short"></div></div>').join('');return;}
+grid.removeAttribute('aria-busy'); grid.innerHTML = '';
+let allProducts = Array.isArray(window.appProducts) && window.appProducts.length > 0 ? [...window.appProducts] : [...defaultProducts];
+let safeProducts = [];
+if (window.currentFilter === 'mas-vendidos') {
+  safeProducts = allProducts.sort(window.__mpBestSort).slice(0, 8);
 }
 else if (window.currentFilter === 'promocionales') {
   safeProducts = allProducts.filter(p => window.mpProductIsPromo(p));
@@ -5035,6 +5038,7 @@ else {
   safeProducts = allProducts.filter(p => p.category === window.currentFilter);
 }
 
+grid.dataset.order = window.currentFilter === 'mas-vendidos' ? safeProducts.map(p => p.id).join(',') : '';
 // Regla de catálogo: siempre precio de mayor a menor. Dentro de cada sección,
 // los productos con mayor demanda (y la marca manual de Más vendido) se muestran primero.
 if (window.currentFilter !== 'mas-vendidos') {
@@ -5651,6 +5655,7 @@ try { window.mpTameMedia?.(document); } catch(e) {}
 try { const gm=document.getElementById('academy-gallery-marquee'); if(gm && !document.getElementById('view-courses')?.classList.contains('active-slide')){ gm.innerHTML=''; gm.removeAttribute('data-gallery-ready'); } } catch(e) {}
 if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'products'), (snap) => {
 const nextProducts = snap.empty ? [...defaultProducts] : snap.docs.map(d => window.mpNormalizeProductData({id: d.id, ...d.data()}));
+if (lastProductSnapshot === null && window.__mpProductsFromCache && Array.isArray(window.appProducts) && window.appProducts.length) lastProductSnapshot = window.appProducts.map(p => ({...p}));
 let structuralChange = lastProductSnapshot === null || nextProducts.length !== lastProductSnapshot.length;
 if (lastProductSnapshot) {
   const previousById = new Map(lastProductSnapshot.map(p => [p.id, p]));
@@ -5666,7 +5671,7 @@ if (lastProductSnapshot) {
 window.appProducts = nextProducts; window.productsDataReady = true; window.__mpProductsFromCache = false;
 if(!snap.empty){try{localStorage.setItem('mp_products_cache_v1',JSON.stringify({t:Date.now(),items:nextProducts}));}catch(e){}}
 lastProductSnapshot = nextProducts.map(p => ({...p}));
-if (structuralChange || window.currentFilter==='mas-vendidos') {
+if (structuralChange || !window.__mpCatalogReady) {
   clearTimeout(window.demandRenderTimer);
   window.demandRenderTimer=setTimeout(()=>{try{window.renderProducts();}finally{window.__mpMarkCatalogReady();}},180);
 } else {
@@ -5685,7 +5690,7 @@ window.updateCartUI();
 });
 if (firebaseReady) onSnapshot(collection(db, 'artifacts', APP_ID, 'public', 'data', 'productDemand'), (snap) => {
   const map={}; snap.forEach(d=>{map[d.id]=d.data()||{}}); window.productDemandMap=map; try{localStorage.setItem('mp_demand_cache_v1',JSON.stringify(map));}catch(e){}
-  if(window.currentFilter==='mas-vendidos'){clearTimeout(window.demandRenderTimer);window.demandRenderTimer=setTimeout(()=>window.renderProducts(),120);}
+  if(window.currentFilter==='mas-vendidos'&&!window.__mpCatalogTouched&&window.__mpTopOrder?.()!==document.getElementById('product-grid')?.dataset.order){clearTimeout(window.demandRenderTimer);window.demandRenderTimer=setTimeout(()=>window.renderProducts(),120);}
 }, (error) => {
   console.warn('No se pudo sincronizar productDemand; se usará demanda local si existe.', error);
   window.productDemandMap=window.productDemandMap||{};
@@ -5706,12 +5711,12 @@ window.renderProducts(); window.renderCourses(); window.__mpMarkCatalogReady();
 } finally {
 window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
 if (!firebaseReady && !window.productsDataReady) { window.productsDataReady = true; }
-try { window.setFilter('mas-vendidos'); } catch(e) { console.warn('Filtro inicial:', e); }
-try { window.renderProducts(); window.syncSocialNetworks(); window.updateCartUI(); ensureAcademyGallerySection(); } catch(e) { console.warn('Inicialización de galería:', e); }
+try { if(!window.__mpCatalogReady) window.setFilter(window.currentFilter||'mas-vendidos'); } catch(e) { console.warn('Filtro inicial:', e); }
+try { if(!window.__mpCatalogReady) window.renderProducts(); window.syncSocialNetworks(); window.updateCartUI(); ensureAcademyGallerySection(); } catch(e) { console.warn('Inicialización de galería:', e); }
 try { if(document.getElementById('view-courses')?.classList.contains('active-slide')) window.ensureAcademyGallery(); } catch(e) {}
 try { window.__mpReconcileTestimonials(window.__mpTestimonialsCache||[]); } catch(e) {}
 try { window.__mpStartPublicSnapshots?.(); } catch(e) {}
-window.navigate('catalog');
+if(!window.__mpView) window.navigate('catalog');
 if(!window.__mpInitialShellRendered){try{window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}catch(e){console.warn('Render final de recuperación:',e)}}
 if (!firebaseReady) window.__mpMarkCatalogReady();
 window.__mpHideGlobalLoader(false);
@@ -5773,7 +5778,7 @@ const html = safeImages.map((img, index) => {
 const safe = String(img).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 return `<div onclick="window.openImageModal('${safe.replace(/&#39;/g, "\\'")}')" class="shrink-0 w-[220px] h-[140px] md:w-[320px] md:h-[200px] rounded-[24px] overflow-hidden border border-white/5 shadow-2xl group bg-[#0a0a0c] cursor-pointer relative transform-gpu" data-gallery-item="${index}"><img src="${safe}" class="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 opacity-50 grayscale-[40%] group-hover:grayscale-0 group-hover:opacity-100" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${MP_GALLERY_FALLBACK_IMAGES[index % MP_GALLERY_FALLBACK_IMAGES.length]}'"><div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none"><i class="fa-solid fa-magnifying-glass-plus text-white text-3xl drop-shadow-lg"></i></div></div>`;
 }).join('');
-container.innerHTML = html + html + html;
+container.innerHTML = html + html;
 container.setAttribute('data-gallery-ready','true');
 container.removeAttribute('data-gallery-loading');
 const savedControlMs = Number(container.getAttribute('data-editor-duration') || '0');
@@ -5785,6 +5790,7 @@ container.setAttribute('data-editor-css-duration', String(Math.round(savedContro
 } else if (!container.style.animationDuration) {
 container.style.animationDuration = Math.max(32, safeImages.length * 2.4) + 's';
 }
+window.mpTuneGallery?.(container);
 return true;
 }
 window.loadAcademyGallery = async function() {
@@ -5966,7 +5972,7 @@ function ensureBuilderId(el){if(!el||el.nodeType!==1)return '';let id=el.getAttr
 function builderIconFor(el){const t=el?.tagName; if(t==='IMG')return'fa-regular fa-image';if(t==='VIDEO')return'fa-solid fa-video';if(t==='BUTTON')return'fa-regular fa-square';if(t==='A')return'fa-solid fa-link';if(t==='SECTION')return'fa-regular fa-window-maximize';return'fa-regular fa-circle'}
 function captureBuilderLayout(){
 const layoutData={};
-document.querySelectorAll('.editable-section').forEach(zone=>{if(!zone.id)return;const clone=zone.cloneNode(true);clone.querySelectorAll('.builder-selected-el,.builder-selected-outline').forEach(e=>e.classList.remove('builder-selected-el','builder-selected-outline'));clone.querySelectorAll('.sortable-ghost,.sortable-chosen,.sortable-drag').forEach(e=>e.classList.remove('sortable-ghost','sortable-chosen','sortable-drag'));clone.querySelectorAll('#builder-resize-box').forEach(e=>e.remove());const map=clone.querySelector('#leaflet-map');if(map)map.innerHTML='';const pg=clone.querySelector('#product-grid');if(pg)pg.innerHTML='';const cg=clone.querySelector('#courses-grid');if(cg)cg.innerHTML='';const gm=clone.querySelector('#academy-gallery-marquee');if(gm){gm.innerHTML='';gm.setAttribute('data-gallery-ready','false');}const html=clone.innerHTML;if(html.trim().length>120)layoutData[zone.id]=html;});
+document.querySelectorAll('.editable-section').forEach(zone=>{if(!zone.id)return;const clone=zone.cloneNode(true);clone.querySelectorAll('.builder-selected-el,.builder-selected-outline').forEach(e=>e.classList.remove('builder-selected-el','builder-selected-outline'));clone.querySelectorAll('.sortable-ghost,.sortable-chosen,.sortable-drag').forEach(e=>e.classList.remove('sortable-ghost','sortable-chosen','sortable-drag'));clone.querySelectorAll('#builder-resize-box').forEach(e=>e.remove());const map=clone.querySelector('#leaflet-map');if(map)map.innerHTML='';const pg=clone.querySelector('#product-grid');if(pg)pg.innerHTML='';const cg=clone.querySelector('#courses-grid');if(cg)cg.innerHTML='';const gm=clone.querySelector('#academy-gallery-marquee');if(gm){gm.innerHTML='';gm.setAttribute('data-gallery-ready','false');}clone.querySelectorAll('video[poster^="data:"]').forEach(v=>{v.removeAttribute('poster');v.removeAttribute('data-poster-ready');});const html=clone.innerHTML;if(html.trim().length>120)layoutData[zone.id]=html;});
 const modal=document.getElementById('videoModalContent')||document.querySelector('#videoModal > div');if(modal)layoutData.videoModalTpl=modal.cloneNode(true).outerHTML;return layoutData}
 function restoreBuilderLayout(layoutData,layoutModel=null){
 if(!layoutData||typeof layoutData!=='object')return;
@@ -6116,7 +6122,7 @@ if (event.data.type === 'CAPTURE_LAYOUT') { const layoutData=captureBuilderLayou
 if (event.data.type === 'RESTORE_LAYOUT') { restoreBuilderLayout(event.data.layoutData||{},event.data.layoutModel||null); setTimeout(()=>{window.renderProducts();window.renderCourses();window.ensureAcademyGallery();window.loadAcademyGallery();window.ensureTestimonialEditorOverlays();try{window.mpHydrateMedia?.(document);window.prepareTestimonialVideoPoster?.(document)}catch(e){}initVisualResizer();emitLayers();window.parent.postMessage({type:'APP_LAYOUT_RESTORED'},'*')},60); }
 if (event.data.type === 'SET_RESPONSIVE_STYLE' && window.selectedEl) { applyResponsiveStyle(window.selectedEl,event.data.device||'mobile',event.data.prop,event.data.value); window.updateResizeBox(); }
 if (event.data.type === 'SET_PREVIEW_WIDTH') { document.documentElement.style.setProperty('--mp-builder-preview-width',(event.data.width||1440)+'px'); }
-if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const controlMs=Math.max(1000,Math.min(120000,Number(event.data.ms)||15000)); const durationMs=Math.round(controlMs*100); const gallery=document.getElementById('academy-gallery-marquee'); gallery.style.animationDuration=durationMs+'ms'; gallery.style.animationTimingFunction='linear'; gallery.style.animationIterationCount='infinite'; gallery.setAttribute('data-editor-duration',String(controlMs)); gallery.setAttribute('data-editor-css-duration',String(durationMs)); }
+if (event.data.type === 'SET_GALLERY_DURATION' && document.getElementById('academy-gallery-marquee')) { const controlMs=Math.max(1000,Math.min(120000,Number(event.data.ms)||15000)); const durationMs=Math.round(controlMs*100); const gallery=document.getElementById('academy-gallery-marquee'); gallery.style.animationDuration=durationMs+'ms'; gallery.style.animationTimingFunction='linear'; gallery.style.animationIterationCount='infinite'; gallery.setAttribute('data-editor-duration',String(controlMs)); gallery.setAttribute('data-editor-css-duration',String(durationMs)); window.mpTuneGallery?.(gallery); }
 if (event.data.type === 'ENABLE_BUILDER') {
 ensureUniqueTestimonialIds(document);
 window.isAdminMode = true; window.builderSelectionEnabled = true; document.body.classList.add('is-admin-session', 'builder-mode');
@@ -6378,7 +6384,7 @@ if (btn && typeof btn.closest === 'function') {
 const card = btn.closest('.video-testimonial-card, .card');
 if (card) {
 themeKey = card.getAttribute('data-theme') || "cyan";
-const vidEl = card.querySelector('.vt-video'); if (vidEl) videoSrc = vidEl.src.split('#')[0];
+const vidEl = card.querySelector('.vt-video'); if (vidEl) { videoSrc = (vidEl.currentSrc || vidEl.src || vidEl.getAttribute('data-original-media-url') || videoSrc).split('#')[0]; try { videoSrc = window.protectMediaUrl ? (window.protectMediaUrl(videoSrc) || videoSrc) : videoSrc; } catch(e) {} }
 const nameEl = card.querySelector('.vt-name'); if (nameEl) name = nameEl.innerText;
 const roleEl = card.querySelector('.vt-role'); if (roleEl) role = roleEl.innerText;
 const quoteEl = card.querySelector('.vt-quote'); if (quoteEl) quote = quoteEl.innerText;
@@ -6438,7 +6444,12 @@ setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex')
 document.addEventListener('DOMContentLoaded', () => {
 window.loadFirebaseData();
 });</script>
-<style id="mp-2026-11-perf">@media (pointer:coarse){
+<style id="mp-testimonial-themes">/* Colores de tema de testimonios (rosa, violeta, ámbar, esmeralda) que faltaban en el CSS estático */.bg-pink-400 { background-color: #f472b6; } .bg-violet-400 { background-color: #a78bfa; } .bg-amber-400 { background-color: #fbbf24; } .bg-emerald-400 { background-color: #34d399; } .bg-violet-400\/10 { background-color: color-mix(in srgb, #a78bfa 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #a78bfa 10%, transparent); } } .bg-amber-400\/10 { background-color: color-mix(in srgb, #fbbf24 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #fbbf24 10%, transparent); } } .bg-emerald-400\/10 { background-color: color-mix(in srgb, #34d399 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #34d399 10%, transparent); } } .bg-pink-400\/20 { background-color: color-mix(in srgb, #f472b6 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #f472b6 20%, transparent); } } .bg-violet-400\/20 { background-color: color-mix(in srgb, #a78bfa 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #a78bfa 20%, transparent); } } .bg-amber-400\/20 { background-color: color-mix(in srgb, #fbbf24 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #fbbf24 20%, transparent); } } .bg-emerald-400\/20 { background-color: color-mix(in srgb, #34d399 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #34d399 20%, transparent); } } .bg-amber-500 { background-color: #f59e0b; } .bg-emerald-500 { background-color: #10b981; } .bg-emerald-500\/10 { background-color: color-mix(in srgb, #10b981 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #10b981 10%, transparent); } } .bg-pink-500\/20 { background-color: color-mix(in srgb, #ec4899 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #ec4899 20%, transparent); } } .bg-violet-500\/20 { background-color: color-mix(in srgb, #8b5cf6 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #8b5cf6 20%, transparent); } } .bg-amber-500\/20 { background-color: color-mix(in srgb, #f59e0b 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #f59e0b 20%, transparent); } } .bg-emerald-500\/20 { background-color: color-mix(in srgb, #10b981 20%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #10b981 20%, transparent); } } .bg-violet-500\/5 { background-color: color-mix(in srgb, #8b5cf6 5%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #8b5cf6 5%, transparent); } } .bg-amber-500\/5 { background-color: color-mix(in srgb, #f59e0b 5%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #f59e0b 5%, transparent); } } .bg-emerald-500\/5 { background-color: color-mix(in srgb, #10b981 5%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #10b981 5%, transparent); } } .bg-pink-600\/10 { background-color: color-mix(in srgb, #db2777 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #db2777 10%, transparent); } } .bg-violet-600\/10 { background-color: color-mix(in srgb, #7c3aed 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #7c3aed 10%, transparent); } } .bg-amber-600\/10 { background-color: color-mix(in srgb, #d97706 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #d97706 10%, transparent); } } .bg-emerald-600\/10 { background-color: color-mix(in srgb, #059669 10%, transparent); @supports (color: color-mix(in lab, red, red)) { background-color: color-mix(in oklab, #059669 10%, transparent); } } .border-violet-400 { border-color: #a78bfa; } .border-amber-400 { border-color: #fbbf24; } .border-emerald-400 { border-color: #34d399; } .border-pink-400\/20 { border-color: color-mix(in srgb, #f472b6 20%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #f472b6 20%, transparent); } } .border-violet-400\/20 { border-color: color-mix(in srgb, #a78bfa 20%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #a78bfa 20%, transparent); } } .border-amber-400\/20 { border-color: color-mix(in srgb, #fbbf24 20%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #fbbf24 20%, transparent); } } .border-emerald-400\/20 { border-color: color-mix(in srgb, #34d399 20%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #34d399 20%, transparent); } } .border-pink-400\/50 { border-color: color-mix(in srgb, #f472b6 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #f472b6 50%, transparent); } } .border-violet-400\/50 { border-color: color-mix(in srgb, #a78bfa 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #a78bfa 50%, transparent); } } .border-amber-400\/50 { border-color: color-mix(in srgb, #fbbf24 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #fbbf24 50%, transparent); } } .border-emerald-400\/50 { border-color: color-mix(in srgb, #34d399 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #34d399 50%, transparent); } } .border-emerald-500\/20 { border-color: color-mix(in srgb, #10b981 20%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #10b981 20%, transparent); } } .border-pink-500\/30 { border-color: color-mix(in srgb, #ec4899 30%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #ec4899 30%, transparent); } } .border-emerald-500\/30 { border-color: color-mix(in srgb, #10b981 30%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #10b981 30%, transparent); } } .border-violet-500\/50 { border-color: color-mix(in srgb, #8b5cf6 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #8b5cf6 50%, transparent); } } .border-amber-500\/50 { border-color: color-mix(in srgb, #f59e0b 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #f59e0b 50%, transparent); } } .border-emerald-500\/50 { border-color: color-mix(in srgb, #10b981 50%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #10b981 50%, transparent); } } .from-violet-500 { --tw-gradient-from: #8b5cf6; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .from-amber-500 { --tw-gradient-from: #f59e0b; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .from-emerald-500 { --tw-gradient-from: #10b981; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .from-pink-500\/10 { --tw-gradient-from: color-mix(in srgb, #ec4899 10%, transparent); @supports (color: color-mix(in lab, red, red)) { --tw-gradient-from: color-mix(in oklab, #ec4899 10%, transparent); } --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .from-violet-500\/10 { --tw-gradient-from: color-mix(in srgb, #8b5cf6 10%, transparent); @supports (color: color-mix(in lab, red, red)) { --tw-gradient-from: color-mix(in oklab, #8b5cf6 10%, transparent); } --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .from-emerald-500\/10 { --tw-gradient-from: color-mix(in srgb, #10b981 10%, transparent); @supports (color: color-mix(in lab, red, red)) { --tw-gradient-from: color-mix(in oklab, #10b981 10%, transparent); } --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .from-emerald-500\/20 { --tw-gradient-from: color-mix(in srgb, #10b981 20%, transparent); @supports (color: color-mix(in lab, red, red)) { --tw-gradient-from: color-mix(in oklab, #10b981 20%, transparent); } --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .hover\:bg-amber-400 { &:hover { @media (hover: hover) { background-color: #fbbf24; } } } .hover\:bg-emerald-400 { &:hover { @media (hover: hover) { background-color: #34d399; } } } .hover\:bg-violet-500 { &:hover { @media (hover: hover) { background-color: #8b5cf6; } } } .hover\:bg-amber-500 { &:hover { @media (hover: hover) { background-color: #f59e0b; } } } .hover\:bg-emerald-500 { &:hover { @media (hover: hover) { background-color: #10b981; } } } .hover\:border-violet-500 { &:hover { @media (hover: hover) { border-color: #8b5cf6; } } } .hover\:border-amber-500 { &:hover { @media (hover: hover) { border-color: #f59e0b; } } } .hover\:border-emerald-500 { &:hover { @media (hover: hover) { border-color: #10b981; } } } .hover\:border-emerald-500\/40 { &:hover { @media (hover: hover) { border-color: color-mix(in srgb, #10b981 40%, transparent); @supports (color: color-mix(in lab, red, red)) { border-color: color-mix(in oklab, #10b981 40%, transparent); } } } } .hover\:text-violet-400 { &:hover { @media (hover: hover) { color: #a78bfa; } } } .hover\:text-amber-400 { &:hover { @media (hover: hover) { color: #fbbf24; } } } .hover\:text-emerald-400 { &:hover { @media (hover: hover) { color: #34d399; } } } .text-pink-100 { color: #fce7f3; } .text-emerald-100 { color: #d1fae5; } .text-pink-300 { color: #f9a8d4; } .text-violet-300 { color: #c4b5fd; } .text-emerald-300 { color: #6ee7b7; } .text-emerald-400 { color: #34d399; } .text-pink-400\/50 { color: color-mix(in srgb, #f472b6 50%, transparent); @supports (color: color-mix(in lab, red, red)) { color: color-mix(in oklab, #f472b6 50%, transparent); } } .text-violet-400\/50 { color: color-mix(in srgb, #a78bfa 50%, transparent); @supports (color: color-mix(in lab, red, red)) { color: color-mix(in oklab, #a78bfa 50%, transparent); } } .text-amber-400\/50 { color: color-mix(in srgb, #fbbf24 50%, transparent); @supports (color: color-mix(in lab, red, red)) { color: color-mix(in oklab, #fbbf24 50%, transparent); } } .text-emerald-400\/50 { color: color-mix(in srgb, #34d399 50%, transparent); @supports (color: color-mix(in lab, red, red)) { color: color-mix(in oklab, #34d399 50%, transparent); } } .to-pink-400 { --tw-gradient-to: #f472b6; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-violet-400 { --tw-gradient-to: #a78bfa; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-amber-400 { --tw-gradient-to: #fbbf24; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-emerald-400 { --tw-gradient-to: #34d399; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-pink-500 { --tw-gradient-to: #ec4899; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-violet-500 { --tw-gradient-to: #8b5cf6; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-amber-500 { --tw-gradient-to: #f59e0b; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); } .to-emerald-500 { --tw-gradient-to: #10b981; --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position)); }</style><style id="mp-2026-11-perf">.video-testimonial-card .vt-quote{display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+#academy-gallery-marquee{padding-right:1rem}
+@media (min-width:768px){#academy-gallery-marquee{padding-right:1.5rem}}
+#academy-gallery-marquee [data-gallery-item]{content-visibility:visible!important;contain-intrinsic-size:none!important}
+@media (hover:none){.hover\:pause-marquee:hover{animation-play-state:running}}
+@media (pointer:coarse){
 #social-nav-mobile a{padding:8px 7px;margin:-8px -7px;display:inline-flex;align-items:center}
 [class*="dot-slider-"]{position:relative}
 [class*="dot-slider-"]::after{content:"";position:absolute;left:-7px;right:-7px;top:-12px;bottom:-12px}
@@ -6540,5 +6551,46 @@ function later(){clearTimeout(t);t=setTimeout(function(){try{build()}catch(e){}}
 function hook(){var f=window.renderProducts;if(typeof f!=='function'||f.__mpSeo)return false;var w=function(){var r=f.apply(this,arguments);later();return r;};w.__mpSeo=true;window.renderProducts=w;return true;}
 if(!hook()){window.addEventListener('load',function(){hook();later();});}else later();
 })();</script>
+<script id="mp-catalog-touch">(function(){var mark=function(){window.__mpCatalogTouched=true;};['pointerdown','wheel','touchstart','keydown'].forEach(function(ev){document.addEventListener(ev,mark,{passive:true,once:true,capture:true});});})();</script>
+<script id="mp-gallery-speed">(function(){
+// Velocidad constante en px/s: no depende de cuántas fotos haya. El control del editor solo ajusta dentro de un rango cómodo.
+var MIN=16,MAX=36,DEF=28;
+window.mpTuneGallery=function(g){try{
+  if(!g)return;var run=function(){var half=g.scrollWidth/2;if(!half||half<200)return;
+    var cur=parseFloat(g.style.animationDuration)||0;if(/ms$/.test(g.style.animationDuration))cur=cur/1000;
+    var speed=cur>0?half/cur:DEF;if(!g.getAttribute('data-editor-duration'))speed=DEF;
+    speed=Math.max(MIN,Math.min(MAX,speed));
+    g.style.animationDuration=(half/speed).toFixed(1)+'s';g.style.animationTimingFunction='linear';g.style.animationIterationCount='infinite';};
+  requestAnimationFrame(function(){requestAnimationFrame(run);});
+}catch(e){}};
+})();</script>
+<script id="mp-about-video">(function(){
+// Los videos de Nosotros se pausan tocándolos (antes solo se podía dar play) y se detienen al salir de la sección.
+document.addEventListener('click',function(e){var t=e.target;if(!t||!t.id||window.isAdminMode)return;
+  if(t.id==='about-cinematic-video'){e.preventDefault();window.toggleAboutVideo&&window.toggleAboutVideo();}
+  else if(t.id==='mobile-cinematic-video'){e.preventDefault();window.toggleMobileVideo&&window.toggleMobileVideo();}
+},true);
+function stopAbout(){var a=document.getElementById('about-cinematic-video'),m=document.getElementById('mobile-cinematic-video');
+  if(a&&!a.paused){a.pause();var o=document.getElementById('about-video-overlay');if(o){o.style.opacity='1';o.style.pointerEvents='auto';}}
+  if(m&&!m.paused){m.pause();var b=document.getElementById('mobile-play-btn');if(b)b.style.opacity='1';}}
+function hook(){var f=window.navigate;if(typeof f!=='function'||f.__mpAbout)return false;var w=function(id){if(id!=='about')stopAbout();return f.apply(this,arguments);};w.__mpAbout=true;window.navigate=w;return true;}
+if(!hook())window.addEventListener('load',hook);
+document.addEventListener('visibilitychange',function(){if(document.hidden)stopAbout();});
+})();</script>
+<script id="mp-video-modal">(function(){
+// Modal de testimonios: tocar el video pausa/reanuda (o activa el sonido si arrancó sin sonido), Esc o tocar fuera cierra.
+function vid(){return document.getElementById('testimonial-video');}
+function badge(){var v=vid();if(!v)return null;var b=document.getElementById('vm-state');if(!b){b=document.createElement('div');b.id='vm-state';b.setAttribute('aria-hidden','true');b.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:305;transition:opacity .25s';b.innerHTML='<span style="width:64px;height:64px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px"><i class="fa-solid fa-play"></i></span>';v.parentElement.appendChild(b);}return b;}
+function paint(){var v=vid(),b=badge();if(!v||!b)return;var i=b.querySelector('i');
+  if(v.paused){i.className='fa-solid fa-play';b.style.opacity='1';}
+  else if(v.muted){i.className='fa-solid fa-volume-xmark';b.style.opacity='1';}
+  else{b.style.opacity='0';}}
+document.addEventListener('click',function(e){var v=vid();if(!v||e.target!==v||window.isAdminMode)return;
+  if(v.paused){v.play().catch(function(){});}else if(v.muted){v.muted=false;}else{v.pause();}paint();},true);
+document.addEventListener('click',function(e){var m=document.getElementById('videoModal');if(m&&e.target===m&&!m.classList.contains('hidden')&&window.closeVideoModal)window.closeVideoModal(e);});
+document.addEventListener('keydown',function(e){var m=document.getElementById('videoModal');if(e.key==='Escape'&&m&&!m.classList.contains('hidden')&&window.closeVideoModal)window.closeVideoModal(e);});
+document.addEventListener('DOMContentLoaded',function(){var v=vid();if(!v)return;v.style.cursor='pointer';['play','pause','volumechange','loadeddata'].forEach(function(ev){v.addEventListener(ev,paint);});});
+})();</script>
+<script id="mp-testimonial-card-click">document.addEventListener('click',function(e){if(window.isAdminMode||document.body.classList.contains('builder-mode'))return;var c=e.target.closest&&e.target.closest('.video-testimonial-card');if(!c||e.target.closest('button,a,.admin-video-edit-overlay'))return;var b=c.querySelector('button[onclick*="openVideoModal"]');if(b&&window.openVideoModal)window.openVideoModal(b);});</script>
 </body>
 </html>
