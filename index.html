@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js">
+<link rel="preconnect" href="https://firestore.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://b2.multiprintt.workers.dev" crossorigin>
+<link rel="preconnect" href="https://b2.multiprintt.workers.dev">
 <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
@@ -42,8 +46,30 @@
 <meta name="twitter:description" content="Impresión, publicidad, personalización, sublimación y DTF en Guayaquil, Ecuador.">
 <meta name="twitter:image" content="https://multiprintt.web.app/og-image.jpg">
 <meta name="twitter:image:alt" content="Logo oficial de Multiprintt">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VP3XV39H5M"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-VP3XV39H5M',{anonymize_ip:true});</script>
+<script>
+/* Primera visita: pide el catálogo a Firestore por REST mientras carga el SDK (~175 KB),
+   para mostrar productos varios segundos antes. Las visitas repetidas usan la copia local. */
+(function(){
+  try{var c=JSON.parse(localStorage.getItem('mp_products_cache_v1')||'null');if(c&&c.items&&c.items.length&&Date.now()-(+c.t||0)<30*864e5)return;}catch(e){}
+  function val(v){if(!v||typeof v!=='object')return null;
+    if('stringValue' in v)return v.stringValue;if('integerValue' in v)return Number(v.integerValue);if('doubleValue' in v)return Number(v.doubleValue);
+    if('booleanValue' in v)return !!v.booleanValue;if('nullValue' in v)return null;if('referenceValue' in v)return v.referenceValue;
+    if('timestampValue' in v){var ms=Date.parse(v.timestampValue);return {seconds:Math.floor(ms/1000),nanoseconds:0,toMillis:function(){return ms},toDate:function(){return new Date(ms)}};}
+    if('geoPointValue' in v)return v.geoPointValue;if('arrayValue' in v)return (v.arrayValue.values||[]).map(val);
+    if('mapValue' in v)return obj(v.mapValue.fields||{});return null;}
+  function obj(f){var o={};for(var k in f)o[k]=val(f[k]);return o;}
+  window.__mpRestProducts=fetch('https://firestore.googleapis.com/v1/projects/multiprintt-cc0f1/databases/(default)/documents/artifacts/multiprintt-web/public/data/products?pageSize=300',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null}).then(function(j){if(!j||!j.documents||j.nextPageToken)return null;
+      var list=j.documents.map(function(d){var o=obj(d.fields||{});o.id=d.name.split('/').pop();return o;});window.__mpRestProductsData=list;return list;})
+    .catch(function(){return null});
+})();
+</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-VP3XV39H5M',{anonymize_ip:true});
+/* Analítica después de que la tienda cargó (no compite con productos ni fotos). */
+(function(){var done=false;function go(){if(done)return;done=true;var t=document.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=G-VP3XV39H5M';document.head.appendChild(t);}
+function later(){(window.requestIdleCallback||function(f){setTimeout(f,1)})(go,{timeout:4000});}
+if(document.readyState==='complete')setTimeout(later,1500);else addEventListener('load',function(){setTimeout(later,1500)},{once:true});
+['pointerdown','keydown','scroll'].forEach(function(ev){addEventListener(ev,function(){setTimeout(go,300)},{once:true,passive:true})});})();</script>
 <script type="application/ld+json">{
 "@context": "https://schema.org",
 "@graph": [
@@ -3695,8 +3721,8 @@ button[data-network]:focus-visible,a[data-network]:focus-visible {
 }
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" media="print" onload="this.media='all'"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></noscript>
 <script id="mp-lazy-vendors">
 (()=>{
   const loadScript=(src,testKey)=>{
@@ -4415,11 +4441,12 @@ html{color-scheme:dark;}
     </div>
 </div>
 <script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, collection, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 const firebaseConfig = { apiKey: "AIzaSyCng7KX1SxTPlFon4A1bnl_Hu1xaJEhvlY", authDomain: "multiprintt-cc0f1.firebaseapp.com", projectId: "multiprintt-cc0f1", storageBucket: "multiprintt-cc0f1.firebasestorage.app", messagingSenderId: "626369594335", appId: "1:626369594335:web:711aac8c65197a0dceba6a" };
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// initializeAuth sin popupRedirectResolver: evita descargar el iframe de login (~100 KB) que la tienda no usa.
+const auth = initializeAuth(app, { persistence: [indexedDBLocalPersistence, browserLocalPersistence] });
 const db = getFirestore(app);
 const MP_BUILD_VERSION = '2026.09.28.02';
 try { window.__MP_BUILD_VERSION = MP_BUILD_VERSION; sessionStorage.setItem('mp_build_seen', MP_BUILD_VERSION); } catch(e) {}
@@ -4957,7 +4984,7 @@ window.mpImgBBVariantFor=function(product,url){
   return {url:key,displayUrl:String(v.displayUrl||v.mediumUrl||directCandidate||key),mediumUrl:String(v.mediumUrl||v.displayUrl||directCandidate||key),thumbUrl:String(v.thumbUrl||v.displayUrl||v.mediumUrl||directCandidate||key)};
 };
 window.mpImgBBTinyPlaceholder='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="#0a0a0c"/></svg>');
-window.mpImgBBLoadAttrs=function(url,index){const mobile=window.matchMedia&&window.matchMedia('(max-width:767px)').matches;const hot=window.mpIsImgBB(url)&&Number(index||0)<(mobile?2:4);return `loading="${hot?'eager':'lazy'}" fetchpriority="${hot?'high':'auto'}" decoding="async" referrerpolicy="no-referrer"`;};
+window.mpImgBBLoadAttrs=function(url,index){const mobile=window.matchMedia&&window.matchMedia('(max-width:767px)').matches;const hot=Number(index||0)<(mobile?4:8);return `loading="${hot?'eager':'lazy'}" fetchpriority="${hot?'high':'auto'}" decoding="async" referrerpolicy="no-referrer"`;};
 window.mpPrefetchImgBB=function(url){if(!window.mpIsImgBB(url)||!url)return;try{const im=new Image();im.decoding='async';im.fetchPriority='low';im.referrerPolicy='no-referrer';im.src=url;}catch(e){}};
 window.mpLoadImgBBElement=function(img){
   if(!img)return;
@@ -5054,7 +5081,7 @@ if (imgs.length <= 1) {
   art = imgs.length === 1
     ? (window.mpIsImgBB(imgs[0])
       ? `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(window.mpImgBBVariantFor(p,imgs[0]).mediumUrl||window.mpImgBBVariantFor(p,imgs[0]).displayUrl||imgs[0],'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" data-mp-imgbb="${window.mpEscapeAttr(imgs[0])}" data-mp-img-original="${window.mpEscapeAttr(imgs[0])}" data-mp-imgbb-medium="${window.mpEscapeAttr(window.mpImgBBVariantFor(p,imgs[0]).mediumUrl||'')}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
-      : `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(imgs[0],'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`)
+      : `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(window.mpThumbUrl(imgs[0]),'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" ${window.mpImgBBLoadAttrs(imgs[0],i)} class="absolute inset-0 w-full h-full object-contain p-4 z-10 group-hover:scale-105 transition-transform duration-500" draggable="false" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`)
     : `<div class="relative z-10 w-16 h-16 rounded-full bg-white/[.04] border border-white/10 flex items-center justify-center"><i class="fa-solid ${window.mpEscapeAttr(window.mpSafeIcon(p.icon,'fa-box'))} text-2xl text-white/60 pointer-events-none"></i></div>`;
 } else {
   const sliderId=`slider-${String(p.id||'product').replace(/[^a-zA-Z0-9_-]/g,'_')}`;
@@ -5067,7 +5094,7 @@ if (imgs.length <= 1) {
     const mediaSrc=window.mpIsImgBB(img)?(mediaVariant.mediumUrl||mediaVariant.displayUrl||img):img;
     const imgTag=window.mpIsImgBB(img)
       ? `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(mediaSrc,'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" data-mp-imgbb="${window.mpEscapeAttr(img)}" data-mp-img-original="${window.mpEscapeAttr(img)}" data-mp-imgbb-medium="${window.mpEscapeAttr(mediaVariant.mediumUrl||'')}" ${window.mpImgBBLoadAttrs(img, i + idx)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`
-      : `<img src="${window.mpEscapeAttr(window.mpSafeMediaUrl(img,'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" ${window.mpImgBBLoadAttrs(img, i + idx)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`;
+      : `<img ${idx>0?'data-mp-defer-src':'src'}="${window.mpEscapeAttr(window.mpSafeMediaUrl(window.mpThumbUrl(img),'https://placehold.co/400x400/101014/ffffff?text=Producto'))}" ${window.mpImgBBLoadAttrs(img, idx>0 ? 99 : i)} class="w-full h-full object-contain p-4" draggable="false" alt="${safeAlt}" onerror="if(!this.dataset.mpFallback){this.dataset.mpFallback='1';this.src='https://placehold.co/400x400/101014/ffffff?text=Producto'}else{this.style.display='none'}">`;
     return `<div class="slider-item absolute inset-0 flex items-center justify-center transition-opacity duration-200 ease-out ${active?'opacity-100 z-20':'opacity-0 z-10'}">${imgTag}</div>`;
   }).join('');
   dotsHtml+='</div>';
@@ -5482,6 +5509,8 @@ let lastProductSnapshot = null;
 window.loadFirebaseData = async function() {
 try {
 try{if(!(Array.isArray(window.appProducts)&&window.appProducts.length)){const c=JSON.parse(localStorage.getItem('mp_products_cache_v1')||'null');if(c&&Array.isArray(c.items)&&c.items.length&&Date.now()-(+c.t||0)<30*864e5){window.appProducts=c.items;window.__mpProductsFromCache=true;try{const d=JSON.parse(localStorage.getItem('mp_demand_cache_v1')||'null');if(d&&typeof d==='object'&&!Object.keys(window.productDemandMap||{}).length)window.productDemandMap=d;}catch(e){}}}}catch(e){}
+try{if(!(Array.isArray(window.appProducts)&&window.appProducts.length)&&Array.isArray(window.__mpRestProductsData)&&window.__mpRestProductsData.length){window.appProducts=window.__mpRestProductsData.map(p=>window.mpNormalizeProductData(p));window.__mpProductsFromCache=true;}}catch(e){}
+try{if(window.__mpRestProducts&&!window.__mpRestProductsData)window.__mpRestProducts.then(list=>{if(!list||!list.length||window.productsDataReady||(Array.isArray(window.appProducts)&&window.appProducts.length))return;window.appProducts=list.map(p=>window.mpNormalizeProductData(p));window.__mpProductsFromCache=true;try{window.renderProducts();window.__mpMarkCatalogReady?.();window.updateCartUI?.();}catch(e){}});}catch(e){}
 try{if(!window.__mpInitialShellRendered){window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}}catch(e){console.warn('Render inicial local:',e)}
 window.__mpHideGlobalLoader(false);
 try {
@@ -6420,10 +6449,29 @@ window.loadFirebaseData();
 </style>
 <script id="mp-2026-11-enhance">
 (function(){
+  /* Miniaturas: el catálogo usa versiones de máx. 560 px generadas en B2
+     (media/thumbs/<foto>.webp). Si aún no existe, el Worker entrega la original. */
+  var B2='https://b2.multiprintt.workers.dev/';
+  var THUMBABLE=/^(?:textil|jarros|imp-general|packs|media\/migrated\/productos)\/[^?#]+\.(?:webp|jpe?g|png|gif|avif)$/i;
+  window.mpThumbUrl=function(u){
+    try{var v=String(u||'');if(v.indexOf(B2)!==0)return u;var path=v.slice(B2.length).split(/[?#]/)[0];
+      path=decodeURIComponent(path);if(!THUMBABLE.test(path))return u;
+      return B2+'media/thumbs/'+path.split('/').map(encodeURIComponent).join('/')+'.webp';}catch(e){return u;}
+  };
+  /* Fotos 2, 3… de cada producto: se piden después de que la tienda cargó, o al tocar la tarjeta. */
+  function loadDeferred(root){try{(root||document).querySelectorAll('img[data-mp-defer-src]').forEach(function(img){img.src=img.getAttribute('data-mp-defer-src');img.removeAttribute('data-mp-defer-src');});}catch(e){}}
+  window.mpLoadDeferredSlides=loadDeferred;
+  var pageLoaded=false;
+  function afterLoad(){pageLoaded=true;(window.requestIdleCallback||function(f){setTimeout(f,200)})(function(){loadDeferred(document)},{timeout:3000});}
+  if(document.readyState==='complete')setTimeout(afterLoad,1200);else addEventListener('load',function(){setTimeout(afterLoad,1200)},{once:true});
+  ['pointerdown','touchstart','mouseover'].forEach(function(ev){document.addEventListener(ev,function(e){var c=e.target&&e.target.closest&&e.target.closest('.product-slider,article.card');if(c)loadDeferred(c);},{passive:true,capture:true});});
+  new MutationObserver(function(){if(pageLoaded&&document.querySelector('img[data-mp-defer-src]'))(window.requestIdleCallback||function(f){setTimeout(f,300)})(function(){loadDeferred(document)},{timeout:2000});}).observe(document.documentElement,{childList:true,subtree:true});
   /* Videos ocultos: solo metadatos hasta que el usuario los reproduzca. */
   window.mpTameMedia=function(root){
-    try{(root||document).querySelectorAll('video[preload="auto"],video:not([preload])').forEach(function(v){if(v.paused)v.setAttribute('preload','metadata');});if(window.MP_RECURSOS_ON_B2&&window.mpRecursosToB2)(root||document).querySelectorAll('video[src*="raw.githubusercontent.com"],source[src*="raw.githubusercontent.com"]').forEach(function(v){var n=window.mpRecursosToB2(v.getAttribute('src'));if(n&&n!==v.getAttribute('src'))v.setAttribute('src',n);});}catch(e){}
+    try{(root||document).querySelectorAll('video').forEach(function(v){if(!v.paused||v.dataset.mpSeen)return;v.setAttribute('preload','none');if(window.__mpVideoIO)window.__mpVideoIO.observe(v);else v.setAttribute('preload','metadata');});if(window.MP_RECURSOS_ON_B2&&window.mpRecursosToB2)(root||document).querySelectorAll('video[src*="raw.githubusercontent.com"],source[src*="raw.githubusercontent.com"]').forEach(function(v){var n=window.mpRecursosToB2(v.getAttribute('src'));if(n&&n!==v.getAttribute('src'))v.setAttribute('src',n);});}catch(e){}
   };
+  /* Videos: no se descarga nada hasta que el video entra en pantalla (vistas ocultas = 0 KB). */
+  try{window.__mpVideoIO=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var v=e.target;v.dataset.mpSeen='1';if(v.getAttribute('preload')==='none')v.setAttribute('preload','metadata');window.__mpVideoIO.unobserve(v);}});},{rootMargin:'300px'});}catch(e){}
   /* Accesibilidad: nombres para botones de solo icono y texto alternativo en imágenes. */
   var ICONS={'fa-whatsapp':'WhatsApp','fa-facebook':'Facebook','fa-facebook-f':'Facebook','fa-instagram':'Instagram','fa-tiktok':'TikTok','fa-youtube':'YouTube','fa-x-twitter':'X','fa-twitter':'X','fa-linkedin':'LinkedIn','fa-telegram':'Telegram','fa-envelope':'Correo','fa-phone':'Llamar','fa-location-dot':'Ubicación','fa-map-location-dot':'Ubicación','fa-cart-shopping':'Carrito','fa-bag-shopping':'Carrito','fa-cart-plus':'Agregar al carrito','fa-plus':'Agregar','fa-minus':'Quitar uno','fa-trash':'Eliminar','fa-trash-can':'Eliminar','fa-xmark':'Cerrar','fa-times':'Cerrar','fa-chevron-left':'Anterior','fa-chevron-right':'Siguiente','fa-arrow-left':'Anterior','fa-arrow-right':'Siguiente','fa-play':'Reproducir video','fa-pause':'Pausar video','fa-volume-xmark':'Activar sonido','fa-volume-high':'Silenciar','fa-expand':'Pantalla completa','fa-magnifying-glass':'Buscar','fa-share-nodes':'Compartir','fa-bars':'Menú'};
   function labelFor(el){

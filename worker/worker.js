@@ -1105,6 +1105,7 @@ const PUBLIC_CACHE_VERSIONED = 'public, max-age=31536000, immutable';
 const PUBLIC_CACHE_DEFAULT = 'public, max-age=86400, stale-while-revalidate=604800';
 const PUBLIC_CACHE_MISSING = 'public, max-age=60';
 const RANGE_PREFILL_MAX_BYTES = 80 * 1024 * 1024;
+const THUMB_PREFIX = 'media/thumbs/';
 const STRIP_UPSTREAM_HEADER = /^(x-amz-|x-bz-|server$|set-cookie$)/i;
 
 function publicCacheKey(url, key) {
@@ -1184,7 +1185,21 @@ async function proxyPublicObject(request, env, ctx, url) {
   }
 
   // 2) B2 (bucket privado, petición firmada). Nunca se reenvía url.search.
-  const upstream = await fetchPublicFromB2(env, request.method, key, range);
+  let upstream = await fetchPublicFromB2(env, request.method, key, range);
+
+  // Miniaturas (media/thumbs/<original>.webp): si aún no se generó, se sirve el
+  // original con caché corta para que la página nunca vea un 404.
+  if ((upstream.status === 404 || upstream.status === 403) && key.startsWith(THUMB_PREFIX)) {
+    const originalKey = key.slice(THUMB_PREFIX.length).replace(/\.webp$/i, '');
+    if (originalKey && isSafeObjectKey(originalKey)) {
+      const original = await fetchPublicFromB2(env, request.method, originalKey, range);
+      if (original.status === 200 || original.status === 206) {
+        const res = decoratePublicResponse(original, originalKey, false);
+        res.headers.set('Cache-Control', 'public, max-age=300');
+        return res;
+      }
+    }
+  }
 
   if (upstream.status !== 200 && upstream.status !== 206) {
     // No reenviar el XML/cabeceras de error de B2 al público.
