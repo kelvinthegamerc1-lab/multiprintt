@@ -4,6 +4,10 @@ name: Miniaturas de productos (B2)
 # catálogo cargue rápido en celulares. Solo procesa fotos nuevas o reemplazadas.
 # Usa los mismos secretos que "Subir recursos a Backblaze B2"; sin ellos se salta.
 on:
+  push:
+    paths:
+      - '.github/scripts/miniaturas_b2.py'
+      - '.github/workflows/miniaturas_b2.yml'
   schedule:
     - cron: '17 * * * *'
   workflow_run:
