@@ -1,34 +1,48 @@
-name: Remove Old Images
+name: Convertir imágenes antiguas a WebP
 
+# Antes este workflow borraba todos los .jpg/.png del repositorio.
+# Ahora los convierte a .webp dentro de recursos/ y solo borra el original
+# cuando la copia .webp quedó bien. Los íconos del sitio en la raíz no se tocan.
 on:
-  workflow_dispatch: # Permite ejecutar el workflow manualmente desde GitHub
+  workflow_dispatch:
+
+concurrency:
+  group: recursos-main
+  cancel-in-progress: false
 
 jobs:
-  delete-images:
+  convert-images:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Permiso necesario para hacer push al repositorio
+      contents: write
 
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
 
-      - name: Buscar y eliminar imágenes jpg, jpeg y png
-        run: |
-          find . -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -delete
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Pillow
+        run: pip install --quiet pillow
+
+      - name: Convertir jpg, jpeg, png y gif de recursos/ a WebP
+        run: python .github/scripts/optimizar_imagenes.py recursos
 
       - name: Hacer commit y push de los cambios
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          # Agregar los archivos eliminados al stage
-          git add -u
-          
-          # Verificar si hay cambios antes de hacer commit
-          if git diff-index --quiet HEAD; then
-            echo "No se encontraron imágenes para eliminar."
-          else
-            git commit -m "chore: eliminar imágenes antiguas (jpg, jpeg, png) para migrar a webp"
-            git push
+          git add -A recursos/
+          if git diff --cached --quiet; then
+            echo "No se encontraron imágenes para convertir."
+            exit 0
           fi
+          git commit -m "chore: convertir imágenes antiguas a webp"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
