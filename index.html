@@ -5795,6 +5795,8 @@ return true;
 };
 window.ensureAcademyGallery = function() {
 const state = ensureAcademyGallerySection();
+// Las fotos solo se descargan cuando Academia está abierta (o en el editor).
+if (!document.getElementById('view-courses')?.classList.contains('active-slide') && !document.body.classList.contains('builder-mode')) return;
 if (!state || !state.container) return;
 if (!state.container.children.length || state.container.getAttribute('data-gallery-ready') !== 'true') {
 try { window.loadAcademyGallery(); } catch(e) { console.warn('Galería Academia:', e); }
