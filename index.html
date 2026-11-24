@@ -4756,7 +4756,9 @@ window.mpNormalizeCourseData=function(raw){
 };
 const defaultProducts = [{id:'p1',name:'Camiseta Premium',category:'textil',price:25,image:'',icon:'fa-shirt'}];
 const defaultCourses = [{ id:'c1',title:"Curso Básico",desc:"Aprende lo básico",image:"", isMasterclass: true, modality: "Presencial"}];
-window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourses];
+// Catálogo: se arranca con la última copia guardada (si existe) para mostrar la tienda al instante.
+window.appProducts = []; window.appCourses = [...defaultCourses];
+try{const c=JSON.parse(localStorage.getItem('mp_products_cache_v1')||'null');if(c&&Array.isArray(c.items)&&c.items.length&&Date.now()-(+c.t||0)<30*864e5){window.appProducts=c.items;window.__mpProductsFromCache=true;const d=JSON.parse(localStorage.getItem('mp_demand_cache_v1')||'null');if(d&&typeof d==='object')window.productDemandMap=d;}}catch(e){}
 window.navigate = function(targetId) {
 const subnav = document.getElementById('catalog-subnav');
 ['catalog', 'about', 'courses', 'contact'].forEach(id => {
