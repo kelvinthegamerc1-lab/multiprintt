@@ -1,74 +1,86 @@
 name: Renombrar Imágenes de Productos
 
 on:
-  workflow_dispatch: # Te permite ejecutar el workflow manualmente desde la pestaña 'Actions' en GitHub
+  workflow_dispatch: # También se puede ejecutar a mano desde la pestaña 'Actions'
   push:
+    branches:
+      - main
     paths:
-      - 'recursos/productos/**' # Se ejecuta automáticamente si subes nuevas imágenes a esta carpeta
+      - 'recursos/productos/**'
+      - '!recursos/productos/imagenes.json'
+
+concurrency:
+  group: productos-main
+  cancel-in-progress: false
 
 jobs:
   rename-images:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Chequear el repositorio
         uses: actions/checkout@v4
 
-      - name: Renombrar imágenes numeradas
-        run: |
-          cd recursos/productos
-          
-          count=1
-          shopt -s nullglob
-          
-          # Renombrar a un nombre temporal para evitar sobrescribir imágenes existentes durante el bucle
-          for file in *.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP,GIF}; do
-            ext="${file##*.}"
-            mv "$file" "temp_${count}.${ext}"
-            count=$((count+1))
-          done
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-          # Renombrar de temporales al nombre final definitivo (producto1, producto2, etc.)
-          count=1
-          for temp_file in temp_*; do
-            if [ -f "$temp_file" ]; then
-              ext="${temp_file##*.}"
-              mv "$temp_file" "producto${count}.${ext}"
-              count=$((count+1))
-            fi
-          done
+      - name: Instalar Pillow
+        run: pip install --quiet pillow
 
-      - name: Generar lista de imágenes en JSON
+      - name: Optimizar imágenes (convierte a WebP y reduce las muy pesadas)
+        run: python .github/scripts/optimizar_imagenes.py recursos/productos --no-recursivo
+
+      - name: Numerar solo las imágenes nuevas y generar imagenes.json
         run: |
-          cd recursos/productos
-          shopt -s nullglob
-          
-          # Crear o vaciar el archivo JSON
-          echo "[" > imagenes.json
-          
-          first=true
-          for file in *.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP,GIF}; do
-            if [ "$first" = true ]; then
-              first=false
-            else
-              echo "," >> imagenes.json
-            fi
-            # Agrega el nombre del archivo en formato JSON
-            echo "  \"$file\"" >> imagenes.json
-          done
-          
-          echo "]" >> imagenes.json
+          cat << 'EOF2' > /tmp/productos.py
+          import os, re, json
+          carpeta = 'recursos/productos'
+          ext_validas = ('.webp', '.jpg', '.jpeg', '.png', '.gif')
+          patron = re.compile(r'^producto(\d+)\.[a-z0-9]+$', re.IGNORECASE)
+
+          archivos = sorted(f for f in os.listdir(carpeta)
+                            if os.path.isfile(os.path.join(carpeta, f)) and f.lower().endswith(ext_validas))
+          # Las imágenes que ya se llaman productoN se quedan con su nombre:
+          # así no se rompen los enlaces que ya usa la tienda.
+          usados = {int(m.group(1)) for f in archivos if (m := patron.match(f))}
+          siguiente = max(usados, default=0) + 1
+          for f in archivos:
+              if patron.match(f):
+                  continue
+              ext = os.path.splitext(f)[1].lower()
+              nuevo = f'producto{siguiente}{ext}'
+              os.rename(os.path.join(carpeta, f), os.path.join(carpeta, nuevo))
+              print(f'-> {f} -> {nuevo}')
+              siguiente += 1
+
+          def numero(f):
+              m = patron.match(f)
+              return (0, int(m.group(1))) if m else (1, f.lower())
+
+          lista = sorted((f for f in os.listdir(carpeta) if f.lower().endswith(ext_validas)), key=numero)
+          with open(os.path.join(carpeta, 'imagenes.json'), 'w', encoding='utf-8') as fh:
+              json.dump(lista, fh, indent=2, ensure_ascii=False)
+              fh.write('\n')
+          print(f'-> imagenes.json con {len(lista)} imágenes')
+          EOF2
+          python /tmp/productos.py
 
       - name: Confirmar y subir cambios
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git add recursos/productos/
-          
-          if git diff --staged --quiet; then
+          git add -A recursos/productos/
+          if git diff --cached --quiet; then
             echo "No hay cambios para subir."
-          else
-            git commit -m "chore: renombrar imágenes y actualizar lista JSON"
-            git push
+            exit 0
           fi
+          git commit -m "chore: numerar imágenes nuevas de productos y actualizar lista JSON [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

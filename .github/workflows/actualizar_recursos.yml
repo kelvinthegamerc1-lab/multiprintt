@@ -7,112 +7,96 @@ on:
     paths:
       - 'recursos/**'
       - '!recursos/imagenes.json'  # Evita bucles infinitos si el bot modifica el JSON
-      - '!recursos/productos/**'   # Ignora completamente la carpeta productos
-  workflow_dispatch: 
+      - '!recursos/productos/**'   # La carpeta productos tiene su propio workflow
+  workflow_dispatch:
+
+# Si llegan varios push seguidos, solo corre uno a la vez y en orden.
+concurrency:
+  group: recursos-main
+  cancel-in-progress: false
 
 jobs:
   procesar_recursos:
     runs-on: ubuntu-24.04
-
     permissions:
       contents: write
 
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Ejecutar script de renombrado y generación de JSON
+      - name: Instalar Pillow
+        run: pip install --quiet pillow
+
+      - name: Optimizar imágenes nuevas (convierte a WebP y reduce las muy pesadas)
+        run: python .github/scripts/optimizar_imagenes.py recursos --no-recursivo --excluir favicon.webp,logo_mejorado.webp
+
+      - name: Renombrar testimonios y generar imagenes.json
         run: |
-          cat << 'EOF' > procesar_recursos.py
+          cat << 'EOF2' > /tmp/procesar_recursos.py
           import os, json, re
 
           recursos_dir = 'recursos'
           testimonio_dir = os.path.join(recursos_dir, 'testimonio')
           json_path = os.path.join(recursos_dir, 'imagenes.json')
+          ext_img_validas = ('.webp', '.jpg', '.jpeg', '.png', '.gif')
+          # Archivos del sitio que no son fotos de la galería
+          archivos_excluidos = {'favicon.webp', 'favicon.png', 'logo_mejorado.webp', 'logo_mejorado.png', 'imagenes.json'}
 
-          # Extensiones de imagen válidas para la raíz
-          ext_img_validas = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
+          os.makedirs(testimonio_dir, exist_ok=True)
 
-          # Archivos esenciales en /recursos/ que NO se deben incluir en el JSON
-          archivos_excluidos = {'favicon.png', 'logo_mejorado.png', 'imagenes.json'}
-
-          # Asegurar que existan las carpetas
-          if not os.path.exists(recursos_dir): os.makedirs(recursos_dir)
-          if not os.path.exists(testimonio_dir): os.makedirs(testimonio_dir)
-
-          # -------------------------------------------------------------
-          # 1. Renombrar únicamente los videos .mp4 en 'recursos/testimonio'
-          # -------------------------------------------------------------
-          testimonio_archivos = os.listdir(testimonio_dir)
-          testimonio_pattern = re.compile(r'^testimonio(\d+)\.mp4$', re.IGNORECASE)
-
-          max_idx = -1
-          archivos_para_renombrar = []
-
-          # Buscar el índice más alto existente (ej. testimonio1.mp4 -> max_idx = 1)
-          for f in testimonio_archivos:
-              filepath = os.path.join(testimonio_dir, f)
-              if not os.path.isfile(filepath): continue
-              
-              match = testimonio_pattern.match(f)
-              if match:
-                  max_idx = max(max_idx, int(match.group(1)))
-              elif f.lower().endswith('.mp4'):
-                  archivos_para_renombrar.append(f)
-
-          # Renombrar nuevos .mp4 empezando en testimonio0.mp4 (o en la secuencia siguiente)
-          for f in archivos_para_renombrar:
-              max_idx += 1
-              nuevo_nombre = f"testimonio{max_idx}.mp4"
-              os.rename(os.path.join(testimonio_dir, f), os.path.join(testimonio_dir, nuevo_nombre))
-              print(f"-> Renombrado video: {f} -> {nuevo_nombre}")
-
-          # -------------------------------------------------------------
-          # 2. Generar la lista limpia para imagenes.json
-          # -------------------------------------------------------------
-          lista_recursos = []
-
-          # a) Imágenes en la raíz /recursos/ (excluyendo favicon, logo e imagenes.json)
-          for f in sorted(os.listdir(recursos_dir)):
-              filepath = os.path.join(recursos_dir, f)
-              if os.path.isfile(filepath):
-                  nombre_lower = f.lower()
-                  if nombre_lower not in archivos_excluidos and nombre_lower.endswith(ext_img_validas):
-                      lista_recursos.append(f)
-
-          # b) Videos .mp4 en /recursos/testimonio/
+          # 1. Renombrar videos nuevos .mp4 de testimonio a testimonioN.mp4 (los existentes no cambian)
+          patron = re.compile(r'^testimonio(\d+)\.mp4$', re.IGNORECASE)
+          max_idx, nuevos = -1, []
           for f in sorted(os.listdir(testimonio_dir)):
-              filepath = os.path.join(testimonio_dir, f)
-              if os.path.isfile(filepath) and f.lower().endswith('.mp4'):
-                  lista_recursos.append(f"testimonio/{f}")
+              if not os.path.isfile(os.path.join(testimonio_dir, f)):
+                  continue
+              m = patron.match(f)
+              if m:
+                  max_idx = max(max_idx, int(m.group(1)))
+              elif f.lower().endswith('.mp4'):
+                  nuevos.append(f)
+          for f in nuevos:
+              max_idx += 1
+              nuevo = f'testimonio{max_idx}.mp4'
+              os.rename(os.path.join(testimonio_dir, f), os.path.join(testimonio_dir, nuevo))
+              print(f'-> Renombrado video: {f} -> {nuevo}')
 
-          # -------------------------------------------------------------
-          # 3. Guardar el archivo JSON
-          # -------------------------------------------------------------
-          with open(json_path, 'w', encoding='utf-8') as json_file:
-              json.dump(lista_recursos, json_file, indent=4, ensure_ascii=False)
+          # 2. Lista de la galería en orden natural (dtf2 antes que dtf10)
+          def natural(n):
+              return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', n)]
 
-          print(f"-> JSON generado exitosamente con {len(lista_recursos)} elementos:")
-          print(json.dumps(lista_recursos, indent=2))
-          EOF
-          python procesar_recursos.py
+          lista = [f for f in sorted(os.listdir(recursos_dir), key=natural)
+                   if os.path.isfile(os.path.join(recursos_dir, f))
+                   and f.lower() not in archivos_excluidos
+                   and f.lower().endswith(ext_img_validas)]
+          lista += [f'testimonio/{f}' for f in sorted(os.listdir(testimonio_dir), key=natural)
+                    if f.lower().endswith('.mp4')]
+
+          with open(json_path, 'w', encoding='utf-8') as fh:
+              json.dump(lista, fh, indent=4, ensure_ascii=False)
+              fh.write('\n')
+          print(f'-> imagenes.json con {len(lista)} elementos')
+          EOF2
+          python /tmp/procesar_recursos.py
 
       - name: Commit y Push de los cambios
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add recursos/
-          
-          if git diff-index --quiet HEAD; then
+          git add -A recursos/
+          if git diff --cached --quiet; then
             echo "No hay archivos nuevos ni cambios para hacer commit."
-          else
-            git commit -m "chore: renombrar testimonios mp4 y actualizar imagenes.json [skip ci]"
-            git push
+            exit 0
           fi
+          git commit -m "chore: optimizar recursos y actualizar imagenes.json [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

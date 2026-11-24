@@ -1,0 +1,70 @@
+name: Subir recursos a Backblaze B2
+
+# Copia recursos/ al bucket de B2 con las mismas rutas que usa la herramienta
+# "Migración" del panel admin (media/migrated/...). Nunca borra nada del bucket.
+# Necesita los secretos B2_KEY_ID, B2_APP_KEY y B2_BUCKET; sin ellos se salta.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'recursos/**'
+  workflow_run:
+    workflows:
+      - 'Actualizar JSON y Renombrar Recursos'
+      - 'Renombrar Imágenes de Productos'
+      - 'Convertir imágenes antiguas a WebP'
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-b2
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      B2_APPLICATION_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_APP_KEY }}
+      B2_BUCKET: ${{ secrets.B2_BUCKET }}
+    steps:
+      - name: Revisar secretos
+        id: check
+        run: |
+          if [ -z "$B2_APPLICATION_KEY_ID" ] || [ -z "$B2_APPLICATION_KEY" ] || [ -z "$B2_BUCKET" ]; then
+            echo "Faltan los secretos B2_KEY_ID, B2_APP_KEY o B2_BUCKET. No se sube nada."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout (última versión de main)
+        if: steps.check.outputs.ok == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Instalar B2 CLI
+        if: steps.check.outputs.ok == 'true'
+        run: pip install --quiet "b2>=4,<5"
+
+      - name: Subir archivos nuevos o cambiados
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          set -euo pipefail
+          B="b2://$B2_BUCKET/media/migrated"
+          # Fotos de la galería y demás archivos sueltos de recursos/
+          b2 sync --no-progress --exclude-regex '(productos|testimonio|nosostros)/.*' --compare-versions size recursos "$B/github"
+          # Productos y videos de testimonio
+          if [ -d recursos/productos ]; then b2 sync --no-progress --compare-versions size recursos/productos "$B/productos"; fi
+          if [ -d recursos/testimonio ]; then b2 sync --no-progress --compare-versions size recursos/testimonio "$B/testimonios"; fi
+          # Logo y favicon (rutas del sitio) y manifiestos JSON
+          for f in recursos/logo_mejorado.webp recursos/favicon.webp; do
+            [ -f "$f" ] && b2 file upload --no-progress "$B2_BUCKET" "$f" "media/migrated/site/$(basename "$f")" > /dev/null
+          done
+          [ -f recursos/imagenes.json ] && b2 file upload --no-progress "$B2_BUCKET" recursos/imagenes.json media/migrated/manifests/imagenes.json > /dev/null
+          echo "Listo: recursos sincronizados en $B"
