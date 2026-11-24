@@ -5672,6 +5672,7 @@ window.appProducts = [...defaultProducts]; window.appCourses = [...defaultCourse
 window.renderProducts(); window.renderCourses(); window.__mpMarkCatalogReady();
 } finally {
 window.productOrderArray = window.productOrderArray || []; window.courseOrderArray = window.courseOrderArray || [];
+if (!firebaseReady && !window.productsDataReady) { window.productsDataReady = true; }
 try { window.setFilter('mas-vendidos'); } catch(e) { console.warn('Filtro inicial:', e); }
 try { window.renderProducts(); window.syncSocialNetworks(); window.updateCartUI(); ensureAcademyGallerySection(); } catch(e) { console.warn('Inicialización de galería:', e); }
 try { if(document.getElementById('view-courses')?.classList.contains('active-slide')) window.ensureAcademyGallery(); } catch(e) {}
