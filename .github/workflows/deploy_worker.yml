@@ -1,0 +1,55 @@
+name: Publicar Worker de Cloudflare (B2)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker/**'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-worker
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar sintaxis
+        run: node --check worker/worker.js
+
+      - name: Verificar secretos
+        id: secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::notice::Faltan CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID. No se publica el Worker."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publicar con Wrangler
+        if: steps.secrets.outputs.ok == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: deploy
+
+      - name: Prueba rápida
+        if: steps.secrets.outputs.ok == 'true'
+        run: |
+          sleep 5
+          curl -fsS https://b2.multiprintt.workers.dev/health
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://b2.multiprintt.workers.dev/api/list)
+          echo "API sin sesión -> $code"; [ "$code" = "401" ] || [ "$code" = "403" ]
