@@ -26,7 +26,7 @@ const MAX_SEARCH_SCAN = 5000;
 const MAX_BULK_DELETE = 100;
 const ALLOWED_CATEGORIES = new Set(['textil', 'jarros', 'imp-general', 'packs']);
 const TESTIMONIAL_VIDEO_PREFIX = 'testimonio_videos/';
-const TESTIMONIAL_VIDEO_MAX_BYTES = 20 * 1024 * 1024;
+const TESTIMONIAL_VIDEO_MAX_BYTES = 40 * 1024 * 1024;
 const FIREBASE_JWKS_URL = 'https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com';
 const B2_COUNT_CACHE_TTL_MS = 15000;
 let b2CountCache = new Map();
@@ -234,6 +234,24 @@ async function apiList(env, url, origin) {
     );
   }
 
+  if (!category) {
+    // "Todas": solo fotos del catálogo (categorías + media/migrated/productos/).
+    // El bucket también guarda media/ (miniaturas, recursos migrados) y videos.
+    const pageAll = await listCatalogPage(env, pageSize, continuationToken);
+    return json(
+      {
+        ok: true,
+        items: pageAll.items.map(objectToApiItem(env)),
+        isTruncated: pageAll.isTruncated,
+        nextContinuationToken: pageAll.nextContinuationToken,
+        count: pageAll.items.length,
+        pageSize
+      },
+      200,
+      corsHeaders(origin, env, true)
+    );
+  }
+
   const page = await listObjectsV2(env, {
     prefix: category ? `${category}/` : '',
     maxKeys: pageSize,
@@ -252,6 +270,37 @@ async function apiList(env, url, origin) {
     200,
     corsHeaders(origin, env, true)
   );
+}
+
+function isCatalogKey(key) {
+  // Fotos de productos: categorías actuales + fotos antiguas migradas desde GitHub.
+  return ALLOWED_CATEGORIES.has(categoryFromKey(key)) || String(key).startsWith('media/migrated/productos/');
+}
+
+// Paginación de "Todas" con cursor propio ("sa:<última clave>"), porque al filtrar
+// las claves que no son del catálogo una página de B2 no coincide con una de la API.
+async function listCatalogPage(env, pageSize, cursor) {
+  let startAfter = String(cursor || '').startsWith('sa:') ? String(cursor).slice(3) : '';
+  const items = [];
+  let more = true;
+  let guard = 0;
+  while (items.length < pageSize && more && guard++ < 20) {
+    const page = await listObjectsV2(env, { maxKeys: 1000, startAfter });
+    for (const item of page.items) {
+      startAfter = item.key;
+      if (!isCatalogKey(item.key)) continue;
+      items.push(item);
+      if (items.length >= pageSize) break;
+    }
+    const consumedAll = !page.items.length || startAfter === page.items[page.items.length - 1].key;
+    more = Boolean(page.isTruncated) || !consumedAll;
+    if (!page.items.length) more = false;
+  }
+  return {
+    items,
+    isTruncated: more,
+    nextContinuationToken: more ? `sa:${startAfter}` : null
+  };
 }
 
 async function apiCount(env, url, origin) {
@@ -304,7 +353,7 @@ async function apiCount(env, url, origin) {
       continuationToken: token
     });
 
-    count += page.items.length;
+    count += category ? page.items.length : page.items.filter(item => isCatalogKey(item.key)).length;
 
     if (
       !page.isTruncated ||
@@ -337,7 +386,7 @@ async function apiListTestimonialVideos(env, url, origin) {
   const continuationToken = String(url.searchParams.get('continuationToken') || '');
   const search = String(url.searchParams.get('search') || '').trim().toLowerCase();
   const page = await listObjectsV2(env,{prefix:TESTIMONIAL_VIDEO_PREFIX,maxKeys:Math.min(pageSize,1000),continuationToken});
-  let items = page.items.filter(item => /^testimonio_videos\/[^/]+\.webm$/i.test(item.key));
+  let items = page.items.filter(item => /^testimonio_videos\/[^/]+\.(?:webm|mp4)$/i.test(item.key));
   if(search)items=items.filter(item=>`${item.key} ${item.name}`.toLowerCase().includes(search));
   items.sort((a,b)=>String(b.lastModified||'').localeCompare(String(a.lastModified||'')));
   return json({ok:true,items:items.map(item=>{const out=objectToApiItem(env)(item);out.category='testimonio_videos';return out;}),isTruncated:!!page.isTruncated,nextContinuationToken:page.nextContinuationToken||null,count:items.length,pageSize},200,corsHeaders(origin,env,true));
@@ -348,22 +397,25 @@ async function apiCreateTestimonialVideo(request, env, origin) {
   const file = form.get('file');
   const requestedName = String(form.get('name') || '').trim();
   if(!(file instanceof File))throw httpError(400,'Falta el archivo.','file_required');
-  const looksWebm=/^video\/webm/i.test(file.type||'') || /\.webm$/i.test(file.name||'');
-  if(!looksWebm)throw httpError(415,'Solo se permiten videos WEBM para testimonios.','webm_required');
-  if(Number(file.size||0)>TESTIMONIAL_VIDEO_MAX_BYTES)throw httpError(413,'El video testimonial supera el máximo de 20 MB.','too_large');
+  // WEBM o MP4 (los celulares graban en MP4). Se valida la firma real del archivo.
+  if(Number(file.size||0)>TESTIMONIAL_VIDEO_MAX_BYTES)throw httpError(413,`El video supera el máximo de ${Math.round(TESTIMONIAL_VIDEO_MAX_BYTES/1048576)} MB.`,'too_large');
   const bytes=new Uint8Array(await file.arrayBuffer());
-  if(bytes.length<4 || bytes[0]!==0x1A || bytes[1]!==0x45 || bytes[2]!==0xDF || bytes[3]!==0xA3)throw httpError(415,'El archivo no parece ser un WEBM válido.','invalid_webm');
+  const isWebm=bytes.length>4 && bytes[0]===0x1A && bytes[1]===0x45 && bytes[2]===0xDF && bytes[3]===0xA3;
+  const isMp4=bytes.length>12 && bytes[4]===0x66 && bytes[5]===0x74 && bytes[6]===0x79 && bytes[7]===0x70;
+  if(!isWebm && !isMp4)throw httpError(415,'Solo se permiten videos WEBM o MP4.','video_required');
+  const ext=isWebm?'webm':'mp4';
+  const contentType=isWebm?'video/webm':'video/mp4';
   const base=slug(stripExtension(requestedName||file.name)||'testimonio');
-  const key=`${TESTIMONIAL_VIDEO_PREFIX}${base}_${Date.now().toString(36)}.webm`;
-  await putObject(env,key,bytes,{'Content-Type':'video/webm','Cache-Control':'public, max-age=31536000, immutable','x-amz-meta-name':stripExtension(lastSegment(key)),'x-amz-meta-category':'testimonio_videos','x-amz-meta-source':'multiprintt-admin'});
+  const key=`${TESTIMONIAL_VIDEO_PREFIX}${base}_${Date.now().toString(36)}.${ext}`;
+  await putObject(env,key,bytes,{'Content-Type':contentType,'Cache-Control':'public, max-age=31536000, immutable','x-amz-meta-name':stripExtension(lastSegment(key)),'x-amz-meta-category':'testimonio_videos','x-amz-meta-source':'multiprintt-admin'});
   const version=String(Date.now());
-  return json({ok:true,key,name:stripExtension(lastSegment(key)),category:'testimonio_videos',url:publicUrl(env,key,version),version,size:bytes.byteLength,contentType:'video/webm'},201,corsHeaders(origin,env,true));
+  return json({ok:true,key,name:stripExtension(lastSegment(key)),category:'testimonio_videos',url:publicUrl(env,key,version),version,size:bytes.byteLength,contentType},201,corsHeaders(origin,env,true));
 }
 
 async function apiDeleteTestimonialVideo(request, env, ctx, origin) {
   const raw=String(new URL(request.url).searchParams.get('key')||'');
   const key=normalizeObjectKey(raw);
-  if(!/^testimonio_videos\/[^/]+\.webm$/i.test(key))throw httpError(400,'Solo se pueden eliminar videos WEBM de testimonio_videos/.','invalid_key');
+  if(!/^testimonio_videos\/[^/]+\.(?:webm|mp4)$/i.test(key))throw httpError(400,'Solo se pueden eliminar videos de testimonio_videos/.','invalid_key');
   await deleteObject(env,key);
   await purgePublicCache(env,key,ctx);
   return json({ok:true,key},200,corsHeaders(origin,env,true));
@@ -1236,7 +1288,8 @@ async function listObjectsV2(
   {
     prefix = '',
     maxKeys = DEFAULT_PAGE_SIZE,
-    continuationToken = ''
+    continuationToken = '',
+    startAfter = ''
   } = {}
 ) {
   const params =
@@ -1270,6 +1323,10 @@ async function listObjectsV2(
       'continuation-token',
       continuationToken
     );
+  }
+
+  if (startAfter && !continuationToken) {
+    params.set('start-after', startAfter);
   }
 
   const targetUrl =
@@ -1346,7 +1403,8 @@ async function searchObjects(
     for (
       const item of page.items
     ) {
-      const haystack =
+if (!category && !isCatalogKey(item.key)) continue;
+            const haystack =
         `${item.key} ${item.name} ${item.category}`
           .toLowerCase();
 
