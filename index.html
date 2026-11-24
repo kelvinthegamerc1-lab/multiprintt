@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js">
+<link rel="preconnect" href="https://firestore.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://b2.multiprintt.workers.dev">
 <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
@@ -42,6 +46,24 @@
 <meta name="twitter:description" content="Impresión, publicidad, personalización, sublimación y DTF en Guayaquil, Ecuador.">
 <meta name="twitter:image" content="https://multiprintt.web.app/og-image.jpg">
 <meta name="twitter:image:alt" content="Logo oficial de Multiprintt">
+<script>
+/* Primera visita: pide el catálogo a Firestore por REST mientras carga el SDK (~175 KB),
+   para mostrar productos varios segundos antes. Las visitas repetidas usan la copia local. */
+(function(){
+  try{var c=JSON.parse(localStorage.getItem('mp_products_cache_v1')||'null');if(c&&c.items&&c.items.length&&Date.now()-(+c.t||0)<30*864e5)return;}catch(e){}
+  function val(v){if(!v||typeof v!=='object')return null;
+    if('stringValue' in v)return v.stringValue;if('integerValue' in v)return Number(v.integerValue);if('doubleValue' in v)return Number(v.doubleValue);
+    if('booleanValue' in v)return !!v.booleanValue;if('nullValue' in v)return null;if('referenceValue' in v)return v.referenceValue;
+    if('timestampValue' in v){var ms=Date.parse(v.timestampValue);return {seconds:Math.floor(ms/1000),nanoseconds:0,toMillis:function(){return ms},toDate:function(){return new Date(ms)}};}
+    if('geoPointValue' in v)return v.geoPointValue;if('arrayValue' in v)return (v.arrayValue.values||[]).map(val);
+    if('mapValue' in v)return obj(v.mapValue.fields||{});return null;}
+  function obj(f){var o={};for(var k in f)o[k]=val(f[k]);return o;}
+  window.__mpRestProducts=fetch('https://firestore.googleapis.com/v1/projects/multiprintt-cc0f1/databases/(default)/documents/artifacts/multiprintt-web/public/data/products?pageSize=300',{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null}).then(function(j){if(!j||!j.documents||j.nextPageToken)return null;
+      var list=j.documents.map(function(d){var o=obj(d.fields||{});o.id=d.name.split('/').pop();return o;});window.__mpRestProductsData=list;return list;})
+    .catch(function(){return null});
+})();
+</script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-VP3XV39H5M',{anonymize_ip:true});
 /* Analítica después de que la tienda cargó (no compite con productos ni fotos). */
 (function(){var done=false;function go(){if(done)return;done=true;var t=document.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=G-VP3XV39H5M';document.head.appendChild(t);}
@@ -5487,6 +5509,8 @@ let lastProductSnapshot = null;
 window.loadFirebaseData = async function() {
 try {
 try{if(!(Array.isArray(window.appProducts)&&window.appProducts.length)){const c=JSON.parse(localStorage.getItem('mp_products_cache_v1')||'null');if(c&&Array.isArray(c.items)&&c.items.length&&Date.now()-(+c.t||0)<30*864e5){window.appProducts=c.items;window.__mpProductsFromCache=true;try{const d=JSON.parse(localStorage.getItem('mp_demand_cache_v1')||'null');if(d&&typeof d==='object'&&!Object.keys(window.productDemandMap||{}).length)window.productDemandMap=d;}catch(e){}}}}catch(e){}
+try{if(!(Array.isArray(window.appProducts)&&window.appProducts.length)&&Array.isArray(window.__mpRestProductsData)&&window.__mpRestProductsData.length){window.appProducts=window.__mpRestProductsData.map(p=>window.mpNormalizeProductData(p));window.__mpProductsFromCache=true;}}catch(e){}
+try{if(window.__mpRestProducts&&!window.__mpRestProductsData)window.__mpRestProducts.then(list=>{if(!list||!list.length||window.productsDataReady||(Array.isArray(window.appProducts)&&window.appProducts.length))return;window.appProducts=list.map(p=>window.mpNormalizeProductData(p));window.__mpProductsFromCache=true;try{window.renderProducts();window.__mpMarkCatalogReady?.();window.updateCartUI?.();}catch(e){}});}catch(e){}
 try{if(!window.__mpInitialShellRendered){window.renderProducts();window.renderCourses();window.__mpInitialShellRendered=true;}}catch(e){console.warn('Render inicial local:',e)}
 window.__mpHideGlobalLoader(false);
 try {
@@ -6444,8 +6468,10 @@ window.loadFirebaseData();
   new MutationObserver(function(){if(pageLoaded&&document.querySelector('img[data-mp-defer-src]'))(window.requestIdleCallback||function(f){setTimeout(f,300)})(function(){loadDeferred(document)},{timeout:2000});}).observe(document.documentElement,{childList:true,subtree:true});
   /* Videos ocultos: solo metadatos hasta que el usuario los reproduzca. */
   window.mpTameMedia=function(root){
-    try{(root||document).querySelectorAll('video[preload="auto"],video:not([preload])').forEach(function(v){if(v.paused)v.setAttribute('preload','metadata');});if(window.MP_RECURSOS_ON_B2&&window.mpRecursosToB2)(root||document).querySelectorAll('video[src*="raw.githubusercontent.com"],source[src*="raw.githubusercontent.com"]').forEach(function(v){var n=window.mpRecursosToB2(v.getAttribute('src'));if(n&&n!==v.getAttribute('src'))v.setAttribute('src',n);});}catch(e){}
+    try{(root||document).querySelectorAll('video').forEach(function(v){if(!v.paused||v.dataset.mpSeen)return;v.setAttribute('preload','none');if(window.__mpVideoIO)window.__mpVideoIO.observe(v);else v.setAttribute('preload','metadata');});if(window.MP_RECURSOS_ON_B2&&window.mpRecursosToB2)(root||document).querySelectorAll('video[src*="raw.githubusercontent.com"],source[src*="raw.githubusercontent.com"]').forEach(function(v){var n=window.mpRecursosToB2(v.getAttribute('src'));if(n&&n!==v.getAttribute('src'))v.setAttribute('src',n);});}catch(e){}
   };
+  /* Videos: no se descarga nada hasta que el video entra en pantalla (vistas ocultas = 0 KB). */
+  try{window.__mpVideoIO=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var v=e.target;v.dataset.mpSeen='1';if(v.getAttribute('preload')==='none')v.setAttribute('preload','metadata');window.__mpVideoIO.unobserve(v);}});},{rootMargin:'300px'});}catch(e){}
   /* Accesibilidad: nombres para botones de solo icono y texto alternativo en imágenes. */
   var ICONS={'fa-whatsapp':'WhatsApp','fa-facebook':'Facebook','fa-facebook-f':'Facebook','fa-instagram':'Instagram','fa-tiktok':'TikTok','fa-youtube':'YouTube','fa-x-twitter':'X','fa-twitter':'X','fa-linkedin':'LinkedIn','fa-telegram':'Telegram','fa-envelope':'Correo','fa-phone':'Llamar','fa-location-dot':'Ubicación','fa-map-location-dot':'Ubicación','fa-cart-shopping':'Carrito','fa-bag-shopping':'Carrito','fa-cart-plus':'Agregar al carrito','fa-plus':'Agregar','fa-minus':'Quitar uno','fa-trash':'Eliminar','fa-trash-can':'Eliminar','fa-xmark':'Cerrar','fa-times':'Cerrar','fa-chevron-left':'Anterior','fa-chevron-right':'Siguiente','fa-arrow-left':'Anterior','fa-arrow-right':'Siguiente','fa-play':'Reproducir video','fa-pause':'Pausar video','fa-volume-xmark':'Activar sonido','fa-volume-high':'Silenciar','fa-expand':'Pantalla completa','fa-magnifying-glass':'Buscar','fa-share-nodes':'Compartir','fa-bars':'Menú'};
   function labelFor(el){
