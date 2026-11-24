@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin.html
+Disallow: /fonts/fa-subset.json
 
 Sitemap: https://multiprintt.web.app/sitemap.xml
