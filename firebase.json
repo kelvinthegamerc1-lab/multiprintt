@@ -13,7 +13,8 @@
       "firestore.rules",
       "README_FINAL_AUDIT.md",
       "README_FIX2.md",
-      "AUDITORIA_FINAL_2026-10-04.md"
+      "AUDITORIA_FINAL_2026-10-04.md",
+      "worker/**"
     ],
     "headers": [
       {
