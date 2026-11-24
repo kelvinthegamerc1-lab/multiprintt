@@ -1743,7 +1743,9 @@ async function requireAdmin(
   const adminUids = String(env.ADMIN_UIDS || '').split(',').map(x => x.trim()).filter(Boolean);
   if (adminEmails.length || adminUids.length) {
     const email = String(payload.email || '').toLowerCase();
-    const emailOk = email && payload.email_verified !== false && adminEmails.includes(email);
+    // No se exige email_verified: el registro público está cerrado y la cuenta admin
+    // puede no tener el correo verificado (Firebase envía email_verified=false).
+    const emailOk = Boolean(email) && adminEmails.includes(email);
     const uidOk = adminUids.includes(String(payload.sub || payload.user_id || ''));
     if (!emailOk && !uidOk) {
       throw httpError(403, 'Esta cuenta no tiene permisos de administración.', 'admin_not_allowed');
