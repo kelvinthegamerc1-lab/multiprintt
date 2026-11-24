@@ -16,6 +16,7 @@ on:
       - 'robots.txt'
       - 'sitemap.xml'
       - 'site.webmanifest'
+      - 'google*.html'
       - 'fonts/**'
       - 'assets/**'
   # Y se puede seguir publicando a mano desde la pestaña Actions.
