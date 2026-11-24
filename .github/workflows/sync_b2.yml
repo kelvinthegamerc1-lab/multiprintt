@@ -35,12 +35,27 @@ jobs:
       - name: Revisar secretos
         id: check
         run: |
-          if [ -z "$B2_APPLICATION_KEY_ID" ] || [ -z "$B2_APPLICATION_KEY" ] || [ -z "$B2_BUCKET" ]; then
+          # Quita espacios o saltos de línea pegados por error al copiar.
+          kid="$(printf '%s' "$B2_APPLICATION_KEY_ID" | tr -d '[:space:]')"
+          key="$(printf '%s' "$B2_APPLICATION_KEY" | tr -d '[:space:]')"
+          bucket="$(printf '%s' "$B2_BUCKET" | tr -d '[:space:]')"
+          if [ -z "$kid" ] || [ -z "$key" ] || [ -z "$bucket" ]; then
             echo "Faltan los secretos B2_KEY_ID, B2_APP_KEY o B2_BUCKET. No se sube nada."
             echo "ok=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "ok=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+          # Diagnóstico sin mostrar valores: solo largos y formato.
+          echo "B2_KEY_ID: ${#kid} caracteres (una llave normal tiene 25 y empieza con 00; la maestra tiene 12)"
+          echo "B2_APP_KEY: ${#key} caracteres (normalmente 31 y empieza con K)"
+          case "$key" in K*) echo "B2_APP_KEY empieza con K: sí";; *) echo "B2_APP_KEY empieza con K: no (¿se pegó el keyID o el nombre?)";; esac
+          echo "B2_BUCKET: ${#bucket} caracteres"
+          {
+            echo "B2_APPLICATION_KEY_ID=$kid"
+            echo "B2_APPLICATION_KEY=$key"
+            echo "B2_BUCKET=$bucket"
+          } >> "$GITHUB_ENV"
+          echo "::add-mask::$key"
+          echo "ok=true" >> "$GITHUB_OUTPUT"
 
       - name: Checkout (última versión de main)
         if: steps.check.outputs.ok == 'true'
