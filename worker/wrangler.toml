@@ -1,0 +1,10 @@
+# Worker público de medios: https://b2.multiprintt.workers.dev
+name = "b2"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# Las variables (B2_ENDPOINT, BUCKET_NAME, FIREBASE_PROJECT_ID, PUBLIC_BASE_URL,
+# ALLOWED_ORIGINS, ADMIN_EMAILS) y los secretos (B2_KEY_ID, B2_APPLICATION_KEY)
+# se gestionan en el panel de Cloudflare. keep_vars evita que un despliegue los borre.
+keep_vars = true
