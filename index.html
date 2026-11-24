@@ -6554,7 +6554,7 @@ if(!hook()){window.addEventListener('load',function(){hook();later();});}else la
 <script id="mp-catalog-touch">(function(){var mark=function(){window.__mpCatalogTouched=true;};['pointerdown','wheel','touchstart','keydown'].forEach(function(ev){document.addEventListener(ev,mark,{passive:true,once:true,capture:true});});})();</script>
 <script id="mp-gallery-speed">(function(){
 // Velocidad constante en px/s: no depende de cuántas fotos haya. El control del editor solo ajusta dentro de un rango cómodo.
-var MIN=18,MAX=45,DEF=30;
+var MIN=16,MAX=36,DEF=28;
 window.mpTuneGallery=function(g){try{
   if(!g)return;var run=function(){var half=g.scrollWidth/2;if(!half||half<200)return;
     var cur=parseFloat(g.style.animationDuration)||0;if(/ms$/.test(g.style.animationDuration))cur=cur/1000;
