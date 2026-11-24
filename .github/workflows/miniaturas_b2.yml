@@ -1,0 +1,62 @@
+name: Miniaturas de productos (B2)
+
+# Crea versiones ligeras (máx. 560 px) de las fotos de productos para que el
+# catálogo cargue rápido en celulares. Solo procesa fotos nuevas o reemplazadas.
+# Usa los mismos secretos que "Subir recursos a Backblaze B2"; sin ellos se salta.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_run:
+    workflows: ['Subir recursos a Backblaze B2']
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: miniaturas-b2
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  thumbs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      B2_APPLICATION_KEY_ID: ${{ secrets.B2_KEY_ID }}
+      B2_APPLICATION_KEY: ${{ secrets.B2_APP_KEY }}
+      B2_BUCKET: ${{ secrets.B2_BUCKET }}
+    steps:
+      - name: Revisar secretos
+        id: check
+        run: |
+          kid="$(printf '%s' "$B2_APPLICATION_KEY_ID" | tr -d '[:space:]')"
+          key="$(printf '%s' "$B2_APPLICATION_KEY" | tr -d '[:space:]')"
+          bucket="$(printf '%s' "$B2_BUCKET" | tr -d '[:space:]')"
+          if [ -z "$kid" ] || [ -z "$key" ] || [ -z "$bucket" ]; then
+            echo "Faltan los secretos de B2. No se generan miniaturas."
+            echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "::add-mask::$key"
+          { echo "B2_APPLICATION_KEY_ID=$kid"; echo "B2_APPLICATION_KEY=$key"; echo "B2_BUCKET=$bucket"; } >> "$GITHUB_ENV"
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ok == 'true'
+        with:
+          sparse-checkout: .github/scripts
+
+      - uses: actions/setup-python@v5
+        if: steps.check.outputs.ok == 'true'
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: .github/workflows/miniaturas_b2.yml
+
+      - name: Instalar dependencias
+        if: steps.check.outputs.ok == 'true'
+        run: pip install --quiet "b2sdk>=2,<3" "Pillow>=10"
+
+      - name: Generar miniaturas nuevas
+        if: steps.check.outputs.ok == 'true'
+        run: python .github/scripts/miniaturas_b2.py
